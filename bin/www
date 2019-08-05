@@ -1,0 +1,7 @@
+const Config = require('../dist/global/config').Config;
+
+const app = require('../dist/main').default;
+
+app.start(Config.port);
+
+console.log('listening on', Config.port);
