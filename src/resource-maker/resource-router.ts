@@ -17,7 +17,22 @@ export function makeResourceRouter<T extends Document>(
   // const basePath = `/${resourceName.toLowerCase()}`;
 
   ResourceRouter.get('/', async (request, response) => {
-    response.json(await controller.listAll({ latest: !!request.body.latest }));
+    response.json(await controller.listAll({
+      latest: !!request.body.latest
+    }));
+  });
+
+  ResourceRouter.post('/', async (request, response) => {
+    response.json(await controller.createNew({
+      propertise: request.body.propertise
+    }));
+  });
+
+  ResourceRouter.put('/:resourceId', async (request, response) => {
+    response.json(await controller.editOne({
+      id: request.params.resourceId,
+      propertise: request.body.propertise
+    }));
   });
 
   return ResourceRouter;

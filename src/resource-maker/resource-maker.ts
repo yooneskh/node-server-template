@@ -23,6 +23,11 @@ function makeSchemaFromPropertise(propertise: ResourceProperty[]): Schema {
     };
   }
 
+  schemaOptions['__v'] = {
+    type: Number,
+    select: false
+  };
+
   return new Schema(schemaOptions);
 
 }
