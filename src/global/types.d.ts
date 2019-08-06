@@ -1,8 +1,7 @@
-import { IncomingMessage } from "http";
+import { Request } from 'express';
 
-declare module 'http' {
-  export interface IncomingMessage {
-    body: any;
+declare module 'express' {
+  export interface Request {
     user?: any;
   }
 }

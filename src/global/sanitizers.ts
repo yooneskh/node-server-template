@@ -1,9 +1,8 @@
-import { IncomingMessage, ServerResponse } from 'http';
-import Restana from 'restana';
+import { Request, Response } from 'express';
 import { getUserByToken } from '../modules/user/user-controller';
 
 // tslint:disable-next-line: no-any
-export async function sanitizeRequestFormat(request: IncomingMessage & Restana.RequestExtensions, requestFormat: any, callback: Function): Promise<void> {
+export async function sanitizeRequestFormat(request: Request, requestFormat: any, callback: Function): Promise<void> {
 
   if (requestFormat) {
     throw new Error('not implemented');
@@ -14,7 +13,7 @@ export async function sanitizeRequestFormat(request: IncomingMessage & Restana.R
 }
 
 // tslint:disable-next-line: no-any
-export async function sanitizeRequest(request: IncomingMessage & Restana.RequestExtensions, response: ServerResponse & Restana.ResponseExtensions, requestformat: any, permission: string | undefined, callback: Function): Promise<void> {
+export async function sanitizeRequest(request: Request, response: Response, requestformat: any, permission: string | undefined, callback: Function): Promise<void> {
 
   const token = request.body.token;
   if (!token) throw new Error('unauthorized request');
