@@ -6,6 +6,6 @@ if (!Config.database.host || !Config.database.port || !Config.database.name) thr
 const DB_URI = `mongodb://${Config.database.host}:${Config.database.port}/${Config.database.name}`;
 
 connect(DB_URI, {
-	useNewUrlParser: true,
-	useCreateIndex: true
+  useNewUrlParser: true,
+  useCreateIndex: true
 });

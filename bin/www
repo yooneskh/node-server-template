@@ -11,6 +11,11 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
+// var socketio = require('socket.io')(server);
+// var socketHandler = require('../dist/socket').default;
+
+// socketio.on('connection', socketHandler);
+
 server.listen(port);
 
 server.on('error', onError);

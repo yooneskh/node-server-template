@@ -1,5 +1,5 @@
 export const Config = {
-  port: 0,
+  port: 48500,
   database: {
     port: 27017,
     host: 'localhost',
