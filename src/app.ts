@@ -13,4 +13,7 @@ app.use(cookieParser.default())
 
 app.get('/ping', (request, response) => response.send('pong'));
 
+import { AuthRouter } from './modules/auth/auth-router';
+app.use('/auth', AuthRouter);
+
 export default app;
