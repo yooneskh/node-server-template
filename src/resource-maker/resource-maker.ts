@@ -28,6 +28,16 @@ function makeSchemaFromPropertise(propertise: ResourceProperty[]): Schema {
     select: false
   };
 
+  schemaOptions['createdAt'] = {
+    type: Number,
+    default: Date.now
+  };
+
+  schemaOptions['updatedAt'] = {
+    type: Number,
+    default: 0
+  };
+
   return new Schema(schemaOptions);
 
 }

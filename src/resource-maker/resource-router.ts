@@ -17,7 +17,7 @@ export function makeResourceRouter<T extends Document>(
 
   ResourceRouter.get('/', (request, response, next) => {
     sanitizeRequestFormat(request, response, next, undefined, async () => {
-      response.json(await controller.listAll({
+      response.json(await controller.list({
         latest: !!request.body.latest
       }));
     });

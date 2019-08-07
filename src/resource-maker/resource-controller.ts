@@ -5,7 +5,7 @@ export class ResourceController<T extends Document> {
 
   constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
 
-  public async listAll({ latest = false }): Promise<T[]> {
+  public async list({ latest = false }): Promise<T[]> {
     return this.resourceModel.find().sort({ _id: latest ? -1 : 1 });
   }
 
@@ -42,6 +42,9 @@ export class ResourceController<T extends Document> {
         (resource as any)[key] = payload[key];
       }
     }
+
+    // tslint:disable-next-line: no-any
+    (resource as any).updatedAt = Date.now();
 
     return resource.save();
 
