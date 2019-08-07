@@ -47,6 +47,20 @@ export class ResourceController<T extends Document> {
 
   }
 
+  public async deleteOne({ id = '' }: { id: string }): Promise<boolean> {
+
+    if (!id) throw new Error('id not specified');
+
+    const resource = await this.resourceModel.findById(id);
+
+    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName);
+
+    resource.remove();
+
+    return true;
+
+  }
+
   // tslint:disable-next-line: no-any
   private validatePayload(payload: any) {
     for (const key in payload) {

@@ -40,6 +40,14 @@ export function makeResourceRouter<T extends Document>(
     });
   });
 
+  ResourceRouter.delete('/:resourceId', (request, response, next) => {
+    sanitizeRequestFormat(request, response, next, undefined, async () => {
+      response.json(await controller.deleteOne({
+        id: request.params.resourceId
+      }));
+    });
+  });
+
   return ResourceRouter;
 
 }
