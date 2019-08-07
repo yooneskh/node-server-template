@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 
 export interface IBook extends Document {
   name: string;
+  page: string;
 }
 
 export const { model: BookModel, controller: BookController, router: BookRouter } = makeResource<IBook>({
@@ -11,6 +12,16 @@ export const { model: BookModel, controller: BookController, router: BookRouter 
     {
       key: 'name',
       type: 'string'
+    },
+    {
+      key: 'page',
+      type: 'string'
+    }
+  ],
+  relations: [
+    {
+      modelName: 'Page',
+      property: 'page'
     }
   ]
 });

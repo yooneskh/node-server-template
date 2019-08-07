@@ -41,7 +41,8 @@ export function makeResourceRouter<T extends Document>(
     sanitizeRequestFormat(request, response, next, undefined, async () => {
       response.json(await controller.list({
         filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
-        sorts: extractQueryObject(request.query.sorts)
+        sorts: extractQueryObject(request.query.sorts),
+        includes: request.query.includes
       }));
     });
   });

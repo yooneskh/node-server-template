@@ -19,6 +19,9 @@ app.use('/auth', AuthRouter);
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);
 
+import { PageRouter } from './modules/book/page-resource';
+app.use('/api/v1/pages', PageRouter);
+
 import { errorHadler } from './global/errors';
 app.use(errorHadler);
 
