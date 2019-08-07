@@ -51,7 +51,7 @@ export class ResourceController<T extends Document> {
 
     const resource = await this.resourceModel.findById(id);
 
-    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName);
+    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName + '@' + id);
 
     for (const key of Object.keys(payload)) {
       if (key !== 'id' && key !== '_id') {
