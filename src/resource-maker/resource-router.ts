@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ResourceController } from './resource-controller';
 import { Document } from 'mongoose';
+import { sanitizeRequestFormat } from '../global/sanitizers';
 
 export function makeResourceRouter<T extends Document>(
   {
@@ -14,25 +15,29 @@ export function makeResourceRouter<T extends Document>(
 
   const ResourceRouter = Router();
 
-  // const basePath = `/${resourceName.toLowerCase()}`;
-
-  ResourceRouter.get('/', async (request, response) => {
-    response.json(await controller.listAll({
-      latest: !!request.body.latest
-    }));
+  ResourceRouter.get('/', (request, response, next) => {
+    sanitizeRequestFormat(request, response, next, undefined, async () => {
+      response.json(await controller.listAll({
+        latest: !!request.body.latest
+      }));
+    });
   });
 
-  ResourceRouter.post('/', async (request, response) => {
-    response.json(await controller.createNew({
-      propertise: request.body.propertise
-    }));
+  ResourceRouter.post('/', (request, response, next) => {
+    sanitizeRequestFormat(request, response, next, undefined, async () => {
+      response.json(await controller.createNew({
+        payload: request.body.payload
+      }));
+    });
   });
 
-  ResourceRouter.put('/:resourceId', async (request, response) => {
-    response.json(await controller.editOne({
-      id: request.params.resourceId,
-      propertise: request.body.propertise
-    }));
+  ResourceRouter.put('/:resourceId', (request, response, next) => {
+    sanitizeRequestFormat(request, response, next, undefined, async () => {
+      response.json(await controller.editOne({
+        id: request.params.resourceId,
+        payload: request.body.payload
+      }));
+    });
   });
 
   return ResourceRouter;

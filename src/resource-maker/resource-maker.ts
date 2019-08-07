@@ -37,7 +37,7 @@ export function makeResource<T extends Document>(options: ResourceOptions) {
   const resourceSchema = makeSchemaFromPropertise(options.properties);
   const resourceModel = model<T>(options.name, resourceSchema);
 
-  const resourceController = new ResourceController<T>(resourceModel);
+  const resourceController = new ResourceController<T>(resourceModel, options);
 
   const resourceRouter = makeResourceRouter<T>({
     resourceName: options.name,

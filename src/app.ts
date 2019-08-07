@@ -19,4 +19,7 @@ app.use('/auth', AuthRouter);
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);
 
+import { errorHadler } from './global/errors';
+app.use(errorHadler);
+
 export default app;
