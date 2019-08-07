@@ -3,14 +3,31 @@ import { ResourceOptions } from './resource-maker.types';
 
 export class ResourceController<T extends Document> {
 
+  private addedProperties = {
+    _id: 'string',
+    createdAt: 'number',
+    updatedAt: 'number'
+  };
+
   constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
 
-  public async list({ latest = false }): Promise<T[]> {
-    return this.resourceModel.find().sort({ _id: latest ? -1 : 1 });
+  // tslint:disable-next-line: no-any
+  public async list({ filters = {}, sorts = {} }: { filters: any, sorts: any }): Promise<T[]> {
+
+    // TODO: somehow validate types of filters
+    this.validatePropertyKeys(filters);
+    this.validatePropertyKeys(sorts);
+
+    for (const key in sorts) {
+      sorts[key] = parseInt(sorts[key], 10);
+    }
+
+    return this.resourceModel.find(filters).sort(sorts);
+
   }
 
   // tslint:disable-next-line: no-any
-  public async createNew({ payload = {}}: { payload: any }): Promise<T> {
+  public async createNew({ payload = {} }: { payload: any }): Promise<T> {
 
     this.validatePayload(payload);
 
@@ -56,7 +73,7 @@ export class ResourceController<T extends Document> {
 
     const resource = await this.resourceModel.findById(id);
 
-    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName);
+    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName + '@' + id);
 
     resource.remove();
 
@@ -66,13 +83,26 @@ export class ResourceController<T extends Document> {
 
   // tslint:disable-next-line: no-any
   private validatePayload(payload: any) {
+    this.validatePropertyKeys(payload);
+    this.validatePropertyTypes(payload)
+  }
+
+  // tslint:disable-next-line: no-any
+  private validatePropertyKeys(payload: any) {
     for (const key in payload) {
+
+      if (key in this.addedProperties) continue;
 
       const property = this.options.properties.find(p => p.key === key);
 
       if (!property) throw new Error('payload key invalid: ' + key);
 
     }
+  }
+
+  // tslint:disable-next-line: no-any
+  private validatePropertyTypes(payload: any) {
+    // TODO: implmement
   }
 
 }
