@@ -3,7 +3,7 @@ import { ResourceController } from './resource-controller';
 import { Document } from 'mongoose';
 import { sanitizeRequestFormat } from '../global/sanitizers';
 
-function extractQueryObject(queryString: string): Record<string, string> {
+function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
 
   const result: Record<string, string> = {};
 
@@ -15,7 +15,8 @@ function extractQueryObject(queryString: string): Record<string, string> {
 
     const [key, value] = part.split(':');
 
-    if (!key || !value) throw new Error(`query object invalid at '${key}':'${value}'`);
+    if (!key) throw new Error(`query object invalid key '${key}'`);
+    if (!nullableValues && !value) throw new Error(`query object invalid value '${key}':'${value}'`);
 
     result[key] = value;
 
@@ -42,7 +43,7 @@ export function makeResourceRouter<T extends Document>(
       response.json(await controller.list({
         filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
         sorts: extractQueryObject(request.query.sorts),
-        includes: request.query.includes
+        includes: extractQueryObject(request.query.includes, true)
       }));
     });
   });

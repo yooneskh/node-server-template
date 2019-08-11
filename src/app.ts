@@ -22,6 +22,9 @@ app.use('/api/v1/books', BookRouter);
 import { PageRouter } from './modules/book/page-resource';
 app.use('/api/v1/pages', PageRouter);
 
+import { SectionRouter } from './modules/book/section-resource';
+app.use('/api/v1/sections', SectionRouter);
+
 import { errorHadler } from './global/errors';
 app.use(errorHadler);
 

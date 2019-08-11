@@ -1,12 +1,12 @@
 export interface ResourceOptions {
   name: string;
-  properties: ResourceProperty[],
-  relations: ResourceRelation[]
+  properties: ResourceProperty[]
 }
 
 export interface ResourceProperty {
   key: string;
   type: string;
+  ref?: string;
 }
 
 export interface ResourceRelation {

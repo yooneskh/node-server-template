@@ -11,9 +11,11 @@ export const { model: PageModel, controller: PageController, router: PageRouter 
     {
       key: 'content',
       type: 'string'
+    },
+    {
+      key: 'section',
+      type: 'string',
+      ref: 'Section'
     }
-  ],
-  relations: [
-
   ]
 });

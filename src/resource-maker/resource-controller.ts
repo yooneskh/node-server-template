@@ -12,18 +12,16 @@ export class ResourceController<T extends Document> {
   constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
 
   // tslint:disable-next-line: no-any
-  public async list({ filters = {}, sorts = {}, includes = undefined }: { filters: any, sorts: any, includes: any }): Promise<T[]> {
+  public async list({ filters = {}, sorts = {}, includes = {} }: { filters: any, sorts: any, includes: any }): Promise<T[]> {
 
-    // TODO: somehow validate types of filters
     this.validatePropertyKeys(filters);
     this.validatePropertyKeys(sorts);
-    // this.validateRelationKeys(includes);
 
     for (const key in sorts) {
       sorts[key] = parseInt(sorts[key], 10);
     }
 
-    return this.resourceModel.find(filters).sort(sorts).populate(includes);
+    return this.resourceModel.find(filters).sort(sorts).populate(this.transformIncludes(includes));
 
   }
 
@@ -104,6 +102,45 @@ export class ResourceController<T extends Document> {
   // tslint:disable-next-line: no-any
   private validatePropertyTypes(payload: any) {
     // TODO: implmement
+  }
+
+  private transformIncludes(includes: Record<string, string>) {
+
+    // tslint:disable-next-line: no-any
+    const resultArray: any[] = [];
+
+    for (const includeKey in includes) {
+
+      const includeKeySeperated = includeKey.split('.');
+
+      const prePops = includeKeySeperated.slice(0, -1);
+      const lastPopulate = includeKeySeperated.slice(-1)[0];
+
+      let currentCleanIndex = 0;
+
+      for (const prePop of prePops) {
+
+        if (resultArray[currentCleanIndex] && resultArray[currentCleanIndex].path !== prePop) {
+          throw new Error(`wrong nested include at '${includeKey}', parent must be defined before`);
+        }
+
+        currentCleanIndex++;
+
+      }
+
+      resultArray.push({
+        path: lastPopulate,
+        select: includes[includeKey]
+      });
+
+    }
+
+    for (let i = resultArray.length - 1; i >= 1; i--) {
+      resultArray[i - 1].populate = resultArray[i];
+    }
+
+    return resultArray[0];
+
   }
 
 }

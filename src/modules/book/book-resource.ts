@@ -15,13 +15,8 @@ export const { model: BookModel, controller: BookController, router: BookRouter 
     },
     {
       key: 'page',
-      type: 'string'
-    }
-  ],
-  relations: [
-    {
-      modelName: 'Page',
-      property: 'page'
+      type: 'string',
+      ref: 'Page'
     }
   ]
 });

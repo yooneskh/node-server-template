@@ -38,7 +38,7 @@
     "comment-format": true,
     "encoding": true,
     "file-name-casing": [true, "kebab-case"],
-    "increment-decrement": true,
+    "increment-decrement": [true, "allow-post"],
     "object-literal-key-quotes": [true, "consistent"],
     "one-variable-per-declaration": [true, "ignore-for-loop"],
     "prefer-method-signature": true,
