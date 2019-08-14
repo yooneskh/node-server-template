@@ -1,6 +1,7 @@
 export interface ResourceOptions {
   name: string;
-  properties: ResourceProperty[]
+  properties: ResourceProperty[],
+  relations?: ResourceRelation[]
 }
 
 export interface ResourceProperty {
@@ -10,6 +11,6 @@ export interface ResourceProperty {
 }
 
 export interface ResourceRelation {
-  modelName: string;
-  property: string;
+  targetModelName: string;
+  properties?: ResourceProperty[]
 }

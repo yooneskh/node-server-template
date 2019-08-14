@@ -2,6 +2,13 @@ import { Router } from 'express';
 import { ResourceController } from './resource-controller';
 import { Document } from 'mongoose';
 import { sanitizeRequestFormat } from '../global/sanitizers';
+import { ResourceRelationContrller } from './resource-relation-controller';
+import { plural } from 'pluralize';
+
+interface IRouterRelation {
+  targetModelName: string,
+  controller: ResourceRelationContrller
+}
 
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
 
@@ -26,13 +33,37 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
 
 }
 
+function applyRelationController(router: Router, relation: IRouterRelation) {
+
+  const pluralTargetName = plural(relation.targetModelName);
+
+  router.get(`/:sourceId/${pluralTargetName}`, async (request, response) => {
+    response.json(await relation.controller.listForSource(request.params.sourceId));
+  });
+
+  router.get(`/:sourceId/${pluralTargetName}/:targetId`, async (request, response) => {
+    response.json(await relation.controller.getSingleRelation(request.params.sourceId, request.params.targetId));
+  });
+
+  router.post(`/:sourceId/${pluralTargetName}/:targetId`, async (request, response) => {
+    response.json(await relation.controller.addRelation(request.params.sourceId, request.params.targetId, request.body.payload));
+  });
+
+  router.delete(`/:sourceId/${pluralTargetName}/:targetId`, async (request, response) => {
+    response.json(await relation.controller.removeRelation(request.params.sourceId, request.params.targetId));
+  });
+
+}
+
 export function makeResourceRouter<T extends Document>(
   {
     resourceName,
-    controller
+    controller,
+    relations
   }: {
     resourceName: string,
-    controller: ResourceController<T>
+    controller: ResourceController<T>,
+    relations: IRouterRelation[]
   }
 ): Router {
 
@@ -72,6 +103,10 @@ export function makeResourceRouter<T extends Document>(
       }));
     });
   });
+
+  for (const relation of relations) {
+    applyRelationController(ResourceRouter, relation)
+  }
 
   return ResourceRouter;
 
