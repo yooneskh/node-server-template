@@ -89,9 +89,17 @@ export function makeModelForResource<T extends Document>(options: ResourceOption
 
   const relationSchemas = makeRelationSchemas(options.name, options.relations || []);
 
-  const relationModels = relationSchemas.map((schema, index) =>
-    model(simplePascalize([options.name, (options.relations || [])[index].targetModelName, 'Relation']), schema)
-  );
+  const relationModels = relationSchemas.map((schema, index) => {
+
+    const relation = (options.relations || [])[index];
+
+    if (!relation) throw new Error('more relation schemas than relation options! (wth?)');
+
+    const relationName = relation.relationModelName || simplePascalize([options.name, relation.targetModelName, 'Relation']);
+
+    return model(relationName, schema);
+
+  });
 
   return {
     mainModel: model<T>(options.name, mainSchema),
