@@ -7,6 +7,7 @@ import { plural } from 'pluralize';
 
 interface IRouterRelation {
   targetModelName: string,
+  relationModelName?: string;
   controller: ResourceRelationContrller
 }
 
@@ -35,7 +36,7 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
 
 function applyRelationController(router: Router, relation: IRouterRelation) {
 
-  const pluralTargetName = plural(relation.targetModelName);
+  const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
 
   router.get(`/:sourceId/${pluralTargetName}`, async (request, response) => {
     response.json(await relation.controller.listForSource(request.params.sourceId));

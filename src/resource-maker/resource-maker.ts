@@ -21,6 +21,7 @@ export function makeResource<T extends Document>(options: ResourceOptions) {
     controller: resourceController,
     relations: (options.relations || []).map((relation, index) => ({
       targetModelName: relation.targetModelName,
+      relationModelName: relation.relationModelName,
       controller: relationControllers[index]
     }))
   });
