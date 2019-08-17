@@ -7,6 +7,7 @@ export interface ResourceOptions {
 export interface ResourceProperty {
   key: string;
   type: string;
+  default?: any;
   ref?: string;
 }
 

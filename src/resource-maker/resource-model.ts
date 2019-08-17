@@ -7,6 +7,7 @@ function mapPropertyTypeToMongooseType(propertyType: string): any {
   switch (propertyType) {
     case 'string': return String;
     case 'number': return Number;
+    case 'boolean': return Boolean;
     default: throw new Error(`resource property type unknown: ${propertyType}`);
   }
 }
@@ -23,8 +24,8 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
     const scheme: Record<string, any> = {};
 
     scheme.type = mapPropertyTypeToMongooseType(property.type)
-
-    if (property.ref) scheme.ref = property.ref;
+    scheme.ref = property.ref;
+    scheme.default = property.default;
 
     schemaOptions[property.key] = scheme;
 
