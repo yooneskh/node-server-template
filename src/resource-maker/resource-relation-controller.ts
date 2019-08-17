@@ -1,6 +1,6 @@
 import { Model, Document } from 'mongoose';
 
-export class ResourceRelationContrller {
+export class ResourceRelationController {
 
   private sourcePropertyName = '';
   private targetPropertyName = '';

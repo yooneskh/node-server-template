@@ -21,7 +21,11 @@ export class ResourceController<T extends Document> {
       sorts[key] = parseInt(sorts[key], 10);
     }
 
-    return this.resourceModel.find(filters).sort(sorts).populate(this.transformIncludes(includes));
+    const query = this.resourceModel.find(filters).sort(sorts);
+
+    for (const include of this.transformIncludes(includes)) query.populate(include);
+
+    return query;
 
   }
 
@@ -107,7 +111,7 @@ export class ResourceController<T extends Document> {
   private transformIncludes(includes: Record<string, string>) {
 
     // tslint:disable-next-line: no-any
-    const resultArray: any[] = [];
+    const resultArray: any[][] = [];
 
     for (const includeKey in includes) {
 
@@ -116,11 +120,25 @@ export class ResourceController<T extends Document> {
       const prePops = includeKeySeperated.slice(0, -1);
       const lastPopulate = includeKeySeperated.slice(-1)[0];
 
+      let packIndex = -1;
+
+      for (let i = 0; i < resultArray.length; i++) {
+        if (resultArray[i][0] && resultArray[i][0].path === includeKeySeperated[0]) {
+          packIndex = i;
+          break;
+        }
+      }
+
+      if (packIndex === -1) {
+        resultArray.push([]);
+        packIndex = resultArray.length - 1;
+      }
+
       let currentCleanIndex = 0;
 
       for (const prePop of prePops) {
 
-        if (resultArray[currentCleanIndex] && resultArray[currentCleanIndex].path !== prePop) {
+        if (resultArray[packIndex][currentCleanIndex] && resultArray[packIndex][currentCleanIndex].path !== prePop) {
           throw new Error(`wrong nested include at '${includeKey}', parent must be defined before`);
         }
 
@@ -128,18 +146,20 @@ export class ResourceController<T extends Document> {
 
       }
 
-      resultArray.push({
+      resultArray[packIndex].push({
         path: lastPopulate,
         select: includes[includeKey]
       });
 
     }
 
-    for (let i = resultArray.length - 1; i >= 1; i--) {
-      resultArray[i - 1].populate = resultArray[i];
+    for (const result of resultArray) {
+      for (let i = result.length - 1; i >= 1; i--) {
+        result[i - 1].populate = result[i];
+      }
     }
 
-    return resultArray[0];
+    return resultArray.map(result => result[0]);
 
   }
 

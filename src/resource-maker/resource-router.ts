@@ -2,13 +2,13 @@ import { Router } from 'express';
 import { ResourceController } from './resource-controller';
 import { Document } from 'mongoose';
 import { sanitizeRequestFormat } from '../global/sanitizers';
-import { ResourceRelationContrller } from './resource-relation-controller';
+import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
 
 interface IRouterRelation {
   targetModelName: string,
   relationModelName?: string;
-  controller: ResourceRelationContrller
+  controller: ResourceRelationController
 }
 
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
