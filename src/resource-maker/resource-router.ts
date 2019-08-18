@@ -11,9 +11,13 @@ interface IRouterRelation {
   controller: ResourceRelationController
 }
 
-function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
+function isNumeric(n: string) {
+  return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
+}
 
-  const result: Record<string, string> = {};
+function extractQueryObject(queryString: string, nullableValues = false): Record<string, string | number> {
+
+  const result: Record<string, string | number> = {};
 
   if (!queryString) return result;
 
@@ -26,7 +30,12 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
     if (!key) throw new Error(`query object invalid key '${key}'`);
     if (!nullableValues && !value) throw new Error(`query object invalid value '${key}':'${value}'`);
 
-    result[key] = value;
+    if (isNumeric(value)) {
+      result[key] = parseFloat(value);
+    }
+    else {
+      result[key] = value;
+    }
 
   }
 
