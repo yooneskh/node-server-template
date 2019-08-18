@@ -25,8 +25,8 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
 
     scheme.type = mapPropertyTypeToMongooseType(property.type)
 
-    if (property.ref) scheme.ref = property.ref;
-    if (property.default) scheme.default = property.default;
+    if ('ref' in property) scheme.ref = property.ref;
+    if ('default' in property) scheme.default = property.default;
 
     schemaOptions[property.key] = scheme;
 

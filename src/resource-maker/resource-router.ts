@@ -11,10 +11,6 @@ interface IRouterRelation {
   controller: ResourceRelationController
 }
 
-function isNumeric(n: string) {
-  return !isNaN(parseFloat(n)) && isFinite(parseFloat(n));
-}
-
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string | number> {
 
   const result: Record<string, string | number> = {};
@@ -30,12 +26,7 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
     if (!key) throw new Error(`query object invalid key '${key}'`);
     if (!nullableValues && !value) throw new Error(`query object invalid value '${key}':'${value}'`);
 
-    if (isNumeric(value)) {
-      result[key] = parseFloat(value);
-    }
-    else {
-      result[key] = value;
-    }
+    result[key] = value;
 
   }
 
