@@ -1,5 +1,5 @@
 import { Model, Document } from 'mongoose';
-import { ResourceOptions } from './resource-maker.types';
+import { ResourceOptions } from './resource-maker-types';
 
 export class ResourceController<T extends Document> {
 

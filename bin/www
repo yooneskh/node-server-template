@@ -1,4 +1,6 @@
 'use strict';
+var beginTime = Date.now();
+
 var config = require('../dist/global/config').Config;
 
 var app = require('../dist/app').default;
@@ -66,7 +68,9 @@ function onListening() {
 
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 
-  debug('Listening on ' + bind);
-  console.log('Listening on ' + bind);
+  var allTime = Date.now() - beginTime;
+
+  debug('Listening on ' + bind + ', Startup time: ' + allTime + 'ms');
+  console.log('Listening on ' + bind + ', Startup time: ' + allTime + 'ms');
 
 }

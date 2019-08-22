@@ -1,10 +1,9 @@
-import { ResourceOptions } from './resource-maker.types';
+import { ResourceOptions } from './resource-maker-types';
 import { Document } from 'mongoose';
 import { ResourceController } from './resource-controller';
 import { makeResourceRouter } from './resource-router';
 import { makeModelForResource } from './resource-model';
 import { ResourceRelationController } from './resource-relation-controller';
-
 
 export function makeResource<T extends Document>(options: ResourceOptions) {
 
@@ -17,12 +16,13 @@ export function makeResource<T extends Document>(options: ResourceOptions) {
   );
 
   const resourceRouter = makeResourceRouter<T>({
-    resourceName: options.name,
+    resourceActions: options.actions,
     controller: resourceController,
     relations: (options.relations || []).map((relation, index) => ({
       targetModelName: relation.targetModelName,
       relationModelName: relation.relationModelName,
-      controller: relationControllers[index]
+      controller: relationControllers[index],
+      actions: relation.actions
     }))
   });
 

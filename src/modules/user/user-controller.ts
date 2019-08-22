@@ -25,11 +25,21 @@ export async function ensureUser({userId = '', firstName = '', lastName = '', ph
 
 }
 
-export async function getUserByToken(token: string): Promise<IUser> {
+export async function getUserByToken(token: string, silent = false): Promise<IUser> {
 
   const user = await User.findOne({ token });
 
   if (!user) throw new Error('user not found');
+
+  return user;
+
+}
+
+export async function getUserByTokenSilent(token: string): Promise<IUser | undefined> {
+
+  const user = await User.findOne({ token });
+
+  if (!user) return undefined;
 
   return user;
 

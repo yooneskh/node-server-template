@@ -1,4 +1,4 @@
-import { ResourceOptions, ResourceProperty, ResourceRelation } from './resource-maker.types';
+import { ResourceOptions, ResourceProperty, ResourceRelation } from './resource-maker-types';
 import { Document, model, Schema } from 'mongoose';
 import { simplePascalize } from '../global/util';
 
