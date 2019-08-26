@@ -3,9 +3,7 @@ import * as fs from 'fs';
 
 import { makeResourceModel, makeResourceController, makeResourceRouter } from '../../resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../resource-maker/resource-router';
-import { IResource } from '../../resource-maker/resource-maker-types';
-import { IUser } from '../user/user-model';
-import { Request, Response } from 'express';
+import { IResource, ResourceOptions } from '../../resource-maker/resource-maker-types';
 
 export interface IMedia extends IResource {
   name: string;
@@ -16,7 +14,7 @@ export interface IMedia extends IResource {
   path: string;
 }
 
-const MediaResourceOptions = {
+const MediaResourceOptions: ResourceOptions = {
   name: 'Media',
   properties: [
     {
@@ -53,7 +51,7 @@ const MediaResourceOptions = {
     {
       path: '/init/upload',
       method: ResourceActionMethod.POST,
-      dataProvider: async (request: Request, response: Response, user?: IUser) => ({
+      dataProvider: async (request, response, user) => ({
         fileToken: (await MediaController.createNew({
           payload: {
             owner: user !== undefined ? user._id : undefined,
@@ -67,7 +65,7 @@ const MediaResourceOptions = {
     {
       path: '/upload/:fileToken',
       method: ResourceActionMethod.POST,
-      action: async (request: Request, response: Response, user?: IUser) => {
+      action: async (request, response, user) => {
 
         const fileInfoList = await MediaController.list({ filters: { _id: request.params.filetoken }, sorts: {}, includes: [] });
 

@@ -42,6 +42,10 @@ export interface IResourceActionProvider {
   user?: IUser
 }
 
+interface IResActionFunction {
+  (request: Request, response: Response, user?: IUser): Promise<void>
+}
+
 export interface ResourceAction {
   template?: ResourceActionTemplate | ResourceRelationActionTemplate;
   path?: string;
@@ -52,6 +56,6 @@ export interface ResourceAction {
   payloadValidator?(payload: any): Promise<boolean>;
   payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean> | void;
   payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
-  action?(request: Request, response: Response, user?: IUser): Promise<void>
+  action?: IResActionFunction;
   dataProvider?(request: Request, response: Response, user?: IUser): Promise<any>
 }
