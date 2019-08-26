@@ -12,7 +12,7 @@ export class ResourceController<T extends Document> {
   constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
 
   // tslint:disable-next-line: no-any
-  public async list({ filters = {}, sorts = {}, includes = {} }: { filters: any, sorts: any, includes: any }): Promise<T[]> {
+  public async list({ filters = {}, sorts = {}, includes = {} }: { filters?: any, sorts?: any, includes?: any }): Promise<T[]> {
 
     this.validatePropertyKeys(filters);
     this.validatePropertyKeys(sorts);
