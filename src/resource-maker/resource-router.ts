@@ -171,6 +171,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
 
   if (!action.path) throw new Error('action path undefined');
 
+  // tslint:disable-next-line: no-any
   const actionHandler = async (request: Request, response: Response, next: (reason: any) => void) => {
     try {
 
