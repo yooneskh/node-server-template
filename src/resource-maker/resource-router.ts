@@ -245,7 +245,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
 
 }
 
-export function makeResourceRouter<T extends Document>(
+export function scaffoldResourceRouter<T extends Document>(
   {
     resourceActions,
     controller,

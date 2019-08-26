@@ -28,7 +28,7 @@ app.use('/api/v1/sections', SectionRouter);
 import { AuthorRouter } from './modules/author/author-resource';
 app.use('/api/v1/authors', AuthorRouter);
 
-import { errorHadler } from './global/errors';
-app.use(errorHadler);
+import { errorHandler } from './global/errors';
+app.use(errorHandler);
 
 export default app;

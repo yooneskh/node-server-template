@@ -1,6 +1,12 @@
 import { IUser } from '../modules/user/user-model';
 import { Request, Response } from 'express';
 import { ResourceActionTemplate, ResourceActionMethod, ResourceRelationActionTemplate } from './resource-router';
+import { Document } from 'mongoose';
+
+export interface IResource extends Document {
+  createdAt: number;
+  updatedAt: number;
+}
 
 export interface ResourceOptions {
   name: string;
@@ -14,6 +20,8 @@ export interface ResourceProperty {
   type: string;
   default?: any;
   ref?: string;
+  required?: boolean;
+  select?: boolean;
 }
 
 export interface ResourceRelation {
@@ -21,6 +29,17 @@ export interface ResourceRelation {
   relationModelName?: string;
   properties?: ResourceProperty[];
   actions?: ResourceAction[]
+}
+
+export interface IResourceActionProcessor {
+  payload: any;
+  user?: IUser;
+}
+
+export interface IResourceActionProvider {
+  request: Request,
+  response: Response,
+  user?: IUser
 }
 
 export interface ResourceAction {
@@ -31,8 +50,8 @@ export interface ResourceAction {
   permissionFunction?({ user }: { user?: IUser | null }): Promise<boolean>;
   permissionFunctionStrict?({ user }: { user: IUser }): Promise<boolean>;
   payloadValidator?({ payload }: { payload: any }): Promise<boolean>;
-  payloadPreprocessor?({ payload, user }: { payload: any, user?: IUser }): Promise<boolean> | void;
-  payloadPostprocessor?({ payload, user }: { payload: any, user?: IUser }): Promise<void>;
-  action?({ request, response, user }: { request: Request, response: Response, user?: IUser }): Promise<void>
-  dataProvider?({ request, response, user }: { request: Request, response: Response, user?: IUser }): Promise<any>
+  payloadPreprocessor?({ payload, user }: IResourceActionProcessor): Promise<boolean> | void;
+  payloadPostprocessor?({ payload, user }: IResourceActionProcessor): Promise<void>;
+  action?({ request, response, user }: IResourceActionProvider): Promise<void>
+  dataProvider?({ request, response, user }: IResourceActionProvider): Promise<any>
 }
