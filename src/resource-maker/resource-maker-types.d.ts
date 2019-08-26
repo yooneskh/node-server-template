@@ -53,5 +53,5 @@ export interface ResourceAction {
   payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean> | void;
   payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
   action?(request: Request, response: Response, user?: IUser): Promise<void>
-  dataProvider(request: Request, response: Response, user?: IUser): Promise<any>
+  dataProvider?(request: Request, response: Response, user?: IUser): Promise<any>
 }

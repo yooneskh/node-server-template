@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 import { makeResourceModel, makeResourceController, makeResourceRouter } from '../../resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../resource-maker/resource-router';
-import { IResource, IResourceActionProvider } from '../../resource-maker/resource-maker-types';
+import { IResource } from '../../resource-maker/resource-maker-types';
 import { IUser } from '../user/user-model';
 import { Request, Response } from 'express';
 
@@ -53,7 +53,7 @@ const MediaResourceOptions = {
     {
       path: '/init/upload',
       method: ResourceActionMethod.POST,
-      dataProvider: async (request: Request, response: Response, user?: IUser): Promise<any> => ({
+      dataProvider: async (request: Request, response: Response, user?: IUser) => ({
         fileToken: (await MediaController.createNew({
           payload: {
             owner: user !== undefined ? user._id : undefined,

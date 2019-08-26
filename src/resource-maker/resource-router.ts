@@ -65,7 +65,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}`;
 
-    action.dataProvider = async ({ request, response, user }) => controller.listForSource(request.params.sourceId);
+    action.dataProvider = async (request, response, user) => controller.listForSource(request.params.sourceId);
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
@@ -73,7 +73,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request, response, user }) => controller.getSingleRelation(request.params.sourceId, request.params.targetId);
+    action.dataProvider = async (request, response, user) => controller.getSingleRelation(request.params.sourceId, request.params.targetId);
 
   }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
@@ -81,7 +81,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.POST;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request, response, user }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body.payload);
+    action.dataProvider = async (request, response, user) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body.payload);
 
   }
   else if (action.template === ResourceRelationActionTemplate.DELETE) {
@@ -89,7 +89,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.DELETE;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request, response, user }) => controller.removeRelation(request.params.sourceId, request.params.targetId);
+    action.dataProvider = async (request, response, user) => controller.removeRelation(request.params.sourceId, request.params.targetId);
 
   }
 }
@@ -121,7 +121,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.GET;
     action.path = '/';
 
-    action.dataProvider = async ({ request, response, user }) => controller.list({
+    action.dataProvider = async (request, response, user) => controller.list({
       filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
       sorts: extractQueryObject(request.query.sorts),
       includes: extractQueryObject(request.query.includes, true)
@@ -136,7 +136,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.POST;
     action.path = '/';
 
-    action.dataProvider = async ({ request, response, user }) => controller.createNew({
+    action.dataProvider = async (request, response, user) => controller.createNew({
       payload: request.body.payload
     });
 
@@ -146,7 +146,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.PUT;
     action.path = '/:resourceId';
 
-    action.dataProvider = async ({ request, response, user }) => controller.editOne({
+    action.dataProvider = async (request, response, user) => controller.editOne({
       id: request.params.resourceId,
       payload: request.body.payload
     });
@@ -157,7 +157,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.DELETE;
     action.path = '/:resourceId';
 
-    action.dataProvider = async ({ request, response, user }) => controller.deleteOne({
+    action.dataProvider = async (request, response, user) => controller.deleteOne({
       id: request.params.resourceId
     });
 
@@ -188,21 +188,21 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
         throw new Error('forbidden access');
       }
 
-      if ( action.permissionFunction && !(await action.permissionFunction({ user })) ) {
+      if ( action.permissionFunction && !(await action.permissionFunction(user)) ) {
         throw new Error('forbidden access');
       }
 
-      if ( action.permissionFunctionStrict && ( !user || !(await action.permissionFunctionStrict({ user })) ) ) {
+      if ( action.permissionFunctionStrict && ( !user || !(await action.permissionFunctionStrict(user)) ) ) {
         throw new Error('forbidden access');
       }
 
-      if (action.payloadValidator && !(await action.payloadValidator({ payload })) ) {
+      if (action.payloadValidator && !(await action.payloadValidator(payload)) ) {
         throw new Error('invalid payload');
       }
 
       if (action.payloadPreprocessor) {
 
-        const shouldBypass = await action.payloadPreprocessor({ payload, user });
+        const shouldBypass = await action.payloadPreprocessor(payload, user);
 
         if (shouldBypass) {
           return console.log('bypassed action');
@@ -211,22 +211,14 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
       }
 
       if (action.action) {
-        await action.action({
-          request,
-          response,
-          user
-        });
+        await action.action(request, response, user);
       }
       else if (action.dataProvider) {
-        response.json(await action.dataProvider({
-          request,
-          response,
-          user
-        }));
+        response.json(await action.dataProvider(request, response, user));
       }
 
       if (action.payloadPostprocessor) {
-        await action.payloadPostprocessor({ payload, user });
+        await action.payloadPostprocessor(payload, user);
       }
 
     }
