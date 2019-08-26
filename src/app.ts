@@ -28,6 +28,9 @@ app.use('/api/v1/sections', SectionRouter);
 import { AuthorRouter } from './modules/author/author-resource';
 app.use('/api/v1/authors', AuthorRouter);
 
+import { MediaRouter } from './modules/media/media-resource';
+app.use('/api/v1/media', MediaRouter);
+
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
 

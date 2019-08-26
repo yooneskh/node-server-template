@@ -47,11 +47,11 @@ export interface ResourceAction {
   path?: string;
   method?: ResourceActionMethod;
   permission?: string;
-  permissionFunction?({ user }: { user?: IUser | null }): Promise<boolean>;
-  permissionFunctionStrict?({ user }: { user: IUser }): Promise<boolean>;
-  payloadValidator?({ payload }: { payload: any }): Promise<boolean>;
-  payloadPreprocessor?({ payload, user }: IResourceActionProcessor): Promise<boolean> | void;
-  payloadPostprocessor?({ payload, user }: IResourceActionProcessor): Promise<void>;
-  action?({ request, response, user }: IResourceActionProvider): Promise<void>
-  dataProvider?({ request, response, user }: IResourceActionProvider): Promise<any>
+  permissionFunction?(user?: IUser | null ): Promise<boolean>;
+  permissionFunctionStrict?(user: IUser ): Promise<boolean>;
+  payloadValidator?(payload: any): Promise<boolean>;
+  payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean> | void;
+  payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
+  action?(request: Request, response: Response, user?: IUser): Promise<void>
+  dataProvider(request: Request, response: Response, user?: IUser): Promise<any>
 }

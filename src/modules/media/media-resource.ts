@@ -4,6 +4,8 @@ import * as fs from 'fs';
 import { makeResourceModel, makeResourceController, makeResourceRouter } from '../../resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../resource-maker/resource-router';
 import { IResource, IResourceActionProvider } from '../../resource-maker/resource-maker-types';
+import { IUser } from '../user/user-model';
+import { Request, Response } from 'express';
 
 export interface IMedia extends IResource {
   name: string;
@@ -51,23 +53,21 @@ const MediaResourceOptions = {
     {
       path: '/init/upload',
       method: ResourceActionMethod.POST,
-      async dataProvider({ request, response, user }: IResourceActionProvider) {
-        return {
-          fileToken: (await MediaController.createNew({
-            payload: {
-              owner: user !== undefined ? user._id : undefined,
-              name: request.body.fileName,
-              extension: request.body.fileExtension,
-              size: request.body.fileSize
-            }
-          }))._id
-        }
-      }
+      dataProvider: async (request: Request, response: Response, user?: IUser): Promise<any> => ({
+        fileToken: (await MediaController.createNew({
+          payload: {
+            owner: user !== undefined ? user._id : undefined,
+            name: request.body.fileName,
+            extension: request.body.fileExtension,
+            size: request.body.fileSize
+          }
+        }))._id
+      })
     },
     {
       path: '/upload/:fileToken',
       method: ResourceActionMethod.POST,
-      action: async ({ request, response, user }: IResourceActionProvider) => {
+      action: async (request: Request, response: Response, user?: IUser) => {
 
         const fileInfoList = await MediaController.list({ filters: { _id: request.params.filetoken }, sorts: {}, includes: [] });
 
@@ -133,7 +133,5 @@ const MediaResourceOptions = {
 }
 
 export const { mainModel: MediaModel, relationModels: MediaRelationModels } = makeResourceModel(MediaResourceOptions);
-
 export const { resourceController: MediaController, relationControllers: MediaRelationControllers } = makeResourceController<IMedia>(MediaResourceOptions, MediaModel, MediaRelationModels);
-
 export const MediaRouter = makeResourceRouter(MediaResourceOptions, MediaController, MediaRelationControllers);
