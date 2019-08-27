@@ -1,5 +1,6 @@
 import { Model, Document } from 'mongoose';
 import { ResourceOptions } from './resource-maker-types';
+import { InvalidRequestError } from '../global/errors';
 
 export class ResourceController<T extends Document> {
 
@@ -48,13 +49,13 @@ export class ResourceController<T extends Document> {
   // tslint:disable-next-line: no-any
   public async editOne({ id = '', payload = {}}: { id: string, payload: any }): Promise<T> {
 
-    if (!id) throw new Error('id not specified');
+    if (!id) throw new InvalidRequestError('id not specified');
 
     this.validatePayload(payload);
 
     const resource = await this.resourceModel.findById(id);
 
-    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName + '@' + id);
+    if (!resource) throw new InvalidRequestError('resource not found: ' + this.resourceModel.modelName + '@' + id);
 
     for (const key of Object.keys(payload)) {
       if (key !== 'id' && key !== '_id') {
@@ -72,11 +73,11 @@ export class ResourceController<T extends Document> {
 
   public async deleteOne({ id = '' }: { id: string }): Promise<boolean> {
 
-    if (!id) throw new Error('id not specified');
+    if (!id) throw new InvalidRequestError('id not specified');
 
     const resource = await this.resourceModel.findById(id);
 
-    if (!resource) throw new Error('resource not found: ' + this.resourceModel.modelName + '@' + id);
+    if (!resource) throw new InvalidRequestError('resource not found: ' + this.resourceModel.modelName + '@' + id);
 
     resource.remove();
 
@@ -98,7 +99,7 @@ export class ResourceController<T extends Document> {
 
       const property = this.options.properties.find(p => p.key === key);
 
-      if (!property) throw new Error('payload key invalid: ' + key);
+      if (!property) throw new InvalidRequestError('payload key invalid: ' + key);
 
     }
   }
@@ -139,7 +140,7 @@ export class ResourceController<T extends Document> {
       for (const prePop of prePops) {
 
         if (resultArray[packIndex][currentCleanIndex] && resultArray[packIndex][currentCleanIndex].path !== prePop) {
-          throw new Error(`wrong nested include at '${includeKey}', parent must be defined before`);
+          throw new InvalidRequestError(`wrong nested include at '${includeKey}', parent must be defined before`);
         }
 
         currentCleanIndex++;

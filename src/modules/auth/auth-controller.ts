@@ -1,5 +1,6 @@
 import { getUserByPhoneNumber, ensureUser } from '../user/user-controller';
 import { IUser } from '../user/user-model';
+import { InvalidRequestError } from '../../global/errors';
 
 export async function loginUser(phoneNumber: string) {
 
@@ -34,7 +35,7 @@ export async function verifyUser({phoneNumber = '', verificationCode = ''}): Pro
 
   const user = await getUserByPhoneNumber(phoneNumber);
 
-  if (!verificationCode || !user.verificationCode || verificationCode !== user.verificationCode) throw new Error('invalid code');
+  if (!verificationCode || !user.verificationCode || verificationCode !== user.verificationCode) throw new InvalidRequestError('invalid code');
 
   user.verificationCode = undefined;
 

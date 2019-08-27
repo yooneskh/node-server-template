@@ -6,6 +6,7 @@ import { plural } from 'pluralize';
 import { getUserByTokenSilent } from '../modules/user/user-controller';
 import { IUser } from '../modules/user/user-model';
 import { ResourceAction } from './resource-maker-types';
+import { InvalidRequestError, ServerError, ForbiddenAccessError } from '../global/errors';
 
 export enum ResourceActionMethod {
   POST,
@@ -48,8 +49,8 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
 
     const [key, value] = part.split(':');
 
-    if (!key) throw new Error(`query object invalid key '${key}'`);
-    if (!nullableValues && !value) throw new Error(`query object invalid value '${key}':'${value}'`);
+    if (!key) throw new InvalidRequestError(`query object invalid key '${key}'`);
+    if (!nullableValues && !value) throw new InvalidRequestError(`query object invalid value '${key}':'${value}'`);
 
     result[key] = value;
 
@@ -112,7 +113,7 @@ function applyRelationController(router: Router, relation: IRouterRelation) {
 }
 
 function checkUserPermission(permissions: string[], permission: string): boolean {
-  throw new Error('not implemented!');
+  throw new ServerError('not implemented!');
 }
 
 function injectResourceTemplateOptions<T extends Document>(action: ResourceAction, controller: ResourceController<T>) {
@@ -129,7 +130,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
 
   }
   else if (action.template === ResourceActionTemplate.RETRIEVE) {
-    throw new Error('not implemented!');
+    throw new ServerError('not implemented!');
   }
   else if (action.template === ResourceActionTemplate.CREATE) {
 
@@ -163,13 +164,13 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
 
   }
   else {
-    throw new Error('unknown action template!');
+    throw new ServerError('unknown action template!');
   }
 }
 
 function applyActionOnRouter({ router, action }: { router: Router, action: ResourceAction }) {
 
-  if (!action.path) throw new Error('action path undefined');
+  if (!action.path) throw new ServerError('action path undefined');
 
   // tslint:disable-next-line: no-any
   const actionHandler = async (request: Request, response: Response, next: (reason: any) => void) => {
@@ -185,19 +186,19 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
       }
 
       if (action.permission && (!user || !user.permissions || !checkUserPermission(user.permissions, action.permission))) {
-        throw new Error('forbidden access');
+        throw new ForbiddenAccessError('forbidden access');
       }
 
       if ( action.permissionFunction && !(await action.permissionFunction(user)) ) {
-        throw new Error('forbidden access');
+        throw new ForbiddenAccessError('forbidden access');
       }
 
       if ( action.permissionFunctionStrict && ( !user || !(await action.permissionFunctionStrict(user)) ) ) {
-        throw new Error('forbidden access');
+        throw new ForbiddenAccessError('forbidden access');
       }
 
       if (action.payloadValidator && !(await action.payloadValidator(payload)) ) {
-        throw new Error('invalid payload');
+        throw new InvalidRequestError('invalid payload');
       }
 
       if (action.payloadPreprocessor) {
@@ -233,7 +234,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
     case ResourceActionMethod.POST: router.post(action.path, actionHandler); break;
     case ResourceActionMethod.PUT: router.put(action.path, actionHandler); break;
     case ResourceActionMethod.DELETE: router.delete(action.path, actionHandler); break;
-    default: throw new Error('impossible action method type');
+    default: throw new ServerError('impossible action method type');
   }
 
 }

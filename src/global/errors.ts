@@ -12,6 +12,14 @@ export class ForbiddenAccessError extends HandleableError {
   public code = 1002;
 }
 
+export class InvalidRequestError extends HandleableError {
+  public code = 1003;
+}
+
+export class ServerError extends HandleableError {
+  public code = 1004;
+}
+
 export function errorHandler(error: Error, request: Request, response: Response, next: Function) {
 
   console.log('Error ::', error.message);

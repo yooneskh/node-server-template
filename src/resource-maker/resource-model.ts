@@ -1,6 +1,7 @@
 import { ResourceOptions, ResourceProperty, ResourceRelation } from './resource-maker-types';
 import { Document, model, Schema } from 'mongoose';
 import { simplePascalize } from '../global/util';
+import { ServerError } from '../global/errors';
 
 // tslint:disable-next-line: no-any
 function mapPropertyTypeToMongooseType(propertyType: string): any {
@@ -8,7 +9,7 @@ function mapPropertyTypeToMongooseType(propertyType: string): any {
     case 'string': return String;
     case 'number': return Number;
     case 'boolean': return Boolean;
-    default: throw new Error(`resource property type unknown: ${propertyType}`);
+    default: throw new ServerError(`resource property type unknown: ${propertyType}`);
   }
 }
 

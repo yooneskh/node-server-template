@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
 import { getUserByToken } from '../modules/user/user-controller';
+import { ServerError } from './errors';
 
 // tslint:disable-next-line: no-any
 export async function sanitizeRequestFormat(request: Request, response: Response, next: Function, requestFormat: any, callback: Function): Promise<void> {
   try {
 
     if (requestFormat) {
-      throw new Error('not implemented');
+      throw new ServerError('not implemented');
     }
 
     const t = callback();
@@ -24,16 +25,16 @@ export async function sanitizeRequest(request: Request, response: Response, next
   try {
 
     const token = request.body.token;
-    if (!token) throw new Error('unauthorized request');
+    if (!token) throw new ServerError('unauthorized request');
 
     request.user = await getUserByToken(token);
 
     if (requestformat) {
-      throw new Error('not implemented');
+      throw new ServerError('not implemented');
     }
 
     if (permission) {
-      throw new Error('not implemented');
+      throw new ServerError('not implemented');
     }
 
     const t = callback();

@@ -1,4 +1,5 @@
 import { User, IUser } from './user-model';
+import { NotFoundError } from '../../global/errors';
 
 export async function ensureUser({userId = '', firstName = '', lastName = '', phoneNumber = '', permissions = [] as string[]}): Promise<IUser> {
 
@@ -11,7 +12,7 @@ export async function ensureUser({userId = '', firstName = '', lastName = '', ph
     user = new User();
   }
 
-  if (!user) throw new Error('user not found');
+  if (!user) throw new NotFoundError('user not found');
 
   if (firstName) user.firstName = firstName;
   if (lastName) user.lastName = lastName;
@@ -29,7 +30,7 @@ export async function getUserByToken(token: string, silent = false): Promise<IUs
 
   const user = await User.findOne({ token });
 
-  if (!user) throw new Error('user not found');
+  if (!user) throw new NotFoundError('user not found');
 
   return user;
 
@@ -49,7 +50,7 @@ export async function getUserByPhoneNumber(phoneNumber: string): Promise<IUser> 
 
   const user = await User.findOne({ token: phoneNumber });
 
-  if (!user) throw new Error('user not found');
+  if (!user) throw new NotFoundError('user not found');
 
   return user;
 

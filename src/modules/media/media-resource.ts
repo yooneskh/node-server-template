@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { makeResourceModel, makeResourceController, makeResourceRouter } from '../../resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../resource-maker/resource-router';
 import { IResource, ResourceOptions } from '../../resource-maker/resource-maker-types';
+import { InvalidRequestError } from '../../global/errors';
 
 export interface IMedia extends IResource {
   name: string;
@@ -69,11 +70,11 @@ const MediaResourceOptions: ResourceOptions = {
 
         const fileInfoList = await MediaController.list({ filters: { _id: request.params.filetoken }, selects: '+relativePath' });
 
-        if (!fileInfoList || fileInfoList.length !== 1) throw new Error('saved media incorrect');
+        if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('saved media incorrect');
 
         const fileInfo = fileInfoList[0];
 
-        if (!fileInfo || !fileInfo.size || fileInfo.size <= 0) throw new Error('saved media incorrect');
+        if (!fileInfo || !fileInfo.size || fileInfo.size <= 0) throw new InvalidRequestError('saved media incorrect');
 
         const targetFile = fileInfo.relativePath;
         const totalSize  = fileInfo.size;
@@ -85,7 +86,7 @@ const MediaResourceOptions: ResourceOptions = {
 
           const match = request.headers['content-range'].match(/(\d+)-(\d+)\/(\d+)/);
 
-          if (!match || !match[1] || !match[2] || !match[3]) throw new Error('upload request not correct');
+          if (!match || !match[1] || !match[2] || !match[3]) throw new InvalidRequestError('upload request not correct');
 
           const start = parseInt(match[1], 10);
           const end   = parseInt(match[2], 10);
