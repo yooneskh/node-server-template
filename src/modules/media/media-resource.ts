@@ -5,6 +5,11 @@ import { makeResourceModel, makeResourceController, makeResourceRouter } from '.
 import { ResourceActionMethod } from '../../resource-maker/resource-router';
 import { IResource, ResourceOptions } from '../../resource-maker/resource-maker-types';
 import { InvalidRequestError } from '../../global/errors';
+import { Config } from '../../global/config';
+
+// init code
+if (!fs.existsSync('./download')) fs.mkdirSync('./download')
+//
 
 export interface IMedia extends IResource {
   name: string;
@@ -52,23 +57,41 @@ const MediaResourceOptions: ResourceOptions = {
     {
       path: '/init/upload',
       method: ResourceActionMethod.POST,
-      dataProvider: async (request, response, user) => ({
-        fileToken: (await MediaController.createNew({
+      dataProvider: async (request, response, user) => {
+
+        const media = await MediaController.createNew({
           payload: {
             owner: user !== undefined ? user._id : undefined,
             name: request.body.fileName,
             extension: request.body.fileExtension,
             size: request.body.fileSize
           }
-        }))._id
-      })
+        });
+
+        const userDirectory = `download/${media.owner || 'public'}`;
+
+        if (!fs.existsSync(userDirectory)) fs.mkdirSync(userDirectory);
+
+        const relativePath = `${userDirectory}/${media.name}.${media.extension}`;
+        const absolutePath = `${Config.filesBaseUrl}/${relativePath}`;
+
+        media.relativePath = relativePath;
+        media.path         = absolutePath;
+
+        await media.save();
+
+        return {
+          fileToken: media._id
+        };
+
+      }
     },
     {
       path: '/upload/:fileToken',
       method: ResourceActionMethod.POST,
       action: async (request, response, user) => {
 
-        const fileInfoList = await MediaController.list({ filters: { _id: request.params.filetoken }, selects: '+relativePath' });
+        const fileInfoList = await MediaController.list({ filters: { _id: request.params.fileToken }, selects: '+relativePath' });
 
         if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('saved media incorrect');
 
