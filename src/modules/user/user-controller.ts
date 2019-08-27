@@ -48,7 +48,7 @@ export async function getUserByTokenSilent(token: string): Promise<IUser | undef
 
 export async function getUserByPhoneNumber(phoneNumber: string): Promise<IUser> {
 
-  const user = await User.findOne({ token: phoneNumber });
+  const user = await User.findOne({ phoneNumber });
 
   if (!user) throw new NotFoundError('user not found');
 

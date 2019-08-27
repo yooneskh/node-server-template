@@ -101,7 +101,9 @@ function applyRelationController(router: Router, relation: IRouterRelation) {
 
   for (const action of relation.actions || []) {
 
-    injectResourceRelationActionTemplate(action, relation.controller, pluralTargetName);
+    if ('template' in action) {
+      injectResourceRelationActionTemplate(action, relation.controller, pluralTargetName);
+    }
 
     applyActionOnRouter({
       action,
@@ -239,23 +241,15 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
 
 }
 
-export function scaffoldResourceRouter<T extends Document>(
-  {
-    resourceActions,
-    controller,
-    relations
-  }: {
-    resourceActions?: ResourceAction[],
-    controller: ResourceController<T>,
-    relations: IRouterRelation[]
-  }
-): Router {
+export function scaffoldResourceRouter<T extends Document>({resourceActions, controller, relations}: {resourceActions?: ResourceAction[], controller: ResourceController<T>, relations: IRouterRelation[] }): Router {
 
   const resourceRouter = Router();
 
   for (const action of resourceActions || []) {
 
-    injectResourceTemplateOptions(action, controller);
+    if ('template' in action) {
+      injectResourceTemplateOptions(action, controller);
+    }
 
     applyActionOnRouter({
       router: resourceRouter,

@@ -24,7 +24,7 @@ const UserSchema = new Schema({
   permissions: [{
     type: String
   }],
-  veriifcationCode: {
+  verificationCode: {
     type: String
   },
   token: {

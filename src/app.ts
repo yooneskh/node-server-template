@@ -1,6 +1,7 @@
 import Express from 'express';
 import * as logger from 'morgan';
 import * as cookieParser from 'cookie-parser';
+import * as Cors from 'cors';
 
 import './global/database';
 
@@ -11,10 +12,15 @@ app.use(Express.json());
 app.use(Express.urlencoded({ extended: false }));
 app.use(cookieParser.default())
 
+if (process.env.NODE_ENV === 'development') {
+  app.use(Cors.default());
+  console.log('cors loaded');
+}
+
 app.get('/ping', (request, response) => response.send('pong'));
 
 import { AuthRouter } from './modules/auth/auth-router';
-app.use('/auth', AuthRouter);
+app.use('/api/v1/auth', AuthRouter);
 
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);

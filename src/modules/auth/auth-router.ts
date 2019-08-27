@@ -25,10 +25,10 @@ AuthRouter.post('/register', (req, res, next) => {
 });
 
 AuthRouter.post('/verify', (req, res, next) => {
-  sanitizeRequestFormat(req, res, next, undefined, () => {
+  sanitizeRequestFormat(req, res, next, undefined, async () => {
     res.send({
       success: true,
-      user: verifyUser({
+      user: await verifyUser({
         phoneNumber: req.body.phoneNumber,
         verificationCode: req.body.verificationCode
       })
