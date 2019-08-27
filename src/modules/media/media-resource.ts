@@ -67,7 +67,7 @@ const MediaResourceOptions: ResourceOptions = {
       method: ResourceActionMethod.POST,
       action: async (request, response, user) => {
 
-        const fileInfoList = await MediaController.list({ filters: { _id: request.params.filetoken }, sorts: {}, includes: [] });
+        const fileInfoList = await MediaController.list({ filters: { _id: request.params.filetoken }, selects: '+relativePath' });
 
         if (!fileInfoList || fileInfoList.length !== 1) throw new Error('saved media incorrect');
 
