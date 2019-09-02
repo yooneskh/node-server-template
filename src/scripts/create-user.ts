@@ -1,7 +1,7 @@
 import '../global/database';
 
-import { ensureUser } from '../modules/user/user-controller';
 import { disconnect } from 'mongoose';
+import { UserController } from '../modules/user/user-resource';
 
 const FIRSTNAME = 'یونس';
 const LASTNAME = 'خوش قدم';
@@ -10,11 +10,13 @@ const PERMISSIONS = ['user.*', 'admin.*'];
 
 (async () => {
 
-  const user = await ensureUser({
-    firstName: FIRSTNAME,
-    lastName: LASTNAME,
-    phoneNumber: PHONENUMBER,
-    permissions: PERMISSIONS
+  const user = await UserController.createNew({
+    payload: {
+      firstName: FIRSTNAME,
+      lastName: LASTNAME,
+      phoneNumber: PHONENUMBER,
+      permissions: PERMISSIONS
+    }
   });
 
   console.log('the user', user);

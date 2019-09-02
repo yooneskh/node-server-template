@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { getUserByToken } from '../modules/user/user-controller';
 import { ServerError } from './errors';
+import { UserController } from '../modules/user/user-resource';
 
 // tslint:disable-next-line: no-any
 export async function sanitizeRequestFormat(request: Request, response: Response, next: Function, requestFormat: any, callback: Function): Promise<void> {
@@ -27,7 +27,7 @@ export async function sanitizeRequest(request: Request, response: Response, next
     const token = request.body.token;
     if (!token) throw new ServerError('unauthorized request');
 
-    request.user = await getUserByToken(token);
+    request.user = await UserController.findOne({ filters: { token }});
 
     if (requestformat) {
       throw new ServerError('not implemented');

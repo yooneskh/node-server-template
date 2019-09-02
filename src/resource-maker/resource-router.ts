@@ -3,10 +3,9 @@ import { ResourceController } from './resource-controller';
 import { Document } from 'mongoose';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
-import { getUserByTokenSilent } from '../modules/user/user-controller';
-import { IUser } from '../modules/user/user-model';
 import { ResourceAction } from './resource-maker-types';
 import { InvalidRequestError, ServerError, ForbiddenAccessError } from '../global/errors';
+import { IUser, UserController } from '../modules/user/user-resource';
 
 export enum ResourceActionMethod {
   POST,
@@ -229,7 +228,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
       const needToLoadUser = action.permission || action.permissionFunction || action.permissionFunctionStrict || action.payloadPreprocessor || action.payloadPostprocessor;
 
       if (needToLoadUser) {
-        user = await getUserByTokenSilent(request.body.token);;
+        user = (await UserController.list({ filters: { token: request.body.token } }))[0];
       }
 
       if (action.permission && (!user || !user.permissions || !checkUserPermission(user.permissions, action.permission))) {

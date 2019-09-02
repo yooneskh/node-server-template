@@ -1,7 +1,7 @@
-import { IUser } from '../modules/user/user-model';
 import { Request, Response } from 'express';
 import { ResourceActionTemplate, ResourceActionMethod, ResourceRelationActionTemplate } from './resource-router';
 import { Document } from 'mongoose';
+import { IUser } from '../modules/user/user-resource';
 
 export interface IResource extends Document {
   createdAt: number;
@@ -23,6 +23,7 @@ export interface ResourceProperty {
   required?: boolean;
   unique?: boolean;
   select?: boolean;
+  isArray?: boolean;
 }
 
 export interface ResourceRelation {

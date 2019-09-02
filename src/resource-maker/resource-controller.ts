@@ -52,6 +52,21 @@ export class ResourceController<T extends Document> {
   }
 
   // tslint:disable-next-line: no-any
+  public async findOne({ filters, includes = {}, selects = undefined }: { filters: any, includes?: any, selects?: string }): Promise<T> {
+
+    const query = this.resourceModel.findOne(filters).select(selects);
+
+    for (const include of transformIncludes(includes)) query.populate(include);
+
+    const resource = await query;
+
+    if (!resource) throw new NotFoundError(`resource not found: ${this.resourceModel.modelName}@${filters}`);
+
+    return resource;
+
+  }
+
+  // tslint:disable-next-line: no-any
   public async createNew({ payload = {} }: { payload: any }): Promise<T> {
 
     validatePayload(payload, this.options.properties);

@@ -32,7 +32,7 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
     if ('unique' in property) scheme.unique = property.unique;
     if ('select' in property) scheme.select = property.select;
 
-    schemaOptions[property.key] = scheme;
+    schemaOptions[property.key] = property.isArray ? [scheme] : scheme;
 
   }
 

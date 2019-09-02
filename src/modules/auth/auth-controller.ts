@@ -1,12 +1,12 @@
-import { getUserByPhoneNumber, ensureUser } from '../user/user-controller';
-import { IUser } from '../user/user-model';
 import { InvalidRequestError } from '../../global/errors';
+import { UserController, IUser } from '../user/user-resource';
+import { generateToken } from '../../global/util';
 
 export async function loginUser(phoneNumber: string) {
 
-  const user = await getUserByPhoneNumber(phoneNumber);
+  const user = await UserController.findOne({ filters: { phoneNumber }});
 
-  // TODO: make verification code
+  // user.verificationCode = generateRandomNumericCode(6);
   user.verificationCode = '111111';
 
   await user.save();
@@ -17,14 +17,18 @@ export async function loginUser(phoneNumber: string) {
 
 export async function registerUser({firstName = '', lastName = '', phoneNumber = ''}): Promise<IUser> {
 
-  const user = await ensureUser({
-    firstName: firstName,
-    lastName: lastName,
-    phoneNumber: phoneNumber,
-    permissions: ['user.*']
+  const user = await UserController.createNew({
+    payload: {
+      firstName,
+      lastName,
+      phoneNumber,
+      permissions: ['user.*'],
+      verificationCode: undefined,
+      token: undefined
+    }
   });
 
-  // TODO: make verification code
+  // user.verificationCode = generateRandomNumericCode(6);
   user.verificationCode = '111111';
 
   return user.save();
@@ -33,14 +37,14 @@ export async function registerUser({firstName = '', lastName = '', phoneNumber =
 
 export async function verifyUser({phoneNumber = '', verificationCode = ''}): Promise<IUser> {
 
-  const user = await getUserByPhoneNumber(phoneNumber);
+  const user = await UserController.findOne({ filters: { phoneNumber }});
 
   if (!verificationCode || !user.verificationCode || verificationCode !== user.verificationCode) throw new InvalidRequestError('invalid code');
 
   user.verificationCode = undefined;
 
-  // TODO: make token
-  user.token = 'asdjfasjkdfhsladhf';
+  // TODO: make sure is unique
+  user.token = generateToken();
 
   return user.save();
 
