@@ -25,7 +25,9 @@ export enum ResourceActionTemplate {
 
 export enum ResourceRelationActionTemplate {
   LIST,
+  LIST_COUNT,
   RETRIEVE,
+  RETRIEVE_COUNT,
   CREATE,
   DELETE
 }
@@ -69,12 +71,28 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.dataProvider = async (request, response, user) => controller.listForSource(request.params.sourceId);
 
   }
+  else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {
+
+    action.method = ResourceActionMethod.GET;
+    action.path = `/:sourceId/${pluralTargetName}/count`;
+
+    action.dataProvider = async (request, response, user) => controller.countListForSource(request.params.sourceId);
+
+  }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
 
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
     action.dataProvider = async (request, response, user) => controller.getSingleRelation(request.params.sourceId, request.params.targetId);
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
+
+    action.method = ResourceActionMethod.GET;
+    action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
+
+    action.dataProvider = async (request, response, user) => controller.getSingleRelationCount(request.params.sourceId, request.params.targetId);
 
   }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
@@ -236,7 +254,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
     case ResourceActionMethod.POST: router.post(action.path, actionHandler); break;
     case ResourceActionMethod.PUT: router.put(action.path, actionHandler); break;
     case ResourceActionMethod.DELETE: router.delete(action.path, actionHandler); break;
-    default: throw new ServerError('impossible action method type');
+    default: throw new ServerError('unknown action method type');
   }
 
 }

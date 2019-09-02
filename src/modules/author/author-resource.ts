@@ -31,7 +31,9 @@ export const { model: AuthorModel, controller: AuthorController, router: AuthorR
       ],
       actions: [
         { template: ResourceRelationActionTemplate.LIST },
+        { template: ResourceRelationActionTemplate.LIST_COUNT },
         { template: ResourceRelationActionTemplate.RETRIEVE },
+        { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
         { template: ResourceRelationActionTemplate.CREATE },
         { template: ResourceRelationActionTemplate.DELETE }
       ]

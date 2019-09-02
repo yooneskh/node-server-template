@@ -12,15 +12,30 @@ export class ResourceRelationController {
 
   }
 
-  public listForSource(sourceId: string) {
+  public async listForSource(sourceId: string) {
     return this.relationModel.find({ [this.sourcePropertyName]: sourceId });
   }
 
-  public getSingleRelation(sourceId: string, targetId: string) {
+  public async countListForSource(sourceId: string) {
+    return {
+      count: await this.relationModel.countDocuments({ [this.sourcePropertyName]: sourceId })
+    };
+  }
+
+  public async getSingleRelation(sourceId: string, targetId: string) {
     return this.relationModel.find({
       [this.sourcePropertyName]: sourceId,
       [this.targetPropertyName]: targetId
     });
+  }
+
+  public async getSingleRelationCount(sourceId: string, targetId: string) {
+    return {
+      count: await this.relationModel.countDocuments({
+        [this.sourcePropertyName]: sourceId,
+        [this.targetPropertyName]: targetId
+      })
+    };
   }
 
   // tslint:disable-next-line: no-any
