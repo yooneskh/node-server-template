@@ -21,6 +21,7 @@ export interface ResourceProperty {
   default?: any;
   ref?: string;
   required?: boolean;
+  unique?: boolean;
   select?: boolean;
 }
 

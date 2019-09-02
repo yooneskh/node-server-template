@@ -29,6 +29,7 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
     if ('ref' in property) scheme.ref = property.ref;
     if ('default' in property) scheme.default = property.default;
     if ('required' in property) scheme.required = property.required;
+    if ('unique' in property) scheme.unique = property.unique;
     if ('select' in property) scheme.select = property.select;
 
     schemaOptions[property.key] = scheme;
