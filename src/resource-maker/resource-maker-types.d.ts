@@ -27,6 +27,8 @@ export interface ResourceProperty {
 export interface ResourceRelation {
   targetModelName: string;
   relationModelName?: string;
+  singular?: boolean;
+  maxCount?: number;
   properties?: ResourceProperty[];
   actions?: ResourceAction[]
 }

@@ -1,24 +1,23 @@
 import { Model, Document } from 'mongoose';
 import { validatePropertyKeys, transformIncludes } from '../global/util';
-import { ResourceProperty } from './resource-maker-types';
+import { ResourceRelation } from './resource-maker-types';
+import { InvalidStateError } from '../global/errors';
 
 export class ResourceRelationController {
 
   private sourcePropertyName = '';
   private targetPropertyName = '';
 
-  constructor(sourceModelName: string, targetModelName: string, private relationModel: Model<Document, {}>, private relationProperties: ResourceProperty[]) {
-
+  constructor(sourceModelName: string, targetModelName: string, private relationModel: Model<Document, {}>, private relationOptions: ResourceRelation) {
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
-
   }
 
   // tslint:disable-next-line: no-any
   public async listForSource({ sourceId, filters = {}, sorts = {}, includes = {}, selects = undefined }: { sourceId: string, filters?: any, sorts?: any, includes?: any, selects?: string }) {
 
-    validatePropertyKeys(filters, this.relationProperties);
-    validatePropertyKeys(sorts, this.relationProperties);
+    validatePropertyKeys(filters, this.relationOptions.properties || []);
+    validatePropertyKeys(sorts, this.relationOptions.properties || []);
 
     for (const key in sorts) {
       sorts[key] = parseInt(sorts[key], 10);
@@ -58,6 +57,20 @@ export class ResourceRelationController {
   public async addRelation(sourceId: string, targetId: string, payload: any) {
 
     // TODO: validate payload
+
+    if ('singular' in this.relationOptions || 'maxCount' in this.relationOptions) {
+
+      const currentCount = await this.getSingleRelationCount(sourceId, targetId);
+
+      if ('singular' in this.relationOptions && this.relationOptions.singular && currentCount.count === 1) {
+        throw new InvalidStateError('relation already exists')
+      }
+
+      if ('maxCount' in this.relationOptions && currentCount.count === this.relationOptions.maxCount) {
+        throw new InvalidStateError('relation max count reached')
+      }
+
+    }
 
     const obj = {
       ...payload,

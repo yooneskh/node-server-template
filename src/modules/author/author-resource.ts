@@ -23,6 +23,7 @@ export const { model: AuthorModel, controller: AuthorController, router: AuthorR
   relations: [
     {
       targetModelName: 'Book',
+      singular: true,
       properties: [
         {
           key: 'timeTook',

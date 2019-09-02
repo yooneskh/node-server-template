@@ -20,6 +20,10 @@ export class ServerError extends HandleableError {
   public code = 1004;
 }
 
+export class InvalidStateError extends HandleableError {
+  public code = 1005;
+}
+
 export function errorHandler(error: Error, request: Request, response: Response, next: Function) {
 
   console.log('Error ::', error.message);

@@ -14,7 +14,7 @@ export function makeResourceController<T extends Document>(options: ResourceOpti
   return {
     resourceController: new ResourceController<T>(resourceModel, options),
     relationControllers: relationModels.map((model, index) =>
-      new ResourceRelationController(options.name, (options.relations || [])[index].targetModelName, model, (options.relations || [])[index].properties || [])
+      new ResourceRelationController(options.name, (options.relations || [])[index].targetModelName, model, (options.relations || [])[index])
     )
   }
 }
