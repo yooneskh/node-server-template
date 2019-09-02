@@ -31,6 +31,17 @@ export class ResourceController<T extends Document> {
   }
 
   // tslint:disable-next-line: no-any
+  public async count({ filters = {} }: { filters?: any }): Promise<{ count: number }> {
+
+    this.validatePropertyKeys(filters);
+
+    return {
+      count: await this.resourceModel.countDocuments(filters)
+    };
+
+  }
+
+  // tslint:disable-next-line: no-any
   public async createNew({ payload = {} }: { payload: any }): Promise<T> {
 
     this.validatePayload(payload);

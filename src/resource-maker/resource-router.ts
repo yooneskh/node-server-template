@@ -17,6 +17,7 @@ export enum ResourceActionMethod {
 
 export enum ResourceActionTemplate {
   LIST,
+  LIST_COUNT,
   RETRIEVE,
   CREATE,
   UPDATE,
@@ -146,6 +147,16 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
       filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
       sorts: extractQueryObject(request.query.sorts),
       includes: extractQueryObject(request.query.includes, true)
+    });
+
+  }
+  else if (action.template === ResourceActionTemplate.LIST_COUNT) {
+
+    action.method = ResourceActionMethod.GET;
+    action.path = '/count';
+
+    action.dataProvider = async (request, response, user) => controller.count({
+      filters: extractQueryObject(request.query.filters) // TODO: add operator func to filters
     });
 
   }

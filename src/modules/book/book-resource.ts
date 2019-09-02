@@ -22,6 +22,7 @@ export const { model: BookModel, controller: BookController, router: BookRouter 
   ],
   actions: [
     { template: ResourceActionTemplate.LIST },
+    { template: ResourceActionTemplate.LIST_COUNT },
     { template: ResourceActionTemplate.CREATE },
     { template: ResourceActionTemplate.UPDATE },
     { template: ResourceActionTemplate.DELETE }
