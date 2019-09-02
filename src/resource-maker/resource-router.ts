@@ -69,7 +69,13 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}`;
 
-    action.dataProvider = async (request, response, user) => controller.listForSource(request.params.sourceId, request.query.selects);
+    action.dataProvider = async (request, response, user) => controller.listForSource({
+      sourceId: request.params.sourceId,
+      filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
+      sorts: extractQueryObject(request.query.sorts),
+      includes: extractQueryObject(request.query.includes, true),
+      selects: request.query.selects
+    });
 
   }
   else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {

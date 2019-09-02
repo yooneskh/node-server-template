@@ -1,19 +1,35 @@
 import { Model, Document } from 'mongoose';
+import { validatePropertyKeys, transformIncludes } from '../global/util';
+import { ResourceProperty } from './resource-maker-types';
 
 export class ResourceRelationController {
 
   private sourcePropertyName = '';
   private targetPropertyName = '';
 
-  constructor(sourceModelName: string, targetModelName: string, private relationModel: Model<Document, {}>) {
+  constructor(sourceModelName: string, targetModelName: string, private relationModel: Model<Document, {}>, private relationProperties: ResourceProperty[]) {
 
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
 
   }
 
-  public async listForSource(sourceId: string, selects?: string) {
-    return this.relationModel.find({ [this.sourcePropertyName]: sourceId }).select(selects);
+  // tslint:disable-next-line: no-any
+  public async listForSource({ sourceId, filters = {}, sorts = {}, includes = {}, selects = undefined }: { sourceId: string, filters?: any, sorts?: any, includes?: any, selects?: string }) {
+
+    validatePropertyKeys(filters, this.relationProperties);
+    validatePropertyKeys(sorts, this.relationProperties);
+
+    for (const key in sorts) {
+      sorts[key] = parseInt(sorts[key], 10);
+    }
+
+    const query = this.relationModel.find({ ...filters, [this.sourcePropertyName]: sourceId }).sort(sorts).select(selects);
+
+    for (const include of transformIncludes(includes)) query.populate(include);
+
+    return query;
+
   }
 
   public async countListForSource(sourceId: string) {
