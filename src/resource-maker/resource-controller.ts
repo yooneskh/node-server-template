@@ -1,6 +1,6 @@
 import { Model, Document } from 'mongoose';
 import { ResourceOptions } from './resource-maker-types';
-import { InvalidRequestError } from '../global/errors';
+import { InvalidRequestError, NotFoundError } from '../global/errors';
 
 export class ResourceController<T extends Document> {
 
@@ -38,6 +38,21 @@ export class ResourceController<T extends Document> {
     return {
       count: await this.resourceModel.countDocuments(filters)
     };
+
+  }
+
+  // tslint:disable-next-line: no-any
+  public async singleRetrieve({ resourceId, includes = {}, selects = undefined }: { resourceId: string, includes?: any, selects?: string }): Promise<T> {
+
+    const query = this.resourceModel.findById(resourceId).select(selects);
+
+    for (const include of this.transformIncludes(includes)) query.populate(include);
+
+    const resource = await query;
+
+    if (!resource) throw new NotFoundError(`${this.options.name}@${resourceId} was not found.`);
+
+    return resource;
 
   }
 

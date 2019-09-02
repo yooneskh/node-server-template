@@ -12,8 +12,8 @@ export class ResourceRelationController {
 
   }
 
-  public async listForSource(sourceId: string) {
-    return this.relationModel.find({ [this.sourcePropertyName]: sourceId });
+  public async listForSource(sourceId: string, selects?: string) {
+    return this.relationModel.find({ [this.sourcePropertyName]: sourceId }).select(selects);
   }
 
   public async countListForSource(sourceId: string) {
@@ -22,11 +22,11 @@ export class ResourceRelationController {
     };
   }
 
-  public async getSingleRelation(sourceId: string, targetId: string) {
+  public async getSingleRelation(sourceId: string, targetId: string, selects?: string) {
     return this.relationModel.find({
       [this.sourcePropertyName]: sourceId,
       [this.targetPropertyName]: targetId
-    });
+    }).select(selects);
   }
 
   public async getSingleRelationCount(sourceId: string, targetId: string) {

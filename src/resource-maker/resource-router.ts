@@ -69,7 +69,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}`;
 
-    action.dataProvider = async (request, response, user) => controller.listForSource(request.params.sourceId);
+    action.dataProvider = async (request, response, user) => controller.listForSource(request.params.sourceId, request.query.selects);
 
   }
   else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {
@@ -85,7 +85,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async (request, response, user) => controller.getSingleRelation(request.params.sourceId, request.params.targetId);
+    action.dataProvider = async (request, response, user) => controller.getSingleRelation(request.params.sourceId, request.params.targetId, request.query.selects);
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
@@ -146,7 +146,8 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.dataProvider = async (request, response, user) => controller.list({
       filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
       sorts: extractQueryObject(request.query.sorts),
-      includes: extractQueryObject(request.query.includes, true)
+      includes: extractQueryObject(request.query.includes, true),
+      selects: request.query.selects
     });
 
   }
@@ -161,7 +162,16 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
 
   }
   else if (action.template === ResourceActionTemplate.RETRIEVE) {
-    throw new ServerError('not implemented!');
+
+    action.method = ResourceActionMethod.GET;
+    action.path = '/:resourceId';
+
+    action.dataProvider = async (request, response, user) => controller.singleRetrieve({
+      resourceId: request.params.resourceId,
+      includes: extractQueryObject(request.query.includes, true),
+      selects: request.query.selects
+    });
+
   }
   else if (action.template === ResourceActionTemplate.CREATE) {
 
