@@ -1,4 +1,4 @@
-import { makeResource } from '../../resource-maker/resource-maker';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
 import { Document } from 'mongoose';
 import { ResourceActionTemplate } from '../../resource-maker/resource-router';
 
@@ -6,23 +6,28 @@ export interface IPage extends Document {
   content: string;
 }
 
-export const { model: PageModel, controller: PageController, router: PageRouter } = makeResource<IPage>({
-  name: 'Page',
-  properties: [
-    {
-      key: 'content',
-      type: 'string'
-    },
-    {
-      key: 'section',
-      type: 'string',
-      ref: 'Section'
-    }
-  ],
-  actions: [
-    { template: ResourceActionTemplate.LIST },
-    { template: ResourceActionTemplate.CREATE },
-    { template: ResourceActionTemplate.UPDATE },
-    { template: ResourceActionTemplate.DELETE }
-  ]
-});
+const maker = new ResourceMaker<IPage>('Page');
+
+maker.setProperties([
+  {
+    key: 'content',
+    type: 'string'
+  },
+  {
+    key: 'book',
+    type: 'string',
+    ref: 'Book'
+  }
+]);
+
+maker.setActions([
+  { template: ResourceActionTemplate.LIST },
+  { template: ResourceActionTemplate.LIST_COUNT },
+  { template: ResourceActionTemplate.RETRIEVE },
+  { template: ResourceActionTemplate.CREATE },
+  { template: ResourceActionTemplate.UPDATE },
+  { template: ResourceActionTemplate.DELETE }
+]);
+
+export const { model: PageModel, controller: PageController, router: PageRouter } = maker.getMCR();
+

@@ -1,9 +1,9 @@
 // tslint:disable: no-use-before-declare
 import * as fs from 'fs';
 
-import { makeResourceModel, makeResourceController, makeResourceRouter } from '../../resource-maker/resource-maker';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../resource-maker/resource-router';
-import { IResource, ResourceOptions } from '../../resource-maker/resource-maker-types';
+import { IResource } from '../../resource-maker/resource-maker-types';
 import { InvalidRequestError } from '../../global/errors';
 import { Config } from '../../global/config';
 
@@ -20,140 +20,139 @@ export interface IMedia extends IResource {
   path: string;
 }
 
-const MediaResourceOptions: ResourceOptions = {
-  name: 'Media',
-  properties: [
-    {
-      key: 'name',
-      type: 'string',
-      required: true
-    },
-    {
-      key: 'extension',
-      type: 'string',
-      required: true
-    },
-    {
-      key: 'size',
-      type: 'number',
-      required: true
-    },
-    {
-      key: 'owner',
-      type: 'string',
-      ref: 'User',
-      required: false
-    },
-    {
-      key: 'relativePath',
-      type: 'string'
-    },
-    {
-      key: 'path',
-      type: 'string'
-    }
-  ],
-  actions: [
-    {
-      path: '/init/upload',
-      method: ResourceActionMethod.POST,
-      dataProvider: async (request, response, user) => {
+const maker = new ResourceMaker<IMedia>('Media');
 
-        const media = await MediaController.createNew({
-          payload: {
-            owner: user !== undefined ? user._id : undefined,
-            name: request.body.fileName,
-            extension: request.body.fileExtension,
-            size: request.body.fileSize
-          }
-        });
+maker.setProperties([
+  {
+    key: 'name',
+    type: 'string',
+    required: true
+  },
+  {
+    key: 'extension',
+    type: 'string',
+    required: true
+  },
+  {
+    key: 'size',
+    type: 'number',
+    required: true
+  },
+  {
+    key: 'owner',
+    type: 'string',
+    ref: 'User',
+    required: false
+  },
+  {
+    key: 'relativePath',
+    type: 'string'
+  },
+  {
+    key: 'path',
+    type: 'string'
+  }
+]);
 
-        const userDirectory = `download/${media.owner || 'public'}`;
+export const { model: MediaModel, controller: MediaController } = maker.getMC();
 
-        if (!fs.existsSync(userDirectory)) fs.mkdirSync(userDirectory);
+maker.addAction({
+  path: '/init/upload',
+  method: ResourceActionMethod.POST,
+  dataProvider: async (request, response, user) => {
 
-        const relativePath = `${userDirectory}/${media.name}.${media.extension}`;
-        const absolutePath = `${Config.filesBaseUrl}/${relativePath}`;
-
-        media.relativePath = relativePath;
-        media.path         = absolutePath;
-
-        await media.save();
-
-        return {
-          fileToken: media._id
-        };
-
+    const media = await MediaController.createNew({
+      payload: {
+        owner: user !== undefined ? user._id : undefined,
+        name: request.body.fileName,
+        extension: request.body.fileExtension,
+        size: request.body.fileSize
       }
-    },
-    {
-      path: '/upload/:fileToken',
-      method: ResourceActionMethod.POST,
-      action: async (request, response, user) => {
+    });
 
-        const fileInfoList = await MediaController.list({ filters: { _id: request.params.fileToken }, selects: '+relativePath' });
+    const userDirectory = `download/${media.owner || 'public'}`;
 
-        if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('saved media incorrect');
+    if (!fs.existsSync(userDirectory)) fs.mkdirSync(userDirectory);
 
-        const fileInfo = fileInfoList[0];
+    const relativePath = `${userDirectory}/${media.name}.${media.extension}`;
+    const absolutePath = `${Config.filesBaseUrl}/${relativePath}`;
 
-        if (!fileInfo || !fileInfo.size || fileInfo.size <= 0) throw new InvalidRequestError('saved media incorrect');
+    media.relativePath = relativePath;
+    media.path         = absolutePath;
 
-        const targetFile = fileInfo.relativePath;
-        const totalSize  = fileInfo.size;
+    await media.save();
 
-        const inputStream  = fs.createReadStream(<string> request.headers['x-file']);
-        const outputStream = fs.createWriteStream(targetFile, { flags: 'a+' });
+    return {
+      fileToken: media._id
+    };
 
-        if (request.headers['content-range']) {
+  }
+});
 
-          const match = request.headers['content-range'].match(/(\d+)-(\d+)\/(\d+)/);
+maker.addAction({
+  path: '/upload/:fileToken',
+  method: ResourceActionMethod.POST,
+  action: async (request, response, user) => {
 
-          if (!match || !match[1] || !match[2] || !match[3]) throw new InvalidRequestError('upload request not correct');
+    const fileInfoList = await MediaController.list({ filters: { _id: request.params.fileToken }, selects: '+relativePath' });
 
-          const start = parseInt(match[1], 10);
-          const end   = parseInt(match[2], 10);
+    if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('saved media incorrect');
 
-          let size = 0;
+    const fileInfo = fileInfoList[0];
 
-          if (fs.existsSync(targetFile)) {
-            size = fs.statSync(targetFile).size;
-          }
+    if (!fileInfo || !fileInfo.size || fileInfo.size <= 0) throw new InvalidRequestError('saved media incorrect');
 
-          if ((end + 1) === size) {
-            response.status(100).send('Continue');
-            return;
-          }
+    const targetFile = fileInfo.relativePath;
+    const totalSize  = fileInfo.size;
 
-          if (start !== size) {
-            response.status(400).send('Bad Request');
-            return;
-          }
+    const inputStream  = fs.createReadStream(<string> request.headers['x-file']);
+    const outputStream = fs.createWriteStream(targetFile, { flags: 'a+' });
 
-        }
+    if (request.headers['content-range']) {
 
-        outputStream.on('finish', async function() {
+      const match = request.headers['content-range'].match(/(\d+)-(\d+)\/(\d+)/);
 
-          const size = fs.statSync(targetFile).size;
+      if (!match || !match[1] || !match[2] || !match[3]) throw new InvalidRequestError('upload request not correct');
 
-          if (size >= totalSize) {
-            response.status(201).json({success: true, mediaId: fileInfo._id});
-          }
-          else {
-            response.status(100).send('Continue');
-          }
+      const start = parseInt(match[1], 10);
+      const end   = parseInt(match[2], 10);
 
-          fs.unlinkSync(<string> request.headers['x-file']);
+      let size = 0;
 
-        });
-
-        inputStream.pipe(outputStream);
-
+      if (fs.existsSync(targetFile)) {
+        size = fs.statSync(targetFile).size;
       }
-    }
-  ]
-}
 
-export const { mainModel: MediaModel, relationModels: MediaRelationModels } = makeResourceModel(MediaResourceOptions);
-export const { resourceController: MediaController, relationControllers: MediaRelationControllers } = makeResourceController<IMedia>(MediaResourceOptions, MediaModel, MediaRelationModels);
-export const MediaRouter = makeResourceRouter(MediaResourceOptions, MediaController, MediaRelationControllers);
+      if ((end + 1) === size) {
+        response.status(100).send('Continue');
+        return;
+      }
+
+      if (start !== size) {
+        response.status(400).send('Bad Request');
+        return;
+      }
+
+    }
+
+    outputStream.on('finish', async function() {
+
+      const size = fs.statSync(targetFile).size;
+
+      if (size >= totalSize) {
+        response.status(201).json({success: true, mediaId: fileInfo._id});
+      }
+      else {
+        response.status(100).send('Continue');
+      }
+
+      fs.unlinkSync(<string> request.headers['x-file']);
+
+    });
+
+    inputStream.pipe(outputStream);
+
+  }
+});
+
+export const MediaRouter = maker.getRouter();

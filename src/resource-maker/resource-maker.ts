@@ -1,9 +1,11 @@
-import { ResourceOptions } from './resource-maker-types';
-import { Document } from 'mongoose';
+import { ResourceOptions, ResourceProperty, ResourceAction, ResourceRelation } from './resource-maker-types';
+import { Document, Model } from 'mongoose';
 import { ResourceController } from './resource-controller';
 import { scaffoldResourceRouter } from './resource-router';
 import { makeModelForResource } from './resource-model';
 import { ResourceRelationController } from './resource-relation-controller';
+import { ServerError } from '../global/errors';
+import { Router } from 'express';
 
 export function makeResourceModel<T extends Document>(options: ResourceOptions) {
   return makeModelForResource<T>(options);
@@ -46,5 +48,136 @@ export function makeResource<T extends Document>(options: ResourceOptions) {
     controller: resourceController,
     router: resourceRouter
   };
+
+}
+
+export class ResourceMaker <T extends Document> {
+
+  private options: ResourceOptions = { name: '', properties: [] };
+
+  private resourceModel: Model<T> | undefined = undefined;
+  private resourceRelationModels: Model<Document>[] = [];
+
+  private resourceController:  ResourceController<T> | undefined;
+  private relationControllers: ResourceRelationController[] = [];
+
+  private resourceRouter: Router | undefined;
+
+  constructor(name: string) {
+    this.options.name = name;
+  }
+
+  public setProperties(properties: ResourceProperty[]) {
+    this.options.properties = properties;
+  }
+
+  public setRelations(relations: ResourceRelation[]) {
+    this.options.relations = relations;
+  }
+
+  public addRelation(relation: ResourceRelation) {
+
+    if (this.options.relations === undefined) {
+      this.options.relations = [];
+    }
+
+    this.options.relations.push(relation);
+
+  }
+
+  public setActions(actions: ResourceAction[]) {
+    this.options.actions = actions;
+  }
+
+  public addAction(action: ResourceAction) {
+
+    if (this.options.actions === undefined) {
+      this.options.actions = [];
+    }
+
+    this.options.actions.push(action);
+
+  }
+
+  public getModel() {
+
+    if (this.options.properties.length === 0) {
+      throw new ServerError('no property specified for ' + this.options.name);
+    }
+
+    if (this.resourceModel !== undefined) {
+      throw new ServerError('model already made for ' + this.options.name);
+    }
+
+    const res = makeModelForResource<T>(this.options);
+
+    this.resourceModel = res.mainModel;
+    this.resourceRelationModels = res.relationModels;
+
+    return this.resourceModel;
+
+  }
+
+  public getRelationModels() {
+
+    if (this.resourceModel === undefined) {
+      throw new ServerError('model not made for ' + this.options.name);
+    }
+
+    return this.resourceRelationModels;
+
+  }
+
+  public getController() {
+
+    if (this.resourceModel === undefined) {
+      throw new ServerError('model not made for ' + this.options.name);
+    }
+
+    const result = makeResourceController<T>(this.options, this.resourceModel, this.resourceRelationModels);
+
+    this.resourceController = result.resourceController;
+    this.relationControllers = result.relationControllers;
+
+    return this.resourceController;
+
+  }
+
+  public getRelationControllers() {
+
+    if (this.resourceController === undefined) {
+      throw new ServerError('controller not made for ' + this.options.name);
+    }
+
+    return this.relationControllers;
+
+  }
+
+  public getRouter() {
+
+    if (this.resourceController === undefined) {
+      throw new ServerError('controller not made for ' + this.options.name);
+    }
+
+    this.resourceRouter = makeResourceRouter<T>(this.options, this.resourceController, this.relationControllers);
+
+    return this.resourceRouter;
+
+  }
+
+  public getMC() {
+    return {
+      model: this.getModel(),
+      controller: this.getController()
+    }
+  }
+
+  public getMCR() {
+    return {
+      model: this.getModel(),
+      controller: this.getController(),
+      router: this.getRouter()
+    }
+  }
 
 }
