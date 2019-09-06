@@ -261,7 +261,15 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
         await action.action(request, response, user);
       }
       else if (action.dataProvider) {
-        response.json(await action.dataProvider(request, response, user));
+
+        const data = await action.dataProvider(request, response, user);
+
+        if (action.responsePreprocessor) {
+          await action.responsePreprocessor(data, user)
+        }
+
+        response.json(data);
+
       }
 
       if (action.payloadPostprocessor) {
