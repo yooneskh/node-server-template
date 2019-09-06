@@ -60,7 +60,7 @@ export class ResourceController<T extends Document> {
 
     const resource = await query;
 
-    if (!resource) throw new NotFoundError(`resource not found: ${this.resourceModel.modelName}@${filters}`);
+    if (!resource) throw new NotFoundError(`resource not found: ${this.resourceModel.modelName}@${JSON.stringify(filters)}`);
 
     return resource;
 
