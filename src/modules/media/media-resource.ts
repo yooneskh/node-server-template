@@ -151,12 +151,7 @@ maker.addAction({
       if (size >= totalSize) {
 
         const chunk = await ReadChunk.default(targetFile, 0, minimumBytes);
-
-        console.log('chunk is', chunk);
-
         const type = getFileType(chunk);
-
-        console.log('file type is', type);
 
         if (type) {
           fileInfo.type = type.mime;

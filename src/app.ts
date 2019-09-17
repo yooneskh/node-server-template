@@ -8,8 +8,8 @@ import './global/database';
 const app = Express();
 
 app.use(logger.default(':date[clf] :method :url :status :response-time'));
-app.use(Express.json());
-app.use(Express.urlencoded({ extended: false }));
+app.use(Express.json({ limit: '10mb' }));
+app.use(Express.urlencoded({ limit: '10mb', parameterLimit: 100000, extended: false }));
 app.use(cookieParser.default())
 
 if (process.env.NODE_ENV === 'development') {
