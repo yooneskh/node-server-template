@@ -47,7 +47,7 @@ export interface IResourceActionProvider {
 }
 
 interface IResActionFunction {
-  (request: Request, response: Response, user?: IUser): Promise<void>
+  (request: Request, response: Response, user?: IUser): Promise<any>
 }
 
 export interface ResourceAction {
@@ -62,5 +62,5 @@ export interface ResourceAction {
   payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
   action?: IResActionFunction;
   responsePreprocessor?(response: any, user?: IUser): Promise<void>;
-  dataProvider?(request: Request, response: Response, user?: IUser): Promise<any>
+  dataProvider?: IResActionFunction;
 }
