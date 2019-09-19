@@ -1,4 +1,4 @@
-import { ResourceOptions, ResourceProperty, ResourceAction, ResourceRelation } from './resource-maker-types';
+import { ResourceOptions, ResourceProperty, ResourceAction, ResourceRelation, ResourcePropertyMeta } from './resource-maker-types';
 import { Document, Model } from 'mongoose';
 import { ResourceController } from './resource-controller';
 import { scaffoldResourceRouter } from './resource-router';
@@ -25,6 +25,8 @@ export function makeResourceController<T extends Document>(options: ResourceOpti
 export function makeResourceRouter<T extends Document>(options: ResourceOptions, resourceController: any, relationControllers: any[]) {
   return scaffoldResourceRouter<T>({
     resourceActions: options.actions,
+    resourceProperties: options.properties,
+    resourceMetas: options.metas || [],
     controller: resourceController,
     relations: (options.relations || []).map((relation, index) => ({
       targetModelName: relation.targetModelName,
@@ -69,6 +71,10 @@ export class ResourceMaker <T extends Document> {
 
   public setProperties(properties: ResourceProperty[]) {
     this.options.properties = properties;
+  }
+
+  public setMetas(metas: ResourcePropertyMeta[]) {
+    this.options.metas = metas;
   }
 
   public setRelations(relations: ResourceRelation[]) {

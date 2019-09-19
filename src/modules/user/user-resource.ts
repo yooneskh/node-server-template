@@ -43,6 +43,38 @@ maker.setProperties([
   }
 ]);
 
+maker.setMetas([
+  {
+    key: 'firstName',
+    title: 'نام',
+    order: 1,
+    titleAble: true
+  },
+  {
+    key: 'lastName',
+    title: 'نام خانوادگی',
+    order: 2,
+    titleAble: true
+  },
+  {
+    key: 'phoneNumber',
+    title: 'شماره تلفن',
+    order: 3
+  },
+  {
+    key: 'permissions',
+    hidden: true
+  },
+  {
+    key: 'verificationCode',
+    hidden: true
+  },
+  {
+    key: 'token',
+    hidden: true
+  }
+]);
+
 maker.setActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },

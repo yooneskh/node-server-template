@@ -11,6 +11,7 @@ export interface IResource extends Document {
 export interface ResourceOptions {
   name: string;
   properties: ResourceProperty[];
+  metas?: ResourcePropertyMeta[];
   relations?: ResourceRelation[];
   actions?: ResourceAction[];
 }
@@ -24,6 +25,14 @@ export interface ResourceProperty {
   unique?: boolean;
   select?: boolean;
   isArray?: boolean;
+}
+
+export interface ResourcePropertyMeta {
+  key: string;
+  title?: string;
+  order?: number;
+  titleAble?: boolean
+  hidden?: boolean;
 }
 
 export interface ResourceRelation {
@@ -47,7 +56,7 @@ export interface IResourceActionProvider {
 }
 
 interface IResActionFunction {
-  (request: Request, response: Response, user?: IUser): Promise<void>
+  (request: Request, response: Response, user?: IUser): Promise<any>
 }
 
 export interface ResourceAction {
@@ -62,5 +71,5 @@ export interface ResourceAction {
   payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
   action?: IResActionFunction;
   responsePreprocessor?(response: any, user?: IUser): Promise<void>;
-  dataProvider?(request: Request, response: Response, user?: IUser): Promise<any>
+  dataProvider?: IResActionFunction;
 }

@@ -3,9 +3,10 @@ import { ResourceController } from './resource-controller';
 import { Document } from 'mongoose';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
-import { ResourceAction } from './resource-maker-types';
+import { ResourceAction, ResourceProperty, ResourcePropertyMeta } from './resource-maker-types';
 import { InvalidRequestError, ServerError, ForbiddenAccessError } from '../global/errors';
 import { IUser, UserController } from '../modules/user/user-resource';
+import { Merge } from 'type-fest';
 
 export enum ResourceActionMethod {
   POST,
@@ -37,6 +38,43 @@ interface IRouterRelation {
   relationModelName?: string;
   controller: ResourceRelationController,
   actions?: ResourceAction[]
+}
+
+function injectMetaInformation({ router, properties, metas }: { router: Router, properties: ResourceProperty[], metas: ResourcePropertyMeta[] }) {
+
+  // tslint:disable-next-line: no-any
+  let result: Merge<ResourcePropertyMeta, ResourceProperty>[] = [];
+
+  for (const property of properties) {
+    result.push({
+      ...(metas.find(meta => meta.key === property.key)),
+      ...property
+    });
+  }
+
+  result = result.filter(item => !item.hidden);
+
+  result.sort((item1, item2) => {
+    if (item1.order === undefined) {
+      return 1;
+    }
+    else if (item2.order === undefined) {
+      return -1;
+    }
+    else {
+      return item1.order - item2.order;
+    }
+  });
+
+  applyActionOnRouter({
+    router,
+    action: {
+      path: '/meta',
+      method: ResourceActionMethod.GET,
+      dataProvider: async () => result
+    }
+  });
+
 }
 
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string | number> {
@@ -244,7 +282,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
       }
 
       if (action.payloadValidator && !(await action.payloadValidator(payload)) ) {
-        throw new InvalidRequestError('invalid payload');
+        throw new InvalidRequestError('payload validation failed');
       }
 
       if (action.payloadPreprocessor) {
@@ -280,7 +318,6 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
     catch (error) {
       next(error);
     }
-
   };
 
   switch (action.method) {
@@ -293,9 +330,15 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
 
 }
 
-export function scaffoldResourceRouter<T extends Document>({resourceActions, controller, relations}: {resourceActions?: ResourceAction[], controller: ResourceController<T>, relations: IRouterRelation[] }): Router {
+export function scaffoldResourceRouter<T extends Document>({ resourceActions, controller, relations, resourceProperties, resourceMetas }: { resourceActions?: ResourceAction[], controller: ResourceController<T>, relations: IRouterRelation[], resourceProperties: ResourceProperty[], resourceMetas: ResourcePropertyMeta[] }): Router {
 
   const resourceRouter = Router();
+
+  injectMetaInformation({
+    router: resourceRouter,
+    properties: resourceProperties,
+    metas: resourceMetas
+  });
 
   for (const action of resourceActions || []) {
 
