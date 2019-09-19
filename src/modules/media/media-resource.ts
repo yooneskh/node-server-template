@@ -6,6 +6,9 @@ import { ResourceActionMethod } from '../../resource-maker/resource-router';
 import { IResource } from '../../resource-maker/resource-maker-types';
 import { InvalidRequestError } from '../../global/errors';
 import { Config } from '../../global/config';
+import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
+import * as ReadChunk from 'read-chunk';
+
 
 // init code
 if (!fs.existsSync('./download')) fs.mkdirSync('./download')
@@ -14,6 +17,7 @@ if (!fs.existsSync('./download')) fs.mkdirSync('./download')
 export interface IMedia extends IResource {
   name: string;
   extension: string;
+  type: string;
   size: number;
   owner?: string;
   relativePath: string;
@@ -32,6 +36,11 @@ maker.setProperties([
     key: 'extension',
     type: 'string',
     required: true
+  },
+  {
+    key: 'type',
+    type: 'string',
+    default: ''
   },
   {
     key: 'size',
@@ -96,7 +105,7 @@ maker.addAction({
 
     const fileInfoList = await MediaController.list({ filters: { _id: request.params.fileToken }, selects: '+relativePath' });
 
-    if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('saved media incorrect');
+    if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
 
     const fileInfo = fileInfoList[0];
 
@@ -140,7 +149,17 @@ maker.addAction({
       const size = fs.statSync(targetFile).size;
 
       if (size >= totalSize) {
+
+        const chunk = await ReadChunk.default(targetFile, 0, minimumBytes);
+        const type = getFileType(chunk);
+
+        if (type) {
+          fileInfo.type = type.mime;
+          await fileInfo.save();
+        }
+
         response.status(201).json({success: true, mediaId: fileInfo._id});
+
       }
       else {
         response.status(100).send('Continue');
