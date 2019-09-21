@@ -107,9 +107,9 @@ export class ResourceMaker <T extends Document> {
 
   public getModel() {
 
-    if (this.options.properties.length === 0) {
-      throw new ServerError('no property specified for ' + this.options.name);
-    }
+    // if (this.options.properties.length === 0) {
+    //   throw new ServerError('no property specified for ' + this.options.name);
+    // }
 
     if (this.resourceModel !== undefined) {
       throw new ServerError('model already made for ' + this.options.name);
