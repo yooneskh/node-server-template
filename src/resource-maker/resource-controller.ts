@@ -8,7 +8,7 @@ export class ResourceController<T extends Document> {
   constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
 
   // tslint:disable-next-line: no-any
-  public async list({ filters = {}, sorts = {}, includes = {}, selects = undefined }: { filters?: any, sorts?: any, includes?: any, selects?: string }): Promise<T[]> {
+  public async list({ filters = {}, sorts = {}, includes = {}, selects = undefined, limit = Infinity }: { filters?: any, sorts?: any, includes?: any, selects?: string, limit?: number }): Promise<T[]> {
 
     validatePropertyKeys(filters, this.options.properties);
     validatePropertyKeys(sorts, this.options.properties);
@@ -17,7 +17,7 @@ export class ResourceController<T extends Document> {
       sorts[key] = parseInt(sorts[key], 10);
     }
 
-    const query = this.resourceModel.find(filters).sort(sorts).select(selects);
+    const query = this.resourceModel.find(filters).sort(sorts).select(selects).limit(limit);
 
     for (const include of transformIncludes(includes)) query.populate(include);
 
