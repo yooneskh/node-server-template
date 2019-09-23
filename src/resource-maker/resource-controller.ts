@@ -8,7 +8,7 @@ export class ResourceController<T extends Document> {
   constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
 
   // tslint:disable-next-line: no-any
-  public async list({ filters = {}, sorts = {}, includes = {}, selects = undefined, limit = Infinity }: { filters?: any, sorts?: any, includes?: any, selects?: string, limit?: number }): Promise<T[]> {
+  public async list({ filters = {}, sorts = {}, includes = {}, selects = undefined, limit = 1000 * 1000 * 1000 }: { filters?: any, sorts?: any, includes?: any, selects?: string, limit?: number }): Promise<T[]> {
 
     validatePropertyKeys(filters, this.options.properties);
     validatePropertyKeys(sorts, this.options.properties);
