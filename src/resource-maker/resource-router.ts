@@ -77,9 +77,9 @@ function injectMetaInformation({ router, properties, metas }: { router: Router, 
 
 }
 
-function extractQueryObject(queryString: string, nullableValues = false): Record<string, string | number> {
+function extractQueryObject(queryString: string, nullableValues = false) {
 
-  const result: Record<string, string | number> = {};
+  const result: Record<string, string | number | boolean> = {};
 
   if (!queryString) return result;
 
@@ -92,7 +92,7 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
     if (!key) throw new InvalidRequestError(`query object invalid key '${key}'`);
     if (!nullableValues && !value) throw new InvalidRequestError(`query object invalid value '${key}':'${value}'`);
 
-    result[key] = value;
+    result[key] = value === '+true' ? true : (value === '-false' ? false : value);
 
   }
 
