@@ -261,12 +261,13 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
     try {
 
       let user: IUser | undefined;
-      const payload = request.body.payload;
+      const payload = request.body;
+      const token = request.headers.authorization;
 
       const needToLoadUser = action.permission || action.permissionFunction || action.permissionFunctionStrict || action.payloadPreprocessor || action.payloadPostprocessor;
 
       if (needToLoadUser) {
-        user = (await UserController.list({ filters: { token: request.body.token } }))[0];
+        user = (await UserController.list({ filters: { token } }))[0];
       }
 
       if (action.permission && (!user || !user.permissions || !checkUserPermission(user.permissions, action.permission))) {
