@@ -12,6 +12,7 @@ export enum ResourceActionMethod {
   POST,
   GET,
   PUT,
+  PATCH,
   DELETE
 }
 
@@ -144,7 +145,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.POST;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async (request, response, user) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body.payload);
+    action.dataProvider = async (request, response, user) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body);
 
   }
   else if (action.template === ResourceRelationActionTemplate.DELETE) {
@@ -222,18 +223,18 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.path = '/';
 
     action.dataProvider = async (request, response, user) => controller.createNew({
-      payload: request.body.payload
+      payload: request.body
     });
 
   }
   else if (action.template === ResourceActionTemplate.UPDATE) {
 
-    action.method = ResourceActionMethod.PUT;
+    action.method = ResourceActionMethod.PATCH;
     action.path = '/:resourceId';
 
     action.dataProvider = async (request, response, user) => controller.editOne({
       id: request.params.resourceId,
-      payload: request.body.payload
+      payload: request.body
     });
 
   }
@@ -324,6 +325,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
   switch (action.method) {
     case ResourceActionMethod.GET: router.get(action.path, actionHandler); break;
     case ResourceActionMethod.POST: router.post(action.path, actionHandler); break;
+    case ResourceActionMethod.PATCH: router.patch(action.path, actionHandler); break;
     case ResourceActionMethod.PUT: router.put(action.path, actionHandler); break;
     case ResourceActionMethod.DELETE: router.delete(action.path, actionHandler); break;
     default: throw new ServerError('unknown action method type');
