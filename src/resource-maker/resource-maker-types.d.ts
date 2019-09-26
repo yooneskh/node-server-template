@@ -33,6 +33,7 @@ export interface ResourcePropertyMeta {
   order?: number;
   titleAble?: boolean
   hidden?: boolean;
+  hideInTable?: boolean;
 }
 
 export interface ResourceRelation {

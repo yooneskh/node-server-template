@@ -29,9 +29,16 @@ maker.setProperties([
     required: true
   },
   {
+    key: 'profilePicture',
+    type: 'string',
+    ref: 'Media',
+    // default: '' // put mediaId of default profilePicture here
+  },
+  {
     key: 'permissions',
     type: 'string',
-    isArray: true
+    isArray: true,
+    default: ['user.*']
   },
   {
     key: 'verificationCode',
@@ -62,8 +69,14 @@ maker.setMetas([
     order: 3
   },
   {
+    key: 'profilePicture',
+    title: 'تصویر پروفایل',
+    order: 4
+  },
+  {
     key: 'permissions',
-    hidden: true
+    title: 'مجوزها',
+    hideInTable: true
   },
   {
     key: 'verificationCode',
@@ -85,4 +98,3 @@ maker.setActions([
 ]);
 
 export const { model: UserModel, controller: UserController, router: UserRouter } = maker.getMCR();
-

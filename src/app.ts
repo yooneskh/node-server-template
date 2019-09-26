@@ -22,6 +22,9 @@ app.get('/ping', (request, response) => response.send('pong'));
 import { AuthRouter } from './modules/auth/auth-router';
 app.use('/api/v1/auth', AuthRouter);
 
+import { UserRouter } from './modules/user/user-resource';
+app.use('/api/v1/users', UserRouter);
+
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);
 
