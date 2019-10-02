@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 
 app.get('/ping', (request, response) => response.send('pong'));
 
-import { AuthRouter } from './modules/auth/auth-router';
+import { AuthRouter } from './modules/auth/auth-resource';
 app.use('/api/v1/auth', AuthRouter);
 
 import { UserRouter } from './modules/user/user-resource';
