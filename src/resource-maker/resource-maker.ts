@@ -161,10 +161,6 @@ export class ResourceMaker <T extends Document> {
 
   public getRouter() {
 
-    if (this.resourceController === undefined) {
-      throw new ServerError('controller not made for ' + this.options.name);
-    }
-
     this.resourceRouter = makeResourceRouter<T>(this.options, this.resourceController, this.relationControllers);
 
     return this.resourceRouter;
