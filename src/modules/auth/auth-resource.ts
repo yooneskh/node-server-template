@@ -1,0 +1,74 @@
+import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { ResourceActionMethod } from '../../resource-maker/resource-router';
+import { UserController } from '../user/user-resource';
+import { InvalidRequestError } from '../../global/errors';
+import { generateToken } from '../../global/util';
+
+const maker = new ResourceMaker('Auth');
+
+maker.addAction({
+  method: ResourceActionMethod.POST,
+  path: '/login',
+  dataProvider: async (request, response) => {
+
+    const user = await UserController.findOne({
+      filters: {
+        phoneNumber: request.body.phoneNumber
+      }
+    });
+
+    // user.verificationCode = generateRandomNumericCode(6);
+    user.verificationCode = '111111';
+
+    await user.save();
+
+    return true;
+
+  }
+});
+
+maker.addAction({
+  method: ResourceActionMethod.POST,
+  path: '/register',
+  dataProvider: async (request, response) => {
+
+    await UserController.createNew({
+      payload: {
+        firstName: request.body.firstName,
+        lastName: request.body.lastName,
+        phoneNumber: request.body.phoneNumber,
+        permissions: ['user.*'],
+        verificationCode: '111111',
+        // verificationCode: generateRandomNumericCode(6),
+        token: undefined
+      }
+    });
+
+    return true;
+
+  }
+});
+
+maker.addAction({
+  method: ResourceActionMethod.POST,
+  path: '/verify',
+  dataProvider: async (request, response) => {
+
+    const phoneNumber = request.body.phoneNumber;
+    const verificationCode = request.body.verificationCode;
+
+    const user = await UserController.findOne({ filters: { phoneNumber }});
+
+    if (!verificationCode || !user.verificationCode || verificationCode !== user.verificationCode) throw new InvalidRequestError('invalid code');
+
+    user.verificationCode = undefined;
+
+    // TODO: make sure is unique
+    user.token = generateToken();
+
+    return user.save();
+
+  }
+});
+
+export const AuthRouter = maker.getRouter();
