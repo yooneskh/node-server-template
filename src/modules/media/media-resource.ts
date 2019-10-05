@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceActionMethod } from '../../resource-maker/resource-router';
+import { ResourceActionMethod, ResourceActionTemplate } from '../../resource-maker/resource-router';
 import { IResource } from '../../resource-maker/resource-maker-types';
 import { InvalidRequestError } from '../../global/errors';
 import { Config } from '../../global/config';
@@ -63,7 +63,49 @@ maker.setProperties([
   }
 ]);
 
+maker.setMetas([
+  {
+    key: 'name',
+    title: 'نام',
+    order: 1,
+    titleAble: true
+  },
+  {
+    key: 'extension',
+    title: 'فرمت',
+    order: 2,
+    titleAble: true
+  },
+  {
+    key: 'type',
+    title: 'نوع',
+    order: 3
+  },
+  {
+    key: 'size',
+    title: 'حجم',
+    order: 4
+  },
+  {
+    key: 'owner',
+    title: 'صاحب',
+    order: 5
+  },
+  {
+    key: 'relativePath',
+    hidden: true
+  },
+  {
+    key: 'path',
+    hidden: true
+  }
+]);
+
 export const { model: MediaModel, controller: MediaController } = maker.getMC();
+
+maker.addAction({ template: ResourceActionTemplate.LIST });
+maker.addAction({ template: ResourceActionTemplate.LIST_COUNT });
+maker.addAction({ template: ResourceActionTemplate.RETRIEVE });
 
 maker.addAction({
   path: '/init/upload',
