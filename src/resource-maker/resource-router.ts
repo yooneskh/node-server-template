@@ -93,7 +93,7 @@ function extractQueryObject(queryString: string, nullableValues = false) {
     if (!key) throw new InvalidRequestError(`query object invalid key '${key}'`);
     if (!nullableValues && !value) throw new InvalidRequestError(`query object invalid value '${key}':'${value}'`);
 
-    result[key] = value === '+true' ? true : (value === '-false' ? false : value);
+    result[key] = value === 'Xtrue' ? true : (value === 'Xfalse' ? false : value);
 
   }
 
