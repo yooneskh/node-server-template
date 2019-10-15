@@ -3,6 +3,7 @@ import { ResourceActionMethod } from '../../resource-maker/resource-router';
 import { UserController } from '../user/user-resource';
 import { InvalidRequestError } from '../../global/errors';
 import { generateToken } from '../../global/util';
+import { MediaController } from '../media/media-resource';
 
 const maker = new ResourceMaker('Auth');
 
@@ -78,7 +79,14 @@ maker.addAction({
     return !!user;
   },
   async dataProvider(request, response, user) {
+
+    if (user && user.profile) {
+      // tslint:disable-next-line: no-any
+      (user as any).profile = await MediaController.singleRetrieve({ resourceId: user.profile });
+    }
+
     return user;
+
   }
 });
 
