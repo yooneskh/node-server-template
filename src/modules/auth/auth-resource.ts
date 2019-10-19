@@ -3,13 +3,14 @@ import { ResourceActionMethod } from '../../resource-maker/resource-router';
 import { UserController } from '../user/user-resource';
 import { InvalidRequestError } from '../../global/errors';
 import { generateToken } from '../../global/util';
+import { MediaController } from '../media/media-resource';
 
 const maker = new ResourceMaker('Auth');
 
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/login',
-  dataProvider: async (request, response) => {
+  async dataProvider(request, response) {
 
     const user = await UserController.findOne({
       filters: {
@@ -30,7 +31,7 @@ maker.addAction({
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/register',
-  dataProvider: async (request, response) => {
+  async dataProvider(request, response) {
 
     await UserController.createNew({
       payload: {
@@ -52,7 +53,7 @@ maker.addAction({
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/verify',
-  dataProvider: async (request, response) => {
+  async dataProvider(request, response) {
 
     const phoneNumber = request.body.phoneNumber;
     const verificationCode = request.body.verificationCode;
@@ -67,6 +68,24 @@ maker.addAction({
     user.token = generateToken();
 
     return user.save();
+
+  }
+});
+
+maker.addAction({
+  method: ResourceActionMethod.GET,
+  path: '/identity',
+  async permissionFunctionStrict(user) {
+    return !!user;
+  },
+  async dataProvider(request, response, user) {
+
+    if (user && user.profile) {
+      // tslint:disable-next-line: no-any
+      (user as any).profile = await MediaController.singleRetrieve({ resourceId: user.profile });
+    }
+
+    return user;
 
   }
 });
