@@ -68,7 +68,7 @@ export interface ResourceAction {
   permissionFunction?(user?: IUser | null ): Promise<boolean>;
   permissionFunctionStrict?(user: IUser ): Promise<boolean>;
   payloadValidator?(payload: any): Promise<boolean>;
-  payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean> | void;
+  payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean | void>;
   payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
   action?: IResActionFunction;
   responsePreprocessor?(response: any, user?: IUser): Promise<void>;
