@@ -1,8 +1,8 @@
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { Document } from 'mongoose';
 import { ResourceActionTemplate } from '../../resource-maker/resource-router';
+import { IResource } from '../../resource-maker/resource-maker-types';
 
-export interface IBook extends Document {
+export interface IBook extends IResource {
   name: string;
   page: string;
 }

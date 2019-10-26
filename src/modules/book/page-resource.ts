@@ -1,8 +1,8 @@
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { Document } from 'mongoose';
 import { ResourceActionTemplate } from '../../resource-maker/resource-router';
+import { IResource } from '../../resource-maker/resource-maker-types';
 
-export interface IPage extends Document {
+export interface IPage extends IResource {
   content: string;
 }
 

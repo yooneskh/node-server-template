@@ -1,8 +1,8 @@
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { Document } from 'mongoose';
 import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../resource-maker/resource-router';
+import { IResource } from '../../resource-maker/resource-maker-types';
 
-export interface IAuthor extends Document {
+export interface IAuthor extends IResource {
   familyName: string;
 }
 

@@ -9,6 +9,7 @@ function mapPropertyTypeToMongooseType(propertyType: string): any {
     case 'string': return String;
     case 'number': return Number;
     case 'boolean': return Boolean;
+    case 'object': return Object;
     default: throw new ServerError(`resource property type unknown: ${propertyType}`);
   }
 }

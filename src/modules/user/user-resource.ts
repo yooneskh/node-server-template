@@ -1,8 +1,8 @@
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { Document } from 'mongoose';
 import { ResourceActionTemplate } from '../../resource-maker/resource-router';
+import { IResource } from '../../resource-maker/resource-maker-types';
 
-export interface IUser extends Document {
+export interface IUser extends IResource {
   firstName: string;
   lastName: string;
   phoneNumber: string;
@@ -40,14 +40,6 @@ maker.setProperties([
     type: 'string',
     isArray: true,
     default: ['user.*']
-  },
-  {
-    key: 'verificationCode',
-    type: 'string'
-  },
-  {
-    key: 'token',
-    type: 'string'
   }
 ]);
 
@@ -78,14 +70,6 @@ maker.setMetas([
     key: 'permissions',
     title: 'مجوزها',
     hideInTable: true
-  },
-  {
-    key: 'verificationCode',
-    hidden: true
-  },
-  {
-    key: 'token',
-    hidden: true
   }
 ]);
 
