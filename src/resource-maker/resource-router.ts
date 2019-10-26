@@ -7,6 +7,7 @@ import { ResourceAction, ResourceProperty, ResourcePropertyMeta } from './resour
 import { InvalidRequestError, ServerError, ForbiddenAccessError } from '../global/errors';
 import { IUser, UserController } from '../modules/user/user-resource';
 import { Merge } from 'type-fest';
+import { hasPermission } from './resource-maker-util';
 
 export enum ResourceActionMethod {
   POST,
@@ -177,10 +178,6 @@ function applyRelationController(router: Router, relation: IRouterRelation) {
 
 }
 
-function checkUserPermission(permissions: string[], permission: string): boolean {
-  throw new ServerError('not implemented!');
-}
-
 function injectResourceTemplateOptions<T extends Document>(action: ResourceAction, controller: ResourceController<T>) {
   if (action.template === ResourceActionTemplate.LIST) {
 
@@ -271,7 +268,7 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
         user = (await UserController.list({ filters: { token } }))[0];
       }
 
-      if (action.permission && (!user || !user.permissions || !checkUserPermission(user.permissions, action.permission))) {
+      if (action.permission && (!user || !user.permissions || !hasPermission(user.permissions, action.permission))) {
         throw new ForbiddenAccessError('forbidden access');
       }
 
