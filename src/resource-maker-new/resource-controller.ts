@@ -1,9 +1,9 @@
-import { Model, Document } from 'mongoose';
+import { Model } from 'mongoose';
 import { InvalidRequestError, NotFoundError } from '../global/errors';
 import { validatePropertyKeys, validatePayload, transformIncludes } from '../global/util';
-import { ResourceProperty } from './resource-maker-types';
+import { ResourceProperty, IResource } from './resource-maker-types';
 
-export class ResourceController<T extends Document> {
+export class ResourceController<T extends IResource> {
 
   private model: Model<T>;
   private properties: ResourceProperty[];
@@ -14,14 +14,10 @@ export class ResourceController<T extends Document> {
   }
 
   // tslint:disable-next-line: no-any
-  public async list(filters: any = {}, sorts: any = {}, includes: any = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+  public async list(filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
     validatePropertyKeys(filters, this.properties);
     validatePropertyKeys(sorts, this.properties);
-
-    for (const key in sorts) {
-      sorts[key] = parseInt(sorts[key], 10);
-    }
 
     const query = this.model.find(filters).sort(sorts).select(selects).skip(skip).limit(limit);
 
@@ -41,7 +37,7 @@ export class ResourceController<T extends Document> {
   }
 
   // tslint:disable-next-line: no-any
-  public async singleRetrieve(resourceId: string, includes: any = {}, selects?: string): Promise<T> {
+  public async singleRetrieve(resourceId: string, includes: Record<string, string> = {}, selects?: string): Promise<T> {
 
     const query = this.model.findById(resourceId).select(selects);
 
@@ -56,7 +52,7 @@ export class ResourceController<T extends Document> {
   }
 
   // tslint:disable-next-line: no-any
-  public async findOne(filters: any = {}, includes: any = {}, selects?: string): Promise<T> {
+  public async findOne(filters: any = {}, includes: Record<string, string> = {}, selects?: string): Promise<T> {
 
     const query = this.model.findOne(filters).select(selects);
 
@@ -70,24 +66,21 @@ export class ResourceController<T extends Document> {
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async createNew(payload: any = {}): Promise<T> {
+  public async createNew(payload: Partial<T>): Promise<T> {
 
     validatePayload(payload, this.properties);
 
     const resource = new this.model();
 
-    for (const key of Object.keys(payload)) {
-      // tslint:disable-next-line: no-any
-      (resource as any)[key] = payload[key];
+    for (const key in payload) {
+      resource.set(key, payload[key]);
     }
 
     return resource.save();
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async editOne(id: string, payload: any = {}): Promise<T> {
+  public async editOne(id: string, payload: Partial<T>): Promise<T> {
 
     if (!id) throw new InvalidRequestError('id not specified');
 
@@ -97,15 +90,13 @@ export class ResourceController<T extends Document> {
 
     if (!resource) throw new InvalidRequestError('resource not found: ' + this.model.modelName + '@' + id);
 
-    for (const key of Object.keys(payload)) {
+    for (const key in payload) {
       if (key !== 'id' && key !== '_id') {
-        // tslint:disable-next-line: no-any
-        (resource as any)[key] = payload[key];
+        resource.set(key, payload[key]);
       }
     }
 
-    // tslint:disable-next-line: no-any
-    (resource as any).updatedAt = Date.now();
+    resource.updatedAt = Date.now();
 
     return resource.save();
 
@@ -119,7 +110,7 @@ export class ResourceController<T extends Document> {
 
     if (!resource) throw new InvalidRequestError('resource not found: ' + this.model.modelName + '@' + id);
 
-    resource.remove();
+    await resource.remove();
 
     return true;
 

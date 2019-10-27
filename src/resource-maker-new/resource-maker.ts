@@ -1,10 +1,10 @@
-import { ResourceProperty, ResourcePropertyMeta, ResourceRelation } from './resource-maker-types';
-import { Model, Document } from 'mongoose';
+import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource } from './resource-maker-types';
+import { Model } from 'mongoose';
 import { makeMainResourceModel, makeResourceRelationModel } from './resource-model';
 import { ServerError } from '../global/errors';
 import { ResourceController } from './resource-controller';
 
-export class ResourceMaker<T extends Document> {
+export class ResourceMaker<T extends IResource> {
 
   private resourceName = '';
   private resourceProperties: ResourceProperty[] = [];
@@ -12,7 +12,7 @@ export class ResourceMaker<T extends Document> {
   private resourceRelations: ResourceRelation[] = [];
 
   private resourceModel?: Model<T>;
-  private resourceRelationModels: Model<Document>[] = [];
+  private resourceRelationModels: Model<IResource>[] = [];
 
   constructor(name: string) {
     this.resourceName = name;
@@ -32,7 +32,7 @@ export class ResourceMaker<T extends Document> {
     this.resourceMetas = metas;
   }
 
-  public addRelation<P extends Document>(relation: ResourceRelation) {
+  public addRelation<P extends IResource>(relation: ResourceRelation) {
 
     this.resourceRelations.push(relation);
 
