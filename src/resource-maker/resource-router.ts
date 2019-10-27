@@ -5,9 +5,10 @@ import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
 import { ResourceAction, ResourceProperty, ResourcePropertyMeta } from './resource-maker-types';
 import { InvalidRequestError, ServerError, ForbiddenAccessError } from '../global/errors';
-import { IUser, UserController } from '../modules/user/user-resource';
+import { IUser } from '../modules/user/user-resource';
 import { Merge } from 'type-fest';
 import { hasPermission } from './resource-maker-util';
+import { getUserByToken } from '../modules/auth/auth-resource';
 
 export enum ResourceActionMethod {
   POST,
@@ -265,10 +266,10 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
       const needToLoadUser = action.permission || action.permissionFunction || action.permissionFunctionStrict || action.payloadPreprocessor || action.payloadPostprocessor;
 
       if (needToLoadUser) {
-        user = (await UserController.list({ filters: { token } }))[0];
+        user = await getUserByToken(token);
       }
 
-      if (action.permission && (!user || !user.permissions || !hasPermission(user.permissions, action.permission))) {
+      if (action.permission && (!user || !user.permissions || !hasPermission(user.permissions || [], action.permission)) ) {
         throw new ForbiddenAccessError('forbidden access');
       }
 

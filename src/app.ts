@@ -19,11 +19,14 @@ if (process.env.NODE_ENV === 'development') {
 
 app.get('/ping', (request, response) => response.send('pong'));
 
+import { AuthRouter } from './modules/auth/auth-resource';
+app.use('/api/v1/auth', AuthRouter);
+
 import { UserRouter } from './modules/user/user-resource';
 app.use('/api/v1/users', UserRouter);
 
-import { AuthRouter } from './modules/auth/auth-resource';
-app.use('/api/v1/auth', AuthRouter);
+import { MediaRouter } from './modules/media/media-resource';
+app.use('/api/v1/medias', MediaRouter);
 
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);
@@ -33,9 +36,6 @@ app.use('/api/v1/pages', PageRouter);
 
 import { AuthorRouter } from './modules/author/author-resource';
 app.use('/api/v1/authors', AuthorRouter);
-
-import { MediaRouter } from './modules/media/media-resource';
-app.use('/api/v1/medias', MediaRouter);
 
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
