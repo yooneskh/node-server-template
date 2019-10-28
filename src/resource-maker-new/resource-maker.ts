@@ -1,10 +1,11 @@
-import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource } from './resource-maker-types';
+import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction, IRouterRelation } from './resource-maker-types';
 import { Model } from 'mongoose';
 import { makeMainResourceModel, makeResourceRelationModel } from './resource-model';
 import { ServerError } from '../global/errors';
 import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { Router } from 'express';
+import { scaffoldResourceRouter } from './resource-router';
 
 export class ResourceMaker<T extends IResource> {
 
@@ -12,6 +13,7 @@ export class ResourceMaker<T extends IResource> {
   private resourceProperties: ResourceProperty[] = [];
   private resourceMetas: ResourcePropertyMeta[] = [];
   private resourceRelations: ResourceRelation[] = [];
+  private resourceActions: ResourceAction[] = [];
 
   private resourceModel?: Model<T>;
   private resourceRelationModels: Model<IResource>[] = [];
@@ -86,9 +88,24 @@ export class ResourceMaker<T extends IResource> {
     return this.resourceRelationControllers;
   }
 
+  public addAction(action: ResourceAction) {
+    this.resourceActions.push(action);
+  }
+
+  public addActions(actions: ResourceAction[]) {
+    actions.map(action => this.addAction(action));
+  }
+
   public getRouter() {
 
-    // this.resourceRouter = 'adsfasdf'; // TODO: this is next step!
+    const routerRelations: IRouterRelation[] = this.resourceRelations.map((relation, index) => ({
+      targetModelName: relation.targetModelName,
+      relationModelName: relation.relationModelName,
+      controller: this.resourceRelationControllers[index],
+      actions: relation.actions
+    }));
+
+    this.resourceRouter = scaffoldResourceRouter(this.resourceActions, routerRelations, this.resourceProperties, this.resourceMetas, this.resourceController)
 
     return this.resourceRouter;
 

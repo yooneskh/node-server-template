@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { ResourceActionTemplate, ResourceActionMethod, ResourceRelationActionTemplate } from './resource-router';
 import { Document } from 'mongoose';
 import { IUser } from '../modules/user/user-resource';
+import { ResourceRelationController } from './resource-relation-controller';
 
 export interface IResource extends Document {
   createdAt: number;
@@ -37,6 +37,13 @@ export interface ResourceRelation {
   actions?: ResourceAction[]
 }
 
+export interface IRouterRelation {
+  targetModelName: string,
+  relationModelName?: string;
+  controller: ResourceRelationController<IResource>,
+  actions?: ResourceAction[]
+}
+
 export interface IResourceActionProcessor {
   payload: any;
   user?: IUser;
@@ -48,21 +55,44 @@ export interface IResourceActionProvider {
   user?: IUser
 }
 
-interface IResActionFunction {
-  (request: Request, response: Response, user?: IUser): Promise<any>
+export enum ResourceActionMethod {
+  POST,
+  GET,
+  PUT,
+  PATCH,
+  DELETE
+}
+
+export enum ResourceActionTemplate {
+  LIST,
+  LIST_COUNT,
+  RETRIEVE,
+  CREATE,
+  UPDATE,
+  DELETE
+}
+
+export enum ResourceRelationActionTemplate {
+  LIST,
+  LIST_COUNT,
+  RETRIEVE,
+  RETRIEVE_COUNT,
+  CREATE,
+  DELETE
+}
+
+export interface ResourceActionBag {
+  request: Request,
+  response: Response
+}
+
+interface ResourceRouterMiddleware {
+  (bag: ResourceActionBag): Promise<void>
 }
 
 export interface ResourceAction {
   template?: ResourceActionTemplate | ResourceRelationActionTemplate;
   path?: string;
   method?: ResourceActionMethod;
-  permission?: string;
-  permissionFunction?(user?: IUser | null ): Promise<boolean>;
-  permissionFunctionStrict?(user: IUser ): Promise<boolean>;
-  payloadValidator?(payload: any): Promise<boolean>;
-  payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean | void>;
-  payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
-  action?: IResActionFunction;
-  responsePreprocessor?(response: any, user?: IUser): Promise<void>;
-  dataProvider?: IResActionFunction;
+  action?(bag: ResourceActionBag): Promise<any>;
 }

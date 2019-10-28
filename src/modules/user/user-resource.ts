@@ -82,4 +82,6 @@ maker.setActions([
   { template: ResourceActionTemplate.DELETE }
 ]);
 
+// TODO: add middleware of preprocessors and post processors, complete from temp.txt
+
 export const { model: UserModel, controller: UserController, router: UserRouter } = maker.getMCR();
