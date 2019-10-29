@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Document } from 'mongoose';
 import { IUser } from '../modules/user/user-resource';
 import { ResourceRelationController } from './resource-relation-controller';
+import { Merge } from 'type-fest';
 
 export interface IResource extends Document {
   createdAt: number;
@@ -34,14 +35,14 @@ export interface ResourceRelation {
   singular?: boolean;
   maxCount?: number;
   properties?: ResourceProperty[];
-  actions?: ResourceAction[]
+  actions?: ResourceAction[];
 }
 
 export interface IRouterRelation {
-  targetModelName: string,
+  targetModelName: string;
   relationModelName?: string;
-  controller: ResourceRelationController<IResource>,
-  actions?: ResourceAction[]
+  controller: ResourceRelationController<IResource>;
+  actions?: ResourceAction[];
 }
 
 export interface IResourceActionProcessor {
@@ -50,9 +51,9 @@ export interface IResourceActionProcessor {
 }
 
 export interface IResourceActionProvider {
-  request: Request,
-  response: Response,
-  user?: IUser
+  request: Request;
+  response: Response;
+  user?: IUser;
 }
 
 export enum ResourceActionMethod {
@@ -82,17 +83,22 @@ export enum ResourceRelationActionTemplate {
 }
 
 export interface ResourceActionBag {
-  request: Request,
-  response: Response
+  action: ResourceAction;
+  request: Request;
+  response: Response;
 }
 
 interface ResourceRouterMiddleware {
-  (bag: ResourceActionBag): Promise<void>
+  (bag: ResourceActionBag): Promise<void>;
+}
+
+interface ResourceRouterResponsedMiddleware {
+  (bag: Merge<ResourceActionBag, { data: any }>): Promise<void>;
 }
 
 export interface ResourceAction {
   template?: ResourceActionTemplate | ResourceRelationActionTemplate;
   path?: string;
   method?: ResourceActionMethod;
-  action?(bag: ResourceActionBag): Promise<any>;
+  dataProvider?(bag: ResourceActionBag): Promise<any>;
 }

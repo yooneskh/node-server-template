@@ -2,13 +2,14 @@ import { Router, Request, Response } from 'express';
 import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
-import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, IRouterRelation, ResourceActionMethod, ResourceActionTemplate, ResourceRelationActionTemplate, ResourceActionBag, ResourceRouterMiddleware } from './resource-maker-types';
+import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, IRouterRelation, ResourceActionMethod, ResourceActionTemplate, ResourceRelationActionTemplate, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware } from './resource-maker-types';
 import { InvalidRequestError, ServerError } from '../global/errors';
 import { Merge } from 'type-fest';
 import { MAX_LISTING_LIMIT } from './config';
 
 const preProcessors: ResourceRouterMiddleware[] = [];
-const postProcessors: ResourceRouterMiddleware[] = [];
+const preResponseProcessors: ResourceRouterResponsedMiddleware[] = [];
+const postProcessors: ResourceRouterResponsedMiddleware[] = [];
 
 
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
@@ -102,9 +103,7 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
   applyActionOnRouter(router, {
     path: '/meta',
     method: ResourceActionMethod.GET,
-    async action({ request, response }) {
-      response.json(result);
-    }
+    dataProvider: async () => result
   });
 
 }
@@ -115,16 +114,14 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}`;
 
-    action.action = async ({ request, response }) => response.json(
-      controller.listForSource(
-        request.params.sourceId,
-        extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
-        extractSortQueryObject(request.query.sorts),
-        extractIncludeQueryObject(request.query.includes),
-        request.query.selects,
-        Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
-        parseInt(request.query.skip || '0', 10) || 0
-      )
+    action.dataProvider = async ({ request }) => controller.listForSource(
+      request.params.sourceId,
+      extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
+      extractSortQueryObject(request.query.sorts),
+      extractIncludeQueryObject(request.query.includes),
+      request.query.selects,
+      Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+      parseInt(request.query.skip || '0', 10) || 0
     );
 
   }
@@ -133,9 +130,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/count`;
 
-    action.action = async ({ request, response }) => response.json(
-      controller.countListForSource(request.params.sourceId)
-    );
+    action.dataProvider = async ({ request }) => controller.countListForSource(request.params.sourceId)
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
@@ -143,9 +138,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.action = async ({ request, response }) => response.json(
-      controller.getSingleRelation(request.params.sourceId, request.params.targetId, request.query.selects)
-    );
+    action.dataProvider = async ({ request }) => controller.getSingleRelation(request.params.sourceId, request.params.targetId, request.query.selects)
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
@@ -153,9 +146,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
 
-    action.action = async ({ request, response }) => response.json(
-      controller.getSingleRelationCount(request.params.sourceId, request.params.targetId)
-    );
+    action.dataProvider = async ({ request }) => controller.getSingleRelationCount(request.params.sourceId, request.params.targetId)
 
   }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
@@ -163,9 +154,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.POST;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.action = async ({ request, response }) => response.json(
-      controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
-    );
+    action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
 
   }
   else if (action.template === ResourceRelationActionTemplate.DELETE) {
@@ -173,9 +162,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.DELETE;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.action = async ({ request, response }) => response.json(
-      controller.removeRelation(request.params.sourceId, request.params.targetId)
-    );
+    action.dataProvider = async ({ request }) => controller.removeRelation(request.params.sourceId, request.params.targetId)
 
   }
   else {
@@ -189,15 +176,13 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.method = ResourceActionMethod.GET;
     action.path = '/';
 
-    action.action = async ({ request, response }) => response.json(
-      controller.list(
-        extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
-        extractSortQueryObject(request.query.sorts),
-        extractIncludeQueryObject(request.query.includes),
-        request.query.selects,
-        Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
-        parseInt(request.query.skip || '0', 10) || 0
-      )
+    action.dataProvider = async ({ request }) => controller.list(
+      extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
+      extractSortQueryObject(request.query.sorts),
+      extractIncludeQueryObject(request.query.includes),
+      request.query.selects,
+      Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+      parseInt(request.query.skip || '0', 10) || 0
     );
 
   }
@@ -206,10 +191,8 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.method = ResourceActionMethod.GET;
     action.path = '/count';
 
-    action.action = async ({ request, response }) => response.json(
-      controller.count(
-        extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
-      )
+    action.dataProvider = async ({ request }) => controller.count(
+      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
     );
 
   }
@@ -218,12 +201,10 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.method = ResourceActionMethod.GET;
     action.path = '/:resourceId';
 
-    action.action = async ({ request, response }) => response.json(
-      controller.singleRetrieve(
-        request.params.resourceId,
-        extractIncludeQueryObject(request.query.includes),
-        request.query.selects
-      )
+    action.dataProvider = async ({ request }) => controller.singleRetrieve(
+      request.params.resourceId,
+      extractIncludeQueryObject(request.query.includes),
+      request.query.selects
     );
 
   }
@@ -232,11 +213,7 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.method = ResourceActionMethod.POST;
     action.path = '/';
 
-    action.action = async ({ request, response }) => response.json(
-      controller.createNew(
-        request.body
-      )
-    );
+    action.dataProvider = async ({ request }) => controller.createNew(request.body);
 
   }
   else if (action.template === ResourceActionTemplate.UPDATE) {
@@ -244,11 +221,9 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.method = ResourceActionMethod.PATCH;
     action.path = '/:resourceId';
 
-    action.action = async ({ request, response }) => response.json(
-      controller.editOne(
-        request.params.resourceId,
-        request.body
-      )
+    action.dataProvider = async ({ request }) => controller.editOne(
+      request.params.resourceId,
+      request.body
     );
 
   }
@@ -257,11 +232,7 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.method = ResourceActionMethod.DELETE;
     action.path = '/:resourceId';
 
-    action.action = async ({ request, response }) => response.json(
-      controller.deleteOne(
-        request.params.resourceId
-      )
-    );
+    action.dataProvider = async ({ request }) => controller.deleteOne(request.params.resourceId);
 
   }
   else {
@@ -272,12 +243,13 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
 function applyActionOnRouter(router: Router, action: ResourceAction) {
 
   if (!action.path) throw new ServerError('action path undefined');
-  if (!action.action) throw new ServerError('action function undefined');
+  if (!action.dataProvider) throw new ServerError('action data provider undefined');
 
   const actionHandler = async (request: Request, response: Response, next: Function) => {
     try {
 
       const bag: ResourceActionBag = {
+        action,
         request,
         response
       };
@@ -286,10 +258,16 @@ function applyActionOnRouter(router: Router, action: ResourceAction) {
         await preProcessor(bag);
       }
 
-      action.action && await action.action(bag);
+      const data = action.dataProvider && await action.dataProvider(bag);
+
+      for (const preResponseProcessor of preResponseProcessors) {
+        await preResponseProcessor({ ...bag, data });
+      }
+
+      response.json(data);
 
       for (const postProcessor of postProcessors) {
-        await postProcessor(bag);
+        await postProcessor({ ...bag, data });
       }
 
     }
@@ -313,7 +291,11 @@ export function addResourceRouterPreProcessor(middleware: ResourceRouterMiddlewa
   preProcessors.push(middleware)
 }
 
-export function addResourceRouterPostProcessor(middleware: ResourceRouterMiddleware) {
+export function addResourceRouterPreResponseProcessor(middleware: ResourceRouterResponsedMiddleware) {
+  preResponseProcessors.push(middleware)
+}
+
+export function addResourceRouterPostProcessor(middleware: ResourceRouterResponsedMiddleware) {
   postProcessors.push(middleware)
 }
 
