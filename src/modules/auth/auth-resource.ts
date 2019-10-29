@@ -1,10 +1,10 @@
+import { IResource, ResourceActionMethod } from '../../resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceActionMethod } from '../../resource-maker/resource-router';
-import { UserController, IUser } from '../user/user-resource';
 import { InvalidRequestError } from '../../global/errors';
 import { generateToken } from '../../global/util';
+import { IUser, UserController } from '../user/user-resource';
 import { MediaController } from '../media/media-resource';
-import { IResource } from '../../resource-maker/resource-maker-types';
+
 
 export interface IAuth extends IResource {
   user: string;
@@ -65,25 +65,21 @@ export const { controller: AuthController } = maker.getMC();
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/login',
-  async dataProvider(request, response) {
+  async dataProvider({ request }) {
 
-    const user = await UserController.findOne({
-      filters: {
-        phoneNumber: request.body.phoneNumber
-      }
-    });
+    const user = await UserController.findOne(
+      { phoneNumber: request.body.phoneNumber }
+    );
 
     await AuthController.createNew({
-      payload: {
-        user: user._id,
-        type: 'OTP',
-        propertyIdentifier: user.phoneNumber,
-        // verificationCode: generateRandomNumericCode(6);,
-        verificationCode: '111111',
-        token: undefined,
-        valid: false,
-        meta: undefined
-      }
+      user: user._id,
+      type: 'OTP',
+      propertyIdentifier: user.phoneNumber,
+      // verificationCode: generateRandomNumericCode(6);,
+      verificationCode: '111111',
+      token: undefined,
+      valid: false,
+      meta: undefined
     });
 
     return true;
@@ -94,28 +90,24 @@ maker.addAction({
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/register',
-  async dataProvider(request, response) {
+  async dataProvider({ request }) {
 
     const user = await UserController.createNew({
-      payload: {
-        firstName: request.body.firstName,
-        lastName: request.body.lastName,
-        phoneNumber: request.body.phoneNumber,
-        permissions: ['user.*']
-      }
+      firstName: request.body.firstName,
+      lastName: request.body.lastName,
+      phoneNumber: request.body.phoneNumber,
+      permissions: ['user.*']
     });
 
     await AuthController.createNew({
-      payload: {
-        user: user._id,
-        type: 'OTP',
-        propertyIdentifier: user.phoneNumber,
-        // verificationCode: generateRandomNumericCode(6);,
-        verificationCode: '111111',
-        token: undefined,
-        valid: false,
-        meta: undefined
-      }
+      user: user._id,
+      type: 'OTP',
+      propertyIdentifier: user.phoneNumber,
+      // verificationCode: generateRandomNumericCode(6);,
+      verificationCode: '111111',
+      token: undefined,
+      valid: false,
+      meta: undefined
     });
 
     return true;
@@ -126,17 +118,18 @@ maker.addAction({
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/verify',
-  async dataProvider(request, response) {
+  async dataProvider({ request }) {
 
     const phoneNumber = request.body.phoneNumber;
     const verificationCode = request.body.verificationCode;
 
-    const authTokens = await AuthController.list({
-      filters: { propertyIdentifier: phoneNumber },
-      sorts: { '_id': -1 },
-      includes: { 'user': '' },
-      limit: 1
-    });
+    const authTokens = await AuthController.list(
+      { propertyIdentifier: phoneNumber },
+      { '_id': -1 },
+      { 'user': '' },
+      undefined,
+      1
+    );
 
     const authToken = authTokens[0];
 
@@ -165,13 +158,13 @@ maker.addAction({
 maker.addAction({
   method: ResourceActionMethod.POST,
   path: '/logout',
-  async dataProvider(request, response) {
+  async dataProvider({ request }) {
 
     const token = request.headers.authorization;
 
-    const authToken = await AuthController.findOne({
-      filters: { token }
-    });
+    const authToken = await AuthController.findOne(
+      { token }
+    );
 
     if (authToken) {
       authToken.valid = false;
@@ -186,14 +179,13 @@ maker.addAction({
 maker.addAction({
   method: ResourceActionMethod.GET,
   path: '/identity',
-  async permissionFunctionStrict(user) {
+  async permissionFunctionStrict({ user }) {
     return !!user;
   },
-  async dataProvider(request, response, user) {
+  async dataProvider({ user }) {
 
     if (user && user.profile) {
-      // tslint:disable-next-line: no-any
-      (user as any).profile = await MediaController.singleRetrieve({ resourceId: user.profile });
+      (user as any).profile = await MediaController.singleRetrieve(user.profile);
     }
 
     return user;

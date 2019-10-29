@@ -1,4 +1,4 @@
-import { ResourceOptions, ResourceProperty, ResourceRelation } from './resource-maker-types';
+import { ResourceProperty, ResourceRelation } from './resource-maker-types';
 import { Document, model, Schema } from 'mongoose';
 import { simplePascalize } from '../global/util';
 import { ServerError } from '../global/errors';
@@ -56,59 +56,39 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
 
 }
 
-function makeSchemaFromPropertise(properties: ResourceProperty[]): Schema {
-  return new Schema(makeSchemaOptionsFromPropertise(properties));
-}
+function makeRelationSchema(resourceName: string, relation: ResourceRelation) {
 
-function makeRelationSchemas(resourceName: string, relations: ResourceRelation[]) {
+  const schemeOptions = makeSchemaOptionsFromPropertise(relation.properties || []);
 
-  const result = [];
-
-  for (const relation of relations) {
-
-    const schemeOptions = makeSchemaOptionsFromPropertise(relation.properties || []);
-
-    schemeOptions[resourceName.toLowerCase()] = {
-      type: String,
-      ref: resourceName,
-      required: true
-    }
-
-    schemeOptions[relation.targetModelName.toLowerCase()] = {
-      type: String,
-      ref: relation.targetModelName,
-      required: true
-    }
-
-    result.push(new Schema(schemeOptions));
-
+  schemeOptions[resourceName.toLowerCase()] = {
+    type: String,
+    ref: resourceName,
+    required: true
   }
 
-  return result;
+  schemeOptions[relation.targetModelName.toLowerCase()] = {
+    type: String,
+    ref: relation.targetModelName,
+    required: true
+  }
+
+  return new Schema(schemeOptions);
 
 }
 
-export function makeModelForResource<T extends Document>(options: ResourceOptions) {
+export function makeMainResourceModel<T extends Document>(name: string, properties: ResourceProperty[]) {
+  return model<T>(
+    name,
+    new Schema(makeSchemaOptionsFromPropertise(properties))
+  )
+}
 
-  const mainSchema = makeSchemaFromPropertise(options.properties);
+export function makeResourceRelationModel<T extends Document>(name: string, relation: ResourceRelation) {
 
-  const relationSchemas = makeRelationSchemas(options.name, options.relations || []);
+  const schema = makeRelationSchema(name, relation);
 
-  const relationModels = relationSchemas.map((schema, index) => {
+  const relationName = relation.relationModelName || simplePascalize([name, relation.targetModelName, 'Relation']);
 
-    const relation = (options.relations || [])[index];
-
-    if (!relation) throw new Error('more relation schemas than relation options! (wth?)');
-
-    const relationName = relation.relationModelName || simplePascalize([options.name, relation.targetModelName, 'Relation']);
-
-    return model(relationName, schema);
-
-  });
-
-  return {
-    mainModel: model<T>(options.name, mainSchema),
-    relationModels
-  };
+  return model<T>(relationName, schema);
 
 }

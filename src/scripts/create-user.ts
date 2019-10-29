@@ -11,12 +11,10 @@ const PERMISSIONS = ['user.*', 'admin.*'];
 (async () => {
 
   const user = await UserController.createNew({
-    payload: {
-      firstName: FIRSTNAME,
-      lastName: LASTNAME,
-      phoneNumber: PHONENUMBER,
-      permissions: PERMISSIONS
-    }
+    firstName: FIRSTNAME,
+    lastName: LASTNAME,
+    phoneNumber: PHONENUMBER,
+    permissions: PERMISSIONS
   });
 
   console.log('the user', user);

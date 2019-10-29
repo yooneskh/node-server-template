@@ -1,19 +1,11 @@
 import { Request, Response } from 'express';
-import { ResourceActionTemplate, ResourceActionMethod, ResourceRelationActionTemplate } from './resource-router';
 import { Document } from 'mongoose';
-import { IUser } from '../modules/user/user-resource';
+import { ResourceRelationController } from './resource-relation-controller';
+import { Merge } from 'type-fest';
 
 export interface IResource extends Document {
   createdAt: number;
   updatedAt: number;
-}
-
-export interface ResourceOptions {
-  name: string;
-  properties: ResourceProperty[];
-  metas?: ResourcePropertyMeta[];
-  relations?: ResourceRelation[];
-  actions?: ResourceAction[];
 }
 
 export interface ResourceProperty {
@@ -42,35 +34,59 @@ export interface ResourceRelation {
   singular?: boolean;
   maxCount?: number;
   properties?: ResourceProperty[];
-  actions?: ResourceAction[]
+  actions?: ResourceAction[];
 }
 
-export interface IResourceActionProcessor {
-  payload: any;
-  user?: IUser;
+export interface IRouterRelation {
+  targetModelName: string;
+  relationModelName?: string;
+  controller: ResourceRelationController<IResource>;
+  actions?: ResourceAction[];
 }
 
-export interface IResourceActionProvider {
-  request: Request,
-  response: Response,
-  user?: IUser
+export enum ResourceActionMethod {
+  POST,
+  GET,
+  PUT,
+  PATCH,
+  DELETE
 }
 
-interface IResActionFunction {
-  (request: Request, response: Response, user?: IUser): Promise<any>
+export enum ResourceActionTemplate {
+  LIST,
+  LIST_COUNT,
+  RETRIEVE,
+  CREATE,
+  UPDATE,
+  DELETE
+}
+
+export enum ResourceRelationActionTemplate {
+  LIST,
+  LIST_COUNT,
+  RETRIEVE,
+  RETRIEVE_COUNT,
+  CREATE,
+  DELETE
+}
+
+export interface ResourceActionBag {
+  action: ResourceAction;
+  request: Request;
+  response: Response;
+}
+
+interface ResourceRouterMiddleware {
+  (bag: ResourceActionBag): Promise<void>;
+}
+
+interface ResourceRouterResponsedMiddleware {
+  (bag: Merge<ResourceActionBag, { data: any }>): Promise<void>;
 }
 
 export interface ResourceAction {
   template?: ResourceActionTemplate | ResourceRelationActionTemplate;
   path?: string;
   method?: ResourceActionMethod;
-  permission?: string;
-  permissionFunction?(user?: IUser | null ): Promise<boolean>;
-  permissionFunctionStrict?(user: IUser ): Promise<boolean>;
-  payloadValidator?(payload: any): Promise<boolean>;
-  payloadPreprocessor?(payload: any, user?: IUser): Promise<boolean | void>;
-  payloadPostprocessor?(payload: any, user?: IUser): Promise<void>;
-  action?: IResActionFunction;
-  responsePreprocessor?(response: any, user?: IUser): Promise<void>;
-  dataProvider?: IResActionFunction;
+  dataProvider?(bag: ResourceActionBag): Promise<any>;
 }

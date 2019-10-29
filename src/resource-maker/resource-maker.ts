@@ -1,167 +1,111 @@
-import { ResourceOptions, ResourceProperty, ResourceAction, ResourceRelation, ResourcePropertyMeta } from './resource-maker-types';
-import { Document, Model } from 'mongoose';
-import { ResourceController } from './resource-controller';
-import { scaffoldResourceRouter } from './resource-router';
-import { makeModelForResource } from './resource-model';
-import { ResourceRelationController } from './resource-relation-controller';
+import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction, IRouterRelation } from './resource-maker-types';
+import { Model } from 'mongoose';
+import { makeMainResourceModel, makeResourceRelationModel } from './resource-model';
 import { ServerError } from '../global/errors';
+import { ResourceController } from './resource-controller';
+import { ResourceRelationController } from './resource-relation-controller';
 import { Router } from 'express';
+import { scaffoldResourceRouter } from './resource-router';
 
-export function makeResourceModel<T extends Document>(options: ResourceOptions) {
-  return makeModelForResource<T>(options);
-}
+export class ResourceMaker<T extends IResource> {
 
-// tslint:disable-next-line: no-any
-export function makeResourceController<T extends Document>(options: ResourceOptions, resourceModel: any, relationModels: any[]) {
-  return {
-    resourceController: new ResourceController<T>(resourceModel, options),
-    relationControllers: relationModels.map((model, index) =>
-      new ResourceRelationController(options.name, (options.relations || [])[index].targetModelName, model, (options.relations || [])[index])
-    )
-  }
-}
+  private resourceName = '';
+  private resourceProperties: ResourceProperty[] = [];
+  private resourceMetas: ResourcePropertyMeta[] = [];
+  private resourceRelations: ResourceRelation[] = [];
+  private resourceActions: ResourceAction[] = [];
 
-// tslint:disable-next-line: no-any
-export function makeResourceRouter<T extends Document>(options: ResourceOptions, resourceController: any, relationControllers: any[]) {
-  return scaffoldResourceRouter<T>({
-    resourceActions: options.actions,
-    resourceProperties: options.properties,
-    resourceMetas: options.metas || [],
-    controller: resourceController,
-    relations: (options.relations || []).map((relation, index) => ({
-      targetModelName: relation.targetModelName,
-      relationModelName: relation.relationModelName,
-      controller: relationControllers[index],
-      actions: relation.actions
-    }))
-  });
-}
+  private resourceModel?: Model<T>;
+  private resourceRelationModels: Model<IResource>[] = [];
 
-export function makeResource<T extends Document>(options: ResourceOptions) {
+  private resourceController?: ResourceController<T>;
+  private resourceRelationControllers: ResourceRelationController<IResource>[] = [];
 
-  const { mainModel: resourceModel, relationModels } = makeModelForResource<T>(options);
-
-  const { resourceController, relationControllers } = makeResourceController<T>(options, resourceModel, relationModels);
-
-  const resourceRouter = makeResourceRouter<T>(options, resourceController, relationControllers);
-
-  return {
-    model: resourceModel,
-    controller: resourceController,
-    router: resourceRouter
-  };
-
-}
-
-export class ResourceMaker <T extends Document> {
-
-  private options: ResourceOptions = { name: '', properties: [] };
-
-  private resourceModel: Model<T> | undefined = undefined;
-  private resourceRelationModels: Model<Document>[] = [];
-
-  private resourceController:  ResourceController<T> | undefined;
-  private relationControllers: ResourceRelationController[] = [];
-
-  private resourceRouter: Router | undefined;
+  private resourceRouter?: Router;
 
   constructor(name: string) {
-    this.options.name = name;
+    this.resourceName = name;
   }
 
   public setProperties(properties: ResourceProperty[]) {
-    this.options.properties = properties;
+
+    this.resourceProperties = properties;
+
+    this.resourceModel = makeMainResourceModel<T>(this.resourceName, this.resourceProperties);
+
+    return this.resourceModel;
+
   }
 
   public setMetas(metas: ResourcePropertyMeta[]) {
-    this.options.metas = metas;
+    this.resourceMetas = metas;
   }
 
-  public setRelations(relations: ResourceRelation[]) {
-    this.options.relations = relations;
-  }
+  public addRelation<P extends IResource>(relation: ResourceRelation) {
 
-  public addRelation(relation: ResourceRelation) {
+    this.resourceRelations.push(relation);
 
-    if (this.options.relations === undefined) {
-      this.options.relations = [];
-    }
+    const relationModel = makeResourceRelationModel<P>(this.resourceName, relation);
+    this.resourceRelationModels.push(relationModel);
 
-    this.options.relations.push(relation);
+    const relationController = new ResourceRelationController<P>(this.resourceName, relation.targetModelName, relationModel, relation);
+    this.resourceRelationControllers.push(relationController);
 
-  }
-
-  public setActions(actions: ResourceAction[]) {
-    this.options.actions = actions;
-  }
-
-  public addAction(action: ResourceAction) {
-
-    if (this.options.actions === undefined) {
-      this.options.actions = [];
-    }
-
-    this.options.actions.push(action);
+    return {
+      model: relationModel,
+      controller: relationController
+    };
 
   }
 
   public getModel() {
 
-    // if (this.options.properties.length === 0) {
-    //   throw new ServerError('no property specified for ' + this.options.name);
-    // }
-
-    if (this.resourceModel !== undefined) {
-      throw new ServerError('model already made for ' + this.options.name);
+    if (!this.resourceModel) {
+      throw new ServerError(`model is not yet made for ${this.resourceName}!`);
     }
-
-    const res = makeModelForResource<T>(this.options);
-
-    this.resourceModel = res.mainModel;
-    this.resourceRelationModels = res.relationModels;
 
     return this.resourceModel;
 
   }
 
   public getRelationModels() {
-
-    if (this.resourceModel === undefined) {
-      throw new ServerError('model not made for ' + this.options.name);
-    }
-
     return this.resourceRelationModels;
-
   }
 
   public getController() {
 
     if (this.resourceModel === undefined) {
-      throw new ServerError('model not made for ' + this.options.name);
+      throw new ServerError('model not made for ' + this.resourceName);
     }
 
-    const result = makeResourceController<T>(this.options, this.resourceModel, this.resourceRelationModels);
-
-    this.resourceController = result.resourceController;
-    this.relationControllers = result.relationControllers;
+    this.resourceController = new ResourceController<T>(this.resourceModel, this.resourceProperties);
 
     return this.resourceController;
 
   }
 
   public getRelationControllers() {
+    return this.resourceRelationControllers;
+  }
 
-    if (this.resourceController === undefined) {
-      throw new ServerError('controller not made for ' + this.options.name);
-    }
+  public addAction(action: ResourceAction) {
+    this.resourceActions.push(action);
+  }
 
-    return this.relationControllers;
-
+  public addActions(actions: ResourceAction[]) {
+    actions.map(action => this.addAction(action));
   }
 
   public getRouter() {
 
-    this.resourceRouter = makeResourceRouter<T>(this.options, this.resourceController, this.relationControllers);
+    const routerRelations: IRouterRelation[] = this.resourceRelations.map((relation, index) => ({
+      targetModelName: relation.targetModelName,
+      relationModelName: relation.relationModelName,
+      controller: this.resourceRelationControllers[index],
+      actions: relation.actions
+    }));
+
+    this.resourceRouter = scaffoldResourceRouter(this.resourceActions, routerRelations, this.resourceProperties, this.resourceMetas, this.resourceController)
 
     return this.resourceRouter;
 

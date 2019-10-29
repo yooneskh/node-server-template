@@ -1,29 +1,30 @@
-import { Model, Document } from 'mongoose';
+import { Model } from 'mongoose';
 import { validatePropertyKeys, transformIncludes } from '../global/util';
-import { ResourceRelation } from './resource-maker-types';
+import { ResourceRelation, IResource } from './resource-maker-types';
 import { InvalidStateError } from '../global/errors';
 
-export class ResourceRelationController {
+export class ResourceRelationController<T extends IResource> {
 
-  private sourcePropertyName = '';
-  private targetPropertyName = '';
+  private sourcePropertyName: string;
+  private targetPropertyName: string;
 
-  constructor(sourceModelName: string, targetModelName: string, private relationModel: Model<Document, {}>, private relationOptions: ResourceRelation) {
+  private model: Model<T>;
+  private options: ResourceRelation;
+
+  constructor(sourceModelName: string, targetModelName: string, relationModel: Model<T>, relationOptions: ResourceRelation) {
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
+    this.model = relationModel;
+    this.options = relationOptions;
   }
 
   // tslint:disable-next-line: no-any
-  public async listForSource({ sourceId, filters = {}, sorts = {}, includes = {}, selects = undefined }: { sourceId: string, filters?: any, sorts?: any, includes?: any, selects?: string }) {
+  public async listForSource(sourceId: string, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
-    validatePropertyKeys(filters, this.relationOptions.properties || []);
-    validatePropertyKeys(sorts, this.relationOptions.properties || []);
+    validatePropertyKeys(filters, this.options.properties || []);
+    validatePropertyKeys(sorts, this.options.properties || []);
 
-    for (const key in sorts) {
-      sorts[key] = parseInt(sorts[key], 10);
-    }
-
-    const query = this.relationModel.find({ ...filters, [this.sourcePropertyName]: sourceId }).sort(sorts).select(selects);
+    const query = this.model.find({ ...filters, [this.sourcePropertyName]: sourceId }).sort(sorts).select(selects).skip(skip).limit(limit);
 
     for (const include of transformIncludes(includes)) query.populate(include);
 
@@ -31,42 +32,44 @@ export class ResourceRelationController {
 
   }
 
-  public async countListForSource(sourceId: string) {
-    return {
-      count: await this.relationModel.countDocuments({ [this.sourcePropertyName]: sourceId })
-    };
-  }
-
-  public async getSingleRelation(sourceId: string, targetId: string, selects?: string) {
-    return this.relationModel.find({
-      [this.sourcePropertyName]: sourceId,
-      [this.targetPropertyName]: targetId
-    }).select(selects);
-  }
-
-  public async getSingleRelationCount(sourceId: string, targetId: string) {
-    return {
-      count: await this.relationModel.countDocuments({
-        [this.sourcePropertyName]: sourceId,
-        [this.targetPropertyName]: targetId
-      })
-    };
+  public async countListForSource(sourceId: string): Promise<number> {
+    return this.model.countDocuments({ [this.sourcePropertyName]: sourceId });
   }
 
   // tslint:disable-next-line: no-any
-  public async addRelation(sourceId: string, targetId: string, payload: any) {
+  public async getSingleRelation(sourceId: string, targetId: string, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+
+    validatePropertyKeys(filters, this.options.properties || []);
+    validatePropertyKeys(sorts, this.options.properties || []);
+
+    const query = this.model.find({ ...filters, [this.sourcePropertyName]: sourceId, [this.targetPropertyName]: targetId }).sort(sorts).select(selects).skip(skip).limit(limit);
+
+    for (const include of transformIncludes(includes)) query.populate(include);
+
+    return query;
+
+  }
+
+  public async getSingleRelationCount(sourceId: string, targetId: string): Promise<number> {
+    return this.model.countDocuments({
+      [this.sourcePropertyName]: sourceId,
+      [this.targetPropertyName]: targetId
+    });
+  }
+
+  public async addRelation(sourceId: string, targetId: string, payload: Partial<T>): Promise<T> {
 
     // TODO: validate payload
 
-    if ('singular' in this.relationOptions || 'maxCount' in this.relationOptions) {
+    if ('singular' in this.options || 'maxCount' in this.options) {
 
       const currentCount = await this.getSingleRelationCount(sourceId, targetId);
 
-      if ('singular' in this.relationOptions && this.relationOptions.singular && currentCount.count === 1) {
+      if ('singular' in this.options && this.options.singular && currentCount >= 1) {
         throw new InvalidStateError('relation already exists')
       }
 
-      if ('maxCount' in this.relationOptions && currentCount.count === this.relationOptions.maxCount) {
+      if ('maxCount' in this.options && this.options.maxCount !== undefined && currentCount >= this.options.maxCount) {
         throw new InvalidStateError('relation max count reached')
       }
 
@@ -78,15 +81,15 @@ export class ResourceRelationController {
       [this.targetPropertyName]: targetId
     };
 
-    const relation = new this.relationModel(obj);
+    const relation = new this.model(obj);
 
     return relation.save();
 
   }
 
-  public async removeRelation(sourceId: string, targetId: string) {
+  public async removeRelation(sourceId: string, targetId: string): Promise<boolean> {
 
-    await this.relationModel.deleteMany({
+    await this.model.deleteMany({
       [this.sourcePropertyName]: sourceId,
       [this.targetPropertyName]: targetId
     })

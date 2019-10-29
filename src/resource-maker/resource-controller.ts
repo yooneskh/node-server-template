@@ -1,23 +1,25 @@
-import { Model, Document } from 'mongoose';
-import { ResourceOptions } from './resource-maker-types';
+import { Model } from 'mongoose';
 import { InvalidRequestError, NotFoundError } from '../global/errors';
 import { validatePropertyKeys, validatePayload, transformIncludes } from '../global/util';
+import { ResourceProperty, IResource } from './resource-maker-types';
 
-export class ResourceController<T extends Document> {
+export class ResourceController<T extends IResource> {
 
-  constructor(private resourceModel: Model<T, {}>, private options: ResourceOptions) { }
+  private model: Model<T>;
+  private properties: ResourceProperty[];
+
+  constructor(model: Model<T, {}>, properties: ResourceProperty[]) {
+    this.model = model;
+    this.properties = properties;
+  }
 
   // tslint:disable-next-line: no-any
-  public async list({ filters = {}, sorts = {}, includes = {}, selects = undefined, limit = 1000 * 1000 * 1000, skip = 0 }: { filters?: any, sorts?: any, includes?: any, selects?: string, limit?: number, skip?: number }): Promise<T[]> {
+  public async list(filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
-    validatePropertyKeys(filters, this.options.properties);
-    validatePropertyKeys(sorts, this.options.properties);
+    validatePropertyKeys(filters, this.properties);
+    validatePropertyKeys(sorts, this.properties);
 
-    for (const key in sorts) {
-      sorts[key] = parseInt(sorts[key], 10);
-    }
-
-    const query = this.resourceModel.find(filters).sort(sorts).select(selects).skip(skip).limit(limit);
+    const query = this.model.find(filters).sort(sorts).select(selects).skip(skip).limit(limit);
 
     for (const include of transformIncludes(includes)) query.populate(include);
 
@@ -26,96 +28,89 @@ export class ResourceController<T extends Document> {
   }
 
   // tslint:disable-next-line: no-any
-  public async count({ filters = {} }: { filters?: any }): Promise<{ count: number }> {
+  public async count(filters: any = {}): Promise<number> {
 
-    validatePropertyKeys(filters, this.options.properties);
+    validatePropertyKeys(filters, this.properties);
 
-    return {
-      count: await this.resourceModel.countDocuments(filters)
-    };
+    return this.model.countDocuments(filters);
 
   }
 
   // tslint:disable-next-line: no-any
-  public async singleRetrieve({ resourceId, includes = {}, selects = undefined }: { resourceId: string, includes?: any, selects?: string }): Promise<T> {
+  public async singleRetrieve(resourceId: string, includes: Record<string, string> = {}, selects?: string): Promise<T> {
 
-    const query = this.resourceModel.findById(resourceId).select(selects);
+    const query = this.model.findById(resourceId).select(selects);
 
     for (const include of transformIncludes(includes)) query.populate(include);
 
     const resource = await query;
 
-    if (!resource) throw new NotFoundError(`resource not found: ${this.resourceModel.modelName}@${resourceId}`);
+    if (!resource) throw new NotFoundError(`resource not found: ${this.model.modelName}@${resourceId}`);
 
     return resource;
 
   }
 
   // tslint:disable-next-line: no-any
-  public async findOne({ filters, includes = {}, selects = undefined }: { filters: any, includes?: any, selects?: string }): Promise<T> {
+  public async findOne(filters: any = {}, includes: Record<string, string> = {}, selects?: string): Promise<T> {
 
-    const query = this.resourceModel.findOne(filters).select(selects);
+    const query = this.model.findOne(filters).select(selects);
 
     for (const include of transformIncludes(includes)) query.populate(include);
 
     const resource = await query;
 
-    if (!resource) throw new NotFoundError(`resource not found: ${this.resourceModel.modelName}@${JSON.stringify(filters)}`);
+    if (!resource) throw new NotFoundError(`resource not found: ${this.model.modelName}@${JSON.stringify(filters)}`);
 
     return resource;
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async createNew({ payload = {} }: { payload: any }): Promise<T> {
+  public async createNew(payload: Partial<T>): Promise<T> {
 
-    validatePayload(payload, this.options.properties);
+    validatePayload(payload, this.properties);
 
-    const resource = new this.resourceModel();
+    const resource = new this.model();
 
-    for (const key of Object.keys(payload)) {
-      // tslint:disable-next-line: no-any
-      (resource as any)[key] = payload[key];
+    for (const key in payload) {
+      resource.set(key, payload[key]);
     }
 
     return resource.save();
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async editOne({ id = '', payload = {}}: { id: string, payload: any }): Promise<T> {
+  public async editOne(id: string, payload: Partial<T>): Promise<T> {
 
     if (!id) throw new InvalidRequestError('id not specified');
 
-    validatePayload(payload, this.options.properties);
+    validatePayload(payload, this.properties);
 
-    const resource = await this.resourceModel.findById(id);
+    const resource = await this.model.findById(id);
 
-    if (!resource) throw new InvalidRequestError('resource not found: ' + this.resourceModel.modelName + '@' + id);
+    if (!resource) throw new InvalidRequestError('resource not found: ' + this.model.modelName + '@' + id);
 
-    for (const key of Object.keys(payload)) {
+    for (const key in payload) {
       if (key !== 'id' && key !== '_id') {
-        // tslint:disable-next-line: no-any
-        (resource as any)[key] = payload[key];
+        resource.set(key, payload[key]);
       }
     }
 
-    // tslint:disable-next-line: no-any
-    (resource as any).updatedAt = Date.now();
+    resource.updatedAt = Date.now();
 
     return resource.save();
 
   }
 
-  public async deleteOne({ id = '' }: { id: string }): Promise<boolean> {
+  public async deleteOne(id: string): Promise<boolean> {
 
     if (!id) throw new InvalidRequestError('id not specified');
 
-    const resource = await this.resourceModel.findById(id);
+    const resource = await this.model.findById(id);
 
-    if (!resource) throw new InvalidRequestError('resource not found: ' + this.resourceModel.modelName + '@' + id);
+    if (!resource) throw new InvalidRequestError('resource not found: ' + this.model.modelName + '@' + id);
 
-    resource.remove();
+    await resource.remove();
 
     return true;
 

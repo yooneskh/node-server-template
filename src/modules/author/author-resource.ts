@@ -1,6 +1,5 @@
+import { IResource, ResourceRelationActionTemplate, ResourceActionTemplate } from '../../resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../resource-maker/resource-router';
-import { IResource } from '../../resource-maker/resource-maker-types';
 
 export interface IAuthor extends IResource {
   familyName: string;
@@ -15,7 +14,7 @@ maker.setProperties([
   }
 ]);
 
-maker.addRelation({
+export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation({
   targetModelName: 'Book',
   singular: true,
   properties: [
@@ -34,7 +33,7 @@ maker.addRelation({
   ]
 });
 
-maker.setActions([
+maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.CREATE },
   { template: ResourceActionTemplate.UPDATE },

@@ -1,4 +1,3 @@
-
 export function hasPermission(permissionList: string[], permission: string): boolean {
 
   for (const permit of permissionList) {

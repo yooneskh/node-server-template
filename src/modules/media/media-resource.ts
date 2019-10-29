@@ -1,13 +1,13 @@
 // tslint:disable: no-use-before-declare
 import * as fs from 'fs';
 
+import { IResource, ResourceActionTemplate, ResourceActionMethod } from '../../resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceActionMethod, ResourceActionTemplate } from '../../resource-maker/resource-router';
-import { IResource } from '../../resource-maker/resource-maker-types';
 import { InvalidRequestError } from '../../global/errors';
 import { Config } from '../../global/config';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import * as ReadChunk from 'read-chunk';
+import { DISMISS_DATA_PROVIDER } from '../../resource-maker/resource-router';
 
 
 // init code
@@ -110,22 +110,20 @@ maker.addAction({ template: ResourceActionTemplate.RETRIEVE });
 maker.addAction({
   path: '/init/upload',
   method: ResourceActionMethod.POST,
-  dataProvider: async (request, response, user) => {
+  async dataProvider({ request, user }) {
 
     const media = await MediaController.createNew({
-      payload: {
-        owner: user !== undefined ? user._id : undefined,
-        name: request.body.fileName,
-        extension: request.body.fileExtension,
-        size: request.body.fileSize
-      }
+      owner: user !== undefined ? user._id : undefined,
+      name: request.body.fileName,
+      extension: request.body.fileExtension,
+      size: request.body.fileSize
     });
 
     const userDirectory = `download/${media.owner || 'public'}`;
 
     if (!fs.existsSync(userDirectory)) fs.mkdirSync(userDirectory);
 
-    const relativePath = `${userDirectory}/${media.name}.${media.extension}`;
+    const relativePath = `${userDirectory}/${media._id}.${media.extension}`;
     const absolutePath = `${Config.filesBaseUrl}/${relativePath}`;
 
     media.relativePath = relativePath;
@@ -143,9 +141,9 @@ maker.addAction({
 maker.addAction({
   path: '/upload/:fileToken',
   method: ResourceActionMethod.POST,
-  action: async (request, response, user) => {
+  async dataProvider({ request, response }) {
 
-    const fileInfoList = await MediaController.list({ filters: { _id: request.params.fileToken }, selects: '+relativePath' });
+    const fileInfoList = await MediaController.list({ _id: request.params.fileToken }, undefined, undefined, '+relativePath');
 
     if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
 
@@ -156,7 +154,7 @@ maker.addAction({
     const targetFile = fileInfo.relativePath;
     const totalSize  = fileInfo.size;
 
-    const inputStream  = fs.createReadStream(<string> request.headers['x-file']);
+    const inputStream  = fs.createReadStream(request.headers['x-file'] as string);
     const outputStream = fs.createWriteStream(targetFile, { flags: 'a+' });
 
     if (request.headers['content-range']) {
@@ -186,7 +184,7 @@ maker.addAction({
 
     }
 
-    outputStream.on('finish', async function() {
+    outputStream.on('finish', async () => {
 
       const size = fs.statSync(targetFile).size;
 
@@ -200,7 +198,10 @@ maker.addAction({
           await fileInfo.save();
         }
 
-        response.status(201).json({success: true, mediaId: fileInfo._id});
+        response.status(201).json({
+          success: true,
+          mediaId: fileInfo._id
+        });
 
       }
       else {
@@ -212,6 +213,8 @@ maker.addAction({
     });
 
     inputStream.pipe(outputStream);
+
+    return DISMISS_DATA_PROVIDER;
 
   }
 });

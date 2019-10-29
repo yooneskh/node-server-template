@@ -1,9 +1,10 @@
-import { ResourceMaker } from '../../resource-maker-new/resource-maker';
-import { IResource, ResourceActionTemplate } from '../../resource-maker-new/resource-maker-types';
-import { hasPermission } from '../../resource-maker-new/resource-maker-util';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { IResource, ResourceActionTemplate } from '../../resource-maker/resource-maker-types';
+import { hasPermission } from '../../resource-maker/resource-maker-util';
 import { getUserByToken } from '../auth/auth-resource';
-import { addResourceRouterPreProcessor, addResourceRouterPostProcessor, addResourceRouterPreResponseProcessor } from '../../resource-maker-new/resource-router';
+import { addResourceRouterPreProcessor, addResourceRouterPostProcessor, addResourceRouterPreResponseProcessor } from '../../resource-maker/resource-router';
 import { ForbiddenAccessError, InvalidRequestError } from '../../global/errors';
+import { Request } from 'express';
 
 export interface IUser extends IResource {
   firstName: string;
@@ -11,8 +12,8 @@ export interface IUser extends IResource {
   phoneNumber: string;
   profile: string;
   permissions: string[];
-  verificationCode: string | undefined;
-  token: string | undefined;
+  verificationCode?: string;
+  token?: string;
 }
 
 const maker = new ResourceMaker<IUser>('User');
@@ -87,15 +88,20 @@ maker.addActions([
 
 export const { model: UserModel, controller: UserController, router: UserRouter } = maker.getMCR();
 
-// TODO: add middleware of preprocessors and post processors, complete from temp.txt
+
+function transmuteRequest(request: Request) {
+  return {
+    payload: request.body,
+    token: request.headers.authorization
+  };
+}
 
 addResourceRouterPreProcessor(async bag => {
 
-  const { action, request, response } = bag;
+  const { action, request } = bag;
+  const { payload, token } = transmuteRequest(request);
 
   let user: IUser | undefined;
-  const payload = request.body;
-  const token = request.headers.authorization;
 
   const needToLoadUser = action.permission || action.permissionFunction || action.permissionFunctionStrict || action.payloadValidator || action.payloadPreprocessor || action.postprocessor;
 
@@ -133,10 +139,8 @@ addResourceRouterPreProcessor(async bag => {
 
 addResourceRouterPreResponseProcessor(async bag => {
 
-  const { action, request, response, data } = bag;
-
-  const payload = request.body;
-  const token = request.headers.authorization;
+  const { action, request, data } = bag;
+  const { payload, token } = transmuteRequest(request);
 
   const user = await getUserByToken(token);
 
@@ -148,10 +152,8 @@ addResourceRouterPreResponseProcessor(async bag => {
 
 addResourceRouterPostProcessor(async bag => {
 
-  const { action, request, response, data } = bag;
-
-  const payload = request.body;
-  const token = request.headers.authorization;
+  const { action, request, data } = bag;
+  const { payload, token } = transmuteRequest(request);
 
   const user = await getUserByToken(token);
 

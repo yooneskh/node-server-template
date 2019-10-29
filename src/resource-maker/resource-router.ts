@@ -1,51 +1,85 @@
 import { Router, Request, Response } from 'express';
 import { ResourceController } from './resource-controller';
-import { Document } from 'mongoose';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
-import { ResourceAction, ResourceProperty, ResourcePropertyMeta } from './resource-maker-types';
-import { InvalidRequestError, ServerError, ForbiddenAccessError } from '../global/errors';
-import { IUser } from '../modules/user/user-resource';
+import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, IRouterRelation, ResourceActionMethod, ResourceActionTemplate, ResourceRelationActionTemplate, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware } from './resource-maker-types';
+import { InvalidRequestError, ServerError } from '../global/errors';
 import { Merge } from 'type-fest';
-import { hasPermission } from './resource-maker-util';
-import { getUserByToken } from '../modules/auth/auth-resource';
+import { MAX_LISTING_LIMIT } from './config';
 
-export enum ResourceActionMethod {
-  POST,
-  GET,
-  PUT,
-  PATCH,
-  DELETE
+
+export const DISMISS_DATA_PROVIDER = -485698569;
+
+const preProcessors: ResourceRouterMiddleware[] = [];
+const preResponseProcessors: ResourceRouterResponsedMiddleware[] = [];
+const postProcessors: ResourceRouterResponsedMiddleware[] = [];
+
+
+function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
+
+  const result: Record<string, string> = {};
+
+  if (!queryString) return result;
+
+  const parts = queryString.split(',');
+
+  for (const part of parts) {
+
+    const [key, value] = part.split(':');
+
+    if (!key) throw new InvalidRequestError(`query object invalid key '${key}'`);
+    if (!nullableValues && !value) throw new InvalidRequestError(`query object invalid value '${key}':'${value}'`);
+
+    result[key] = value;
+
+  }
+
+  return result;
+
 }
 
-export enum ResourceActionTemplate {
-  LIST,
-  LIST_COUNT,
-  RETRIEVE,
-  CREATE,
-  UPDATE,
-  DELETE
+function extractSortQueryObject(queryString: string): Record<string, number> {
+
+  const result: Record<string, number> = {};
+
+  const records = extractQueryObject(queryString);
+
+  for (const key in records) {
+    result[key] = parseInt(records[key] as string, 10);
+  }
+
+  return result;
+
 }
 
-export enum ResourceRelationActionTemplate {
-  LIST,
-  LIST_COUNT,
-  RETRIEVE,
-  RETRIEVE_COUNT,
-  CREATE,
-  DELETE
+function extractFilterQueryObject(queryString: string): Record<string, string | boolean> {
+
+  const result: Record<string, string | boolean> = {};
+
+  const records = extractQueryObject(queryString);
+
+  for (const key in records) {
+    if (records[key] === 'Xtrue') {
+      result[key] = true;
+    }
+    else if (records[key] === 'Xfalse') {
+      result[key] = false;
+    }
+    else {
+      result[key] = records[key];
+    }
+  }
+
+  return result;
+
 }
 
-interface IRouterRelation {
-  targetModelName: string,
-  relationModelName?: string;
-  controller: ResourceRelationController,
-  actions?: ResourceAction[]
+function extractIncludeQueryObject(queryString: string): Record<string, string> {
+  return extractQueryObject(queryString, true);
 }
 
-function injectMetaInformation({ router, properties, metas }: { router: Router, properties: ResourceProperty[], metas: ResourcePropertyMeta[] }) {
+function injectMetaInformation(router: Router, properties: ResourceProperty[], metas: ResourcePropertyMeta[]) {
 
-  // tslint:disable-next-line: no-any
   let result: Merge<ResourcePropertyMeta, ResourceProperty>[] = [];
 
   for (const property of properties) {
@@ -69,53 +103,29 @@ function injectMetaInformation({ router, properties, metas }: { router: Router, 
     }
   });
 
-  applyActionOnRouter({
-    router,
-    action: {
-      path: '/meta',
-      method: ResourceActionMethod.GET,
-      dataProvider: async () => result
-    }
+  applyActionOnRouter(router, {
+    path: '/meta',
+    method: ResourceActionMethod.GET,
+    dataProvider: async () => result
   });
 
 }
 
-function extractQueryObject(queryString: string, nullableValues = false) {
-
-  const result: Record<string, string | number | boolean> = {};
-
-  if (!queryString) return result;
-
-  const parts = queryString.split(',');
-
-  for (const part of parts) {
-
-    const [key, value] = part.split(':');
-
-    if (!key) throw new InvalidRequestError(`query object invalid key '${key}'`);
-    if (!nullableValues && !value) throw new InvalidRequestError(`query object invalid value '${key}':'${value}'`);
-
-    result[key] = value === 'Xtrue' ? true : (value === 'Xfalse' ? false : value);
-
-  }
-
-  return result;
-
-}
-
-function injectResourceRelationActionTemplate(action: ResourceAction, controller: ResourceRelationController, pluralTargetName: string) {
+function injectResourceRelationActionTemplate(action: ResourceAction, controller: ResourceRelationController<IResource>, pluralTargetName: string) {
   if (action.template === ResourceRelationActionTemplate.LIST) {
 
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}`;
 
-    action.dataProvider = async (request, response, user) => controller.listForSource({
-      sourceId: request.params.sourceId,
-      filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
-      sorts: extractQueryObject(request.query.sorts),
-      includes: extractQueryObject(request.query.includes, true),
-      selects: request.query.selects
-    });
+    action.dataProvider = async ({ request }) => controller.listForSource(
+      request.params.sourceId,
+      extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
+      extractSortQueryObject(request.query.sorts),
+      extractIncludeQueryObject(request.query.includes),
+      request.query.selects,
+      Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+      parseInt(request.query.skip || '0', 10) || 0
+    );
 
   }
   else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {
@@ -123,7 +133,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/count`;
 
-    action.dataProvider = async (request, response, user) => controller.countListForSource(request.params.sourceId);
+    action.dataProvider = async ({ request }) => controller.countListForSource(request.params.sourceId)
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
@@ -131,7 +141,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async (request, response, user) => controller.getSingleRelation(request.params.sourceId, request.params.targetId, request.query.selects);
+    action.dataProvider = async ({ request }) => controller.getSingleRelation(request.params.sourceId, request.params.targetId, request.query.selects)
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
@@ -139,7 +149,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
 
-    action.dataProvider = async (request, response, user) => controller.getSingleRelationCount(request.params.sourceId, request.params.targetId);
+    action.dataProvider = async ({ request }) => controller.getSingleRelationCount(request.params.sourceId, request.params.targetId)
 
   }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
@@ -147,7 +157,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.POST;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async (request, response, user) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body);
+    action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
 
   }
   else if (action.template === ResourceRelationActionTemplate.DELETE) {
@@ -155,42 +165,28 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.DELETE;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async (request, response, user) => controller.removeRelation(request.params.sourceId, request.params.targetId);
+    action.dataProvider = async ({ request }) => controller.removeRelation(request.params.sourceId, request.params.targetId)
 
+  }
+  else {
+    throw new ServerError('unknown relation action template!');
   }
 }
 
-function applyRelationController(router: Router, relation: IRouterRelation) {
-
-  const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
-
-  for (const action of relation.actions || []) {
-
-    if ('template' in action) {
-      injectResourceRelationActionTemplate(action, relation.controller, pluralTargetName);
-    }
-
-    applyActionOnRouter({
-      action,
-      router
-    });
-
-  }
-
-}
-
-function injectResourceTemplateOptions<T extends Document>(action: ResourceAction, controller: ResourceController<T>) {
+function injectResourceTemplateOptions<T extends IResource>(action: ResourceAction, controller: ResourceController<T>) {
   if (action.template === ResourceActionTemplate.LIST) {
 
     action.method = ResourceActionMethod.GET;
     action.path = '/';
 
-    action.dataProvider = async (request, response, user) => controller.list({
-      filters: extractQueryObject(request.query.filters), // TODO: add operator func to filters
-      sorts: extractQueryObject(request.query.sorts),
-      includes: extractQueryObject(request.query.includes, true),
-      selects: request.query.selects
-    });
+    action.dataProvider = async ({ request }) => controller.list(
+      extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
+      extractSortQueryObject(request.query.sorts),
+      extractIncludeQueryObject(request.query.includes),
+      request.query.selects,
+      Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+      parseInt(request.query.skip || '0', 10) || 0
+    );
 
   }
   else if (action.template === ResourceActionTemplate.LIST_COUNT) {
@@ -198,9 +194,9 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.GET;
     action.path = '/count';
 
-    action.dataProvider = async (request, response, user) => controller.count({
-      filters: extractQueryObject(request.query.filters) // TODO: add operator func to filters
-    });
+    action.dataProvider = async ({ request }) => controller.count(
+      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+    );
 
   }
   else if (action.template === ResourceActionTemplate.RETRIEVE) {
@@ -208,11 +204,11 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.GET;
     action.path = '/:resourceId';
 
-    action.dataProvider = async (request, response, user) => controller.singleRetrieve({
-      resourceId: request.params.resourceId,
-      includes: extractQueryObject(request.query.includes, true),
-      selects: request.query.selects
-    });
+    action.dataProvider = async ({ request }) => controller.singleRetrieve(
+      request.params.resourceId,
+      extractIncludeQueryObject(request.query.includes),
+      request.query.selects
+    );
 
   }
   else if (action.template === ResourceActionTemplate.CREATE) {
@@ -220,9 +216,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.POST;
     action.path = '/';
 
-    action.dataProvider = async (request, response, user) => controller.createNew({
-      payload: request.body
-    });
+    action.dataProvider = async ({ request }) => controller.createNew(request.body);
 
   }
   else if (action.template === ResourceActionTemplate.UPDATE) {
@@ -230,10 +224,10 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.PATCH;
     action.path = '/:resourceId';
 
-    action.dataProvider = async (request, response, user) => controller.editOne({
-      id: request.params.resourceId,
-      payload: request.body
-    });
+    action.dataProvider = async ({ request }) => controller.editOne(
+      request.params.resourceId,
+      request.body
+    );
 
   }
   else if (action.template === ResourceActionTemplate.DELETE) {
@@ -241,9 +235,7 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
     action.method = ResourceActionMethod.DELETE;
     action.path = '/:resourceId';
 
-    action.dataProvider = async (request, response, user) => controller.deleteOne({
-      id: request.params.resourceId
-    });
+    action.dataProvider = async ({ request }) => controller.deleteOne(request.params.resourceId);
 
   }
   else {
@@ -251,67 +243,36 @@ function injectResourceTemplateOptions<T extends Document>(action: ResourceActio
   }
 }
 
-function applyActionOnRouter({ router, action }: { router: Router, action: ResourceAction }) {
+function applyActionOnRouter(router: Router, action: ResourceAction) {
 
   if (!action.path) throw new ServerError('action path undefined');
+  if (!action.dataProvider) throw new ServerError('action data provider undefined');
 
-  // tslint:disable-next-line: no-any
-  const actionHandler = async (request: Request, response: Response, next: (reason: any) => void) => {
+  const actionHandler = async (request: Request, response: Response, next: Function) => {
     try {
 
-      let user: IUser | undefined;
-      const payload = request.body;
-      const token = request.headers.authorization;
+      const bag: ResourceActionBag = {
+        action,
+        request,
+        response
+      };
 
-      const needToLoadUser = action.permission || action.permissionFunction || action.permissionFunctionStrict || action.payloadPreprocessor || action.payloadPostprocessor;
-
-      if (needToLoadUser) {
-        user = await getUserByToken(token);
+      for (const preProcessor of preProcessors) {
+        await preProcessor(bag);
       }
 
-      if (action.permission && (!user || !user.permissions || !hasPermission(user.permissions || [], action.permission)) ) {
-        throw new ForbiddenAccessError('forbidden access');
+      const data = action.dataProvider && await action.dataProvider(bag);
+
+      for (const preResponseProcessor of preResponseProcessors) {
+        await preResponseProcessor({ ...bag, data });
       }
 
-      if ( action.permissionFunction && !(await action.permissionFunction(user)) ) {
-        throw new ForbiddenAccessError('forbidden access');
-      }
-
-      if ( action.permissionFunctionStrict && ( !user || !(await action.permissionFunctionStrict(user)) ) ) {
-        throw new ForbiddenAccessError('forbidden access');
-      }
-
-      if (action.payloadValidator && !(await action.payloadValidator(payload)) ) {
-        throw new InvalidRequestError('payload validation failed');
-      }
-
-      if (action.payloadPreprocessor) {
-
-        const shouldBypass = await action.payloadPreprocessor(payload, user);
-
-        if (shouldBypass) {
-          return console.log('bypassed action');
-        }
-
-      }
-
-      if (action.action) {
-        await action.action(request, response, user);
-      }
-      else if (action.dataProvider) {
-
-        const data = await action.dataProvider(request, response, user);
-
-        if (action.responsePreprocessor) {
-          await action.responsePreprocessor(data, user)
-        }
-
+      if (data !== DISMISS_DATA_PROVIDER) {
         response.json(data);
-
       }
 
-      if (action.payloadPostprocessor) {
-        await action.payloadPostprocessor(payload, user);
+      for (const postProcessor of postProcessors) {
+        await postProcessor({ ...bag, data });
       }
 
     }
@@ -331,31 +292,53 @@ function applyActionOnRouter({ router, action }: { router: Router, action: Resou
 
 }
 
-export function scaffoldResourceRouter<T extends Document>({ resourceActions, controller, relations, resourceProperties, resourceMetas }: { resourceActions?: ResourceAction[], controller: ResourceController<T>, relations: IRouterRelation[], resourceProperties: ResourceProperty[], resourceMetas: ResourcePropertyMeta[] }): Router {
+export function addResourceRouterPreProcessor(middleware: ResourceRouterMiddleware) {
+  preProcessors.push(middleware)
+}
+
+export function addResourceRouterPreResponseProcessor(middleware: ResourceRouterResponsedMiddleware) {
+  preResponseProcessors.push(middleware)
+}
+
+export function addResourceRouterPostProcessor(middleware: ResourceRouterResponsedMiddleware) {
+  postProcessors.push(middleware)
+}
+
+export function scaffoldResourceRouter<T extends IResource>(resourceActions: ResourceAction[], relations: IRouterRelation[], resourceProperties: ResourceProperty[], resourceMetas: ResourcePropertyMeta[], controller?: ResourceController<T>): Router {
 
   const resourceRouter = Router();
 
-  injectMetaInformation({
-    router: resourceRouter,
-    properties: resourceProperties,
-    metas: resourceMetas
-  });
+  injectMetaInformation(
+    resourceRouter,
+    resourceProperties,
+    resourceMetas
+  );
 
   for (const action of resourceActions || []) {
 
     if ('template' in action) {
+      if (controller === undefined) throw new ServerError('resource controller is not defined!');
       injectResourceTemplateOptions(action, controller);
     }
 
-    applyActionOnRouter({
-      router: resourceRouter,
-      action: action
-    });
+    applyActionOnRouter(resourceRouter, action);
 
   }
 
   for (const relation of relations) {
-    applyRelationController(resourceRouter, relation)
+
+    const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
+
+    for (const action of relation.actions || []) {
+
+      if ('template' in action) {
+        injectResourceRelationActionTemplate(action, relation.controller, pluralTargetName);
+      }
+
+      applyActionOnRouter(resourceRouter, action);
+
+    }
+
   }
 
   return resourceRouter;

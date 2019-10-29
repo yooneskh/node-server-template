@@ -1,6 +1,5 @@
+import { IResource, ResourceActionTemplate } from '../../resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../resource-maker/resource-router';
-import { IResource } from '../../resource-maker/resource-maker-types';
 
 export interface IPage extends IResource {
   content: string;
@@ -20,7 +19,7 @@ maker.setProperties([
   }
 ]);
 
-maker.setActions([
+maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
