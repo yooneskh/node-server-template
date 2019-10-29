@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Document } from 'mongoose';
 import { ResourceRelationController } from './resource-relation-controller';
 import { Merge } from 'type-fest';
+import { ResourceRelationActionTemplate, ResourceActionTemplate, ResourceActionMethod } from './resource-maker';
 
 export interface IResource extends Document {
   createdAt: number;
@@ -42,32 +43,6 @@ export interface IRouterRelation {
   relationModelName?: string;
   controller: ResourceRelationController<IResource>;
   actions?: ResourceAction[];
-}
-
-export enum ResourceActionMethod {
-  POST,
-  GET,
-  PUT,
-  PATCH,
-  DELETE
-}
-
-export enum ResourceActionTemplate {
-  LIST,
-  LIST_COUNT,
-  RETRIEVE,
-  CREATE,
-  UPDATE,
-  DELETE
-}
-
-export enum ResourceRelationActionTemplate {
-  LIST,
-  LIST_COUNT,
-  RETRIEVE,
-  RETRIEVE_COUNT,
-  CREATE,
-  DELETE
 }
 
 export interface ResourceActionBag {

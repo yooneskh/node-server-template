@@ -2,10 +2,11 @@ import { Router, Request, Response } from 'express';
 import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
-import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, IRouterRelation, ResourceActionMethod, ResourceActionTemplate, ResourceRelationActionTemplate, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware } from './resource-maker-types';
+import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, IRouterRelation, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware } from './resource-maker-types';
 import { InvalidRequestError, ServerError } from '../global/errors';
 import { Merge } from 'type-fest';
 import { MAX_LISTING_LIMIT } from './config';
+import { ResourceActionMethod, ResourceRelationActionTemplate, ResourceActionTemplate } from './resource-maker';
 
 
 export const DISMISS_DATA_PROVIDER = -485698569;

@@ -1,5 +1,5 @@
-import { IResource, ResourceActionMethod } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { IResource } from '../../resource-maker/resource-maker-types';
+import { ResourceMaker, ResourceActionMethod } from '../../resource-maker/resource-maker';
 import { InvalidRequestError } from '../../global/errors';
 import { generateToken } from '../../global/util';
 import { IUser, UserController } from '../user/user-resource';

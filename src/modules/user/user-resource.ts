@@ -1,5 +1,5 @@
-import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { IResource, ResourceActionTemplate } from '../../resource-maker/resource-maker-types';
+import { ResourceMaker, ResourceActionTemplate } from '../../resource-maker/resource-maker';
+import { IResource } from '../../resource-maker/resource-maker-types';
 import { hasPermission } from '../../resource-maker/resource-maker-util';
 import { getUserByToken } from '../auth/auth-resource';
 import { addResourceRouterPreProcessor, addResourceRouterPostProcessor, addResourceRouterPreResponseProcessor } from '../../resource-maker/resource-router';
