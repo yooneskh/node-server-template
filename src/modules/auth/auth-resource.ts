@@ -5,10 +5,23 @@ import { generateToken } from '../../global/util';
 import { IUser, UserController } from '../user/user-resource';
 import { MediaController } from '../media/media-resource';
 import { addResourceRouterPreProcessor, addResourceRouterPreResponseProcessor, addResourceRouterPostProcessor } from '../../resource-maker/resource-router';
-import { hasPermission } from '../../resource-maker/resource-maker-util';
 import { Request } from 'express';
 import { ResourceActionMethod } from '../../resource-maker/resource-maker-enums';
 
+
+export function hasPermission(permissionList: string[], permission: string): boolean {
+
+  for (const permit of permissionList) {
+
+    const regexText = '^' + permit.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$';
+
+    if (new RegExp(regexText).test(permission)) return true;
+
+  }
+
+  return false;
+
+}
 
 export interface IAuth extends IResource {
   user: string;
