@@ -1,5 +1,6 @@
-import { ResourceMaker, ResourceActionTemplate } from '../../resource-maker/resource-maker';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
 import { IResource } from '../../resource-maker/resource-maker-types';
+import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
 
 export interface IUser extends IResource {
   firstName: string;

@@ -1,5 +1,5 @@
 import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker, ResourceActionMethod } from '../../resource-maker/resource-maker';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
 import { generateToken } from '../../global/util';
 import { IUser, UserController } from '../user/user-resource';
@@ -7,6 +7,7 @@ import { MediaController } from '../media/media-resource';
 import { addResourceRouterPreProcessor, addResourceRouterPreResponseProcessor, addResourceRouterPostProcessor } from '../../resource-maker/resource-router';
 import { hasPermission } from '../../resource-maker/resource-maker-util';
 import { Request } from 'express';
+import { ResourceActionMethod } from '../../resource-maker/resource-maker-enums';
 
 
 export interface IAuth extends IResource {

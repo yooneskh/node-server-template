@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { Document } from 'mongoose';
-import { ResourceRelationController } from './resource-relation-controller';
 import { Merge } from 'type-fest';
-import { ResourceRelationActionTemplate, ResourceActionTemplate, ResourceActionMethod } from './resource-maker';
+import { ResourceRelationActionTemplate, ResourceActionMethod, ResourceActionTemplate } from './resource-maker-enums';
 
 export interface IResource extends Document {
   createdAt: number;
@@ -35,13 +34,6 @@ export interface ResourceRelation {
   singular?: boolean;
   maxCount?: number;
   properties?: ResourceProperty[];
-  actions?: ResourceAction[];
-}
-
-export interface IRouterRelation {
-  targetModelName: string;
-  relationModelName?: string;
-  controller: ResourceRelationController<IResource>;
   actions?: ResourceAction[];
 }
 

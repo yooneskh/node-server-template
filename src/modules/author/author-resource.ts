@@ -1,5 +1,6 @@
 import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker, ResourceRelationActionTemplate, ResourceActionTemplate } from '../../resource-maker/resource-maker';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
 
 export interface IAuthor extends IResource {
   familyName: string;

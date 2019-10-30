@@ -1,37 +1,11 @@
-import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction, IRouterRelation } from './resource-maker-types';
+import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction } from './resource-maker-types';
 import { Model } from 'mongoose';
 import { makeMainResourceModel, makeResourceRelationModel } from './resource-model';
 import { ServerError } from '../global/errors';
 import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { Router } from 'express';
-import { scaffoldResourceRouter } from './resource-router';
-
-export enum ResourceActionMethod {
-  POST,
-  GET,
-  PUT,
-  PATCH,
-  DELETE
-}
-
-export enum ResourceActionTemplate {
-  LIST,
-  LIST_COUNT,
-  RETRIEVE,
-  CREATE,
-  UPDATE,
-  DELETE
-}
-
-export enum ResourceRelationActionTemplate {
-  LIST,
-  LIST_COUNT,
-  RETRIEVE,
-  RETRIEVE_COUNT,
-  CREATE,
-  DELETE
-}
+import { scaffoldResourceRouter, IRouterRelation } from './resource-router';
 
 export class ResourceMaker<T extends IResource> {
 

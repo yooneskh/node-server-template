@@ -1,5 +1,6 @@
 import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker, ResourceActionTemplate } from '../../resource-maker/resource-maker';
+import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
 
 export interface IBook extends IResource {
   name: string;
