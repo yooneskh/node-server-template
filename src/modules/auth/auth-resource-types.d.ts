@@ -1,6 +1,7 @@
 import { ResourceAction, ResourceActionBag } from '../../resource-maker/resource-maker-types';
 import { Merge } from 'type-fest';
-import { IUser } from './user-resource';
+import { IUser } from '../user/user-resource';
+
 
 interface ResourceActionAuthBag extends ResourceActionBag {
   payload: any;
