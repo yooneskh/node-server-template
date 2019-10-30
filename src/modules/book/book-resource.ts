@@ -13,11 +13,6 @@ maker.setProperties([
   {
     key: 'name',
     type: 'string'
-  },
-  {
-    key: 'page',
-    type: 'string',
-    ref: 'Page'
   }
 ]);
 
