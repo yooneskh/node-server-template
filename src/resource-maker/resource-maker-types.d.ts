@@ -17,6 +17,7 @@ export interface ResourceProperty {
   unique?: boolean;
   select?: boolean;
   isArray?: boolean;
+  languages?: string[];
 }
 
 export interface ResourcePropertyMeta {

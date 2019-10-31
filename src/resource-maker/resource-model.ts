@@ -23,15 +23,28 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
   for (const property of properties) {
 
     // tslint:disable-next-line: no-any
-    const scheme: Record<string, any> = {};
+    let scheme: Record<string, any> = {};
 
     scheme.type = mapPropertyTypeToMongooseType(property.type)
 
-    if ('ref' in property) scheme.ref = property.ref;
-    if ('default' in property) scheme.default = property.default;
-    if ('required' in property) scheme.required = property.required;
-    if ('unique' in property) scheme.unique = property.unique;
-    if ('select' in property) scheme.select = property.select;
+    if (property.ref !== undefined) scheme.ref = property.ref;
+    if (property.default !== undefined) scheme.default = property.default;
+    if (property.required !== undefined) scheme.required = property.required;
+    if (property.unique !== undefined) scheme.unique = property.unique;
+    if (property.select !== undefined) scheme.select = property.select;
+
+    if (property.languages) {
+
+      // tslint:disable-next-line: no-any
+      const newScheme: Record<string, any> = {};
+
+      for (const language of property.languages) {
+        newScheme[language] = { ...scheme };
+      }
+
+      scheme = newScheme;
+
+    }
 
     schemaOptions[property.key] = property.isArray ? [scheme] : scheme;
 
