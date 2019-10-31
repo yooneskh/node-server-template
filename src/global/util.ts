@@ -39,7 +39,8 @@ const addedProperties = {
 };
 
 // tslint:disable-next-line: no-any
-export function validatePropertyKeys(payload: any, properties: ResourceProperty[]) {
+export function validatePropertyKeys(payload: any, properties: ResourceProperty[], twoWayCheck = true) {
+
   for (const key in payload) {
 
     if (key in addedProperties) continue;
@@ -48,7 +49,28 @@ export function validatePropertyKeys(payload: any, properties: ResourceProperty[
 
     if (!property) throw new InvalidRequestError('payload key invalid: ' + key);
 
+    if (property.languages) {
+
+      if (typeof payload[key] !== 'object') throw new InvalidRequestError(`payload ${key} is not multi language`);
+
+      for (const languageKey in payload[key]) {
+        if (!property.languages.includes(languageKey)) {
+          throw new InvalidRequestError(`language key '${languageKey}' is invalid!`);
+        }
+      }
+
+    }
+
   }
+
+  if (twoWayCheck) {
+    for (const requiredProperty of properties.filter(property => property.required)) {
+      if (!(requiredProperty.key in payload)) {
+        throw new InvalidRequestError(`propery '${requiredProperty.key}' is required!`);
+      }
+    }
+  }
+
 }
 
 // tslint:disable-next-line: no-any
@@ -57,8 +79,8 @@ export function validatePropertyTypes(payload: any, properties: ResourceProperty
 }
 
 // tslint:disable-next-line: no-any
-export function validatePayload(payload: any, properties: ResourceProperty[]) {
-  validatePropertyKeys(payload, properties);
+export function validatePayload(payload: any, properties: ResourceProperty[], twoWayCheck = true) {
+  validatePropertyKeys(payload, properties, twoWayCheck);
   validatePropertyTypes(payload, properties)
 }
 

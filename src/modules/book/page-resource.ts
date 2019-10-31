@@ -11,7 +11,8 @@ const maker = new ResourceMaker<IPage>('Page');
 maker.setProperties([
   {
     key: 'content',
-    type: 'string'
+    type: 'string',
+    required: true
   },
   {
     key: 'book',

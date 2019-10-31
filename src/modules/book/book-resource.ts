@@ -1,9 +1,13 @@
 import { IResource } from '../../resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
+import { Config } from '../../global/config';
 
 export interface IBook extends IResource {
-  name: string;
+  name: {
+    en: string,
+    fa: string
+  };
   page: string;
 }
 
@@ -12,7 +16,9 @@ const maker = new ResourceMaker<IBook>('Book');
 maker.setProperties([
   {
     key: 'name',
-    type: 'string'
+    type: 'string',
+    required: true,
+    languages: Config.languages
   }
 ]);
 

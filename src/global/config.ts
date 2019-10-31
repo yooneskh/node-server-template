@@ -5,5 +5,6 @@ export const Config = {
     port: 27017,
     host: 'localhost',
     name: 'yback'
-  }
+  },
+  languages: ['en', 'fa']
 };

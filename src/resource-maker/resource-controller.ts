@@ -68,7 +68,7 @@ export class ResourceController<T extends IResource> {
 
   public async createNew(payload: Partial<T>): Promise<T> {
 
-    validatePayload(payload, this.properties);
+    validatePayload(payload, this.properties, true);
 
     const resource = new this.model();
 
@@ -84,7 +84,7 @@ export class ResourceController<T extends IResource> {
 
     if (!id) throw new InvalidRequestError('id not specified');
 
-    validatePayload(payload, this.properties);
+    validatePayload(payload, this.properties, false);
 
     const resource = await this.model.findById(id);
 
