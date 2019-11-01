@@ -38,8 +38,8 @@ function makeSchemaOptionsFromPropertise(properties: ResourceProperty[]): Record
       // tslint:disable-next-line: no-any
       const newScheme: Record<string, any> = {};
 
-      for (const language of property.languages) {
-        newScheme[language] = { ...scheme };
+      for (const language in property.languages) {
+        newScheme[language] = { ...scheme, ...property.languages[language] };
       }
 
       scheme = newScheme;

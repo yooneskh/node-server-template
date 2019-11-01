@@ -6,5 +6,8 @@ export const Config = {
     host: 'localhost',
     name: 'yback'
   },
-  languages: ['en', 'fa']
+  languages: {
+    en: { },
+    fa: { }
+  }
 };
