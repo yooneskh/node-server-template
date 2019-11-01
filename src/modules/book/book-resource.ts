@@ -17,7 +17,6 @@ maker.setProperties([
   {
     key: 'name',
     type: 'string',
-    required: true,
     languages: Config.languages
   }
 ]);
