@@ -32,8 +32,13 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async countListForSource(sourceId: string): Promise<number> {
-    return this.model.countDocuments({ [this.sourcePropertyName]: sourceId });
+  // tslint:disable-next-line: no-any
+  public async countListForSource(sourceId: string, filters: any = {}): Promise<number> {
+
+    validatePropertyKeys(filters, this.options.properties || []);
+
+    return this.model.countDocuments({ ...filters, [this.sourcePropertyName]: sourceId });
+
   }
 
   // tslint:disable-next-line: no-any
@@ -50,11 +55,17 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async getSingleRelationCount(sourceId: string, targetId: string): Promise<number> {
+  // tslint:disable-next-line: no-any
+  public async getSingleRelationCount(sourceId: string, targetId: string, filters: any = {}): Promise<number> {
+
+    validatePropertyKeys(filters, this.options.properties || []);
+
     return this.model.countDocuments({
+      ...filters,
       [this.sourcePropertyName]: sourceId,
       [this.targetPropertyName]: targetId
     });
+
   }
 
   public async addRelation(sourceId: string, targetId: string, payload: Partial<T>): Promise<T> {
@@ -87,9 +98,11 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async removeRelation(sourceId: string, targetId: string): Promise<boolean> {
+  // tslint:disable-next-line: no-any
+  public async removeRelation(sourceId: string, targetId: string, filters: any = {}): Promise<boolean> {
 
     await this.model.deleteMany({
+      ...filters,
       [this.sourcePropertyName]: sourceId,
       [this.targetPropertyName]: targetId
     })

@@ -140,7 +140,10 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/count`;
 
-    action.dataProvider = async ({ request }) => controller.countListForSource(request.params.sourceId)
+    action.dataProvider = async ({ request }) => controller.countListForSource(
+      request.params.sourceId,
+      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+    )
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
@@ -148,7 +151,11 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request }) => controller.getSingleRelation(request.params.sourceId, request.params.targetId, request.query.selects)
+    action.dataProvider = async ({ request }) => controller.getSingleRelation(
+      request.params.sourceId,
+      request.params.targetId,
+      request.query.selects
+    );
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
@@ -156,7 +163,11 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.GET;
     action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
 
-    action.dataProvider = async ({ request }) => controller.getSingleRelationCount(request.params.sourceId, request.params.targetId)
+    action.dataProvider = async ({ request }) => controller.getSingleRelationCount(
+      request.params.sourceId,
+      request.params.targetId,
+      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+    );
 
   }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
@@ -172,7 +183,11 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.method = ResourceActionMethod.DELETE;
     action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request }) => controller.removeRelation(request.params.sourceId, request.params.targetId)
+    action.dataProvider = async ({ request }) => controller.removeRelation(
+      request.params.sourceId,
+      request.params.targetId,
+      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+    )
 
   }
   else {
