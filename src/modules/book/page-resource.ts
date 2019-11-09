@@ -1,6 +1,7 @@
 import { IResource } from '../../resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
+import { makePermittedRouteFromTemplate } from '../resource-access-control/resource-access-router';
 
 export interface IPage extends IResource {
   content: string;
@@ -22,7 +23,9 @@ maker.setProperties([
 ]);
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
+  {
+    ...makePermittedRouteFromTemplate(ResourceActionTemplate.LIST)
+  },
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
   { template: ResourceActionTemplate.CREATE },

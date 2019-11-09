@@ -84,6 +84,10 @@ export class ResourceMaker<T extends IResource> {
 
   }
 
+  public setController(controller: ResourceController<T>) {
+    this.controller = controller;
+  }
+
   public getRelationControllers() {
     return this.relationControllers;
   }
