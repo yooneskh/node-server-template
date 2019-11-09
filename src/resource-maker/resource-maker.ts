@@ -9,47 +9,47 @@ import { scaffoldResourceRouter, IRouterRelation } from './resource-router';
 
 export class ResourceMaker<T extends IResource> {
 
-  private resourceName = '';
-  private resourceProperties: ResourceProperty[] = [];
-  private resourceMetas: ResourcePropertyMeta[] = [];
-  private resourceRelations: ResourceRelation[] = [];
-  private resourceActions: ResourceAction[] = [];
+  private name = '';
+  private properties: ResourceProperty[] = [];
+  private metas: ResourcePropertyMeta[] = [];
+  private relations: ResourceRelation[] = [];
+  private actions: ResourceAction[] = [];
 
-  private resourceModel?: Model<T>;
-  private resourceRelationModels: Model<IResource>[] = [];
+  private model?: Model<T>;
+  private relationModels: Model<IResource>[] = [];
 
-  private resourceController?: ResourceController<T>;
-  private resourceRelationControllers: ResourceRelationController<IResource>[] = [];
+  private controller?: ResourceController<T>;
+  private relationControllers: ResourceRelationController<IResource>[] = [];
 
-  private resourceRouter?: Router;
+  private router?: Router;
 
   constructor(name: string) {
-    this.resourceName = name;
+    this.name = name;
   }
 
   public setProperties(properties: ResourceProperty[]) {
 
-    this.resourceProperties = properties;
+    this.properties = properties;
 
-    this.resourceModel = makeMainResourceModel<T>(this.resourceName, this.resourceProperties);
+    this.model = makeMainResourceModel<T>(this.name, this.properties);
 
-    return this.resourceModel;
+    return this.model;
 
   }
 
   public setMetas(metas: ResourcePropertyMeta[]) {
-    this.resourceMetas = metas;
+    this.metas = metas;
   }
 
   public addRelation<P extends IResource>(relation: ResourceRelation) {
 
-    this.resourceRelations.push(relation);
+    this.relations.push(relation);
 
-    const relationModel = makeResourceRelationModel<P>(this.resourceName, relation);
-    this.resourceRelationModels.push(relationModel);
+    const relationModel = makeResourceRelationModel<P>(this.name, relation);
+    this.relationModels.push(relationModel);
 
-    const relationController = new ResourceRelationController<P>(this.resourceName, relation.targetModelName, relationModel, relation);
-    this.resourceRelationControllers.push(relationController);
+    const relationController = new ResourceRelationController<P>(this.name, relation.targetModelName, relationModel, relation);
+    this.relationControllers.push(relationController);
 
     return {
       model: relationModel,
@@ -60,36 +60,36 @@ export class ResourceMaker<T extends IResource> {
 
   public getModel() {
 
-    if (!this.resourceModel) {
-      throw new ServerError(`model is not yet made for ${this.resourceName}!`);
+    if (!this.model) {
+      throw new ServerError(`properties not set yet for ${this.name}!`);
     }
 
-    return this.resourceModel;
+    return this.model;
 
   }
 
   public getRelationModels() {
-    return this.resourceRelationModels;
+    return this.relationModels;
   }
 
   public getController() {
 
-    if (this.resourceModel === undefined) {
-      throw new ServerError('model not made for ' + this.resourceName);
+    if (this.model === undefined) {
+      throw new ServerError(`model not made for ${this.name}`);
     }
 
-    this.resourceController = new ResourceController<T>(this.resourceModel, this.resourceProperties);
+    this.controller = new ResourceController<T>(this.model, this.properties);
 
-    return this.resourceController;
+    return this.controller;
 
   }
 
   public getRelationControllers() {
-    return this.resourceRelationControllers;
+    return this.relationControllers;
   }
 
   public addAction(action: ResourceAction) {
-    this.resourceActions.push(action);
+    this.actions.push(action);
   }
 
   public addActions(actions: ResourceAction[]) {
@@ -98,16 +98,16 @@ export class ResourceMaker<T extends IResource> {
 
   public getRouter() {
 
-    const routerRelations: IRouterRelation[] = this.resourceRelations.map((relation, index) => ({
+    const routerRelations: IRouterRelation[] = this.relations.map((relation, index) => ({
       targetModelName: relation.targetModelName,
       relationModelName: relation.relationModelName,
-      controller: this.resourceRelationControllers[index],
+      controller: this.relationControllers[index],
       actions: relation.actions
     }));
 
-    this.resourceRouter = scaffoldResourceRouter(this.resourceActions, routerRelations, this.resourceProperties, this.resourceMetas, this.resourceController)
+    this.router = scaffoldResourceRouter(this.actions, routerRelations, this.properties, this.metas, this.controller)
 
-    return this.resourceRouter;
+    return this.router;
 
   }
 

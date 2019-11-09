@@ -36,7 +36,6 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  // tslint:disable-next-line: no-any
   public async singleRetrieve(resourceId: string, includes: Record<string, string> = {}, selects?: string): Promise<T> {
 
     const query = this.model.findById(resourceId).select(selects);
@@ -88,7 +87,7 @@ export class ResourceController<T extends IResource> {
 
     const resource = await this.model.findById(id);
 
-    if (!resource) throw new InvalidRequestError('resource not found: ' + this.model.modelName + '@' + id);
+    if (!resource) throw new InvalidRequestError(`resource not found: ${this.model.modelName} @${id}`);
 
     for (const key in payload) {
       if (key !== 'id' && key !== '_id') {

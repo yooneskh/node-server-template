@@ -31,4 +31,3 @@ maker.addActions([
 ]);
 
 export const { model: PageModel, controller: PageController, router: PageRouter } = maker.getMCR();
-

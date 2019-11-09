@@ -59,7 +59,7 @@ function extractSortQueryObject(queryString: string): Record<string, number> {
 
 }
 
-function extractFilterQueryObject(queryString: string): Record<string, string | boolean> {
+function extractFilterQueryObject(queryString: string): Record<string, string | boolean> { // TODO: add operator func to filters
 
   const result: Record<string, string | boolean> = {};
 
@@ -110,6 +110,7 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
     }
   });
 
+  // TODO: restrict access
   applyActionOnRouter(router, {
     path: '/meta',
     method: ResourceActionMethod.GET,
@@ -126,7 +127,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
 
     action.dataProvider = async ({ request }) => controller.listForSource(
       request.params.sourceId,
-      extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
+      extractFilterQueryObject(request.query.filters),
       extractSortQueryObject(request.query.sorts),
       extractIncludeQueryObject(request.query.includes),
       request.query.selects,
@@ -142,7 +143,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
 
     action.dataProvider = async ({ request }) => controller.countListForSource(
       request.params.sourceId,
-      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+      extractFilterQueryObject(request.query.filters)
     )
 
   }
@@ -166,7 +167,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.dataProvider = async ({ request }) => controller.getSingleRelationCount(
       request.params.sourceId,
       request.params.targetId,
-      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+      extractFilterQueryObject(request.query.filters)
     );
 
   }
@@ -186,7 +187,7 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     action.dataProvider = async ({ request }) => controller.removeRelation(
       request.params.sourceId,
       request.params.targetId,
-      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+      extractFilterQueryObject(request.query.filters)
     )
 
   }
@@ -202,7 +203,7 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.path = '/';
 
     action.dataProvider = async ({ request }) => controller.list(
-      extractFilterQueryObject(request.query.filters), // TODO: add operator func to filters
+      extractFilterQueryObject(request.query.filters),
       extractSortQueryObject(request.query.sorts),
       extractIncludeQueryObject(request.query.includes),
       request.query.selects,
@@ -217,7 +218,7 @@ function injectResourceTemplateOptions<T extends IResource>(action: ResourceActi
     action.path = '/count';
 
     action.dataProvider = async ({ request }) => controller.count(
-      extractFilterQueryObject(request.query.filters) // TODO: add operator func to filters
+      extractFilterQueryObject(request.query.filters)
     );
 
   }

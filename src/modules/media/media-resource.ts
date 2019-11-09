@@ -1,4 +1,3 @@
-// tslint:disable: no-use-before-declare
 import * as fs from 'fs';
 
 import { IResource } from '../../resource-maker/resource-maker-types';
@@ -104,9 +103,11 @@ maker.setMetas([
 
 export const { model: MediaModel, controller: MediaController } = maker.getMC();
 
-maker.addAction({ template: ResourceActionTemplate.LIST });
-maker.addAction({ template: ResourceActionTemplate.LIST_COUNT });
-maker.addAction({ template: ResourceActionTemplate.RETRIEVE });
+maker.addActions([
+  { template: ResourceActionTemplate.LIST },
+  { template: ResourceActionTemplate.LIST_COUNT },
+  { template: ResourceActionTemplate.RETRIEVE }
+]);
 
 maker.addAction({
   path: '/init/upload',
@@ -114,7 +115,7 @@ maker.addAction({
   async dataProvider({ request, user }) {
 
     const media = await MediaController.createNew({
-      owner: user !== undefined ? user._id : undefined,
+      owner: user?._id,
       name: request.body.fileName,
       extension: request.body.fileExtension,
       size: request.body.fileSize
