@@ -54,7 +54,7 @@ export function validatePropertyKeys(payload: any, properties: ResourceProperty[
       if (typeof payload[key] !== 'object') throw new InvalidRequestError(`payload ${key} is not multi language`);
 
       for (const languageKey in payload[key]) {
-        if (!property.languages.includes(languageKey)) {
+        if (!(languageKey in property.languages)) {
           throw new InvalidRequestError(`language key '${languageKey}' is invalid!`);
         }
       }
@@ -99,7 +99,7 @@ export function transformIncludes(includes: Record<string, string>) {
     let packIndex = -1;
 
     for (let i = 0; i < resultArray.length; i++) {
-      if (resultArray[i][0] && resultArray[i][0].path === includeKeySeperated[0]) {
+      if (resultArray[i]?.[0]?.path === includeKeySeperated[0]) {
         packIndex = i;
         break;
       }
@@ -114,7 +114,7 @@ export function transformIncludes(includes: Record<string, string>) {
 
     for (const prePop of prePops) {
 
-      if (resultArray[packIndex][currentCleanIndex] && resultArray[packIndex][currentCleanIndex].path !== prePop) {
+      if (resultArray[packIndex]?.[currentCleanIndex]?.path !== prePop) {
         throw new InvalidRequestError(`wrong nested include at '${includeKey}', parent must be defined before`);
       }
 

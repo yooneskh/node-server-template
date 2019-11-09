@@ -156,8 +156,7 @@ maker.addAction({
 
     authToken.verificationCode = undefined;
 
-    // TODO: make sure is unique
-    authToken.token = generateToken();
+    authToken.token = generateToken(); // TODO: make sure is unique
     authToken.valid = true;
 
     await authToken.save();
@@ -179,9 +178,7 @@ maker.addAction({
 
     const token = request.headers.authorization;
 
-    const authToken = await AuthController.findOne(
-      { token }
-    );
+    const authToken = await AuthController.findOne({ token });
 
     if (authToken) {
       authToken.valid = false;
@@ -226,7 +223,7 @@ export async function getUserByToken(token?: string) : Promise<IUser | undefined
 
   const authToken = authTokens[0];
 
-  if (!authToken || !authToken.user) return undefined;
+  if (!authToken?.user) return undefined;
 
   authToken.lastAccessAt = Date.now();
 
@@ -275,14 +272,8 @@ addResourceRouterPreProcessor(async bag => {
     throw new InvalidRequestError('payload validation failed');
   }
 
-  if (action.payloadPreprocessor) {
-
-    const shouldBypass = await action.payloadPreprocessor({ ...bag, user, payload });
-
-    if (shouldBypass) {
-      return console.log('bypassed action');
-    }
-
+  if (await action.payloadPreprocessor?.({ ...bag, user, payload })) {
+    return console.log('bypassed action');
   }
 
 });
@@ -292,9 +283,8 @@ addResourceRouterPreResponseProcessor(async bag => {
   const { action, request, data } = bag;
   const { payload, token } = transmuteRequest(request);
 
-  const user = await getUserByToken(token);
-
   if (action.responsePreprocessor) {
+    const user = await getUserByToken(token);
     await action.responsePreprocessor({ ...bag, user, payload, data });
   }
 
@@ -305,9 +295,8 @@ addResourceRouterPostProcessor(async bag => {
   const { action, request, data } = bag;
   const { payload, token } = transmuteRequest(request);
 
-  const user = await getUserByToken(token);
-
   if (action.postprocessor) {
+    const user = await getUserByToken(token);
     await action.postprocessor({ ...bag, user, payload, data });
   }
 
