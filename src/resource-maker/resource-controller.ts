@@ -83,7 +83,7 @@ export class ResourceController<T extends IResource> {
 
     if (!id) throw new InvalidRequestError('id not specified');
 
-    validatePayload(payload, this.properties, false);
+    validatePayload(payload, this.properties);
 
     const resource = await this.model.findById(id);
 

@@ -28,9 +28,7 @@ export const { model: PageModel, controller: PageController } = maker.getMC();
 export const PagePermittedController = new PermittedResourceController<IPage>(maker.getName(), PageModel, maker.getProperties());
 
 maker.addActions([
-  {
-    ...makePermittedRouteFromTemplate(ResourceActionTemplate.LIST, PagePermittedController)
-  },
+  { ...makePermittedRouteFromTemplate(ResourceActionTemplate.LIST, PagePermittedController) },
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
   { template: ResourceActionTemplate.CREATE },

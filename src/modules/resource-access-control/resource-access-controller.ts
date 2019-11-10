@@ -14,8 +14,13 @@ export class PermittedResourceController<T extends IResource> extends ResourceCo
 
   // tslint:disable-next-line: no-any
   public async listPermitted(userId: string, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
-    console.log('it was permitted!!!' + this.name);
+
+    console.log('it was permitted!!! list' + this.name);
+
+    // TODO: next step! add filter by this resources permits collection for reads
+
     return super.list(filters, sorts, includes, selects, limit, skip);
+
   }
 
   // tslint:disable-next-line: no-any

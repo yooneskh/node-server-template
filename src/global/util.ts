@@ -39,7 +39,7 @@ const addedProperties = {
 };
 
 // tslint:disable-next-line: no-any
-export function validatePropertyKeys(payload: any, properties: ResourceProperty[], twoWayCheck = true) {
+export function validatePropertyKeys(payload: any, properties: ResourceProperty[], twoWayCheck = false) {
 
   for (const key in payload) {
 
