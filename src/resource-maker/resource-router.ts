@@ -45,7 +45,7 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
 
 }
 
-function extractSortQueryObject(queryString: string): Record<string, number> {
+export function extractSortQueryObject(queryString: string): Record<string, number> {
 
   const result: Record<string, number> = {};
 
@@ -59,7 +59,7 @@ function extractSortQueryObject(queryString: string): Record<string, number> {
 
 }
 
-function extractFilterQueryObject(queryString: string): Record<string, string | boolean> { // TODO: add operator func to filters
+export function extractFilterQueryObject(queryString: string): Record<string, string | boolean> { // TODO: add operator func to filters
 
   const result: Record<string, string | boolean> = {};
 
@@ -81,7 +81,7 @@ function extractFilterQueryObject(queryString: string): Record<string, string | 
 
 }
 
-function extractIncludeQueryObject(queryString: string): Record<string, string> {
+export function extractIncludeQueryObject(queryString: string): Record<string, string> {
   return extractQueryObject(queryString, true);
 }
 
@@ -122,73 +122,83 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
 function injectResourceRelationActionTemplate(action: ResourceAction, controller: ResourceRelationController<IResource>, pluralTargetName: string) {
   if (action.template === ResourceRelationActionTemplate.LIST) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = `/:sourceId/${pluralTargetName}`;
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}`;
 
-    action.dataProvider = async ({ request }) => controller.listForSource(
-      request.params.sourceId,
-      extractFilterQueryObject(request.query.filters),
-      extractSortQueryObject(request.query.sorts),
-      extractIncludeQueryObject(request.query.includes),
-      request.query.selects,
-      Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
-      parseInt(request.query.skip || '0', 10) || 0
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.listForSource(
+        request.params.sourceId,
+        extractFilterQueryObject(request.query.filters),
+        extractSortQueryObject(request.query.sorts),
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects,
+        Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+        parseInt(request.query.skip || '0', 10) || 0
+      );
+    }
 
   }
   else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = `/:sourceId/${pluralTargetName}/count`;
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/count`;
 
-    action.dataProvider = async ({ request }) => controller.countListForSource(
-      request.params.sourceId,
-      extractFilterQueryObject(request.query.filters)
-    )
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.countListForSource(
+        request.params.sourceId,
+        extractFilterQueryObject(request.query.filters)
+      )
+    }
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request }) => controller.getSingleRelation(
-      request.params.sourceId,
-      request.params.targetId,
-      request.query.selects
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.getSingleRelation(
+        request.params.sourceId,
+        request.params.targetId,
+        request.query.selects
+      );
+    }
 
   }
   else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
 
-    action.dataProvider = async ({ request }) => controller.getSingleRelationCount(
-      request.params.sourceId,
-      request.params.targetId,
-      extractFilterQueryObject(request.query.filters)
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.getSingleRelationCount(
+        request.params.sourceId,
+        request.params.targetId,
+        extractFilterQueryObject(request.query.filters)
+      );
+    }
 
   }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
 
-    action.method = ResourceActionMethod.POST;
-    action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+    if (!action.method) action.method = ResourceActionMethod.POST;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
+    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
 
   }
   else if (action.template === ResourceRelationActionTemplate.DELETE) {
 
-    action.method = ResourceActionMethod.DELETE;
-    action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+    if (!action.method) action.method = ResourceActionMethod.DELETE;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
 
-    action.dataProvider = async ({ request }) => controller.removeRelation(
-      request.params.sourceId,
-      request.params.targetId,
-      extractFilterQueryObject(request.query.filters)
-    )
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.removeRelation(
+        request.params.sourceId,
+        request.params.targetId,
+        extractFilterQueryObject(request.query.filters)
+      )
+    }
 
   }
   else {
@@ -199,66 +209,74 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
 function injectResourceTemplateOptions<T extends IResource>(action: ResourceAction, controller: ResourceController<T>) {
   if (action.template === ResourceActionTemplate.LIST) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = '/';
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = '/';
 
-    action.dataProvider = async ({ request }) => controller.list(
-      extractFilterQueryObject(request.query.filters),
-      extractSortQueryObject(request.query.sorts),
-      extractIncludeQueryObject(request.query.includes),
-      request.query.selects,
-      Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
-      parseInt(request.query.skip || '0', 10) || 0
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.list(
+        extractFilterQueryObject(request.query.filters),
+        extractSortQueryObject(request.query.sorts),
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects,
+        Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+        parseInt(request.query.skip || '0', 10) || 0
+      );
+    }
 
   }
   else if (action.template === ResourceActionTemplate.LIST_COUNT) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = '/count';
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = '/count';
 
-    action.dataProvider = async ({ request }) => controller.count(
-      extractFilterQueryObject(request.query.filters)
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.count(
+        extractFilterQueryObject(request.query.filters)
+      );
+    }
 
   }
   else if (action.template === ResourceActionTemplate.RETRIEVE) {
 
-    action.method = ResourceActionMethod.GET;
-    action.path = '/:resourceId';
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = '/:resourceId';
 
-    action.dataProvider = async ({ request }) => controller.singleRetrieve(
-      request.params.resourceId,
-      extractIncludeQueryObject(request.query.includes),
-      request.query.selects
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.singleRetrieve(
+        request.params.resourceId,
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects
+      );
+    }
 
   }
   else if (action.template === ResourceActionTemplate.CREATE) {
 
-    action.method = ResourceActionMethod.POST;
-    action.path = '/';
+    if (!action.method) action.method = ResourceActionMethod.POST;
+    if (!action.path) action.path = '/';
 
-    action.dataProvider = async ({ request }) => controller.createNew(request.body);
+    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.createNew(request.body);
 
   }
   else if (action.template === ResourceActionTemplate.UPDATE) {
 
-    action.method = ResourceActionMethod.PATCH;
-    action.path = '/:resourceId';
+    if (!action.method) action.method = ResourceActionMethod.PATCH;
+    if (!action.path) action.path = '/:resourceId';
 
-    action.dataProvider = async ({ request }) => controller.editOne(
-      request.params.resourceId,
-      request.body
-    );
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.editOne(
+        request.params.resourceId,
+        request.body
+      );
+    }
 
   }
   else if (action.template === ResourceActionTemplate.DELETE) {
 
-    action.method = ResourceActionMethod.DELETE;
-    action.path = '/:resourceId';
+    if (!action.method) action.method = ResourceActionMethod.DELETE;
+    if (!action.path) action.path = '/:resourceId';
 
-    action.dataProvider = async ({ request }) => controller.deleteOne(request.params.resourceId);
+    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.deleteOne(request.params.resourceId);
 
   }
   else {

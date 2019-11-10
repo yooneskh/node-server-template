@@ -27,6 +27,10 @@ export class ResourceMaker<T extends IResource> {
     this.name = name;
   }
 
+  public getName() {
+    return this.name;
+  }
+
   public setProperties(properties: ResourceProperty[]) {
 
     this.properties = properties;
@@ -35,6 +39,10 @@ export class ResourceMaker<T extends IResource> {
 
     return this.model;
 
+  }
+
+  public getProperties() {
+    return this.properties;
   }
 
   public setMetas(metas: ResourcePropertyMeta[]) {
