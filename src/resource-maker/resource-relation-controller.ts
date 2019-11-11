@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { validatePropertyKeys, transformIncludes } from '../global/util';
-import { ResourceRelation, IResource } from './resource-maker-types';
+import { ResourceRelation, IResource, IFilter } from './resource-maker-types';
 import { InvalidStateError } from '../global/errors';
 
 export class ResourceRelationController<T extends IResource> {
@@ -18,8 +18,7 @@ export class ResourceRelationController<T extends IResource> {
     this.options = relationOptions;
   }
 
-  // tslint:disable-next-line: no-any
-  public async listForSource(sourceId: string, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+  public async listForSource(sourceId: string, filters: IFilter = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
     validatePropertyKeys(filters, this.options.properties || []);
     validatePropertyKeys(sorts, this.options.properties || []);
@@ -32,8 +31,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async countListForSource(sourceId: string, filters: any = {}): Promise<number> {
+  public async countListForSource(sourceId: string, filters: IFilter = {}): Promise<number> {
 
     validatePropertyKeys(filters, this.options.properties || []);
 
@@ -41,8 +39,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async getSingleRelation(sourceId: string, targetId: string, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+  public async getSingleRelation(sourceId: string, targetId: string, filters: IFilter = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
     validatePropertyKeys(filters, this.options.properties || []);
     validatePropertyKeys(sorts, this.options.properties || []);
@@ -55,8 +52,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async getSingleRelationCount(sourceId: string, targetId: string, filters: any = {}): Promise<number> {
+  public async getSingleRelationCount(sourceId: string, targetId: string, filters: IFilter = {}): Promise<number> {
 
     validatePropertyKeys(filters, this.options.properties || []);
 
@@ -98,8 +94,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  // tslint:disable-next-line: no-any
-  public async removeRelation(sourceId: string, targetId: string, filters: any = {}): Promise<boolean> {
+  public async removeRelation(sourceId: string, targetId: string, filters: IFilter = {}): Promise<boolean> {
 
     await this.model.deleteMany({
       ...filters,

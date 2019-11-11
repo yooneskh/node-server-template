@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { InvalidRequestError, NotFoundError } from '../global/errors';
 import { validatePropertyKeys, validatePayload, transformIncludes } from '../global/util';
-import { ResourceProperty, IResource } from './resource-maker-types';
+import { ResourceProperty, IResource, IFilter } from './resource-maker-types';
 
 export class ResourceController<T extends IResource> {
 
@@ -14,7 +14,7 @@ export class ResourceController<T extends IResource> {
   }
 
   // tslint:disable-next-line: no-any
-  public async list(filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+  public async list(filters: IFilter = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
     validatePropertyKeys(filters, this.properties);
     validatePropertyKeys(sorts, this.properties);
@@ -28,7 +28,7 @@ export class ResourceController<T extends IResource> {
   }
 
   // tslint:disable-next-line: no-any
-  public async count(filters: any = {}): Promise<number> {
+  public async count(filters: IFilter = {}): Promise<number> {
 
     validatePropertyKeys(filters, this.properties);
 
@@ -51,7 +51,7 @@ export class ResourceController<T extends IResource> {
   }
 
   // tslint:disable-next-line: no-any
-  public async findOne(filters: any = {}, includes: Record<string, string> = {}, selects?: string): Promise<T> {
+  public async findOne(filters: IFilter = {}, includes: Record<string, string> = {}, selects?: string): Promise<T> {
 
     const query = this.model.findOne(filters).select(selects);
 

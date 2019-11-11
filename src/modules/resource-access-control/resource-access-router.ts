@@ -37,12 +37,16 @@ export function makePermittedRouteFromTemplate(template: ResourceActionTemplate,
     case ResourceActionTemplate.LIST_COUNT: return {
       template,
       dataProvider: async ({ request }) => controller.countPermitted(
+        await getCurrentUserId(request),
+        permitController,
         extractFilterQueryObject(request.query.filters)
       )
     }
     case ResourceActionTemplate.RETRIEVE: return {
       template,
       dataProvider: async ({ request }) => controller.singleRetrievePermitted(
+        await getCurrentUserId(request),
+        permitController,
         request.params.resourceId,
         extractIncludeQueryObject(request.query.includes),
         request.query.selects
@@ -50,15 +54,28 @@ export function makePermittedRouteFromTemplate(template: ResourceActionTemplate,
     }
     case ResourceActionTemplate.CREATE: return {
       template,
-      dataProvider: async ({ request }) => controller.createNewPermitted(request.body)
+      dataProvider: async ({ request }) => controller.createNewPermitted(
+        await getCurrentUserId(request),
+        permitController,
+        request.body
+      )
     }
     case ResourceActionTemplate.UPDATE: return {
       template,
-      dataProvider: async ({ request }) => controller.editOnePermitted(request.params.resourceId, request.body)
+      dataProvider: async ({ request }) => controller.editOnePermitted(
+        await getCurrentUserId(request),
+        permitController,
+        request.params.resourceId,
+        request.body
+      )
     }
     case ResourceActionTemplate.DELETE: return {
       template,
-      dataProvider: async ({ request }) => controller.deleteOnePermitted(request.params.resourceId)
+      dataProvider: async ({ request }) => controller.deleteOnePermitted(
+        await getCurrentUserId(request),
+        permitController,
+        request.params.resourceId
+      )
     }
     default: throw new ServerError('invalid resource action template');
   }

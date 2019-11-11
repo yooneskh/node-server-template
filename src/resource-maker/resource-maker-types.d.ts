@@ -3,6 +3,10 @@ import { Document } from 'mongoose';
 import { Merge } from 'type-fest';
 import { ResourceRelationActionTemplate, ResourceActionMethod, ResourceActionTemplate } from './resource-maker-enums';
 
+export interface IFilter extends Record<string, any> {
+  
+}
+
 export interface IResource extends Document {
   createdAt: number;
   updatedAt: number;

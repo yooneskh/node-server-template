@@ -17,7 +17,6 @@ export function getFileType(input: Uint8Array | ArrayBuffer | Buffer) {
     return;
   }
 
-  // tslint:disable-next-line: no-any
   const check = (header: number[], options: { offset: number, mask?: number[] } = { offset: 0 }) => {
 
     options = {

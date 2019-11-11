@@ -84,9 +84,7 @@ maker.addAction({
   path: '/login',
   async dataProvider({ request }) {
 
-    const user = await UserController.findOne(
-      { phoneNumber: request.body.phoneNumber }
-    );
+    const user = await UserController.findOne({ phoneNumber: request.body.phoneNumber });
 
     await AuthController.createNew({
       user: user._id,
@@ -212,12 +210,13 @@ export async function getUserByToken(token?: string) : Promise<IUser | undefined
 
   if (!token) return undefined;
 
-  const authTokens = await AuthController.list({
-    filters: { token, valid: true },
-    sorts: { '_id': -1 },
-    includes: { 'user': '' },
-    limit: 1
-  });
+  const authTokens = await AuthController.list(
+    { token, valid: true },
+    { '_id': -1 },
+    { 'user': '' },
+    undefined,
+    1
+  );
 
   if (!authTokens || authTokens.length === 0) return undefined;
 
