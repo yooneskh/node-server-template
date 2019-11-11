@@ -31,8 +31,9 @@ app.use('/api/v1/medias', MediaRouter);
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);
 
-import { PageRouter } from './modules/book/page-resource';
+import { PageRouter, PagePermitRouter } from './modules/book/page-resource';
 app.use('/api/v1/pages', PageRouter);
+app.use('/api/v1/permits/pages', PagePermitRouter);
 
 import { AuthorRouter } from './modules/author/author-resource';
 app.use('/api/v1/authors', AuthorRouter);

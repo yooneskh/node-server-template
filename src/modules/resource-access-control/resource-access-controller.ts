@@ -2,22 +2,51 @@ import { ResourceController } from '../../resource-maker/resource-controller';
 import { IResource, ResourceProperty } from '../../resource-maker/resource-maker-types';
 import { ResourceRelationController } from '../../resource-maker/resource-relation-controller';
 import { Model } from 'mongoose';
+import { IPermit } from './resource-access-control-model';
+import { ForbiddenAccessError } from '../../global/errors';
 
 export class PermittedResourceController<T extends IResource> extends ResourceController<T> {
 
   private name: string;
+  private globalRead: boolean;
 
-  constructor(name: string, model: Model<T, {}>, properties: ResourceProperty[]) {
+  constructor(name: string, model: Model<T, {}>, properties: ResourceProperty[], globalRead: boolean) {
     super(model, properties);
     this.name = name;
+    this.globalRead = globalRead;
   }
 
   // tslint:disable-next-line: no-any
-  public async listPermitted(userId: string, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+  private async injectPermits(userId: string | undefined, permitController: ResourceController<IPermit>, mode: string, filters: any) {
 
-    console.log('it was permitted!!! list' + this.name);
+    if (!userId) throw new ForbiddenAccessError('forbidden access');
 
-    // TODO: next step! add filter by this resources permits collection for reads
+    const permittedResources = await permitController.list({ user: userId, [mode + 'Permit']: true }, undefined, undefined, 'resource');
+
+    const resourceIds = permittedResources.map(permit => permit.resource);
+
+    if (filters._id) {
+      filters._id = {
+        $and: [
+          {
+            $in: resourceIds
+          },
+          filters._id
+        ]
+      };
+    }
+    else {
+      filters._id = { $in: resourceIds };
+    }
+
+  }
+
+  // tslint:disable-next-line: no-any
+  public async listPermitted(userId: string | undefined, permitController: ResourceController<IPermit>, filters: any = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+
+    console.log('it was permitted!!! list ' + this.name);
+
+    if (!this.globalRead) await this.injectPermits(userId, permitController, 'read', filters);
 
     return super.list(filters, sorts, includes, selects, limit, skip);
 

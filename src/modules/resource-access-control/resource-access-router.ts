@@ -1,30 +1,31 @@
 import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
 import { ResourceAction, IResource } from '../../resource-maker/resource-maker-types';
-import { ServerError, ForbiddenAccessError } from '../../global/errors';
+import { ServerError } from '../../global/errors';
 import { PermittedResourceController } from './resource-access-controller';
 import { extractFilterQueryObject, extractSortQueryObject, extractIncludeQueryObject } from '../../resource-maker/resource-router';
 import { MAX_LISTING_LIMIT } from '../../resource-maker/config';
 import { Request } from 'express';
 import { getUserByToken } from '../auth/auth-resource';
+import { ResourceController } from '../../resource-maker/resource-controller';
+import { IPermit } from './resource-access-control-model';
 
-async function getCurrentUserId(request: Request): Promise<string> {
+async function getCurrentUserId(request: Request): Promise<string | undefined> {
 
   const token = request.headers.authorization;
 
   const user = await getUserByToken(token);
 
-  if (!user) throw new ForbiddenAccessError('not logged in');
-
-  return user._id;
+  return user?._id;
 
 }
 
-export function makePermittedRouteFromTemplate(template: ResourceActionTemplate, controller: PermittedResourceController<IResource>): ResourceAction {
+export function makePermittedRouteFromTemplate(template: ResourceActionTemplate, controller: PermittedResourceController<IResource>, permitController: ResourceController<IPermit>): ResourceAction {
   switch (template) {
     case ResourceActionTemplate.LIST: return {
       template,
       dataProvider: async ({ request }) => controller.listPermitted(
         await getCurrentUserId(request),
+        permitController,
         extractFilterQueryObject(request.query.filters),
         extractSortQueryObject(request.query.sorts),
         extractIncludeQueryObject(request.query.includes),
