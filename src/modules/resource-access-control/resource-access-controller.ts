@@ -147,5 +147,5 @@ export class PermittedResourceController<T extends IResource> extends ResourceCo
 }
 
 export class PermittedResourceRelationController<T extends IResource> extends ResourceRelationController<T> {
-
+  // TODO: restrict this for later
 }

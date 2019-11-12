@@ -24,18 +24,10 @@ maker.setProperties([
   }
 ]);
 
-export const {
-  model: PageModel,
-  controller: PageController
-} = maker.getMC();
+export const { model: PageModel, controller: PageController } = maker.getMC();
 
 export const PagePermittedController = new PermittedResourceController<IPage>(maker.getName(), PageModel, maker.getProperties(), false);
-
-export const {
-  model: PagePermitModel,
-  controller: PagePermitController,
-  router: PagePermitRouter
-} = createResourcePermitResource(maker.getName());
+export const { model: PagePermitModel, controller: PagePermitController, router: PagePermitRouter } = createResourcePermitResource(maker.getName());
 
 maker.addActions([
   { ...makePermittedRouteFromTemplate(ResourceActionTemplate.LIST, PagePermittedController, PagePermitController) },
