@@ -1,7 +1,7 @@
 import { ResourceProperty, ResourceRelation } from './resource-maker-types';
 import { Document, model, Schema } from 'mongoose';
-import { simplePascalize } from '../global/util';
-import { ServerError } from '../global/errors';
+import { simplePascalize } from '../../global/util';
+import { ServerError } from '../../global/errors';
 
 // tslint:disable-next-line: no-any
 function mapPropertyTypeToMongooseType(propertyType: string): any {

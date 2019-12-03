@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 
-import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { IResource } from '../../plugins/resource-maker/resource-maker-types';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError } from '../../global/errors';
 import { Config } from '../../global/config';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import * as ReadChunk from 'read-chunk';
-import { DISMISS_DATA_PROVIDER } from '../../resource-maker/resource-router';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../resource-maker/resource-maker-enums';
+import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
+import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
 
 
 // init code

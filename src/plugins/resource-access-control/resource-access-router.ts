@@ -1,12 +1,12 @@
-import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
-import { ResourceAction, IResource } from '../../resource-maker/resource-maker-types';
+import { ResourceActionTemplate } from '../resource-maker/resource-maker-enums';
+import { ResourceAction, IResource } from '../resource-maker/resource-maker-types';
 import { ServerError } from '../../global/errors';
 import { PermittedResourceController } from './resource-access-controller';
-import { extractFilterQueryObject, extractSortQueryObject, extractIncludeQueryObject } from '../../resource-maker/resource-router';
-import { MAX_LISTING_LIMIT } from '../../resource-maker/config';
+import { extractFilterQueryObject, extractSortQueryObject, extractIncludeQueryObject } from '../resource-maker/resource-router';
+import { MAX_LISTING_LIMIT } from '../resource-maker/config';
 import { Request } from 'express';
-import { getUserByToken } from '../auth/auth-resource';
-import { ResourceController } from '../../resource-maker/resource-controller';
+import { getUserByToken } from '../../modules/auth/auth-resource';
+import { ResourceController } from '../resource-maker/resource-controller';
 import { IPermit } from './resource-access-control-model';
 
 async function getCurrentUserId(request: Request): Promise<string | undefined> {

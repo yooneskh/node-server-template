@@ -3,7 +3,7 @@ import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
 import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware } from './resource-maker-types';
-import { InvalidRequestError, ServerError } from '../global/errors';
+import { InvalidRequestError, ServerError } from '../../global/errors';
 import { Merge } from 'type-fest';
 import { MAX_LISTING_LIMIT } from './config';
 import { ResourceActionMethod, ResourceRelationActionTemplate, ResourceActionTemplate } from './resource-maker-enums';

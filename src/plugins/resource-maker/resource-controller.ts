@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
-import { InvalidRequestError, NotFoundError } from '../global/errors';
-import { validatePropertyKeys, validatePayload, transformIncludes } from '../global/util';
+import { InvalidRequestError, NotFoundError } from '../../global/errors';
+import { validatePropertyKeys, validatePayload, transformIncludes } from '../../global/util';
 import { ResourceProperty, IResource, IFilter } from './resource-maker-types';
 
 export class ResourceController<T extends IResource> {

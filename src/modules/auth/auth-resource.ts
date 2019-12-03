@@ -1,12 +1,12 @@
-import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../resource-maker/resource-maker';
+import { IResource } from '../../plugins/resource-maker/resource-maker-types';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
 import { generateToken } from '../../global/util';
 import { IUser, UserController } from '../user/user-resource';
 import { MediaController } from '../media/media-resource';
-import { addResourceRouterPreProcessor, addResourceRouterPreResponseProcessor, addResourceRouterPostProcessor } from '../../resource-maker/resource-router';
+import { addResourceRouterPreProcessor, addResourceRouterPreResponseProcessor, addResourceRouterPostProcessor } from '../../plugins/resource-maker/resource-router';
 import { Request } from 'express';
-import { ResourceActionMethod } from '../../resource-maker/resource-maker-enums';
+import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
 
 
 export function hasPermission(permissionList: string[], permission: string): boolean {

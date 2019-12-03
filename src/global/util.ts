@@ -1,4 +1,4 @@
-import { ResourceProperty } from '../resource-maker/resource-maker-types';
+import { ResourceProperty } from '../plugins/resource-maker/resource-maker-types';
 import { InvalidRequestError } from './errors';
 import { randomBytes, createHash } from 'crypto';
 

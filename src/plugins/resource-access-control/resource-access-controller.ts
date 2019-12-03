@@ -1,11 +1,11 @@
-import { ResourceController } from '../../resource-maker/resource-controller';
-import { IResource, ResourceProperty, IFilter } from '../../resource-maker/resource-maker-types';
-import { ResourceRelationController } from '../../resource-maker/resource-relation-controller';
+import { ResourceController } from '../resource-maker/resource-controller';
+import { IResource, ResourceProperty, IFilter } from '../resource-maker/resource-maker-types';
+import { ResourceRelationController } from '../resource-maker/resource-relation-controller';
 import { Model } from 'mongoose';
 import { IPermit } from './resource-access-control-model';
 import { ForbiddenAccessError } from '../../global/errors';
-import { UserController } from '../user/user-resource';
-import { hasPermission } from '../auth/auth-resource';
+import { UserController } from '../../modules/user/user-resource';
+import { hasPermission } from '../../modules/auth/auth-resource';
 
 export class PermittedResourceController<T extends IResource> extends ResourceController<T> {
 

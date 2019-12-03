@@ -1,7 +1,7 @@
 import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction } from './resource-maker-types';
 import { Model } from 'mongoose';
 import { makeMainResourceModel, makeResourceRelationModel } from './resource-model';
-import { ServerError } from '../global/errors';
+import { ServerError } from '../../global/errors';
 import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { Router } from 'express';

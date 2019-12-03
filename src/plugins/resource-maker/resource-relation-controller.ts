@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
-import { validatePropertyKeys, transformIncludes } from '../global/util';
+import { validatePropertyKeys, transformIncludes } from '../../global/util';
 import { ResourceRelation, IResource, IFilter } from './resource-maker-types';
-import { InvalidStateError } from '../global/errors';
+import { InvalidStateError } from '../../global/errors';
 
 export class ResourceRelationController<T extends IResource> {
 

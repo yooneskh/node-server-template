@@ -1,4 +1,4 @@
-import { ResourceAction, ResourceActionBag } from '../../resource-maker/resource-maker-types';
+import { ResourceAction, ResourceActionBag } from '../../plugins/resource-maker/resource-maker-types';
 import { Merge } from 'type-fest';
 import { IUser } from '../user/user-resource';
 
@@ -15,7 +15,7 @@ interface ResourceActionResponsedAuthBag extends ResourceActionAuthBag {
   data: any;
 }
 
-declare module '../../resource-maker/resource-maker-types' {
+declare module '../../plugins/resource-maker/resource-maker-types' {
 
   interface ResourceActionBag {
     user?: IUser;

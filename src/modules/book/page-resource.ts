@@ -1,9 +1,9 @@
-import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
-import { makePermittedRouteFromTemplate } from '../resource-access-control/resource-access-router';
-import { PermittedResourceController } from '../resource-access-control/resource-access-controller';
-import { createResourcePermitResource } from '../resource-access-control/resource-access-control-model';
+import { IResource } from '../../plugins/resource-maker/resource-maker-types';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { makePermittedRouteFromTemplate } from '../../plugins/resource-access-control/resource-access-router';
+import { PermittedResourceController } from '../../plugins/resource-access-control/resource-access-controller';
+import { createResourcePermitResource } from '../../plugins/resource-access-control/resource-access-control-model';
 
 export interface IPage extends IResource {
   content: string;

@@ -1,6 +1,6 @@
-import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
+import { IResource } from '../../plugins/resource-maker/resource-maker-types';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
 import { Config } from '../../global/config';
 
 export interface IBook extends IResource {

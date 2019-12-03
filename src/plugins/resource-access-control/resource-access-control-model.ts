@@ -1,6 +1,6 @@
-import { ResourceMaker } from '../../resource-maker/resource-maker';
-import { IResource } from '../../resource-maker/resource-maker-types';
-import { ResourceActionTemplate } from '../../resource-maker/resource-maker-enums';
+import { ResourceMaker } from '../resource-maker/resource-maker';
+import { IResource } from '../resource-maker/resource-maker-types';
+import { ResourceActionTemplate } from '../resource-maker/resource-maker-enums';
 
 export interface IPermit extends IResource {
   user: string;
