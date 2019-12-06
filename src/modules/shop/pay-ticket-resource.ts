@@ -23,6 +23,8 @@ maker.setProperties([
   }
 ]);
 
+// TODO: this next!
+
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },

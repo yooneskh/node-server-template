@@ -1,7 +1,8 @@
 import { IResource } from '../../plugins/resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceRelationActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
-import { validatePayload } from '../../global/util';
+import { InvalidStateError, InvalidRequestError } from '../../global/errors';
+import { ProductController } from './product-resource';
 
 export interface IFactor extends IResource {
   user: string;
@@ -30,13 +31,22 @@ maker.setProperties([
   }
 ]);
 
+export const { model: FactorModel, controller: FactorController } = maker.getMC();
+
 export const { model: ProductOrderModel, controller: ProductOrderController } = maker.addRelation({
   targetModelName: 'Product',
   relationModelName: 'ProductOrder',
+  singular: true,
   properties: [
     {
       key: 'orderPrice',
-      type: 'number'
+      type: 'number',
+      required: true
+    },
+    {
+      key: 'count',
+      type: 'number',
+      required: true
     }
   ],
   actions: [
@@ -46,11 +56,36 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
     { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
     {
       template: ResourceRelationActionTemplate.CREATE,
-      // async validatePayload(payload, properties) { // TODO: here!
+      payloadValidator: async ({ request, payload }) => {
 
-      // }
+        const factorId = request.params.sourceId;
+        const factor = await FactorController.singleRetrieve(factorId);
+        if (factor.closed) throw new InvalidStateError('factor is closed');
+        if (factor.payed) throw new InvalidStateError('factor is payed');
+
+        const productId = request.params.targetId;
+        const product = await ProductController.singleRetrieve(productId);
+        if (product.price !== payload.price) throw new InvalidRequestError('order price is not equal to product price');
+
+        if (payload.count <= 0) throw new InvalidRequestError('count must be positive integer');
+
+        return true;
+
+      }
     },
-    { template: ResourceRelationActionTemplate.DELETE }
+    {
+      template: ResourceRelationActionTemplate.DELETE,
+      payloadValidator: async ({ request }) => {
+
+        const factorId = request.params.sourceId;
+        const factor = await FactorController.singleRetrieve(factorId);
+        if (factor.closed) throw new InvalidStateError('factor is closed');
+        if (factor.payed) throw new InvalidStateError('factor is payed');
+
+        return true;
+
+      }
+    }
   ]
 });
 
@@ -59,8 +94,30 @@ maker.addActions([
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
   { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  {
+    template: ResourceActionTemplate.UPDATE,
+    payloadValidator: async ({ request }) => {
+
+      const factorId = request.params.resourceId;
+      const factor = await FactorController.singleRetrieve(factorId);
+      if (factor.payed) throw new InvalidStateError('factor is payed');
+
+      return true;
+
+    }
+  },
+  {
+    template: ResourceActionTemplate.DELETE,
+    payloadValidator: async ({ request }) => {
+
+      const factorId = request.params.resourceId;
+      const factor = await FactorController.singleRetrieve(factorId);
+      if (factor.payed) throw new InvalidStateError('factor is payed');
+
+      return true;
+
+    }
+  }
 ]);
 
-export const { model: FactorModel, controller: FactorController, router: FactorRouter } = maker.getMCR();
+export const FactorRouter = maker.getRouter();

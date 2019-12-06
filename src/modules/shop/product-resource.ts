@@ -8,6 +8,8 @@ export interface IProduct extends IResource {
   picture: string;
   album: string[];
   description: string;
+  // tslint:disable-next-line: no-any
+  meta: any;
 }
 
 const maker = new ResourceMaker<IProduct>('Product');
@@ -38,6 +40,10 @@ maker.setProperties([
     ref: 'Media',
     isArray: true
   },
+  {
+    key: 'meta',
+    type: 'object'
+  }
 ]);
 
 maker.addActions([
