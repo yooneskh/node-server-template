@@ -3,15 +3,11 @@ import { Merge } from 'type-fest';
 import { IUser } from '../user/user-resource';
 
 
-interface ResourceActionAuthBag extends ResourceActionBag {
-  payload: any;
-}
-
-interface ResourceActionStrictAuthBag extends ResourceActionAuthBag {
+interface ResourceActionStrictAuthBag extends ResourceActionBag {
   user: IUser;
 }
 
-interface ResourceActionResponsedAuthBag extends ResourceActionAuthBag {
+interface ResourceActionResponsedAuthBag extends ResourceActionBag {
   data: any;
 }
 
@@ -19,14 +15,16 @@ declare module '../../plugins/resource-maker/resource-maker-types' {
 
   interface ResourceActionBag {
     user?: IUser;
+    payload?:  any;
+    token?: string;
   }
 
   interface ResourceAction {
     permission?: string;
-    permissionFunction?: (bag: ResourceActionAuthBag) => Promise<boolean>;
+    permissionFunction?: (bag: ResourceActionBag) => Promise<boolean>;
     permissionFunctionStrict?: (bag: ResourceActionStrictAuthBag) => Promise<boolean>;
-    payloadValidator?: (bag: ResourceActionAuthBag) => Promise<boolean>;
-    payloadPreprocessor?: (bag: ResourceActionAuthBag) => Promise<boolean | void>;
+    payloadValidator?: (bag: ResourceActionBag) => Promise<boolean>;
+    payloadPreprocessor?: (bag: ResourceActionBag) => Promise<boolean | void>;
     responsePreprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean | void>;
     postprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean | void>;
   }

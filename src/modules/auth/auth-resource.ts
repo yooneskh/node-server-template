@@ -238,7 +238,7 @@ export const AuthRouter = maker.getRouter();
 function transmuteRequest(request: Request) {
   return {
     payload: request.body,
-    token: request.headers.authorization
+    token: request.headers.authorization || ''
   };
 }
 
@@ -246,6 +246,9 @@ addResourceRouterPreProcessor(async bag => {
 
   const { action, request } = bag;
   const { payload, token } = transmuteRequest(request);
+
+  bag.payload = payload;
+  bag.token = token;
 
   let user: IUser | undefined;
 
@@ -272,7 +275,7 @@ addResourceRouterPreProcessor(async bag => {
   }
 
   if (await action.payloadPreprocessor?.({ ...bag, user, payload })) {
-    return console.log('bypassed action');
+    return console.log('bypassed action'); // TODO: wrong bypass!
   }
 
 });
