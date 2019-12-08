@@ -42,7 +42,8 @@ maker.setProperties([
   },
   {
     key: 'meta',
-    type: 'object'
+    type: 'object',
+    default: {}
   }
 ]);
 

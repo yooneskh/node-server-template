@@ -26,9 +26,9 @@ declare module '../../plugins/resource-maker/resource-maker-types' {
     permissionFunction?: (bag: ResourceActionAuthBag) => Promise<boolean>;
     permissionFunctionStrict?: (bag: ResourceActionStrictAuthBag) => Promise<boolean>;
     payloadValidator?: (bag: ResourceActionAuthBag) => Promise<boolean>;
-    payloadPreprocessor?: (bag: ResourceActionAuthBag) => Promise<boolean>;
-    responsePreprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean>;
-    postprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean>;
+    payloadPreprocessor?: (bag: ResourceActionAuthBag) => Promise<boolean | void>;
+    responsePreprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean | void>;
+    postprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean | void>;
   }
 
 }

@@ -85,14 +85,14 @@ function makeRelationSchema(resourceName: string, relation: ResourceRelation) {
     required: true
   }
 
-  return new Schema(schemeOptions);
+  return new Schema(schemeOptions, { minimize: false });
 
 }
 
 export function makeMainResourceModel<T extends Document>(name: string, properties: ResourceProperty[]) {
   return model<T>(
     name,
-    new Schema(makeSchemaOptionsFromPropertise(properties))
+    new Schema(makeSchemaOptionsFromPropertise(properties), { minimize: false })
   )
 }
 
