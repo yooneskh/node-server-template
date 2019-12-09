@@ -6,6 +6,11 @@ export const Config = {
     host: 'localhost',
     name: 'yback'
   },
+  payment: {
+    callbackBase: 'http://localhost:8080/pay/verify',
+    email: 'yooneskh@gmail.com',
+    phone: '09364524952'
+  },
   languages: {
     en: { },
     fa: { }

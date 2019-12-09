@@ -2,9 +2,10 @@ import { IResource } from '../../plugins/resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
 import { InvalidRequestError, ServerError } from '../../global/errors';
+import { FactorController, calculateFactorAmount } from './factor-resource';
 
 import ZarinpalCheckout from 'zarinpal-checkout';
-import { FactorController } from './factor-resource';
+import { Config } from '../../global/config';
 const Zarinpal = ZarinpalCheckout.create('c40c2e72-f604-11e7-95af-000c295eb8fc', false);
 
 interface IGatewayHandler {
@@ -103,11 +104,11 @@ gatewayHandlers.push({
   gateway: 'zarinpal',
   async initTicket(payTicket) {
 
-    const amount = 0; // TODO: do these!
-    const callBackUrl = '';
-    const description = '';
-    const email = '';
-    const mobile = '';
+    const amount = await calculateFactorAmount(payTicket.factor);
+    const callBackUrl = `${Config.payment.callbackBase}?ticket=${payTicket._id}`;
+    const description = (await FactorController.singleRetrieve(payTicket.factor)).name || 'پرداخت فاکتور';
+    const email = Config.payment.email;
+    const mobile = Config.payment.phone;
 
     const { status, url, authority } = await Zarinpal.PaymentRequest({
       Amount: amount.toString(10),

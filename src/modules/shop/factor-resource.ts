@@ -6,6 +6,7 @@ import { ProductController } from './product-resource';
 
 export interface IFactor extends IResource {
   user: string;
+  name: string;
   closed: boolean;
   payed: boolean;
 }
@@ -18,6 +19,11 @@ maker.setProperties([
     type: 'string',
     required: true,
     ref: 'User'
+  },
+  {
+    key: 'name',
+    type: 'string',
+    default: ''
   },
   {
     key: 'closed',
@@ -33,7 +39,15 @@ maker.setProperties([
 
 export const { model: FactorModel, controller: FactorController } = maker.getMC();
 
-export const { model: ProductOrderModel, controller: ProductOrderController } = maker.addRelation({
+
+export interface IProductOrder extends IResource {
+  factor: string;
+  product: string;
+  orderPrice: number;
+  count: number;
+}
+
+export const { model: ProductOrderModel, controller: ProductOrderController } = maker.addRelation<IProductOrder>({
   targetModelName: 'Product',
   relationModelName: 'ProductOrder',
   singular: true,
@@ -121,3 +135,18 @@ maker.addActions([
 ]);
 
 export const FactorRouter = maker.getRouter();
+
+
+export async function calculateFactorAmount(factorId: string) {
+
+  const factorProductOrders = await ProductOrderController.listForSource(factorId);
+
+  let sum = 0;
+
+  for (const order of factorProductOrders) {
+    sum += order.orderPrice * order.count;
+  }
+
+  return sum;
+
+}
