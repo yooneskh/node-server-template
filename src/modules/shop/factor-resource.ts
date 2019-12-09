@@ -79,7 +79,7 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
 
         const productId = request.params.targetId;
         const product = await ProductController.singleRetrieve(productId);
-        if (product.price !== payload.price) throw new InvalidRequestError('order price is not equal to product price');
+        if (product.price !== payload.orderPrice) throw new InvalidRequestError('order price is not equal to product price');
 
         if (payload.count <= 0) throw new InvalidRequestError('count must be positive integer');
 

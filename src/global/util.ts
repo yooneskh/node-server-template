@@ -79,7 +79,7 @@ export function validatePropertyTypes(payload: any, properties: ResourceProperty
 }
 
 // tslint:disable-next-line: no-any
-export function validatePayload(payload: any, properties: ResourceProperty[], twoWayCheck = true) {
+export function validatePayload(payload: any, properties: ResourceProperty[], twoWayCheck = false) {
   validatePropertyKeys(payload, properties, twoWayCheck);
   validatePropertyTypes(payload, properties)
 }

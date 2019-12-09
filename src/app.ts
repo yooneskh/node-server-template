@@ -38,6 +38,15 @@ app.use('/api/v1/permits/pages', PagePermitRouter);
 import { AuthorRouter } from './modules/author/author-resource';
 app.use('/api/v1/authors', AuthorRouter);
 
+import { ProductRouter } from './modules/shop/product-resource';
+app.use('/api/v1/products', ProductRouter);
+
+import { FactorRouter } from './modules/shop/factor-resource';
+app.use('/api/v1/factors', FactorRouter);
+
+import { PayTicketRouter } from './modules/shop/pay-ticket-resource';
+app.use('/api/v1/paytickets', PayTicketRouter);
+
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
 

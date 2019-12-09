@@ -1,7 +1,7 @@
 import { IResource } from '../../plugins/resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
-import { InvalidRequestError, ServerError } from '../../global/errors';
+import { InvalidRequestError, ServerError, InvalidStateError } from '../../global/errors';
 import { FactorController, calculateFactorAmount } from './factor-resource';
 
 import ZarinpalCheckout from 'zarinpal-checkout';
@@ -66,6 +66,16 @@ maker.addActions([
   { template: ResourceActionTemplate.RETRIEVE },
   {
     template: ResourceActionTemplate.CREATE,
+    payloadValidator: async ({ payload }) => {
+
+      const factor = await FactorController.singleRetrieve(payload.factor);
+
+      if (!factor.closed) throw new InvalidStateError('factor must be closed');
+      if (factor.payed) throw new InvalidStateError('factor is payed already');
+
+      return true;
+
+    },
     responsePreprocessor: async ({ data }) => {
 
       const handler = gatewayHandlers.find(h => h.gateway === data.gateway);
