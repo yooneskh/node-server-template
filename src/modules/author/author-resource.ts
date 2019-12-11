@@ -15,6 +15,13 @@ maker.setProperties([
   }
 ]);
 
+maker.addActions([
+  { template: ResourceActionTemplate.LIST },
+  { template: ResourceActionTemplate.CREATE },
+  { template: ResourceActionTemplate.UPDATE },
+  { template: ResourceActionTemplate.DELETE }
+]);
+
 export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation({
   targetModelName: 'Book',
   singular: true,
@@ -22,6 +29,12 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
     {
       key: 'timeTook',
       type: 'number'
+    },
+    {
+      key: 'pages',
+      type: 'string',
+      ref: 'Page',
+      isArray: true
     }
   ],
   actions: [
@@ -40,15 +53,52 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
       key: 'timeTook',
       title: 'زمان طول کشیده',
       order: 1
+    },
+    {
+      key: 'pages',
+      title: 'صفحات ایجاد شده',
+      order: 2
     }
   ]
 });
 
-maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
-]);
+export const { model: AuthorPageRelationModel, controller: AuthorPageRelationController } = maker.addRelation({
+  targetModelName: 'Page',
+  maxCount: 10,
+  properties: [
+    {
+      key: 'isPremium',
+      type: 'boolean'
+    },
+    {
+      key: 'contributor',
+      type: 'string',
+      ref: 'User'
+    }
+  ],
+  actions: [
+    { template: ResourceRelationActionTemplate.LIST },
+    { template: ResourceRelationActionTemplate.LIST_COUNT },
+    { template: ResourceRelationActionTemplate.RETRIEVE },
+    { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
+    { template: ResourceRelationActionTemplate.CREATE },
+    { template: ResourceRelationActionTemplate.DELETE }
+  ]
+}, {
+  title: 'صفحات ایجاد شده',
+  order: 2,
+  propertiesMeta: [
+    {
+      key: 'isPremium',
+      title: 'صفحه ویژه',
+      order: 1
+    },
+    {
+      key: 'contributor',
+      title: 'دستیار',
+      order: 2
+    }
+  ]
+});
 
 export const { model: AuthorModel, controller: AuthorController, router: AuthorRouter } = maker.getMCR();
