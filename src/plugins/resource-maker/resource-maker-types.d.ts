@@ -34,6 +34,12 @@ export interface ResourcePropertyMeta {
   hideInTable?: boolean;
 }
 
+export interface ResourceRelationMeta {
+  title?: string;
+  order?: number;
+  propertiesMeta?: ResourcePropertyMeta[];
+}
+
 export interface ResourceRelation {
   targetModelName: string;
   relationModelName?: string;
@@ -41,6 +47,7 @@ export interface ResourceRelation {
   maxCount?: number;
   properties?: ResourceProperty[];
   actions?: ResourceAction[];
+  meta?: ResourceRelationMeta;
 }
 
 export interface ResourceActionBag {

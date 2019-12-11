@@ -1,4 +1,4 @@
-import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction } from './resource-maker-types';
+import { ResourceProperty, ResourcePropertyMeta, ResourceRelation, IResource, ResourceAction, ResourceRelationMeta } from './resource-maker-types';
 import { Model } from 'mongoose';
 import { makeMainResourceModel, makeResourceRelationModel } from './resource-model';
 import { ServerError } from '../../global/errors';
@@ -49,7 +49,9 @@ export class ResourceMaker<T extends IResource> {
     this.metas = metas;
   }
 
-  public addRelation<P extends IResource>(relation: ResourceRelation) {
+  public addRelation<P extends IResource>(relation: ResourceRelation, meta?: ResourceRelationMeta) {
+
+    relation.meta = { ...relation.meta, ...meta };
 
     this.relations.push(relation);
 
@@ -117,7 +119,7 @@ export class ResourceMaker<T extends IResource> {
       actions: relation.actions
     }));
 
-    this.router = scaffoldResourceRouter(this.actions, routerRelations, this.properties, this.metas, this.controller)
+    this.router = scaffoldResourceRouter(this.actions, routerRelations, this.properties, this.metas, this.relations, this.controller)
 
     return this.router;
 

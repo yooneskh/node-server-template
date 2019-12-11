@@ -2,11 +2,12 @@ import { Router, Request, Response } from 'express';
 import { ResourceController } from './resource-controller';
 import { ResourceRelationController } from './resource-relation-controller';
 import { plural } from 'pluralize';
-import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware } from './resource-maker-types';
+import { ResourceAction, ResourceProperty, ResourcePropertyMeta, IResource, ResourceActionBag, ResourceRouterMiddleware, ResourceRouterResponsedMiddleware, ResourceRelation } from './resource-maker-types';
 import { InvalidRequestError, ServerError } from '../../global/errors';
 import { Merge } from 'type-fest';
 import { MAX_LISTING_LIMIT } from './config';
 import { ResourceActionMethod, ResourceRelationActionTemplate, ResourceActionTemplate } from './resource-maker-enums';
+import sortBy from 'lodash/sortBy'; //TODO: sort with this, sort relation prop metas too
 
 export interface IRouterRelation {
   targetModelName: string;
@@ -113,6 +114,48 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
   // TODO: restrict access
   applyActionOnRouter(router, {
     path: '/metas',
+    method: ResourceActionMethod.GET,
+    dataProvider: async () => result
+  });
+
+}
+
+function injectRelationsInformation(router: Router, relations: ResourceRelation[]) {
+
+  // tslint:disable-next-line: no-any
+  const result: any[] = [];
+
+  for (const relation of relations) {
+    result.push({
+      targetModel: relation.targetModelName,
+      relationModelName: relation.relationModelName,
+      title: relation.meta?.title,
+      order: relation.meta?.order,
+      properties: relation.properties?.map(property => ({
+        ...(relation.meta?.propertiesMeta?.find(p => p.key === property.key)),
+        ...property
+      }))
+    });
+  }
+
+  // tslint:disable-next-line: no-any
+  result.forEach(r => r.properties = r.properties?.filter((p: any) => !p.hidden));
+
+  result.sort((item1, item2) => {
+    if (item1.order === undefined) {
+      return 1;
+    }
+    else if (item2.order === undefined) {
+      return -1;
+    }
+    else {
+      return item1.order - item2.order;
+    }
+  });
+
+  // TODO: restrict access
+  applyActionOnRouter(router, {
+    path: '/relations',
     method: ResourceActionMethod.GET,
     dataProvider: async () => result
   });
@@ -346,7 +389,7 @@ export function addResourceRouterPostProcessor(middleware: ResourceRouterRespons
   postProcessors.push(middleware)
 }
 
-export function scaffoldResourceRouter<T extends IResource>(resourceActions: ResourceAction[], relations: IRouterRelation[], resourceProperties: ResourceProperty[], resourceMetas: ResourcePropertyMeta[], controller?: ResourceController<T>): Router {
+export function scaffoldResourceRouter<T extends IResource>(resourceActions: ResourceAction[], relations: IRouterRelation[], resourceProperties: ResourceProperty[], resourceMetas: ResourcePropertyMeta[], originalRelations: ResourceRelation[], controller?: ResourceController<T>): Router {
 
   const resourceRouter = Router();
 
@@ -355,6 +398,8 @@ export function scaffoldResourceRouter<T extends IResource>(resourceActions: Res
     resourceProperties,
     resourceMetas
   );
+
+  injectRelationsInformation(resourceRouter, originalRelations);
 
   for (const action of resourceActions || []) {
 

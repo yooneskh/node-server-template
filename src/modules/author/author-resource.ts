@@ -32,6 +32,16 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
     { template: ResourceRelationActionTemplate.CREATE },
     { template: ResourceRelationActionTemplate.DELETE }
   ]
+}, {
+  title: 'کتاب‌ها',
+  order: 1,
+  propertiesMeta: [
+    {
+      key: 'timeTook',
+      title: 'زمان طول کشیده',
+      order: 1
+    }
+  ]
 });
 
 maker.addActions([
