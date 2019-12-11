@@ -107,7 +107,7 @@ maker.addActions([
   }
 ]);
 
-export const PayTicketRouter = maker.getMCR();
+export const PayTicketRouter = maker.getRouter();
 
 
 // GATEWAY HANDLERS
