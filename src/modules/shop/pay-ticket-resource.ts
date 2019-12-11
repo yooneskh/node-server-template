@@ -60,6 +60,8 @@ maker.setProperties([
   }
 ]);
 
+export const { model: PayTicketModel, controller: PayTicketController } = maker.getMC();
+
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },
@@ -92,23 +94,23 @@ maker.addActions([
   {
     method: ResourceActionMethod.POST,
     path: '/verify/:ticketId',
-    dataProvider: async ({ request, payload }) => verifyPayTicket(request.params.ticketId, payload)
+    dataProvider: async ({ request }) => {
+
+      const payTicket = await PayTicketController.singleRetrieve(request.params.ticketId);
+
+      const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
+      if (!handler) throw new InvalidRequestError('invalid gateway');
+
+      handler.verifyTicket(payTicket);
+
+    }
   }
 ]);
 
-export const { model: PayTicketModel, controller: PayTicketController, router: PayTicketRouter } = maker.getMCR();
+export const PayTicketRouter = maker.getMCR();
 
-// tslint:disable-next-line: no-any
-async function verifyPayTicket(payTicketId: string, payload: any) {
 
-  const payTicket = await PayTicketController.singleRetrieve(payTicketId);
-
-  const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
-  if (!handler) throw new InvalidRequestError('invalid gateway');
-
-  handler.verifyTicket(payTicket);
-
-}
+// GATEWAY HANDLERS
 
 gatewayHandlers.push({
   gateway: 'zarinpal',
@@ -154,7 +156,7 @@ gatewayHandlers.push({
       Authority: authority
     });
 
-    if (status === -21) throw new InvalidRequestError('pay ticket not berified');
+    if (status === -21) throw new InvalidRequestError('pay ticket not verified');
 
     payTicket.meta.refId = RefID;
     payTicket.resolved = true;
