@@ -112,7 +112,7 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
 
   // TODO: restrict access
   applyActionOnRouter(router, {
-    path: '/meta',
+    path: '/metas',
     method: ResourceActionMethod.GET,
     dataProvider: async () => result
   });
@@ -328,6 +328,7 @@ function applyActionOnRouter(router: Router, action: ResourceAction) {
     case ResourceActionMethod.PATCH: router.patch(action.path, actionHandler); break;
     case ResourceActionMethod.PUT: router.put(action.path, actionHandler); break;
     case ResourceActionMethod.DELETE: router.delete(action.path, actionHandler); break;
+    case ResourceActionMethod.HEAD: router.head(action.path, actionHandler); break;
     default: throw new ServerError('unknown action method type');
   }
 

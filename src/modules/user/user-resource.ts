@@ -59,7 +59,8 @@ maker.setMetas([
   {
     key: 'phoneNumber',
     title: 'شماره تلفن',
-    order: 3
+    order: 3,
+    dir: 'ltr'
   },
   {
     key: 'profilePicture',

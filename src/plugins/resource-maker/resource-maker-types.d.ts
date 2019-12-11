@@ -29,6 +29,7 @@ export interface ResourcePropertyMeta {
   title?: string;
   order?: number;
   titleAble?: boolean
+  dir?: string;
   hidden?: boolean;
   hideInTable?: boolean;
 }
