@@ -98,18 +98,7 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
   }
 
   result = result.filter(item => !item.hidden);
-
-  result.sort((item1, item2) => {
-    if (item1.order === undefined) {
-      return 1;
-    }
-    else if (item2.order === undefined) {
-      return -1;
-    }
-    else {
-      return item1.order - item2.order;
-    }
-  });
+  result = sortBy(result, 'order');
 
   // TODO: restrict access
   applyActionOnRouter(router, {
@@ -123,35 +112,25 @@ function injectMetaInformation(router: Router, properties: ResourceProperty[], m
 function injectRelationsInformation(router: Router, relations: ResourceRelation[]) {
 
   // tslint:disable-next-line: no-any
-  const result: any[] = [];
+  let result: any[] = [];
 
-  for (const relation of relations) {
-    result.push({
-      targetModel: relation.targetModelName,
-      relationModelName: relation.relationModelName,
-      title: relation.meta?.title,
-      order: relation.meta?.order,
-      properties: relation.properties?.map(property => ({
-        ...(relation.meta?.propertiesMeta?.find(p => p.key === property.key)),
-        ...property
-      }))
-    });
+  result = relations.map(relation => ({
+    targetModel: relation.targetModelName,
+    relationModelName: relation.relationModelName,
+    title: relation.meta?.title,
+    order: relation.meta?.order,
+    properties: relation.properties?.map(property => ({
+      ...(relation.meta?.propertiesMeta?.find(p => p.key === property.key)),
+      ...property
+    }))
+  }));
+
+  for (const row of result) {
+    // tslint:disable-next-line: no-any
+    row.properties = sortBy(row.properties?.filter((p: any) => !p.hidden), 'order')
   }
 
-  // tslint:disable-next-line: no-any
-  result.forEach(r => r.properties = r.properties?.filter((p: any) => !p.hidden));
-
-  result.sort((item1, item2) => {
-    if (item1.order === undefined) {
-      return 1;
-    }
-    else if (item2.order === undefined) {
-      return -1;
-    }
-    else {
-      return item1.order - item2.order;
-    }
-  });
+  result = sortBy(result, 'order');
 
   // TODO: restrict access
   applyActionOnRouter(router, {
