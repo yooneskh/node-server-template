@@ -37,6 +37,7 @@ export interface ResourcePropertyMeta {
 export interface ResourceRelationMeta {
   title?: string;
   order?: number;
+  targetPropertyTitle?: string;
   propertiesMeta?: ResourcePropertyMeta[];
 }
 

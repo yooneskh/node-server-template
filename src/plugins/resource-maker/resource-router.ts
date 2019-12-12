@@ -117,6 +117,7 @@ function injectRelationsInformation(router: Router, relations: ResourceRelation[
   result = relations.map(relation => ({
     targetModel: relation.targetModelName,
     relationModelName: relation.relationModelName,
+    targetPropertyTitle: relation.meta?.targetPropertyTitle,
     singular: relation.singular,
     maxCount: relation.maxCount,
     title: relation.meta?.title,

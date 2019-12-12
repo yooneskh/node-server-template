@@ -57,16 +57,17 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
 }, {
   title: 'کتاب‌ها',
   order: 1,
+  targetPropertyTitle: 'کتاب',
   propertiesMeta: [
     {
       key: 'timeTook',
       title: 'زمان طول کشیده',
-      order: 1
+      order: 2
     },
     {
       key: 'pages',
       title: 'صفحات ایجاد شده',
-      order: 2
+      order: 3
     }
   ]
 });
@@ -74,7 +75,7 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
 export const { model: PageMakerModel, controller: PageMakerController } = maker.addRelation({
   targetModelName: 'Page',
   relationModelName: 'PageMaker',
-  maxCount: 10,
+  maxCount: 5,
   properties: [
     {
       key: 'isPremium',
@@ -96,6 +97,7 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
   ]
 }, {
   title: 'صفحات ایجاد شده',
+  targetPropertyTitle: 'صفحه',
   order: 2,
   propertiesMeta: [
     {

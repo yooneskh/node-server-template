@@ -1,13 +1,9 @@
 import { IResource } from '../../plugins/resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
-import { Config } from '../../global/config';
 
 export interface IBook extends IResource {
-  name: {
-    en: string,
-    fa: string
-  };
+  name: string;
   page: string;
 }
 
@@ -16,8 +12,16 @@ const maker = new ResourceMaker<IBook>('Book');
 maker.setProperties([
   {
     key: 'name',
-    type: 'string',
-    languages: Config.languages
+    type: 'string'
+  }
+]);
+
+maker.setMetas([
+  {
+    key: 'name',
+    title: 'نام',
+    titleAble: true,
+    order: 1
   }
 ]);
 
