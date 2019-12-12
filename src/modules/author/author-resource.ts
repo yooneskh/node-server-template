@@ -15,6 +15,15 @@ maker.setProperties([
   }
 ]);
 
+maker.setMetas([
+  {
+    key: 'familyName',
+    title: 'نام خانوادگی',
+    titleAble: true,
+    order: 1
+  }
+]);
+
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.CREATE },
@@ -62,8 +71,9 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
   ]
 });
 
-export const { model: AuthorPageRelationModel, controller: AuthorPageRelationController } = maker.addRelation({
+export const { model: PageMakerModel, controller: PageMakerController } = maker.addRelation({
   targetModelName: 'Page',
+  relationModelName: 'PageMaker',
   maxCount: 10,
   properties: [
     {
