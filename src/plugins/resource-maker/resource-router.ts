@@ -212,17 +212,32 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
 
   }
+  else if (action.template === ResourceRelationActionTemplate.UPDATE) {
+
+    if (!action.method) action.method = ResourceActionMethod.PATCH;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request, payload }) => controller.updateRelation(
+        request.params.sourceId,
+        request.params.targetId,
+        request.params.relationId,
+        payload
+      );
+    }
+
+  }
   else if (action.template === ResourceRelationActionTemplate.DELETE) {
 
     if (!action.method) action.method = ResourceActionMethod.DELETE;
-    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
 
     if (!action.dataProvider) {
       action.dataProvider = async ({ request }) => controller.removeRelation(
         request.params.sourceId,
         request.params.targetId,
-        extractFilterQueryObject(request.query.filters)
-      )
+        request.params.relationId
+      );
     }
 
   }

@@ -52,6 +52,7 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
     { template: ResourceRelationActionTemplate.RETRIEVE },
     { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
     { template: ResourceRelationActionTemplate.CREATE },
+    { template: ResourceRelationActionTemplate.UPDATE },
     { template: ResourceRelationActionTemplate.DELETE }
   ]
 }, {
@@ -93,6 +94,7 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
     { template: ResourceRelationActionTemplate.RETRIEVE },
     { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
     { template: ResourceRelationActionTemplate.CREATE },
+    { template: ResourceRelationActionTemplate.UPDATE },
     { template: ResourceRelationActionTemplate.DELETE }
   ]
 }, {

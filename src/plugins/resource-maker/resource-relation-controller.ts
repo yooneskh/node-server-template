@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { validatePropertyKeys, transformIncludes } from '../../global/util';
 import { ResourceRelation, IResource, IFilter } from './resource-maker-types';
-import { InvalidStateError } from '../../global/errors';
+import { InvalidStateError, NotFoundError } from '../../global/errors';
 
 export class ResourceRelationController<T extends IResource> {
 
@@ -94,13 +94,44 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async removeRelation(sourceId: string, targetId: string, filters: IFilter = {}): Promise<boolean> {
+  public async updateRelation(sourceId: string, targetId: string, relationId: string, payload: Partial<T>): Promise<boolean> {
 
-    await this.model.deleteMany({
-      ...filters,
-      [this.sourcePropertyName]: sourceId,
-      [this.targetPropertyName]: targetId
-    })
+    const item = await this.model.findById(relationId);
+
+    if (!item) throw new NotFoundError('relation not found');
+
+    if (item.get(this.sourcePropertyName) !== sourceId || item.get(this.targetPropertyName) !== targetId) {
+      throw new NotFoundError('relation not found');
+    }
+
+    // TODO: validate payload
+
+    Object.keys(payload).forEach(key => {
+      if (key !== this.sourcePropertyName || key !== this.targetPropertyName || key !== '_id') {
+        // tslint:disable-next-line: no-any
+        item.set(key, (payload as any)[key]);
+      }
+    });
+
+    item.updatedAt = Date.now();
+
+    await item.save();
+
+    return true;
+
+  }
+
+  public async removeRelation(sourceId: string, targetId: string, relationId: string): Promise<boolean> {
+
+    const item = await this.model.findById(relationId);
+
+    if (!item) throw new NotFoundError('relation not found');
+
+    if (item.get(this.sourcePropertyName) !== sourceId || item.get(this.targetPropertyName) !== targetId) {
+      throw new NotFoundError('relation not found');
+    }
+
+    await item.remove();
 
     return true;
 
