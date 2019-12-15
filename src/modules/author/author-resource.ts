@@ -1,6 +1,7 @@
 import { IResource } from '../../plugins/resource-maker/resource-maker-types';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { Config } from '../../global/config';
 
 export interface IAuthor extends IResource {
   familyName: string;
@@ -40,6 +41,11 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
       type: 'number'
     },
     {
+      key: 'blast',
+      type: 'string',
+      languages: Config.languages
+    },
+    {
       key: 'pages',
       type: 'string',
       ref: 'Page',
@@ -64,6 +70,11 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
       key: 'timeTook',
       title: 'زمان طول کشیده',
       order: 2
+    },
+    {
+      key: 'blast',
+      title: 'انفجار',
+      order: 3
     },
     {
       key: 'pages',
