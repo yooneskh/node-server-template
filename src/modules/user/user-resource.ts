@@ -1,11 +1,16 @@
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { IResource } from '../../plugins/resource-maker/resource-maker-types';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { Config } from '../../global/config';
 
 export interface IUser extends IResource {
   firstName: string;
   lastName: string;
   phoneNumber: string;
+  bio: {
+    en: string;
+    fa: string;
+  }
   profile: string;
   permissions: string[];
   verificationCode?: string;
@@ -22,6 +27,11 @@ maker.setProperties([
   {
     key: 'lastName',
     type: 'string'
+  },
+  {
+    key: 'bio',
+    type: 'string',
+    languages: Config.languages
   },
   {
     key: 'phoneNumber',
@@ -55,6 +65,11 @@ maker.setMetas([
     title: 'نام خانوادگی',
     order: 2,
     titleAble: true
+  },
+  {
+    key: 'bio',
+    title: 'زندگینامه',
+    order: 5
   },
   {
     key: 'phoneNumber',

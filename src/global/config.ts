@@ -12,7 +12,7 @@ export const Config = {
     phone: '09364524952'
   },
   languages: {
-    en: { },
-    fa: { }
+    en: { default: '' },
+    fa: { default: '' }
   }
 };
