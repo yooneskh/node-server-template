@@ -13,8 +13,6 @@ export interface IUser extends IResource {
   }
   profile: string;
   permissions: string[];
-  verificationCode?: string;
-  token?: string;
 }
 
 const maker = new ResourceMaker<IUser>('User');
