@@ -258,6 +258,8 @@ addResourceRouterPreProcessor(async bag => {
     user = await getUserByToken(token);
   }
 
+  bag.user = user;
+
   if (action.permission && (!user || !user.permissions || !hasPermission(user.permissions || [], action.permission)) ) {
     throw new ForbiddenAccessError('forbidden access');
   }
