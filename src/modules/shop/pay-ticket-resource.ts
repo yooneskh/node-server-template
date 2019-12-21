@@ -68,25 +68,9 @@ maker.addActions([
   { template: ResourceActionTemplate.RETRIEVE },
   {
     template: ResourceActionTemplate.CREATE,
-    payloadValidator: async ({ payload }) => {
-
-      const factor = await FactorController.singleRetrieve(payload.factor);
-
-      if (!factor.closed) throw new InvalidStateError('factor must be closed');
-      if (factor.payed) throw new InvalidStateError('factor is payed already');
-
-      return true;
-
-    },
+    dataProvider: async ({ payload }) => createPayTicket(payload.factor, payload.gateway),
     responsePreprocessor: async ({ data }) => {
-
-      const handler = gatewayHandlers.find(h => h.gateway === data.gateway);
-      if (!handler) throw new InvalidRequestError('invalid gateway');
-
-      await handler.initTicket(data);
-
       delete data.meta;
-
     }
   },
   { template: ResourceActionTemplate.UPDATE },
@@ -101,7 +85,9 @@ maker.addActions([
       const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
       if (!handler) throw new InvalidRequestError('invalid gateway');
 
-      handler.verifyTicket(payTicket);
+      await handler.verifyTicket(payTicket);
+
+      return true;
 
     }
   }
@@ -109,6 +95,26 @@ maker.addActions([
 
 export const PayTicketRouter = maker.getRouter();
 
+export async function createPayTicket(factorId: string, gateway: string) {
+
+  const factor = await FactorController.singleRetrieve(factorId);
+
+  if (!factor.closed) throw new InvalidStateError('factor must be closed');
+  if (factor.payed) throw new InvalidStateError('factor is payed already');
+
+  const handler = gatewayHandlers.find(h => h.gateway === gateway);
+  if (!handler) throw new InvalidRequestError('invalid gateway');
+
+  const payTicket = await PayTicketController.createNew({
+    factor: factorId,
+    gateway
+  });
+
+  await handler.initTicket(payTicket);
+
+  return payTicket;
+
+}
 
 // GATEWAY HANDLERS
 
