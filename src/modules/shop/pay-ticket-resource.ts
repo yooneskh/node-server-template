@@ -8,10 +8,15 @@ import ZarinpalCheckout from 'zarinpal-checkout';
 import { Config } from '../../global/config';
 const Zarinpal = ZarinpalCheckout.create('c40c2e72-f604-11e7-95af-000c295eb8fc', false);
 
+interface IPayTicketVerifyInfo {
+  factorTitle: string;
+  amount: number;
+}
+
 interface IGatewayHandler {
   gateway: string;
   initTicket(payTicket: IPayTicket): Promise<void>;
-  verifyTicket(payTicket: IPayTicket): Promise<void>;
+  verifyTicket(payTicket: IPayTicket): Promise<IPayTicketVerifyInfo>;
 }
 
 const gatewayHandlers: IGatewayHandler[] = [];
@@ -85,9 +90,7 @@ maker.addActions([
       const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
       if (!handler) throw new InvalidRequestError('invalid gateway');
 
-      await handler.verifyTicket(payTicket);
-
-      return true;
+      return(handler.verifyTicket(payTicket));
 
     }
   }
@@ -171,6 +174,11 @@ gatewayHandlers.push({
     const factor = await FactorController.singleRetrieve(payTicket.factor);
     factor.payed = true;
     await factor.save();
+
+    return {
+      factorTitle: factor.name,
+      amount
+    };
 
   }
 });
