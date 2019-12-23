@@ -141,7 +141,10 @@ maker.addAction({
     const authTokens = await AuthController.list(
       { propertyIdentifier: phoneNumber },
       { '_id': -1 },
-      { 'user': '' },
+      {
+        'user': '',
+        'user.profilePicture': ''
+      },
       undefined,
       1
     );
