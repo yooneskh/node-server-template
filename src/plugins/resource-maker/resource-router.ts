@@ -18,6 +18,14 @@ export interface IRouterRelation {
 
 export const DISMISS_DATA_PROVIDER = -485698569;
 
+const FILTER_OPERATORS: Record<string, string> = {
+  '=': '$eq',
+  '!=': '$ne',
+  '<': '$lt',
+  '>': '$gt',
+  '~=': '$regex'
+};
+
 const preProcessors: ResourceRouterMiddleware[] = [];
 const preResponseProcessors: ResourceRouterResponsedMiddleware[] = [];
 const postProcessors: ResourceRouterResponsedMiddleware[] = [];
@@ -60,22 +68,38 @@ export function extractSortQueryObject(queryString: string): Record<string, numb
 
 }
 
-export function extractFilterQueryObject(queryString: string): Record<string, string | boolean> { // TODO: add operator func to filters
+export function extractFilterQueryObject(queryString: string) {
 
-  const result: Record<string, string | boolean> = {};
+  // tslint:disable-next-line: no-any
+  const result: any = {};
 
-  const records = extractQueryObject(queryString);
+  if (!queryString) return result;
 
-  for (const key in records) {
-    if (records[key] === 'Xtrue') {
-      result[key] = true;
-    }
-    else if (records[key] === 'Xfalse') {
-      result[key] = false;
-    }
-    else {
-      result[key] = records[key];
-    }
+  const filtersParts = queryString.split(',');
+
+  for (const part of filtersParts) {
+
+    // tslint:disable-next-line: no-any prefer-const
+    let [key, operator, value]: any = part.split(':');
+
+    // tslint:disable-next-line: strict-type-predicates
+    if (key === undefined) throw new InvalidRequestError(`filter invalid key '${key}'`);
+    // tslint:disable-next-line: strict-type-predicates
+    if (operator === undefined) throw new InvalidRequestError(`filter invalid operator '${operator}'`);
+    // tslint:disable-next-line: strict-type-predicates
+    if (value === undefined) throw new InvalidRequestError(`filter invalid value '${value}'`);
+
+    if (value === 'Xtrue') value = true;
+    if (value === 'Xfalse') value = false;
+
+    const filterOperator = FILTER_OPERATORS[operator];
+
+    if (!filterOperator) throw new InvalidRequestError(`filter invalid operator '${operator}'`);
+
+    if (filterOperator === '$regex') value = new RegExp(value, 'i');
+
+    result[key] = { [FILTER_OPERATORS[operator]]: value };
+
   }
 
   return result;
