@@ -64,6 +64,20 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
+  public async retrieveRelation(relationId: string, includes: Record<string, string> = {}, selects?: string): Promise<T> {
+
+    const query = this.model.findById(relationId).select(selects);
+
+    for (const include of transformIncludes(includes)) query.populate(include);
+
+    const relation = await query;
+
+    if (!relation) throw new NotFoundError(`relation not found @${relationId}`);
+
+    return relation;
+
+  }
+
   public async addRelation(sourceId: string, targetId: string, payload: Partial<T>): Promise<T> {
 
     // TODO: validate payload
