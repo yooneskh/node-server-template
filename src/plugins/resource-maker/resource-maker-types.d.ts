@@ -32,6 +32,9 @@ export interface ResourcePropertyMeta {
   dir?: string;
   hidden?: boolean;
   hideInTable?: boolean;
+  richText?: boolean;
+  relationSourceModel?: string;
+  relationTargetModel?: string;
 }
 
 export interface ResourceRelationMeta {
