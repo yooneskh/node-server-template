@@ -21,6 +21,7 @@ export enum ResourceRelationActionTemplate {
   LIST_COUNT,
   RETRIEVE,
   RETRIEVE_COUNT,
+  RETRIEVE_BY_ID,
   CREATE,
   UPDATE,
   DELETE

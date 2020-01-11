@@ -228,6 +228,20 @@ function injectResourceRelationActionTemplate(action: ResourceAction, controller
     }
 
   }
+  else if (action.template === ResourceRelationActionTemplate.RETRIEVE_BY_ID) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/${pluralTargetName}/:relationId`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.retrieveRelation(
+        request.params.relationId,
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects
+      );
+    }
+
+  }
   else if (action.template === ResourceRelationActionTemplate.CREATE) {
 
     if (!action.method) action.method = ResourceActionMethod.POST;
