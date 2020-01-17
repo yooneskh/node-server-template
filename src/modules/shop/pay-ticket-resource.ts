@@ -8,15 +8,10 @@ import ZarinpalCheckout from 'zarinpal-checkout';
 import { Config } from '../../global/config';
 const Zarinpal = ZarinpalCheckout.create('c40c2e72-f604-11e7-95af-000c295eb8fc', false);
 
-interface IPayTicketVerifyInfo {
-  factorTitle: string;
-  amount: number;
-}
-
 interface IGatewayHandler {
   gateway: string;
   initTicket(payTicket: IPayTicket): Promise<void>;
-  verifyTicket(payTicket: IPayTicket): Promise<IPayTicketVerifyInfo>;
+  verifyTicket(payTicket: IPayTicket): Promise<Boolean>;
 }
 
 const gatewayHandlers: IGatewayHandler[] = [];
@@ -90,7 +85,17 @@ maker.addActions([
       const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
       if (!handler) throw new InvalidRequestError('invalid gateway');
 
-      return(handler.verifyTicket(payTicket));
+      const result = await handler.verifyTicket(payTicket);
+      if (!result) throw new InvalidRequestError('failed verification');
+
+      const factor = await FactorController.singleRetrieve(payTicket.factor);
+      factor.payed = true;
+      await factor.save();
+
+      return {
+        factorTitle: factor.name,
+        amount: payTicket.amount
+      };
 
     }
   }
@@ -171,14 +176,7 @@ gatewayHandlers.push({
     payTicket.resolved = true;
     await payTicket.save();
 
-    const factor = await FactorController.singleRetrieve(payTicket.factor);
-    factor.payed = true;
-    await factor.save();
-
-    return {
-      factorTitle: factor.name,
-      amount
-    };
+    return true;
 
   }
 });
