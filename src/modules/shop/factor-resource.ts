@@ -9,6 +9,7 @@ export interface IFactor extends IResource {
   name: string;
   closed: boolean;
   payed: boolean;
+  payticket: string;
 }
 
 const maker = new ResourceMaker<IFactor>('Factor');
@@ -34,6 +35,11 @@ maker.setProperties([
     key: 'payed',
     type: 'boolean',
     default: false
+  },
+  {
+    key: 'payticket',
+    type: 'string',
+    ref: 'PayTicket'
   }
 ]);
 

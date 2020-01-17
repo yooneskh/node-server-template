@@ -3,9 +3,9 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
 import { InvalidRequestError, ServerError, InvalidStateError } from '../../global/errors';
 import { FactorController, calculateFactorAmount } from './factor-resource';
+import { Config } from '../../global/config';
 
 import ZarinpalCheckout from 'zarinpal-checkout';
-import { Config } from '../../global/config';
 const Zarinpal = ZarinpalCheckout.create('c40c2e72-f604-11e7-95af-000c295eb8fc', false);
 
 interface IGatewayHandler {
@@ -90,6 +90,7 @@ maker.addActions([
 
       const factor = await FactorController.singleRetrieve(payTicket.factor);
       factor.payed = true;
+      factor.payticket = payTicket._id;
       await factor.save();
 
       return {
