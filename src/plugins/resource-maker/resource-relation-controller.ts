@@ -18,6 +18,19 @@ export class ResourceRelationController<T extends IResource> {
     this.options = relationOptions;
   }
 
+  public async listAll(filters: IFilter = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
+
+    validatePropertyKeys(filters, this.options.properties || []);
+    validatePropertyKeys(sorts, this.options.properties || []);
+
+    const query = this.model.find(filters).sort(sorts).select(selects).skip(skip).limit(limit);
+
+    for (const include of transformIncludes(includes)) query.populate(include);
+
+    return query;
+
+  }
+
   public async listForSource(sourceId: string, filters: IFilter = {}, sorts: Record<string, number> = {}, includes: Record<string, string> = {}, selects?: string, limit = 1000 * 1000 * 1000, skip = 0): Promise<T[]> {
 
     validatePropertyKeys(filters, this.options.properties || []);

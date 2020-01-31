@@ -169,7 +169,24 @@ function injectRelationsInformation(router: Router, relations: ResourceRelation[
 }
 
 function injectResourceRelationActionTemplate(action: ResourceAction, controller: ResourceRelationController<IResource>, pluralTargetName: string) {
-  if (action.template === ResourceRelationActionTemplate.LIST) {
+  if (action.template === ResourceRelationActionTemplate.LIST_ALL) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/${pluralTargetName}`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.listAll(
+        extractFilterQueryObject(request.query.filters),
+        extractSortQueryObject(request.query.sorts),
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects,
+        Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+        parseInt(request.query.skip || '0', 10) || 0
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.LIST) {
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}`;
@@ -436,17 +453,6 @@ export function scaffoldResourceRouter<T extends IResource>(resourceActions: Res
 
   injectRelationsInformation(resourceRouter, originalRelations);
 
-  for (const action of resourceActions || []) {
-
-    if ('template' in action) {
-      if (controller === undefined) throw new ServerError('resource controller is not defined!');
-      injectResourceTemplateOptions(action, controller);
-    }
-
-    applyActionOnRouter(resourceRouter, action);
-
-  }
-
   for (const relation of relations) {
 
     const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
@@ -460,6 +466,17 @@ export function scaffoldResourceRouter<T extends IResource>(resourceActions: Res
       applyActionOnRouter(resourceRouter, action);
 
     }
+
+  }
+
+  for (const action of resourceActions || []) {
+
+    if ('template' in action) {
+      if (controller === undefined) throw new ServerError('resource controller is not defined!');
+      injectResourceTemplateOptions(action, controller);
+    }
+
+    applyActionOnRouter(resourceRouter, action);
 
   }
 

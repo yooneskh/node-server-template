@@ -53,6 +53,7 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
     }
   ],
   actions: [
+    { template: ResourceRelationActionTemplate.LIST_ALL },
     { template: ResourceRelationActionTemplate.RETRIEVE_BY_ID },
     { template: ResourceRelationActionTemplate.LIST },
     { template: ResourceRelationActionTemplate.LIST_COUNT },
@@ -101,6 +102,7 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
     }
   ],
   actions: [
+    { template: ResourceRelationActionTemplate.LIST_ALL },
     { template: ResourceRelationActionTemplate.RETRIEVE_BY_ID },
     { template: ResourceRelationActionTemplate.LIST },
     { template: ResourceRelationActionTemplate.LIST_COUNT },
