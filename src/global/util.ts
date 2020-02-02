@@ -84,57 +84,38 @@ export function validatePayload(payload: any, properties: ResourceProperty[], tw
   validatePropertyTypes(payload, properties)
 }
 
+interface MongoosePopulate {
+  path: string;
+  select: string;
+  populate: MongoosePopulate[];
+}
+
 export function transformIncludes(includes: Record<string, string>) {
 
-  // tslint:disable-next-line: no-any
-  const resultArray: any[][] = [];
+  const populates: MongoosePopulate[] = [];
 
   for (const includeKey in includes) {
 
-    const includeKeySeperated = includeKey.split('.');
+    const includeParts = includeKey.split('.');
+    let hay = populates;
 
-    const prePops = includeKeySeperated.slice(0, -1);
-    const lastPopulate = includeKeySeperated.slice(-1)[0];
+    for (const includePart of includeParts.slice(0, -1)) {
 
-    let packIndex = -1;
+      const targetPopulate = hay.find(p => p.path === includePart);
+      if (!targetPopulate) throw new InvalidRequestError(`wrong nested include at '${includeKey}', parent must be defined before`)
 
-    for (let i = 0; i < resultArray.length; i++) {
-      if (resultArray[i]?.[0]?.path === includeKeySeperated[0]) {
-        packIndex = i;
-        break;
-      }
-    }
-
-    if (packIndex === -1) {
-      resultArray.push([]);
-      packIndex = resultArray.length - 1;
-    }
-
-    let currentCleanIndex = 0;
-
-    for (const prePop of prePops) {
-
-      if (resultArray[packIndex]?.[currentCleanIndex]?.path !== prePop) {
-        throw new InvalidRequestError(`wrong nested include at '${includeKey}', parent must be defined before`);
-      }
-
-      currentCleanIndex++;
+      hay = targetPopulate.populate;
 
     }
 
-    resultArray[packIndex].push({
-      path: lastPopulate,
-      select: includes[includeKey]
+    hay.push({
+      path: includeParts.slice(-1)[0],
+      select: includes[includeKey],
+      populate: []
     });
 
   }
 
-  for (const result of resultArray) {
-    for (let i = result.length - 1; i >= 1; i--) {
-      result[i - 1].populate = result[i];
-    }
-  }
-
-  return resultArray.map(result => result[0]);
+  return populates;
 
 }
