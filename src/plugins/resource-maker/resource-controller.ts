@@ -101,6 +101,27 @@ export class ResourceController<T extends IResource> {
 
   }
 
+  // tslint:disable-next-line: no-any
+  public async editQuery(id: string, query: any): Promise<void> {
+
+    if (!id) throw new InvalidRequestError('id not specified');
+
+    if ('$set' in query) {
+      query.$set.updatedAt = Date.now();
+    }
+    else {
+      query = {
+        ...query,
+        $set: {
+          updatedAt: Date.now()
+        }
+      }
+    }
+
+    await this.model.updateOne({ _id: id }, query);
+
+  }
+
   public async deleteOne(id: string): Promise<boolean> {
 
     if (!id) throw new InvalidRequestError('id not specified');
