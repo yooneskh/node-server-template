@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export interface ResourceModelProperty {
   key: string;
   type: string;
@@ -8,4 +10,9 @@ export interface ResourceModelProperty {
   select?: boolean;
   isArray?: boolean;
   languages?: Record<string, any>;
+}
+
+export interface IResource extends Document {
+  createdAt: number;
+  updatedAt: number;
 }
