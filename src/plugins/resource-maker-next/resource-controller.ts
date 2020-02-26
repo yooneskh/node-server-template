@@ -51,7 +51,7 @@ export class ResourceController<T extends IResource> {
     }
 
     const resource = await query;
-    if (!resource) throw new NotFoundError(`resource not found: ${this.model.modelName}@${context.resourceId}`);
+    if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${context.resourceId}`);
 
     return resource;
 
@@ -66,7 +66,7 @@ export class ResourceController<T extends IResource> {
     }
 
     const resource = await query;
-    if (!resource) throw new NotFoundError(`resource not found: ${this.model.modelName}@${JSON.stringify(context.filters)}`);
+    if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${JSON.stringify(context.filters)}`);
 
     return resource;
 
@@ -93,7 +93,7 @@ export class ResourceController<T extends IResource> {
     validatePropertyKeys(context.payload ?? {}, this.properties); // TODO: check value of payload
 
     const resource = await this.model.findById(context.resourceId);
-    if (!resource) throw new InvalidRequestError(`resource not found: ${this.model.modelName} @${context.resourceId}`);
+    if (!resource) throw new InvalidRequestError(`resource not found: ${this.name}@${context.resourceId}`);
 
     for (const key in context.payload) {
       if (key !== 'id' && key !== '_id') {
@@ -131,7 +131,7 @@ export class ResourceController<T extends IResource> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     const resource = await this.model.findById(context.resourceId);
-    if (!resource) throw new InvalidRequestError(`resource not found: ${this.model.modelName}@${context.resourceId}`);
+    if (!resource) throw new InvalidRequestError(`resource not found: ${this.name}@${context.resourceId}`);
 
     await resource.remove();
 
