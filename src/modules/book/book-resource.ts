@@ -1,6 +1,7 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 export interface IBook extends IResource {
   name: string;
@@ -9,29 +10,35 @@ export interface IBook extends IResource {
 
 const maker = new ResourceMaker<IBook>('Book');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'name',
-    type: 'string'
-  }
-]);
-
-maker.setMetas([
-  {
-    key: 'name',
+    type: 'string',
     title: 'نام',
-    titleAble: true,
-    order: 1
+    titleable: true
   }
 ]);
 
-maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
-  { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
-]);
+export const BookModel      = maker.getModel();
+export const BookController = maker.getController();
 
-export const { model: BookModel, controller: BookController, router: BookRouter } = maker.getMCR();
+maker.addAction({
+  path: '/test',
+  method: ResourceActionMethod.GET,
+  signal: ['Route', 'Book', 'Test'],
+  dataProvider: () => 'test'
+});
+
+YEventManager.on(['Route', 'Book', 'Metas'], (context) => {
+  console.log('custom metas handler', context.request.path);
+});
+// maker.addActions([
+//   { template: ResourceActionTemplate.LIST },
+//   { template: ResourceActionTemplate.LIST_COUNT },
+//   { template: ResourceActionTemplate.RETRIEVE },
+//   { template: ResourceActionTemplate.CREATE },
+//   { template: ResourceActionTemplate.UPDATE },
+//   { template: ResourceActionTemplate.DELETE }
+// ]);
+
+export const BookRouter = maker.getRouter();

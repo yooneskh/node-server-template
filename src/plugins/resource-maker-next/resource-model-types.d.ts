@@ -10,6 +10,10 @@ export interface ResourceModelProperty {
   select?: boolean;
   isArray?: boolean;
   languages?: Record<string, any>;
+  title?: string;
+  titleable?: boolean;
+  hidden?: boolean;
+  hideInTable?: boolean;
 }
 
 export interface IResource extends Document {

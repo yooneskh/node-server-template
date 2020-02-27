@@ -19,33 +19,33 @@ if (process.env.NODE_ENV === 'development') {
 
 app.get('/ping', (request, response) => response.send('pong'));
 
-import { AuthRouter } from './modules/auth/auth-resource';
-app.use('/api/v1/auth', AuthRouter);
+// import { AuthRouter } from './modules/auth/auth-resource';
+// app.use('/api/v1/auth', AuthRouter);
 
-import { UserRouter } from './modules/user/user-resource';
-app.use('/api/v1/users', UserRouter);
+// import { UserRouter } from './modules/user/user-resource';
+// app.use('/api/v1/users', UserRouter);
 
-import { MediaRouter } from './modules/media/media-resource';
-app.use('/api/v1/medias', MediaRouter);
+// import { MediaRouter } from './modules/media/media-resource';
+// app.use('/api/v1/medias', MediaRouter);
 
 import { BookRouter } from './modules/book/book-resource';
 app.use('/api/v1/books', BookRouter);
 
-import { PageRouter, PagePermitRouter } from './modules/book/page-resource';
-app.use('/api/v1/pages', PageRouter);
-app.use('/api/v1/permits/pages', PagePermitRouter);
+// import { PageRouter, PagePermitRouter } from './modules/book/page-resource';
+// app.use('/api/v1/pages', PageRouter);
+// app.use('/api/v1/permits/pages', PagePermitRouter);
 
-import { AuthorRouter } from './modules/author/author-resource';
-app.use('/api/v1/authors', AuthorRouter);
+// import { AuthorRouter } from './modules/author/author-resource';
+// app.use('/api/v1/authors', AuthorRouter);
 
-import { ProductRouter } from './modules/shop/product-resource';
-app.use('/api/v1/products', ProductRouter);
+// import { ProductRouter } from './modules/shop/product-resource';
+// app.use('/api/v1/products', ProductRouter);
 
-import { FactorRouter } from './modules/shop/factor-resource';
-app.use('/api/v1/factors', FactorRouter);
+// import { FactorRouter } from './modules/shop/factor-resource';
+// app.use('/api/v1/factors', FactorRouter);
 
-import { PayTicketRouter } from './modules/shop/pay-ticket-resource';
-app.use('/api/v1/paytickets', PayTicketRouter);
+// import { PayTicketRouter } from './modules/shop/pay-ticket-resource';
+// app.use('/api/v1/paytickets', PayTicketRouter);
 
 import { errorHandler } from './global/errors';
 app.use(errorHandler);

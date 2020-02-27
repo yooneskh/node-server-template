@@ -9,6 +9,6 @@ export interface ResourceRouterContext {
 export interface ResourceRouterAction {
   path: string;
   method: ResourceActionMethod;
-  signal: string;
+  signal: string[];
   dataProvider: (context: ResourceRouterContext) => any;
 }

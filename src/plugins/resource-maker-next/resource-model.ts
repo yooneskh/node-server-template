@@ -1,11 +1,12 @@
-import { ResourceModelProperty } from './resource-model-types';
+import { ResourceModelProperty, IResource } from './resource-model-types';
 import { ServerError } from '../../global/errors';
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Model } from 'mongoose';
 
 // tslint:disable: no-any
-export class ResourceModel<T> {
+export class ResourceModel<T extends IResource> {
 
   private properties: ResourceModelProperty[] = [];
+  private model?: Model<T, {}> = undefined;
 
   constructor(private name: string) { }
 
@@ -80,18 +81,24 @@ export class ResourceModel<T> {
   }
 
   public addProperty(property: ResourceModelProperty) {
-
+    if (this.model !== undefined) throw new ServerError('model is already made');
     if (this.properties.find(p => p.key === property.key)) throw new ServerError(`duplicate property key '${property.key}'`);
 
     this.properties.push(property);
 
   }
 
+  public getProperties() {
+    return this.properties;
+  }
+
   public getModel() {
-    return model<T & Document>(
-      this.name,
-      this.makeSchema()
-    );
+
+    if (this.model !== undefined) return this.model;
+
+    this.model = model<T>(this.name, this.makeSchema());
+    return this.model;
+
   }
 
 }
