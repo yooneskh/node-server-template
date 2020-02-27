@@ -1,5 +1,5 @@
 export interface ResourceControllerContext<T> {
-  resourceId?: Record<string, any>;
+  resourceId?: string;
   includes?: Record<string, string>;
   sorts?: Record<string, number>;
   filters?: Record<string, any>;

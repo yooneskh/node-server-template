@@ -1,4 +1,4 @@
-import { ResourceActionMethod } from "./resource-maker-router-enums";
+import { ResourceActionMethod, ResourceActionTemplate } from "./resource-maker-router-enums";
 import { Request, Response } from "express";
 
 export interface ResourceRouterContext {
@@ -9,6 +9,7 @@ export interface ResourceRouterContext {
 }
 
 export interface ResourceRouterAction {
+  template: ResourceActionTemplate;
   path: string;
   method: ResourceActionMethod;
   signal: string[];

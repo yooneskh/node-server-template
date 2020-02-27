@@ -39,7 +39,7 @@ export class ResourceRouter {
 
     this.injectMetaAction();
     // this.injectRelationsActions();
-    // this.injectMainActions();
+    this.injectMainActions();
 
   }
 
@@ -56,6 +56,18 @@ export class ResourceRouter {
 
     this.applyActionOnRouter(metaAction);
 
+  }
+
+  private injectMainActions() {
+    for (const action of this.actions) {
+
+      if ('template' in action) {
+        // TODO: populate if template
+      }
+
+      this.applyActionOnRouter(action);
+
+    }
   }
 
   private applyActionOnRouter(action: ResourceRouterAction) {
