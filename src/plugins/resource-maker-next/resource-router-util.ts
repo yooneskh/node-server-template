@@ -3,6 +3,7 @@ import { ResourceActionTemplate, ResourceActionMethod } from './resource-maker-r
 import { ServerError, InvalidRequestError } from '../../global/errors';
 import { ResourceController } from './resource-controller';
 import { IResource } from './resource-model-types';
+import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from './config';
 
 const FILTER_OPERATORS: Record<string, string> = {
   '=': '$eq',
@@ -104,7 +105,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
         sorts: extractSortQueryObject(request.query.sorts),
         includes: extractIncludeQueryObject(request.query.includes),
         selects: request.query.selects,
-        limit: Math.min(parseInt(request.query.limit || '0', 10) || 10, MAX_LISTING_LIMIT),
+        limit: Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
         skip: parseInt(request.query.skip || '0', 10) || 0
       });
     }

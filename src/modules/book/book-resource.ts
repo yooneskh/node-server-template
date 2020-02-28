@@ -1,6 +1,6 @@
 import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
-import { ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { ResourceActionMethod, ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 export interface IBook extends IResource {
@@ -32,13 +32,14 @@ maker.addAction({
 YEventManager.on(['Route', 'Book', 'Metas'], (context) => {
   console.log('custom metas handler', context.request.path);
 });
-// maker.addActions([
-//   { template: ResourceActionTemplate.LIST },
-//   { template: ResourceActionTemplate.LIST_COUNT },
-//   { template: ResourceActionTemplate.RETRIEVE },
-//   { template: ResourceActionTemplate.CREATE },
-//   { template: ResourceActionTemplate.UPDATE },
-//   { template: ResourceActionTemplate.DELETE }
-// ]);
+
+maker.addActions([
+  { template: ResourceActionTemplate.LIST },
+  { template: ResourceActionTemplate.LIST_COUNT },
+  { template: ResourceActionTemplate.RETRIEVE },
+  { template: ResourceActionTemplate.CREATE },
+  { template: ResourceActionTemplate.UPDATE },
+  { template: ResourceActionTemplate.DELETE }
+]);
 
 export const BookRouter = maker.getRouter();

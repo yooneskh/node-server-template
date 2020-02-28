@@ -3,12 +3,14 @@ import { Router, Request, Response } from 'express';
 import { ServerError } from '../../global/errors';
 import { ResourceActionMethod } from './resource-maker-router-enums';
 import { YEventManager } from '../event-manager/event-manager';
-import { ResourceModelProperty } from './resource-model-types';
+import { ResourceModelProperty, IResource } from './resource-model-types';
+import { populateAction } from './resource-router-util';
+import { ResourceController } from './resource-controller';
 
 export const DISMISS_DATA_PROVIDER = Symbol('dismiss data provider');
 type RouterProcessor = (context: ResourceRouterContext) => Promise<void>;
 
-export class ResourceRouter {
+export class ResourceRouter<T extends IResource> {
 
   private static preProcessors: RouterProcessor[] = [];
   private static preResponseProcessors: RouterProcessor[] = [];
@@ -17,7 +19,7 @@ export class ResourceRouter {
   private actions: ResourceRouterAction[] = [];
   private router?: Router = undefined;
 
-  constructor(private name: string, private properties: ResourceModelProperty[]) {
+  constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T>) {
 
   }
 
@@ -62,7 +64,7 @@ export class ResourceRouter {
     for (const action of this.actions) {
 
       if ('template' in action) {
-        // TODO: populate if template
+        populateAction(action, this.name, this.controller)
       }
 
       this.applyActionOnRouter(action);
@@ -100,7 +102,7 @@ export class ResourceRouter {
 
     YEventManager.on(action.signal, actionHandler);
 
-    const routerHandler = (request: Request, response: Response, next: Function) => YEventManager.emit(action.signal, { request, response, next });
+    const routerHandler = (request: Request, response: Response, next: Function) => YEventManager.emit(action.signal ?? ['Route', 'NoSignal'], { request, response, next });
 
     switch (action.method) {
       case ResourceActionMethod.GET: this.router.get(action.path, routerHandler); break;

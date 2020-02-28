@@ -9,9 +9,9 @@ export interface ResourceRouterContext {
 }
 
 export interface ResourceRouterAction {
-  template: ResourceActionTemplate;
-  path: string;
-  method: ResourceActionMethod;
-  signal: string[];
-  dataProvider: (context: ResourceRouterContext) => any;
+  template?: ResourceActionTemplate;
+  path?: string;
+  method?: ResourceActionMethod;
+  signal?: string[];
+  dataProvider?: (context: ResourceRouterContext) => any;
 }

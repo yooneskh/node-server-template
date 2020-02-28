@@ -9,7 +9,7 @@ export class ResourceMaker<T extends IResource> {
 
   private resourceModeler = new ResourceModel<T>(this.name);
   private resourceController?: ResourceController<T>;
-  private resourceRouter = new ResourceRouter(this.name);
+  private resourceRouter?: ResourceRouter<T> = undefined;
 
   constructor(private name: string) {
 
@@ -36,7 +36,16 @@ export class ResourceMaker<T extends IResource> {
   }
 
   public addAction(action: ResourceRouterAction) {
+
+    if (!this.resourceRouter) {
+      if (!this.resourceController) throw new ServerError('action added before making controller');
+
+      this.resourceRouter = new ResourceRouter<T>(this.name, this.resourceModeler.getProperties(), this.resourceController);
+
+    }
+
     this.resourceRouter.addAction(action);
+
   }
 
   public addActions(actions: ResourceRouterAction[]) {
@@ -44,7 +53,10 @@ export class ResourceMaker<T extends IResource> {
   }
 
   public getRouter() {
+    if (!this.resourceRouter) throw new ServerError('no action added');
+
     return this.resourceRouter.getRouter();
+
   }
 
 }
