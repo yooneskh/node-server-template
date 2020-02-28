@@ -26,7 +26,7 @@ maker.addAction({
   path: '/test',
   method: ResourceActionMethod.GET,
   signal: ['Route', 'Book', 'Test'],
-  dataProvider: () => 'test'
+  dataProvider: async () => 'test'
 });
 
 YEventManager.on(['Route', 'Book', 'Metas'], (context) => {
