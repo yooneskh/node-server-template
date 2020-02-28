@@ -10,6 +10,7 @@ export interface ResourceModelProperty {
   select?: boolean;
   isArray?: boolean;
   languages?: Record<string, any>;
+  // metas
   title?: string;
   titleable?: boolean;
   hidden?: boolean;

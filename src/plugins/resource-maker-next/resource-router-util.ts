@@ -1,5 +1,5 @@
 import { ResourceRouterAction } from './resource-router-types';
-import { ResourceActionTemplate, ResourceActionMethod } from './resource-maker-router-enums';
+import { ResourceActionTemplate, ResourceActionMethod, ResourceRelationActionTemplate } from './resource-maker-router-enums';
 import { ServerError, InvalidRequestError } from '../../global/errors';
 import { ResourceController } from './resource-controller';
 import { IResource } from './resource-model-types';
@@ -173,5 +173,138 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
   }
   else {
     throw new ServerError('unknown action template!');
+  }
+}
+
+export function populateRelationAction(action: ResourceRouterAction, controller: ResourceRelationController<IResource>, pluralTargetName: string) {
+  if (action.template === ResourceRelationActionTemplate.LIST_ALL) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/${pluralTargetName}`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.listAll(
+        extractFilterQueryObject(request.query.filters),
+        extractSortQueryObject(request.query.sorts),
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects,
+        Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        parseInt(request.query.skip || '0', 10) || 0
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.LIST) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.listForSource(
+        request.params.sourceId,
+        extractFilterQueryObject(request.query.filters),
+        extractSortQueryObject(request.query.sorts),
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects,
+        Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        parseInt(request.query.skip || '0', 10) || 0
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/count`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.countListForSource(
+        request.params.sourceId,
+        extractFilterQueryObject(request.query.filters)
+      )
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.getSingleRelation(
+        request.params.sourceId,
+        request.params.targetId,
+        request.query.selects
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.getSingleRelationCount(
+        request.params.sourceId,
+        request.params.targetId,
+        extractFilterQueryObject(request.query.filters)
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.RETRIEVE_BY_ID) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/${pluralTargetName}/:relationId`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.retrieveRelation(
+        request.params.relationId,
+        extractIncludeQueryObject(request.query.includes),
+        request.query.selects
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.CREATE) {
+
+    if (!action.method) action.method = ResourceActionMethod.POST;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+
+    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.UPDATE) {
+
+    if (!action.method) action.method = ResourceActionMethod.PATCH;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request, payload }) => controller.updateRelation(
+        request.params.sourceId,
+        request.params.targetId,
+        request.params.relationId,
+        payload
+      );
+    }
+
+  }
+  else if (action.template === ResourceRelationActionTemplate.DELETE) {
+
+    if (!action.method) action.method = ResourceActionMethod.DELETE;
+    if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.removeRelation(
+        request.params.sourceId,
+        request.params.targetId,
+        request.params.relationId
+      );
+    }
+
+  }
+  else {
+    throw new ServerError('unknown relation action template!');
   }
 }

@@ -4,8 +4,10 @@ import { ServerError } from '../../global/errors';
 import { ResourceActionMethod } from './resource-maker-router-enums';
 import { YEventManager } from '../event-manager/event-manager';
 import { ResourceModelProperty, IResource } from './resource-model-types';
-import { populateAction } from './resource-router-util';
+import { populateAction, populateRelationAction } from './resource-router-util';
 import { ResourceController } from './resource-controller';
+import { ResourceRelation } from './resource-relation-types';
+import { plural } from 'pluralize';
 
 export const DISMISS_DATA_PROVIDER = Symbol('dismiss data provider');
 type RouterProcessor = (context: ResourceRouterContext) => Promise<void>;
@@ -17,6 +19,7 @@ export class ResourceRouter<T extends IResource> {
   private static postProcessors: RouterProcessor[] = [];
 
   private actions: ResourceRouterAction[] = [];
+  private relations: ResourceRelation[] = [];
   private router?: Router = undefined;
 
   constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T>) {
@@ -40,7 +43,8 @@ export class ResourceRouter<T extends IResource> {
     this.router = Router();
 
     this.injectMetaAction();
-    // this.injectRelationsActions();
+    // this.injectRelationsMetaAction();
+    this.injectRelationsActions();
     this.injectMainActions();
 
   }
@@ -69,6 +73,23 @@ export class ResourceRouter<T extends IResource> {
 
       this.applyActionOnRouter(action);
 
+    }
+  }
+
+  private injectRelationsActions() {
+    for (const relation of this.relations) {
+
+      const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
+
+      for (const relationAction of relation?.actions ?? []) {
+
+        if ('template' in relationAction) {
+          populateRelationAction(relationAction, controller, pluralTargetName)
+        }
+
+        this.applyActionOnRouter(relationAction);
+
+      }
     }
   }
 
@@ -121,6 +142,10 @@ export class ResourceRouter<T extends IResource> {
 
     this.actions.push(action);
 
+  }
+
+  public addRelation(relation: ResourceRelation) {
+    this.relations.push(relation);
   }
 
   public getRouter() {
