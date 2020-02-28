@@ -4,6 +4,7 @@ import { ServerError, InvalidRequestError } from '../../global/errors';
 import { ResourceController } from './resource-controller';
 import { IResource } from './resource-model-types';
 import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from './config';
+import { ResourceRelationController } from './resource-relation-controller';
 
 const FILTER_OPERATORS: Record<string, string> = {
   '=': '$eq',
@@ -145,7 +146,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.path) action.path = '/';
     if (!action.signal) action.signal = ['Route', name, 'Create']
 
-    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.create({ payload: request.body });
+    if (!action.dataProvider) action.dataProvider = async ({ request, payload }) => controller.create({ payload });
 
   }
   else if (action.template === ResourceActionTemplate.UPDATE) {
@@ -155,9 +156,9 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.signal) action.signal = ['Route', name, 'Update']
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.edit({
+      action.dataProvider = async ({ request, payload }) => controller.edit({
         resourceId: request.params.resourceId,
-        payload: request.body
+        payload
       });
     }
 
@@ -181,16 +182,17 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/${pluralTargetName}`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'ListAll'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.listAll(
-        extractFilterQueryObject(request.query.filters),
-        extractSortQueryObject(request.query.sorts),
-        extractIncludeQueryObject(request.query.includes),
-        request.query.selects,
-        Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
-        parseInt(request.query.skip || '0', 10) || 0
-      );
+      action.dataProvider = async ({ request }) => controller.listAll({
+        filters: extractFilterQueryObject(request.query.filters),
+        sorts: extractSortQueryObject(request.query.sorts),
+        includes: extractIncludeQueryObject(request.query.includes),
+        selects: request.query.selects,
+        limit: Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        skip: parseInt(request.query.skip || '0', 10) || 0
+      });
     }
 
   }
@@ -198,17 +200,18 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'ListSource'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.listForSource(
-        request.params.sourceId,
-        extractFilterQueryObject(request.query.filters),
-        extractSortQueryObject(request.query.sorts),
-        extractIncludeQueryObject(request.query.includes),
-        request.query.selects,
-        Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
-        parseInt(request.query.skip || '0', 10) || 0
-      );
+      action.dataProvider = async ({ request }) => controller.listForSource({
+        sourceId: request.params.sourceId,
+        filters: extractFilterQueryObject(request.query.filters),
+        sorts: extractSortQueryObject(request.query.sorts),
+        includes: extractIncludeQueryObject(request.query.includes),
+        selects: request.query.selects,
+        limit: Math.min(parseInt(request.query.limit || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        skip: parseInt(request.query.skip || '0', 10) || 0
+      });
     }
 
   }
@@ -216,12 +219,13 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/count`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'CountSource'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.countListForSource(
-        request.params.sourceId,
-        extractFilterQueryObject(request.query.filters)
-      )
+      action.dataProvider = async ({ request }) => controller.countListForSource({
+        sourceId: request.params.sourceId,
+        filters: extractFilterQueryObject(request.query.filters)
+      });
     }
 
   }
@@ -229,13 +233,14 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'RetrieveRelation'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.getSingleRelation(
-        request.params.sourceId,
-        request.params.targetId,
-        request.query.selects
-      );
+      action.dataProvider = async ({ request }) => controller.getSingleRelation({
+        sourceId: request.params.sourceId,
+        targetId: request.params.targetId,
+        selects: request.query.selects
+      });
     }
 
   }
@@ -243,13 +248,14 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'CountRelation'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.getSingleRelationCount(
-        request.params.sourceId,
-        request.params.targetId,
-        extractFilterQueryObject(request.query.filters)
-      );
+      action.dataProvider = async ({ request }) => controller.getSingleRelationCount({
+        sourceId: request.params.sourceId,
+        targetId: request.params.targetId,
+        filters: extractFilterQueryObject(request.query.filters)
+      });
     }
 
   }
@@ -257,13 +263,14 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.GET;
     if (!action.path) action.path = `/${pluralTargetName}/:relationId`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'RetrieveRelationId'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.retrieveRelation(
-        request.params.relationId,
-        extractIncludeQueryObject(request.query.includes),
-        request.query.selects
-      );
+      action.dataProvider = async ({ request }) => controller.retrieveRelation({
+        relationId: request.params.relationId,
+        includes: extractIncludeQueryObject(request.query.includes),
+        selects: request.query.selects
+      });
     }
 
   }
@@ -271,22 +278,30 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.POST;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'CreateRelation'];
 
-    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.addRelation(request.params.sourceId, request.params.targetId, request.body)
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.addRelation({
+        sourceId: request.params.sourceId,
+        targetId: request.params.targetId,
+        payload: request.body
+      });
+    }
 
   }
   else if (action.template === ResourceRelationActionTemplate.UPDATE) {
 
     if (!action.method) action.method = ResourceActionMethod.PATCH;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'UpdateRelation'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request, payload }) => controller.updateRelation(
-        request.params.sourceId,
-        request.params.targetId,
-        request.params.relationId,
-        payload
-      );
+      action.dataProvider = async ({ request, payload }) => controller.updateRelation({
+        sourceId: request.params.sourceId,
+        targetId: request.params.targetId,
+        relationId: request.params.relationId,
+        payload: payload
+      });
     }
 
   }
@@ -294,13 +309,14 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
 
     if (!action.method) action.method = ResourceActionMethod.DELETE;
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'DeleteRelation'];
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.removeRelation(
-        request.params.sourceId,
-        request.params.targetId,
-        request.params.relationId
-      );
+      action.dataProvider = async ({ request }) => controller.removeRelation({
+        sourceId: request.params.sourceId,
+        targetId: request.params.targetId,
+        relationId: request.params.relationId
+      });
     }
 
   }

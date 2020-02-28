@@ -4,6 +4,9 @@ import { ResourceController } from './resource-controller';
 import { ServerError } from '../../global/errors';
 import { ResourceRouterAction } from './resource-router-types';
 import { ResourceRouter } from './resource-router';
+import { ResourceRelation } from './resource-relation-types';
+import { ResourceRelationController } from './resource-relation-controller';
+import { makeResourceRelationModel } from './resource-relation-model';
 
 export class ResourceMaker<T extends IResource> {
 
@@ -45,6 +48,27 @@ export class ResourceMaker<T extends IResource> {
     }
 
     this.resourceRouter.addAction(action);
+
+  }
+
+  public addRelation<U extends IResource>(relation: ResourceRelation) {
+
+    if (!this.resourceRouter) {
+      if (!this.resourceController) throw new ServerError('action added before making controller');
+
+      this.resourceRouter = new ResourceRouter<T>(this.name, this.resourceModeler.getProperties(), this.resourceController);
+
+    }
+
+    const relationModel = makeResourceRelationModel<U>(this.name, relation);
+    const relationController = new ResourceRelationController<U>(this.name, relation.targetModelName, relationModel, relation);
+
+    this.resourceRouter.addRelation(relation, relationController);
+
+    return {
+      model: relationModel,
+      controller: relationController
+    };
 
   }
 

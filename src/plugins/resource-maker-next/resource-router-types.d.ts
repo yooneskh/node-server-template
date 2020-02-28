@@ -5,6 +5,7 @@ export interface ResourceRouterContext {
   request: Request;
   response: Response;
   next: Function;
+  payload: any;
   data?: any;
 }
 
@@ -13,5 +14,5 @@ export interface ResourceRouterAction {
   path?: string;
   method?: ResourceActionMethod;
   signal?: string[];
-  dataProvider?: (context: ResourceRouterContext) => any;
+  dataProvider?: (context: ResourceRouterContext) => Promise<any>;
 }

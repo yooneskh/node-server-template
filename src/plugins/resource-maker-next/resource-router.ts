@@ -8,6 +8,7 @@ import { populateAction, populateRelationAction } from './resource-router-util';
 import { ResourceController } from './resource-controller';
 import { ResourceRelation } from './resource-relation-types';
 import { plural } from 'pluralize';
+import { ResourceRelationController } from './resource-relation-controller';
 
 export const DISMISS_DATA_PROVIDER = Symbol('dismiss data provider');
 type RouterProcessor = (context: ResourceRouterContext) => Promise<void>;
@@ -19,7 +20,7 @@ export class ResourceRouter<T extends IResource> {
   private static postProcessors: RouterProcessor[] = [];
 
   private actions: ResourceRouterAction[] = [];
-  private relations: ResourceRelation[] = [];
+  private relations: [ResourceRelation, ResourceRelationController<IResource>][] = [];
   private router?: Router = undefined;
 
   constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T>) {
@@ -43,7 +44,7 @@ export class ResourceRouter<T extends IResource> {
     this.router = Router();
 
     this.injectMetaAction();
-    // this.injectRelationsMetaAction();
+    this.injectRelationsMetaAction();
     this.injectRelationsActions();
     this.injectMainActions();
 
@@ -57,7 +58,7 @@ export class ResourceRouter<T extends IResource> {
       signal: ['Route', this.name, 'Metas'],
       path: '/metas',
       method: ResourceActionMethod.GET,
-      dataProvider: () => filteredProperties
+      dataProvider: async () => filteredProperties
     };
 
     this.applyActionOnRouter(metaAction);
@@ -76,15 +77,36 @@ export class ResourceRouter<T extends IResource> {
     }
   }
 
+  private injectRelationsMetaAction() {
+
+    const relationsMeta = this.relations.map(r => ({
+      targetModel: r[0].targetModelName,
+      relationModelName: r[0].relationModelName,
+      targetPropertyTitle: r[0].targetPropertyTitle,
+      singular: r[0].singular,
+      maxCount: r[0].maxCount,
+      title: r[0].title,
+      properties: r[0].properties?.filter(p => !p.hidden),
+    }));
+
+    this.applyActionOnRouter({
+      signal: ['Route', this.name, 'Relations'],
+      method: ResourceActionMethod.GET,
+      path: '/relations',
+      dataProvider: async () => relationsMeta
+    });
+
+  }
+
   private injectRelationsActions() {
-    for (const relation of this.relations) {
+    for (const [relation, relationController] of this.relations) {
 
       const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
 
       for (const relationAction of relation?.actions ?? []) {
 
         if ('template' in relationAction) {
-          populateRelationAction(relationAction, controller, pluralTargetName)
+          populateRelationAction(relationAction, relationController, pluralTargetName)
         }
 
         this.applyActionOnRouter(relationAction);
@@ -123,7 +145,7 @@ export class ResourceRouter<T extends IResource> {
 
     YEventManager.on(action.signal, actionHandler);
 
-    const routerHandler = (request: Request, response: Response, next: Function) => YEventManager.emit(action.signal ?? ['Route', 'NoSignal'], { request, response, next });
+    const routerHandler = (request: Request, response: Response, next: Function) => YEventManager.emit(action.signal ?? ['Route', 'NoSignal'], { request, response, next, payload: request.body });
 
     switch (action.method) {
       case ResourceActionMethod.GET: this.router.get(action.path, routerHandler); break;
@@ -144,13 +166,16 @@ export class ResourceRouter<T extends IResource> {
 
   }
 
-  public addRelation(relation: ResourceRelation) {
-    this.relations.push(relation);
+  public addRelation<U extends IResource>(relation: ResourceRelation, relationController: ResourceRelationController<U>) {
+    if (this.router !== undefined) throw new ServerError('router is already made');
+
+    this.relations.push([ relation, relationController ]);
+
   }
 
   public getRouter() {
 
-    this.makeRouter();
+    if (this.router === undefined) this.makeRouter();
     if (this.router === undefined) throw new ServerError('could not make router');
 
     return this.router;
