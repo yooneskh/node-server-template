@@ -131,6 +131,15 @@ maker.addActions([
       const factor = await FactorController.retrieve({ resourceId: factorId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
 
+    },
+    postprocessor: async ({ request, payload }) => {
+      if (payload.closed === false) {
+        YEventManager.emit(
+          ['Resource', 'Factor', 'Closed'],
+          request.params.resourceId,
+          await FactorController.retrieve({ resourceId: request.params.resourceId })
+        );
+      }
     }
   },
   {
