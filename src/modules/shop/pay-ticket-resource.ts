@@ -5,6 +5,7 @@ import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/reso
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
 import { FactorController, calculateFactorAmount } from './factor-resource';
 import ZarinpalCheckout from 'zarinpal-checkout';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
 
@@ -105,6 +106,9 @@ maker.addActions([
       factor.payticket = payTicket._id;
       await factor.save();
 
+      YEventManager.emit(['Resource', 'PayTicket', 'Resolved'], payTicket._id, payTicket);
+      YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
+
       return {
         factorTitle: factor.title,
         amount: payTicket.amount
@@ -135,6 +139,9 @@ export async function createPayTicket(factorId: string, gateway: string) {
   });
 
   await handler.initTicket(payTicket);
+
+  YEventManager.emit(['Resource', 'PayTicket', 'Created'], payTicket._id, payTicket);
+
   return payTicket;
 
 }
