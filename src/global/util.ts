@@ -1,6 +1,6 @@
-import { ResourceProperty } from '../plugins/resource-maker/resource-maker-types';
 import { InvalidRequestError } from './errors';
 import { randomBytes, createHash } from 'crypto';
+import { ResourceModelProperty } from '../plugins/resource-maker-next/resource-model-types';
 
 export function simplePascalize(texts: string[]): string {
   return texts
@@ -39,7 +39,7 @@ const addedProperties = {
 };
 
 // tslint:disable-next-line: no-any
-export function validatePropertyKeys(payload: any, properties: ResourceProperty[], twoWayCheck = false) {
+export function validatePropertyKeys(payload: any, properties: ResourceModelProperty[], twoWayCheck = false) {
 
   for (const key in payload) {
 
@@ -74,12 +74,12 @@ export function validatePropertyKeys(payload: any, properties: ResourceProperty[
 }
 
 // tslint:disable-next-line: no-any
-export function validatePropertyTypes(payload: any, properties: ResourceProperty[]) {
+export function validatePropertyTypes(payload: any, properties: ResourceModelProperty[]) {
   // TODO: implmement
 }
 
 // tslint:disable-next-line: no-any
-export function validatePayload(payload: any, properties: ResourceProperty[], twoWayCheck = false) {
+export function validatePayload(payload: any, properties: ResourceModelProperty[], twoWayCheck = false) {
   validatePropertyKeys(payload, properties, twoWayCheck);
   validatePropertyTypes(payload, properties)
 }

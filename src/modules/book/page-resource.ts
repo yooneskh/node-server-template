@@ -1,8 +1,6 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
-import { PermittedResourceController } from '../../plugins/resource-access-control/resource-access-controller';
-import { createResourcePermitResource } from '../../plugins/resource-access-control/resource-access-control-model';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 
 export interface IPage extends IResource {
   content: string;
@@ -10,41 +8,27 @@ export interface IPage extends IResource {
 
 const maker = new ResourceMaker<IPage>('Page');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'content',
     type: 'string',
-    required: true
-  },
-  {
-    key: 'book',
-    type: 'string',
-    ref: 'Book'
-  }
-]);
-
-maker.setMetas([
-  {
-    key: 'content',
+    required: true,
     title: 'محتوی',
-    titleAble: true,
-    order: 1
+    titleable: true,
   },
   {
     key: 'book',
-    title: 'کتاب',
-    order: 2
+    type: 'string',
+    ref: 'Book',
+    title: 'کتاب'
   }
 ]);
 
-export const { model: PageModel, controller: PageController } = maker.getMC();
+export const PageModel      = maker.getModel();
+export const PageController = maker.getController();
 
-export const PagePermittedController = new PermittedResourceController<IPage>(maker.getName(), PageModel, maker.getProperties(), false);
-export const { model: PagePermitModel, controller: PagePermitController, router: PagePermitRouter } = createResourcePermitResource(maker.getName());
 
 maker.addActions([
-  // { ...makePermittedRouteFromTemplate(ResourceActionTemplate.LIST, PagePermittedController, PagePermitController) },
-  // { ...makePermittedRouteFromTemplate(ResourceActionTemplate.LIST_COUNT, PagePermittedController, PagePermitController) },
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
