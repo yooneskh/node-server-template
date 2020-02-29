@@ -1,11 +1,8 @@
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IAuthor } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionTemplate, ResourceRelationActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { Config } from '../../global/config';
 
-export interface IAuthor extends IResource {
-  familyName: string;
-}
 
 const maker = new ResourceMaker<IAuthor>('Author');
 

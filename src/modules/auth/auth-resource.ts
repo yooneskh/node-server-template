@@ -1,4 +1,4 @@
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IAuth } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { UserController, IUser } from '../user/user-resource';
@@ -34,18 +34,6 @@ export function hasPermission(allPermissions: string[], neededPermissions: strin
 
   return true;
 
-}
-
-export interface IAuth extends IResource {
-  user: string;
-  type: string;
-  propertyIdentifier?: string;
-  verificationCode?: string;
-  token: string;
-  valid: boolean;
-  lastAccessAt: number;
-  // tslint:disable-next-line: no-any
-  meta: any;
 }
 
 const maker = new ResourceMaker<IAuth>('Auth');

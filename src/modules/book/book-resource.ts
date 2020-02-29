@@ -1,12 +1,8 @@
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IBook } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionMethod, ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
-export interface IBook extends IResource {
-  name: string;
-  page: string;
-}
 
 const maker = new ResourceMaker<IBook>('Book');
 
@@ -30,7 +26,7 @@ maker.addAction({
 });
 
 YEventManager.on(['Route', 'Book', 'Metas'], (context) => {
-  console.log('custom metas handler', context.request.path);
+  // a custom additional route handler
 });
 
 maker.addActions([

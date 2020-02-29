@@ -11,6 +11,8 @@ export interface IFactor extends IResource {
   closed: boolean;
   payed: boolean;
   payticket: string;
+  // tslint:disable-next-line: no-any
+  meta: any;
 }
 
 const maker = new ResourceMaker<IFactor>('Factor');
