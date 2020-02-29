@@ -5,7 +5,6 @@ import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { NotFoundError, InvalidRequestError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
-import { response } from 'express';
 
 // tslint:disable: no-any
 export class ResourceController<T extends IResource> {
