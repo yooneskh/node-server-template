@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { NotFoundError, InvalidRequestError } from '../../global/errors';
+import { YEventManager } from '../event-manager/event-manager';
+import { response } from 'express';
 
 // tslint:disable: no-any
 export class ResourceController<T extends IResource> {
@@ -28,7 +30,15 @@ export class ResourceController<T extends IResource> {
       query.populate(include);
     }
 
-    return query;
+    const result = await query;
+
+    YEventManager.emit(
+      ['Resource', this.name, 'Listed'],
+      result.map(d => d._id),
+      result
+    );
+
+    return result;
 
   }
 
@@ -36,7 +46,11 @@ export class ResourceController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.properties);
 
-    return this.model.countDocuments(context.filters);
+    const result = this.model.countDocuments(context.filters);
+
+    YEventManager.emit(['Resource', this.name, 'Counted'], result);
+
+    return result;
 
   }
 
@@ -53,6 +67,8 @@ export class ResourceController<T extends IResource> {
     const resource = await query;
     if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${context.resourceId}`);
 
+    YEventManager.emit(['Resource', this.name, 'Retrieved'], resource._id, resource);
+
     return resource;
 
   }
@@ -68,6 +84,8 @@ export class ResourceController<T extends IResource> {
     const resource = await query;
     if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${JSON.stringify(context.filters)}`);
 
+    YEventManager.emit(['Resource', this.name, 'Found'], resource._id, resource);
+
     return resource;
 
   }
@@ -82,7 +100,11 @@ export class ResourceController<T extends IResource> {
       resource.set(key, context.payload[key]);
     }
 
-    return resource.save();
+    await resource.save();
+
+    YEventManager.emit(['Resource', this.name, 'Created'], resource._id, resource);
+
+    return resource;
 
   }
 
@@ -102,7 +124,11 @@ export class ResourceController<T extends IResource> {
     }
 
     resource.updatedAt = Date.now();
-    return resource.save();
+    await resource.save();
+
+    YEventManager.emit(['Resource', this.name, 'Updated'], resource._id, resource);
+
+    return resource;
 
   }
 
@@ -124,6 +150,9 @@ export class ResourceController<T extends IResource> {
 
     await this.model.updateOne({ _id: context.resourceId }, context.query);
 
+    // TODO: check if necessary to retrieve resource
+    YEventManager.emit(['Resource', this.name, 'Updated'], context.resourceId, await this.retrieve({ resourceId: context.resourceId }));
+
   }
 
   public async delete(context: ResourceControllerContext<T>): Promise<boolean> {
@@ -133,7 +162,10 @@ export class ResourceController<T extends IResource> {
     const resource = await this.model.findById(context.resourceId);
     if (!resource) throw new InvalidRequestError(`resource not found: ${this.name}@${context.resourceId}`);
 
+    const resourceClone = JSON.parse(JSON.stringify(resource));
     await resource.remove();
+
+    YEventManager.emit(['Resource', this.name, 'Deleted'], resourceClone._id, resourceClone);
 
     return true;
 

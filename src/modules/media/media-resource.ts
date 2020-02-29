@@ -8,6 +8,7 @@ import { InvalidRequestError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker-next/resource-router';
 import ReadChunk from 'read-chunk';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 // init code
 if (!fs.existsSync('./download')) fs.mkdirSync('./download')
@@ -108,6 +109,8 @@ maker.addAction({
 
     await media.save();
 
+    YEventManager.emit(['Resource', 'Media', 'InitiatedUpload'], media._id, media);
+
     return {
       fileToken: media._id
     };
@@ -183,6 +186,8 @@ maker.addAction({
           success: true,
           mediaId: fileInfo._id
         });
+
+        YEventManager.emit(['Resource', 'Media', 'Uploaded'], fileInfo._id, fileInfo);
 
       }
       else {

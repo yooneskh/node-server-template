@@ -8,6 +8,7 @@ import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
 import { MediaController } from '../media/media-resource';
 import { Request } from 'express';
 import { ResourceRouter } from '../../plugins/resource-maker-next/resource-router';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 export function hasPermission(allPermissions: string[], neededPermissions: string[]): boolean {
 
@@ -128,6 +129,8 @@ maker.addAction({
       }
     });
 
+    YEventManager.emit(['Resource', 'User', 'LoggedIn'], user._id, user);
+
     return true;
 
   }
@@ -164,6 +167,8 @@ maker.addAction({
         meta: undefined
       }
     });
+
+    YEventManager.emit(['Resource', 'User', 'Registered'], user._id, user);
 
     return true;
 
@@ -203,7 +208,10 @@ maker.addAction({
 
     await authToken.save();
 
-    const user = JSON.parse(JSON.stringify(authToken.user as unknown as IUser));
+    const userObj = authToken.user as unknown as IUser;
+    const user = JSON.parse(JSON.stringify(userObj));
+
+    YEventManager.emit(['Resource', 'User', 'Verified'], userObj._id, userObj);
 
     return {
       ...user,
@@ -227,6 +235,8 @@ maker.addAction({
 
     authToken.valid = false;
     await authToken.save();
+
+    YEventManager.emit(['Resource', 'User', 'LoggedOut']);
 
     return true;
 
