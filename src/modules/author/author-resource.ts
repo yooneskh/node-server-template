@@ -23,6 +23,8 @@ export const AuthorController = maker.getController();
 
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
+  { template: ResourceActionTemplate.LIST_COUNT },
+  { template: ResourceActionTemplate.RETRIEVE },
   { template: ResourceActionTemplate.CREATE },
   { template: ResourceActionTemplate.UPDATE },
   { template: ResourceActionTemplate.DELETE }
