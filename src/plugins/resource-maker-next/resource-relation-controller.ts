@@ -145,7 +145,7 @@ export class ResourceRelationController<T extends IResource> {
     const item = await this.model.findById(context.relationId);
     if (!item) throw new NotFoundError('relation not found');
 
-    if (item.get(this.sourcePropertyName) !== context.sourceId) {
+    if (item.get(this.sourcePropertyName) !== context.sourceId || item.get(this.targetPropertyName) !== context.targetId) {
       throw new NotFoundError('relation not found');
     }
 
