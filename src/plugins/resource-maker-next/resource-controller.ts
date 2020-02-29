@@ -83,7 +83,7 @@ export class ResourceController<T extends IResource> {
     const resource = await query;
     if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${JSON.stringify(context.filters)}`);
 
-    YEventManager.emit(['Resource', this.name, 'Found'], resource._id, resource);
+    YEventManager.emit(['Resource', this.name, 'Found'], resource._id, resource); // TODO: change name to Retrieved?
 
     return resource;
 
