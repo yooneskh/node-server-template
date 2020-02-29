@@ -4,8 +4,8 @@ import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker'
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
 import { FactorController, calculateFactorAmount } from './factor-resource';
-
 import ZarinpalCheckout from 'zarinpal-checkout';
+
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
 
 interface IGatewayHandler {
@@ -87,6 +87,7 @@ maker.addActions([
   { template: ResourceActionTemplate.UPDATE },
   { template: ResourceActionTemplate.DELETE },
   {
+    signal: ['Route', 'PayTicket', 'Verify'],
     method: ResourceActionMethod.POST,
     path: '/verify/:ticketId',
     dataProvider: async ({ request }) => {

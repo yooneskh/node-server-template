@@ -188,6 +188,7 @@ maker.addAction({
       },
       limit: 1
     });
+    console.log('authes', authTokens);
 
     const authToken = authTokens[0];
 

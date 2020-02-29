@@ -7,7 +7,7 @@ export const Config = {
     name: 'yback'
   },
   authentication: {
-    staticVerificationCode: ''
+    staticVerificationCode: '111111'
   },
   payment: {
     callbackBase: 'http://localhost:8080/pay/verify',
@@ -15,7 +15,7 @@ export const Config = {
     phone: '09364524952'
   },
   zarinpal: {
-    merchantId: '',
+    merchantId: 'c40c2e72-f604-11e7-95af-000c295eb8fc',
     isSandboxed: true
   },
   languages: {
