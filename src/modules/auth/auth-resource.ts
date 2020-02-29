@@ -1,25 +1,37 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { UserController, IUser } from '../user/user-resource';
+import { Config } from '../../global/config';
+import { generateRandomNumericCode, generateToken } from '../../global/util';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
-import { generateToken } from '../../global/util';
-import { IUser, UserController } from '../user/user-resource';
 import { MediaController } from '../media/media-resource';
-import { addResourceRouterPreProcessor, addResourceRouterPreResponseProcessor, addResourceRouterPostProcessor } from '../../plugins/resource-maker/resource-router';
 import { Request } from 'express';
-import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
+import { ResourceRouter } from '../../plugins/resource-maker-next/resource-router';
 
+export function hasPermission(allPermissions: string[], neededPermissions: string[]): boolean {
 
-export function hasPermission(permissionList: string[], permission: string): boolean {
+  for (const permission of neededPermissions) {
 
-  for (const permit of permissionList) {
+    let isPermitted = false;
 
-    const regexText = '^' + permit.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$';
+    for (const permit of allPermissions) {
 
-    if (new RegExp(regexText).test(permission)) return true;
+      const regexText = '^' + permit.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$';
+      const regexp = new RegExp(regexText);
+
+      if (regexp.test(permission)) {
+        isPermitted = true;
+        break;
+      }
+
+    }
+
+    if (!isPermitted) return false;
 
   }
 
-  return false;
+  return true;
 
 }
 
@@ -37,64 +49,83 @@ export interface IAuth extends IResource {
 
 const maker = new ResourceMaker<IAuth>('Auth');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'user',
     type: 'string',
     ref: 'User',
-    required: true
+    required: true,
+    title: 'کاربر',
+    titleable: true
   },
   {
     key: 'type',
     type: 'string',
-    required: true
+    required: true,
+    title: 'نوع',
+    titleable: true
   },
   {
     key: 'propertyIdentifier',
-    type: 'string'
+    type: 'string',
+    title: 'شناساگر',
+    titleable: true
   },
   {
     key: 'verificationCode',
-    type: 'string'
-  },
-  {
-    key: 'token',
-    type: 'string'
+    type: 'string',
+    title: 'کد تایید',
+    hideInTable: true
   },
   {
     key: 'valid',
     type: 'boolean',
-    default: false
+    default: false,
+    title: 'مورد تایید'
   },
   {
     key: 'lastAccessAt',
     type: 'number',
-    default: -1
+    default: -1,
+    title: 'آخرین دسترسی'
   },
   {
     key: 'meta',
-    type: 'object'
+    type: 'object',
+    title: 'اطلاعات',
+    hideInTable: true
+  },
+  {
+    key: 'token',
+    type: 'string',
+    hidden: true
   }
 ]);
 
-export const { controller: AuthController } = maker.getMC();
+export const AuthModel      = maker.getModel();
+export const AuthController = maker.getController();
+
 
 maker.addAction({
+  signal: ['Route', 'Auth', 'Login'],
   method: ResourceActionMethod.POST,
   path: '/login',
-  async dataProvider({ request }) {
+  async dataProvider({ payload }) {
 
-    const user = await UserController.findOne({ phoneNumber: request.body.phoneNumber });
+    const user = await UserController.findOne({
+      filters: { phoneNumber: payload.phoneNumber }
+    });
 
-    await AuthController.createNew({
-      user: user._id,
-      type: 'OTP',
-      propertyIdentifier: user.phoneNumber,
-      // verificationCode: generateRandomNumericCode(6);,
-      verificationCode: '111111',
-      token: undefined,
-      valid: false,
-      meta: undefined
+    await AuthController.create({
+      payload: {
+        user: user._id,
+        type: 'OTP',
+        propertyIdentifier: user.phoneNumber,
+        verificationCode: Config.authentication.staticVerificationCode ? Config.authentication.staticVerificationCode : generateRandomNumericCode(6),
+        token: undefined,
+        valid: false,
+        meta: undefined
+      }
     });
 
     return true;
@@ -103,26 +134,35 @@ maker.addAction({
 });
 
 maker.addAction({
+  signal: ['Route', 'Auth', 'Register'],
   method: ResourceActionMethod.POST,
   path: '/register',
-  async dataProvider({ request }) {
+  async dataProvider({ payload }) {
 
-    const user = await UserController.createNew({
-      firstName: request.body.firstName,
-      lastName: request.body.lastName,
-      phoneNumber: request.body.phoneNumber,
-      permissions: ['user.*']
+    const oldUserCount = await UserController.count({
+      filters: { phoneNumber: payload.phoneNumber }
+    });
+    if (oldUserCount !== 0) throw new InvalidRequestError('user exists');
+
+    const user = await UserController.create({
+      payload: {
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        phoneNumber: payload.phoneNumber,
+        permissions: ['user.*']
+      }
     });
 
-    await AuthController.createNew({
-      user: user._id,
-      type: 'OTP',
-      propertyIdentifier: user.phoneNumber,
-      // verificationCode: generateRandomNumericCode(6);,
-      verificationCode: '111111',
-      token: undefined,
-      valid: false,
-      meta: undefined
+    await AuthController.create({
+      payload: {
+        user: user._id,
+        type: 'OTP',
+        propertyIdentifier: user.phoneNumber,
+        verificationCode: Config.authentication.staticVerificationCode ? Config.authentication.staticVerificationCode : generateRandomNumericCode(6),
+        token: undefined,
+        valid: false,
+        meta: undefined
+      }
     });
 
     return true;
@@ -131,23 +171,23 @@ maker.addAction({
 });
 
 maker.addAction({
+  signal: ['Route', 'Auth', 'Verify'],
   method: ResourceActionMethod.POST,
   path: '/verify',
-  async dataProvider({ request }) {
+  async dataProvider({ payload }) {
 
-    const phoneNumber = request.body.phoneNumber;
-    const verificationCode = request.body.verificationCode;
+    const phoneNumber = payload.phoneNumber;
+    const verificationCode = payload.verificationCode;
 
-    const authTokens = await AuthController.list(
-      { propertyIdentifier: phoneNumber },
-      { '_id': -1 },
-      {
+    const authTokens = await AuthController.list({
+      filters: { propertyIdentifier: phoneNumber },
+      sorts: { '_id': -1 },
+      includes: {
         'user': '',
         'user.profilePicture': ''
       },
-      undefined,
-      1
-    );
+      limit: 1
+    });
 
     const authToken = authTokens[0];
 
@@ -173,18 +213,19 @@ maker.addAction({
 });
 
 maker.addAction({
+  signal: ['Route', 'Auth', 'Logout'],
   method: ResourceActionMethod.POST,
   path: '/logout',
   async dataProvider({ request }) {
 
     const token = request.headers.authorization;
 
-    const authToken = await AuthController.findOne({ token });
+    const authToken = await AuthController.findOne({
+      filters: { token }
+    });
 
-    if (authToken) {
-      authToken.valid = false;
-      await authToken.save();
-    }
+    authToken.valid = false;
+    await authToken.save();
 
     return true;
 
@@ -192,16 +233,15 @@ maker.addAction({
 });
 
 maker.addAction({
+  signal: ['Route', 'Auth', 'Identity'],
   method: ResourceActionMethod.GET,
   path: '/identity',
-  async permissionFunctionStrict({ user }) {
-    return !!user;
-  },
+  permissionFunction: async ({ user }) => !!user,
   async dataProvider({ user }) {
 
     if (user && user.profile) {
       // tslint:disable-next-line: no-any
-      (user as any).profile = await MediaController.singleRetrieve(user.profile);
+      (user as any).profile = await MediaController.retrieve({ resourceId: user.profile });
     }
 
     return user;
@@ -209,102 +249,89 @@ maker.addAction({
   }
 });
 
-export async function getUserByToken(token?: string) : Promise<IUser | undefined> {
+export const AuthRouter = maker.getRouter();
 
+
+export async function getUserByToken(token?: string) : Promise<IUser | undefined> {
   if (!token) return undefined;
 
-  const authTokens = await AuthController.list(
-    { token, valid: true },
-    { '_id': -1 },
-    { 'user': '' },
-    undefined,
-    1
-  );
-
+  const authTokens = await AuthController.list({
+    filters: { token, valid: true },
+    sorts: { '_id': -1 },
+    includes: { 'user': '' },
+    limit: 1
+  });
   if (!authTokens || authTokens.length === 0) return undefined;
 
   const authToken = authTokens[0];
-
   if (!authToken?.user) return undefined;
 
   authToken.lastAccessAt = Date.now();
-
   authToken.save();
 
   return authToken.user as unknown as IUser;
 
 }
 
-export const AuthRouter = maker.getRouter();
-
-
 function transmuteRequest(request: Request) {
   return {
-    payload: request.body,
     token: request.headers.authorization || ''
   };
 }
 
-addResourceRouterPreProcessor(async bag => {
+ResourceRouter.addPreProcessor(async context => {
 
-  const { action, request } = bag;
-  const { payload, token } = transmuteRequest(request);
+  const { action, request } = context;
 
-  bag.payload = payload;
-  bag.token = token;
+  const { token } = transmuteRequest(request);
+  context.token = token;
 
-  let user: IUser | undefined;
+  const needToLoadUser = action.permissions || action.permissionFunction || action.payloadValidator || action.payloadPreprocessor || action.postprocessor;
+  if (needToLoadUser) context.user = await getUserByToken(token);
 
-  const needToLoadUser = action.permission || action.permissionFunction || action.permissionFunctionStrict || action.payloadValidator || action.payloadPreprocessor || action.postprocessor;
-
-  if (needToLoadUser) {
-    user = await getUserByToken(token);
-  }
-
-  bag.user = user;
-
-  if (action.permission && (!user || !user.permissions || !hasPermission(user.permissions || [], action.permission)) ) {
+  if (action.permissions && (!context.user || !context.user.permissions || !hasPermission(context.user.permissions ?? [], action.permissions)) ) {
     throw new ForbiddenAccessError('forbidden access');
   }
 
-  if ( action.permissionFunction && !(await action.permissionFunction({ ...bag, user, payload })) ) {
+  if (action.permissionFunction && !(await action.permissionFunction(context)) ) {
     throw new ForbiddenAccessError('forbidden access');
   }
 
-  if ( action.permissionFunctionStrict && ( !user || !(await action.permissionFunctionStrict({ ...bag, user, payload })) ) ) {
-    throw new ForbiddenAccessError('forbidden access');
-  }
-
-  if (action.payloadValidator && !(await action.payloadValidator({ ...bag, user, payload })) ) {
-    throw new InvalidRequestError('payload validation failed');
-  }
-
-  if (await action.payloadPreprocessor?.({ ...bag, user, payload })) {
-    return console.log('bypassed action'); // TODO: wrong bypass!
-  }
+  action.payloadValidator && await action.payloadValidator(context);
+  action.payloadPreprocessor && await action.payloadPreprocessor(context);
 
 });
 
-addResourceRouterPreResponseProcessor(async bag => {
+ResourceRouter.addPreResponseProcessor(async context => {
 
-  const { action, request, data } = bag;
-  const { payload, token } = transmuteRequest(request);
+  const { action, request } = context;
+  const { token } = transmuteRequest(request);
 
   if (action.responsePreprocessor) {
-    const user = await getUserByToken(token);
-    await action.responsePreprocessor({ ...bag, user, payload, data });
+
+    if (!context.user) {
+      context.user = await getUserByToken(token);
+    }
+
+    await action.responsePreprocessor(context);
+
   }
 
 });
 
-addResourceRouterPostProcessor(async bag => {
+ResourceRouter.addPostProcessor(async context => {
 
-  const { action, request, data } = bag;
-  const { payload, token } = transmuteRequest(request);
+  const { action, request } = context;
+  const { token } = transmuteRequest(request);
 
   if (action.postprocessor) {
-    const user = await getUserByToken(token);
-    await action.postprocessor({ ...bag, user, payload, data });
+
+    if (!context.user) {
+      context.user = await getUserByToken(token);
+    }
+
+    await action.postprocessor(context);
+
   }
 
 });

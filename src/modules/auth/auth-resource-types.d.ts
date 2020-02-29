@@ -1,32 +1,19 @@
-import { ResourceAction, ResourceActionBag } from '../../plugins/resource-maker/resource-maker-types';
-import { Merge } from 'type-fest';
 import { IUser } from '../user/user-resource';
 
+declare module '../../plugins/resource-maker-next/resource-router-types' {
 
-interface ResourceActionStrictAuthBag extends ResourceActionBag {
-  user: IUser;
-}
-
-interface ResourceActionResponsedAuthBag extends ResourceActionBag {
-  data: any;
-}
-
-declare module '../../plugins/resource-maker/resource-maker-types' {
-
-  interface ResourceActionBag {
+  interface ResourceRouterContext {
     user?: IUser;
-    payload?:  any;
     token?: string;
   }
 
-  interface ResourceAction {
-    permission?: string;
-    permissionFunction?: (bag: ResourceActionBag) => Promise<boolean>;
-    permissionFunctionStrict?: (bag: ResourceActionStrictAuthBag) => Promise<boolean>;
-    payloadValidator?: (bag: ResourceActionBag) => Promise<boolean>;
-    payloadPreprocessor?: (bag: ResourceActionBag) => Promise<boolean | void>;
-    responsePreprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean | void>;
-    postprocessor?: (bag: ResourceActionResponsedAuthBag) => Promise<boolean | void>;
+  interface ResourceRouterAction {
+    permissions?: string[];
+    permissionFunction?: (context: ResourceRouterContext) => Promise<boolean>;
+    payloadValidator?: (context: ResourceRouterContext) => Promise<void>;
+    payloadPreprocessor?: (context: ResourceRouterContext) => Promise<void>;
+    responsePreprocessor?: (context: ResourceRouterContext) => Promise<void>;
+    postprocessor?: (context: ResourceRouterContext) => Promise<void>;
   }
 
 }

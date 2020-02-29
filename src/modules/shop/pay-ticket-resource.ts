@@ -1,12 +1,12 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
-import { InvalidRequestError, ServerError, InvalidStateError } from '../../global/errors';
-import { FactorController, calculateFactorAmount } from './factor-resource';
 import { Config } from '../../global/config';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
+import { FactorController, calculateFactorAmount } from './factor-resource';
 
 import ZarinpalCheckout from 'zarinpal-checkout';
-const Zarinpal = ZarinpalCheckout.create('c40c2e72-f604-11e7-95af-000c295eb8fc', false);
+const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
 
 interface IGatewayHandler {
   gateway: string;
@@ -28,39 +28,50 @@ export interface IPayTicket extends IResource {
 
 const maker = new ResourceMaker<IPayTicket>('PayTicket');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'factor',
     type: 'string',
     required: true,
-    ref: 'Factor'
+    ref: 'Factor',
+    title: 'فاکتور',
+    titleable: true
   },
   {
     key: 'gateway',
     type: 'string',
-    required: true
+    required: true,
+    title: 'درگاه',
+    titleable: true
   },
   {
     key: 'payUrl',
-    type: 'string'
+    type: 'string',
+    title: 'لینک پرداخت'
   },
   {
     key: 'amount',
-    type: 'number'
+    type: 'number',
+    title: 'میزان',
+    titleable: true
   },
   {
     key: 'resolved',
     type: 'boolean',
-    default: false
+    default: false,
+    title: 'پایان یافته'
   },
   {
     key: 'meta',
     type: 'object',
-    default: {}
+    default: {},
+    hidden: true
   }
 ]);
 
-export const { model: PayTicketModel, controller: PayTicketController } = maker.getMC();
+export const PayTicketModel      = maker.getModel();
+export const PayTicketController = maker.getController();
+
 
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
@@ -80,7 +91,7 @@ maker.addActions([
     path: '/verify/:ticketId',
     dataProvider: async ({ request }) => {
 
-      const payTicket = await PayTicketController.singleRetrieve(request.params.ticketId);
+      const payTicket = await PayTicketController.retrieve({ resourceId: request.params.ticketId });
 
       const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
       if (!handler) throw new InvalidRequestError('invalid gateway');
@@ -88,13 +99,13 @@ maker.addActions([
       const result = await handler.verifyTicket(payTicket);
       if (!result) throw new InvalidRequestError('failed verification');
 
-      const factor = await FactorController.singleRetrieve(payTicket.factor);
+      const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
       factor.payed = true;
       factor.payticket = payTicket._id;
       await factor.save();
 
       return {
-        factorTitle: factor.name,
+        factorTitle: factor.title,
         amount: payTicket.amount
       };
 
@@ -104,9 +115,10 @@ maker.addActions([
 
 export const PayTicketRouter = maker.getRouter();
 
+
 export async function createPayTicket(factorId: string, gateway: string) {
 
-  const factor = await FactorController.singleRetrieve(factorId);
+  const factor = await FactorController.retrieve({ resourceId: factorId });
 
   if (!factor.closed) throw new InvalidStateError('factor must be closed');
   if (factor.payed) throw new InvalidStateError('factor is payed already');
@@ -114,13 +126,14 @@ export async function createPayTicket(factorId: string, gateway: string) {
   const handler = gatewayHandlers.find(h => h.gateway === gateway);
   if (!handler) throw new InvalidRequestError('invalid gateway');
 
-  const payTicket = await PayTicketController.createNew({
-    factor: factorId,
-    gateway
+  const payTicket = await PayTicketController.create({
+    payload: {
+      factor: factorId,
+      gateway
+    }
   });
 
   await handler.initTicket(payTicket);
-
   return payTicket;
 
 }
@@ -133,7 +146,7 @@ gatewayHandlers.push({
 
     const amount = await calculateFactorAmount(payTicket.factor);
     const callBackUrl = `${Config.payment.callbackBase}?ticket=${payTicket._id}`;
-    const description = (await FactorController.singleRetrieve(payTicket.factor)).name || 'پرداخت فاکتور';
+    const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).title || 'پرداخت فاکتور';
     const email = Config.payment.email;
     const mobile = Config.payment.phone;
 

@@ -1,12 +1,12 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate, ResourceRelationActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { InvalidStateError, InvalidRequestError } from '../../global/errors';
 import { ProductController } from './product-resource';
 
 export interface IFactor extends IResource {
   user: string;
-  name: string;
+  title: string;
   closed: boolean;
   payed: boolean;
   payticket: string;
@@ -14,36 +14,43 @@ export interface IFactor extends IResource {
 
 const maker = new ResourceMaker<IFactor>('Factor');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'user',
     type: 'string',
     required: true,
-    ref: 'User'
+    ref: 'User',
+    title: 'کاربر'
   },
   {
-    key: 'name',
+    key: 'title',
     type: 'string',
-    default: ''
+    default: '',
+    title: 'عنوان',
+    titleable: true
   },
   {
     key: 'closed',
     type: 'boolean',
-    default: false
+    default: false,
+    title: 'بسته شده'
   },
   {
     key: 'payed',
     type: 'boolean',
-    default: false
+    default: false,
+    title: 'پرداخت شده'
   },
   {
     key: 'payticket',
     type: 'string',
-    ref: 'PayTicket'
+    ref: 'PayTicket',
+    hideInTable: true
   }
 ]);
 
-export const { model: FactorModel, controller: FactorController } = maker.getMC();
+export const FactorModel      = maker.getModel();
+export const FactorController = maker.getController();
 
 
 export interface IProductOrder extends IResource {
@@ -57,16 +64,20 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
   targetModelName: 'Product',
   relationModelName: 'ProductOrder',
   singular: true,
+  title: 'محصولات فاکتور',
+  targetPropertyTitle: 'محصول',
   properties: [
     {
       key: 'orderPrice',
       type: 'number',
-      required: true
+      required: true,
+      title: 'قیمت سفارش'
     },
     {
       key: 'count',
       type: 'number',
-      required: true
+      required: true,
+      title: 'تعداد'
     }
   ],
   actions: [
@@ -80,17 +91,15 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
       payloadValidator: async ({ request, payload }) => {
 
         const factorId = request.params.sourceId;
-        const factor = await FactorController.singleRetrieve(factorId);
+        const factor = await FactorController.retrieve({ resourceId: factorId });
         if (factor.closed) throw new InvalidStateError('factor is closed');
         if (factor.payed) throw new InvalidStateError('factor is payed');
 
         const productId = request.params.targetId;
-        const product = await ProductController.singleRetrieve(productId);
+        const product = await ProductController.retrieve({ resourceId: productId });
         if (product.price !== payload.orderPrice) throw new InvalidRequestError('order price is not equal to product price');
 
         if (payload.count <= 0) throw new InvalidRequestError('count must be positive integer');
-
-        return true;
 
       }
     },
@@ -99,11 +108,9 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
       payloadValidator: async ({ request }) => {
 
         const factorId = request.params.sourceId;
-        const factor = await FactorController.singleRetrieve(factorId);
+        const factor = await FactorController.retrieve({ resourceId: factorId });
         if (factor.closed) throw new InvalidStateError('factor is closed');
         if (factor.payed) throw new InvalidStateError('factor is payed');
-
-        return true;
 
       }
     }
@@ -120,10 +127,8 @@ maker.addActions([
     payloadValidator: async ({ request }) => {
 
       const factorId = request.params.resourceId;
-      const factor = await FactorController.singleRetrieve(factorId);
+      const factor = await FactorController.retrieve({ resourceId: factorId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
-
-      return true;
 
     }
   },
@@ -132,10 +137,8 @@ maker.addActions([
     payloadValidator: async ({ request }) => {
 
       const factorId = request.params.resourceId;
-      const factor = await FactorController.singleRetrieve(factorId);
+      const factor = await FactorController.retrieve({ resourceId: factorId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
-
-      return true;
 
     }
   }
@@ -146,7 +149,7 @@ export const FactorRouter = maker.getRouter();
 
 export async function calculateFactorAmount(factorId: string) {
 
-  const factorProductOrders = await ProductOrderController.listForSource(factorId);
+  const factorProductOrders = await ProductOrderController.listForSource({ sourceId: factorId });
 
   let sum = 0;
 

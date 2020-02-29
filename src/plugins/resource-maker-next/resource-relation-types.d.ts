@@ -3,7 +3,7 @@ import { ResourceRouterAction } from "./resource-router-types";
 
 export interface ResourceRelation {
   targetModelName: string;
-  relationModelName: string;
+  relationModelName?: string;
   singular?: boolean;
   maxCount?: number;
   properties?: ResourceModelProperty[]

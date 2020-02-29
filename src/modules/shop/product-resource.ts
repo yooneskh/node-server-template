@@ -1,6 +1,6 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 
 export interface IProduct extends IResource {
   title: string;
@@ -14,38 +14,49 @@ export interface IProduct extends IResource {
 
 const maker = new ResourceMaker<IProduct>('Product');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'title',
     type: 'string',
-    required: true
+    required: true,
+    title: 'عنوان',
+    titleable: true
   },
   {
     key: 'description',
-    type: 'string'
+    type: 'string',
+    title: 'توضیحات'
   },
   {
     key: 'price',
     type: 'number',
-    required: true
+    required: true,
+    title: 'قیمت'
   },
   {
     key: 'picture',
     type: 'string',
-    ref: 'Media'
+    ref: 'Media',
+    title: 'تصویر'
   },
   {
     key: 'album',
     type: 'string',
     ref: 'Media',
-    isArray: true
+    isArray: true,
+    title: 'آلبوم'
   },
   {
     key: 'meta',
     type: 'object',
-    default: {}
+    default: {},
+    hidden: true
   }
 ]);
+
+export const ProductModel      = maker.getModel();
+export const ProductController = maker.getController();
+
 
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
@@ -56,4 +67,4 @@ maker.addActions([
   { template: ResourceActionTemplate.DELETE }
 ]);
 
-export const { model: ProductModel, controller: ProductController, router: ProductRouter } = maker.getMCR();
+export const ProductRouter = maker.getRouter();

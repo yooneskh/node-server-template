@@ -145,7 +145,9 @@ export class ResourceRouter<T extends IResource> {
 
     YEventManager.on(action.signal, actionHandler);
 
-    const routerHandler = (request: Request, response: Response, next: Function) => YEventManager.emit(action.signal ?? ['Route', 'NoSignal'], { request, response, next, payload: request.body });
+    const routerHandler = (request: Request, response: Response, next: Function) => {
+      YEventManager.emit(action.signal ?? ['Route', 'NoSignal'], { action, request, response, next, payload: request.body });
+    }
 
     switch (action.method) {
       case ResourceActionMethod.GET: this.router.get(action.path, routerHandler); break;

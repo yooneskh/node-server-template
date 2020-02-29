@@ -15,6 +15,7 @@ export interface ResourceModelProperty {
   titleable?: boolean;
   hidden?: boolean;
   hideInTable?: boolean;
+  dir?: string;
 }
 
 export interface IResource extends Document {

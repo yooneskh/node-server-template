@@ -2,6 +2,7 @@ import { ResourceActionMethod, ResourceActionTemplate, ResourceRelationActionTem
 import { Request, Response } from "express";
 
 export interface ResourceRouterContext {
+  action: ResourceRouterAction;
   request: Request;
   response: Response;
   next: Function;

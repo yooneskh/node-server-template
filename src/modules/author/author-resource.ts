@@ -1,6 +1,6 @@
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-enums';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionTemplate, ResourceRelationActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { Config } from '../../global/config';
 
 export interface IAuthor extends IResource {
@@ -9,21 +9,17 @@ export interface IAuthor extends IResource {
 
 const maker = new ResourceMaker<IAuthor>('Author');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'familyName',
-    type: 'string'
+    type: 'string',
+    title: 'نام خانوادگی',
+    titleable: true
   }
 ]);
 
-maker.setMetas([
-  {
-    key: 'familyName',
-    title: 'نام خانوادگی',
-    titleAble: true,
-    order: 1
-  }
-]);
+export const AuthorModel      = maker.getModel();
+export const AuthorController = maker.getController();
 
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
@@ -35,21 +31,26 @@ maker.addActions([
 export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation({
   targetModelName: 'Book',
   singular: true,
+  title: 'کتاب‌ها',
+  targetPropertyTitle: 'کتاب',
   properties: [
     {
       key: 'timeTook',
-      type: 'number'
+      type: 'number',
+      title: 'زمان طول کشیده',
     },
     {
       key: 'blast',
       type: 'string',
-      languages: Config.languages
+      languages: Config.languages,
+      title: 'انفجار',
     },
     {
       key: 'pages',
       type: 'string',
       ref: 'Page',
-      isArray: true
+      isArray: true,
+      title: 'صفحات ایجاد شده',
     }
   ],
   actions: [
@@ -62,27 +63,6 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
     { template: ResourceRelationActionTemplate.CREATE },
     { template: ResourceRelationActionTemplate.UPDATE },
     { template: ResourceRelationActionTemplate.DELETE }
-  ]
-}, {
-  title: 'کتاب‌ها',
-  order: 1,
-  targetPropertyTitle: 'کتاب',
-  propertiesMeta: [
-    {
-      key: 'timeTook',
-      title: 'زمان طول کشیده',
-      order: 2
-    },
-    {
-      key: 'blast',
-      title: 'انفجار',
-      order: 3
-    },
-    {
-      key: 'pages',
-      title: 'صفحات ایجاد شده',
-      order: 3
-    }
   ]
 });
 
@@ -90,15 +70,19 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
   targetModelName: 'Page',
   relationModelName: 'PageMaker',
   maxCount: 5,
+  title: 'صفحات ایجاد شده',
+  targetPropertyTitle: 'صفحه',
   properties: [
     {
       key: 'isPremium',
-      type: 'boolean'
+      type: 'boolean',
+      title: 'صفحه ویژه',
     },
     {
       key: 'contributor',
       type: 'string',
-      ref: 'User'
+      ref: 'User',
+      title: 'دستیار',
     }
   ],
   actions: [
@@ -112,22 +96,6 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
     { template: ResourceRelationActionTemplate.UPDATE },
     { template: ResourceRelationActionTemplate.DELETE }
   ]
-}, {
-  title: 'صفحات ایجاد شده',
-  targetPropertyTitle: 'صفحه',
-  order: 2,
-  propertiesMeta: [
-    {
-      key: 'isPremium',
-      title: 'صفحه ویژه',
-      order: 1
-    },
-    {
-      key: 'contributor',
-      title: 'دستیار',
-      order: 2
-    }
-  ]
 });
 
-export const { model: AuthorModel, controller: AuthorController, router: AuthorRouter } = maker.getMCR();
+export const AuthorRouter = maker.getRouter();

@@ -6,10 +6,17 @@ export const Config = {
     host: 'localhost',
     name: 'yback'
   },
+  authentication: {
+    staticVerificationCode: ''
+  },
   payment: {
     callbackBase: 'http://localhost:8080/pay/verify',
     email: 'yooneskh@gmail.com',
     phone: '09364524952'
+  },
+  zarinpal: {
+    merchantId: '',
+    isSandboxed: true
   },
   languages: {
     en: { default: '' },

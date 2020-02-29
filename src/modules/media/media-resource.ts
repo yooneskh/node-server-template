@@ -1,14 +1,13 @@
 import * as fs from 'fs';
 
-import { IResource } from '../../plugins/resource-maker/resource-maker-types';
-import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { InvalidRequestError } from '../../global/errors';
+import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
+import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { Config } from '../../global/config';
+import { InvalidRequestError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
-import * as ReadChunk from 'read-chunk';
-import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-enums';
-
+import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker-next/resource-router';
+import ReadChunk from 'read-chunk';
 
 // init code
 if (!fs.existsSync('./download')) fs.mkdirSync('./download')
@@ -26,82 +25,55 @@ export interface IMedia extends IResource {
 
 const maker = new ResourceMaker<IMedia>('Media');
 
-maker.setProperties([
+maker.addProperties([
   {
     key: 'name',
     type: 'string',
-    required: true
+    required: true,
+    title: 'نام',
+    titleable: true
   },
   {
     key: 'extension',
     type: 'string',
-    required: true
+    required: true,
+    title: 'فرمت',
+    titleable: true
   },
   {
     key: 'type',
     type: 'string',
-    default: ''
+    default: '',
+    title: 'نوع'
   },
   {
     key: 'size',
     type: 'number',
-    required: true
+    required: true,
+    title: 'حجم'
   },
   {
     key: 'owner',
     type: 'string',
     ref: 'User',
-    required: false
+    required: false,
+    title: 'صاحب'
   },
   {
     key: 'relativePath',
-    type: 'string'
-  },
-  {
-    key: 'path',
-    type: 'string'
-  }
-]);
-
-maker.setMetas([
-  {
-    key: 'name',
-    title: 'نام',
-    order: 1,
-    titleAble: true
-  },
-  {
-    key: 'extension',
-    title: 'فرمت',
-    order: 2,
-    titleAble: true
-  },
-  {
-    key: 'type',
-    title: 'نوع',
-    order: 3
-  },
-  {
-    key: 'size',
-    title: 'حجم',
-    order: 4
-  },
-  {
-    key: 'owner',
-    title: 'صاحب',
-    order: 5
-  },
-  {
-    key: 'relativePath',
+    type: 'string',
     hidden: true
   },
   {
     key: 'path',
+    type: 'string',
     hidden: true
   }
 ]);
 
-export const { model: MediaModel, controller: MediaController } = maker.getMC();
+export const MediaModel      = maker.getModel();
+export const MediaController = maker.getController();
+
 
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
@@ -110,15 +82,18 @@ maker.addActions([
 ]);
 
 maker.addAction({
+  signal: ['Route', 'Media', 'InitUpload'],
   path: '/init/upload',
   method: ResourceActionMethod.POST,
   async dataProvider({ request, user }) {
 
-    const media = await MediaController.createNew({
-      owner: user?._id,
-      name: request.body.fileName,
-      extension: request.body.fileExtension,
-      size: request.body.fileSize
+    const media = await MediaController.create({
+      payload: {
+        owner: user?._id,
+        name: request.body.fileName,
+        extension: request.body.fileExtension,
+        size: request.body.fileSize
+      }
     });
 
     const userDirectory = `download/${media.owner || 'public'}`;
@@ -141,11 +116,15 @@ maker.addAction({
 });
 
 maker.addAction({
+  signal: ['Route', 'Media', 'Upload'],
   path: '/upload/:fileToken',
   method: ResourceActionMethod.POST,
   async dataProvider({ request, response }) {
 
-    const fileInfoList = await MediaController.list({ _id: request.params.fileToken }, undefined, undefined, '+relativePath');
+    const fileInfoList = await MediaController.list({
+      filters: { _id: request.params.fileToken },
+      selects: '+relativePath'
+    });
 
     if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
 
@@ -192,7 +171,7 @@ maker.addAction({
 
       if (size >= totalSize) {
 
-        const chunk = await ReadChunk.default(targetFile, 0, minimumBytes);
+        const chunk = await ReadChunk(targetFile, 0, minimumBytes);
         const type = getFileType(chunk);
 
         if (type) {
