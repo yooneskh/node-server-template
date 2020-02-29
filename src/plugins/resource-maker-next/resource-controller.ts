@@ -112,7 +112,8 @@ export class ResourceController<T extends IResource> {
 
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
-    validatePropertyKeys(context.payload ?? {}, this.properties); // TODO: check value of payload
+    validatePropertyKeys(context.payload ?? {}, this.properties);
+    // TODO: check value of payload
 
     const resource = await this.model.findById(context.resourceId);
     if (!resource) throw new InvalidRequestError(`resource not found: ${this.name}@${context.resourceId}`);
