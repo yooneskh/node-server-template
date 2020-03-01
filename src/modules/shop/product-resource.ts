@@ -1,16 +1,7 @@
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IProduct } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 
-export interface IProduct extends IResource {
-  title: string;
-  price: number;
-  picture: string;
-  album: string[];
-  description: string;
-  // tslint:disable-next-line: no-any
-  meta: any;
-}
 
 const maker = new ResourceMaker<IProduct>('Product');
 

@@ -1,14 +1,7 @@
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IUser } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 
-export interface IUser extends IResource {
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  profile: string;
-  permissions: string[];
-}
 
 const maker = new ResourceMaker<IUser>('User');
 

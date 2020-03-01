@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IMedia } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { Config } from '../../global/config';
@@ -14,15 +14,6 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 if (!fs.existsSync('./download')) fs.mkdirSync('./download')
 //
 
-export interface IMedia extends IResource {
-  name: string;
-  extension: string;
-  type: string;
-  size: number;
-  owner?: string;
-  relativePath: string;
-  path: string;
-}
 
 const maker = new ResourceMaker<IMedia>('Media');
 

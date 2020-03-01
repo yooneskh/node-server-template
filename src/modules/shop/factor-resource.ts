@@ -1,19 +1,10 @@
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IFactor, IProductOrder } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { InvalidStateError, InvalidRequestError } from '../../global/errors';
 import { ProductController } from './product-resource';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
-export interface IFactor extends IResource {
-  user: string;
-  title: string;
-  closed: boolean;
-  payed: boolean;
-  payticket: string;
-  // tslint:disable-next-line: no-any
-  meta: any;
-}
 
 const maker = new ResourceMaker<IFactor>('Factor');
 
@@ -54,14 +45,6 @@ maker.addProperties([
 
 export const FactorModel      = maker.getModel();
 export const FactorController = maker.getController();
-
-
-export interface IProductOrder extends IResource {
-  factor: string;
-  product: string;
-  orderPrice: number;
-  count: number;
-}
 
 export const { model: ProductOrderModel, controller: ProductOrderController } = maker.addRelation<IProductOrder>({
   targetModelName: 'Product',

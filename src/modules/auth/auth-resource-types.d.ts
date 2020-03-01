@@ -1,4 +1,4 @@
-import { IUser } from '../user/user-resource';
+import { IUser } from "../modules-interfaces";
 
 declare module '../../plugins/resource-maker-next/resource-router-types' {
 

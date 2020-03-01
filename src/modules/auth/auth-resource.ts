@@ -1,7 +1,7 @@
-import { IAuth } from '../modules-interfaces';
+import { IAuth, IUser } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
-import { UserController, IUser } from '../user/user-resource';
+import { UserController } from '../user/user-resource';
 import { Config } from '../../global/config';
 import { generateRandomNumericCode, generateToken } from '../../global/util';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
@@ -35,6 +35,7 @@ export function hasPermission(allPermissions: string[], neededPermissions: strin
   return true;
 
 }
+
 
 const maker = new ResourceMaker<IAuth>('Auth');
 

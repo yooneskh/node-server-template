@@ -1,5 +1,5 @@
 import { Config } from '../../global/config';
-import { IResource } from '../../plugins/resource-maker-next/resource-model-types';
+import { IPayTicket } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
@@ -17,15 +17,6 @@ interface IGatewayHandler {
 
 const gatewayHandlers: IGatewayHandler[] = [];
 
-export interface IPayTicket extends IResource {
-  factor: string;
-  gateway: string;
-  payUrl: string;
-  resolved: boolean;
-  amount: number;
-  // tslint:disable-next-line: no-any
-  meta: any;
-}
 
 const maker = new ResourceMaker<IPayTicket>('PayTicket');
 
