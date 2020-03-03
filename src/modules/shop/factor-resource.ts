@@ -1,6 +1,6 @@
 import { IFactor, IProductOrder } from '../modules-interfaces';
-import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
-import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidStateError, InvalidRequestError } from '../../global/errors';
 import { ProductController } from './product-resource';
 import { YEventManager } from '../../plugins/event-manager/event-manager';

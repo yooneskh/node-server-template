@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 
 import { IMedia } from '../modules-interfaces';
-import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { Config } from '../../global/config';
 import { InvalidRequestError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
-import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker-next/resource-router';
+import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
 import ReadChunk from 'read-chunk';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 

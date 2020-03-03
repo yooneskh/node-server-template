@@ -1,4 +1,4 @@
-import { IResource } from '../plugins/resource-maker-next/resource-model-types';
+import { IResource } from '../plugins/resource-maker/resource-model-types';
 
 export interface IAuth extends IResource {
   user: string;

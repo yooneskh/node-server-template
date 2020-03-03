@@ -1,13 +1,13 @@
 import { IAuth, IUser } from '../modules-interfaces';
-import { ResourceMaker } from '../../plugins/resource-maker-next/resource-maker';
-import { ResourceActionMethod } from '../../plugins/resource-maker-next/resource-maker-router-enums';
+import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { UserController } from '../user/user-resource';
 import { Config } from '../../global/config';
 import { generateRandomNumericCode, generateToken } from '../../global/util';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
 import { MediaController } from '../media/media-resource';
 import { Request } from 'express';
-import { ResourceRouter } from '../../plugins/resource-maker-next/resource-router';
+import { ResourceRouter } from '../../plugins/resource-maker/resource-router';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 export function hasPermission(allPermissions: string[], neededPermissions: string[]): boolean {

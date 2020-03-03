@@ -1,6 +1,6 @@
 import { IUser } from "../modules-interfaces";
 
-declare module '../../plugins/resource-maker-next/resource-router-types' {
+declare module '../../plugins/resource-maker/resource-router-types' {
 
   interface ResourceRouterContext {
     user?: IUser;

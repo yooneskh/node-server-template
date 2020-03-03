@@ -1,6 +1,6 @@
 import { InvalidRequestError } from './errors';
 import { randomBytes, createHash } from 'crypto';
-import { ResourceModelProperty } from '../plugins/resource-maker-next/resource-model-types';
+import { ResourceModelProperty } from '../plugins/resource-maker/resource-model-types';
 
 export function simplePascalize(texts: string[]): string {
   return texts
