@@ -252,7 +252,7 @@ maker.addAction({
 export const AuthRouter = maker.getRouter();
 
 
-export async function getUserByToken(token?: string) : Promise<IUser | undefined> {
+export async function getUserByToken(token?: string): Promise<IUser | undefined> {
   if (!token) return undefined;
 
   const authTokens = await AuthController.list({
