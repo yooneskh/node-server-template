@@ -1,19 +1,19 @@
 import Express from 'express';
-import * as logger from 'morgan';
-import * as cookieParser from 'cookie-parser';
-import * as Cors from 'cors';
+import Logger from 'morgan';
+import CookieParser from 'cookie-parser';
+import Cors from 'cors';
 
 import './global/database';
 
 const app = Express();
 
-app.use(logger.default(':date[clf] :method :url :status :response-time'));
+app.use(Logger(':date[clf] :method :url :status :response-time'));
 app.use(Express.json({ limit: '10mb' }));
 app.use(Express.urlencoded({ limit: '10mb', parameterLimit: 100000, extended: false }));
-app.use(cookieParser.default())
+app.use(CookieParser())
 
 if (process.env.NODE_ENV === 'development') {
-  app.use(Cors.default());
+  app.use(Cors());
   console.log('cors loaded');
 }
 
