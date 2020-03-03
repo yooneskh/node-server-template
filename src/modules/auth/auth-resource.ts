@@ -286,8 +286,7 @@ ResourceRouter.addPreProcessor(async context => {
   const { token } = transmuteRequest(request);
   context.token = token;
 
-  const needToLoadUser = action.permissions || action.permissionFunction || action.payloadValidator || action.payloadPreprocessor || action.postprocessor;
-  if (needToLoadUser) context.user = await getUserByToken(token);
+  if (context.token) context.user = await getUserByToken(token);
 
   if (action.permissions && (!context.user || !context.user.permissions || !hasPermission(context.user.permissions ?? [], action.permissions)) ) {
     throw new ForbiddenAccessError('forbidden access');
