@@ -40,6 +40,12 @@ maker.addProperties([
     type: 'string',
     ref: 'PayTicket',
     hideInTable: true
+  },
+  {
+    key: 'meta',
+    type: 'object',
+    default: {},
+    hidden: true
   }
 ]);
 

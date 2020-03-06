@@ -76,3 +76,18 @@ export interface IUserBase extends IResource {
   profile: string;
   permissions: string[];
 } export interface IUser extends IUserBase, Document {}
+
+export interface IAccountBase extends IResource {
+  title: string;
+  user: string;
+  balance: number;
+  acceptsInput: boolean;
+  acceptsOutput: boolean;
+  meta: any
+} export interface IAccount extends IAccountBase, Document {}
+
+export interface ITransactionBase extends IResource {
+  account: string;
+  amount: number;
+  description: string;
+} export interface ITransaction extends ITransactionBase, Document {}

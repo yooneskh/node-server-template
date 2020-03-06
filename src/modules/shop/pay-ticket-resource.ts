@@ -82,6 +82,16 @@ maker.addActions([
     signal: ['Route', 'PayTicket', 'Verify'],
     method: ResourceActionMethod.POST,
     path: '/verify/:ticketId',
+    payloadValidator: async ({ request }) => {
+
+      const payTicket = await PayTicketController.retrieve({ resourceId: request.params.ticketId });
+      if (payTicket.resolved) throw new InvalidStateError('paytcket is resolved');
+
+      const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
+      if (!factor.closed) throw new InvalidStateError('factor is not closed');
+      if (factor.payed) throw new InvalidStateError('factor is already payed');
+
+    },
     dataProvider: async ({ request }) => {
 
       const payTicket = await PayTicketController.retrieve({ resourceId: request.params.ticketId });
