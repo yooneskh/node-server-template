@@ -1,9 +1,9 @@
-import { IProduct } from '../modules-interfaces';
+import { IProductBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
 
-const maker = new ResourceMaker<IProduct>('Product');
+const maker = new ResourceMaker<IProductBase>('Product');
 
 maker.addProperties([
   {

@@ -1,10 +1,10 @@
-import { IBook } from '../modules-interfaces';
+import { IBookBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionMethod, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 
-const maker = new ResourceMaker<IBook>('Book');
+const maker = new ResourceMaker<IBookBase>('Book');
 
 maker.addProperties([
   {

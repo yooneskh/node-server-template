@@ -1,9 +1,9 @@
-import { IPage } from '../modules-interfaces';
+import { IPageBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
 
-const maker = new ResourceMaker<IPage>('Page');
+const maker = new ResourceMaker<IPageBase>('Page');
 
 maker.addProperties([
   {

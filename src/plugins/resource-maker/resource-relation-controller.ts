@@ -1,5 +1,5 @@
 import { IResource } from './resource-model-types';
-import { Model } from 'mongoose';
+import { Model, Document } from 'mongoose';
 import { ResourceRelationControllerContext } from './resource-relation-controller-types';
 import { ResourceRelation } from './resource-relation-types';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
@@ -12,17 +12,17 @@ export class ResourceRelationController<T extends IResource> {
   private sourcePropertyName: string;
   private targetPropertyName: string;
 
-  private model: Model<T>;
+  private model: Model<T & Document>;
   private relation: ResourceRelation;
 
-  constructor(sourceModelName: string, targetModelName: string, relationModel: Model<T>, relation: ResourceRelation) {
+  constructor(sourceModelName: string, targetModelName: string, relationModel: Model<T & Document>, relation: ResourceRelation) {
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
     this.model = relationModel;
     this.relation = relation;
   }
 
-  public async listAll(context: ResourceRelationControllerContext<T>): Promise<T[]> {
+  public async listAll(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
     validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
     validatePropertyKeys(context.sorts ?? {}, this.relation.properties ?? []);
@@ -39,7 +39,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async listForSource(context: ResourceRelationControllerContext<T>): Promise<T[]> {
+  public async listForSource(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
     validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
     validatePropertyKeys(context.sorts ?? {}, this.relation.properties ?? []);
@@ -64,7 +64,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async getSingleRelation(context: ResourceRelationControllerContext<T>): Promise<T[]> {
+  public async getSingleRelation(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
     validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
     validatePropertyKeys(context.sorts ?? {}, this.relation.properties ?? []);
@@ -93,7 +93,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async retrieveRelation(context: ResourceRelationControllerContext<T>): Promise<T> {
+  public async retrieveRelation(context: ResourceRelationControllerContext<T>): Promise<T & Document> {
 
     const query = this.model.findById(context.relationId).select(context.selects);
 
@@ -106,7 +106,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async addRelation(context: ResourceRelationControllerContext<T>): Promise<T> {
+  public async addRelation(context: ResourceRelationControllerContext<T>): Promise<T & Document> {
 
     // TODO: validate payload
 

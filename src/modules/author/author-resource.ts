@@ -1,10 +1,10 @@
-import { IAuthor } from '../modules-interfaces';
+import { IAuthorBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceRelationActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { Config } from '../../global/config';
 
 
-const maker = new ResourceMaker<IAuthor>('Author');
+const maker = new ResourceMaker<IAuthorBase>('Author');
 
 maker.addProperties([
   {

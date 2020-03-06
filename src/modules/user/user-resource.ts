@@ -1,9 +1,9 @@
-import { IUser } from '../modules-interfaces';
+import { IUserBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
 
-const maker = new ResourceMaker<IUser>('User');
+const maker = new ResourceMaker<IUserBase>('User');
 
 maker.addProperties([
   {

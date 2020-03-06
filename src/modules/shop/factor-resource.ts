@@ -1,4 +1,4 @@
-import { IFactor, IProductOrder } from '../modules-interfaces';
+import { IFactorBase, IProductOrderBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidStateError, InvalidRequestError } from '../../global/errors';
@@ -6,7 +6,7 @@ import { ProductController } from './product-resource';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 
-const maker = new ResourceMaker<IFactor>('Factor');
+const maker = new ResourceMaker<IFactorBase>('Factor');
 
 maker.addProperties([
   {
@@ -46,7 +46,7 @@ maker.addProperties([
 export const FactorModel      = maker.getModel();
 export const FactorController = maker.getController();
 
-export const { model: ProductOrderModel, controller: ProductOrderController } = maker.addRelation<IProductOrder>({
+export const { model: ProductOrderModel, controller: ProductOrderController } = maker.addRelation<IProductOrderBase>({
   targetModelName: 'Product',
   relationModelName: 'ProductOrder',
   singular: true,

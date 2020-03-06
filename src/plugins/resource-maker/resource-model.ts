@@ -1,13 +1,13 @@
 import { ResourceModelProperty, IResource } from './resource-model-types';
 import { ServerError } from '../../global/errors';
-import { Schema, model, Model } from 'mongoose';
+import { Schema, model, Model, Document } from 'mongoose';
 import { makeSchemaOptions } from './resource-model-util';
 
 // tslint:disable: no-any
 export class ResourceModel<T extends IResource> {
 
   private properties: ResourceModelProperty[] = [];
-  private model?: Model<T, {}> = undefined;
+  private model?: Model<T & Document, {}> = undefined;
 
   constructor(private name: string) { }
 
@@ -31,7 +31,7 @@ export class ResourceModel<T extends IResource> {
 
     if (this.model !== undefined) return this.model;
 
-    this.model = model<T>(this.name, this.makeSchema());
+    this.model = model<T & Document>(this.name, this.makeSchema());
     return this.model;
 
   }

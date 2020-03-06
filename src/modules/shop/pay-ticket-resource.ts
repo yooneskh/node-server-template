@@ -1,5 +1,5 @@
 import { Config } from '../../global/config';
-import { IPayTicket } from '../modules-interfaces';
+import { IPayTicket, IPayTicketBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
@@ -18,7 +18,7 @@ interface IGatewayHandler {
 const gatewayHandlers: IGatewayHandler[] = [];
 
 
-const maker = new ResourceMaker<IPayTicket>('PayTicket');
+const maker = new ResourceMaker<IPayTicketBase>('PayTicket');
 
 maker.addProperties([
   {

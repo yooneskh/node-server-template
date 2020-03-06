@@ -18,7 +18,7 @@ export interface ResourceModelProperty {
   dir?: string;
 }
 
-export interface IResource extends Document {
+export interface IResource {
   createdAt: number;
   updatedAt: number;
 }

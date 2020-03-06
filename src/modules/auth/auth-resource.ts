@@ -1,4 +1,4 @@
-import { IAuth, IUser } from '../modules-interfaces';
+import { IUser, IAuthBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { UserController } from '../user/user-resource';
@@ -37,7 +37,7 @@ export function hasPermission(allPermissions: string[], neededPermissions: strin
 }
 
 
-const maker = new ResourceMaker<IAuth>('Auth');
+const maker = new ResourceMaker<IAuthBase>('Auth');
 
 maker.addProperties([
   {

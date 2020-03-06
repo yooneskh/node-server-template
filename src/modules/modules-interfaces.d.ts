@@ -1,6 +1,7 @@
 import { IResource } from '../plugins/resource-maker/resource-model-types';
+import { Document } from 'mongoose';
 
-export interface IAuth extends IResource {
+export interface IAuthBase extends IResource {
   user: string;
   type: string;
   propertyIdentifier?: string;
@@ -9,22 +10,22 @@ export interface IAuth extends IResource {
   valid: boolean;
   lastAccessAt: number;
   meta: any;
-}
+} export interface IAuth extends IAuthBase, Document {}
 
-export interface IAuthor extends IResource {
+export interface IAuthorBase extends IResource {
   familyName: string;
-}
+} export interface IAuthor extends IAuthorBase, Document {}
 
-export interface IBook extends IResource {
+export interface IBookBase extends IResource {
   name: string;
   page: string;
-}
+} export interface IBook extends IBookBase, Document {}
 
-export interface IPage extends IResource {
+export interface IPageBase extends IResource {
   content: string;
-}
+} export interface IPage extends IPageBase, Document {}
 
-export interface IMedia extends IResource {
+export interface IMediaBase extends IResource {
   name: string;
   extension: string;
   type: string;
@@ -32,46 +33,46 @@ export interface IMedia extends IResource {
   owner?: string;
   relativePath: string;
   path: string;
-}
+} export interface IMedia extends IMediaBase, Document {}
 
-export interface IFactor extends IResource {
+export interface IFactorBase extends IResource {
   user: string;
   title: string;
   closed: boolean;
   payed: boolean;
   payticket: string;
   meta: any;
-}
+} export interface IFactor extends IFactorBase, Document {}
 
-export interface IProductOrder extends IResource {
+export interface IProductOrderBase extends IResource {
   factor: string;
   product: string;
   orderPrice: number;
   count: number;
-}
+} export interface IProductOrder extends IProductOrderBase, Document {}
 
-export interface IPayTicket extends IResource {
+export interface IPayTicketBase extends IResource {
   factor: string;
   gateway: string;
   payUrl: string;
   resolved: boolean;
   amount: number;
   meta: any;
-}
+} export interface IPayTicket extends IPayTicketBase, Document {}
 
-export interface IProduct extends IResource {
+export interface IProductBase extends IResource {
   title: string;
   price: number;
   picture: string;
   album: string[];
   description: string;
   meta: any;
-}
+} export interface IProduct extends IProductBase, Document {}
 
-export interface IUser extends IResource {
+export interface IUserBase extends IResource {
   firstName: string;
   lastName: string;
   phoneNumber: string;
   profile: string;
   permissions: string[];
-}
+} export interface IUser extends IUserBase, Document {}

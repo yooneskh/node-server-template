@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { IMedia } from '../modules-interfaces';
+import { IMediaBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { Config } from '../../global/config';
@@ -15,7 +15,7 @@ if (!fs.existsSync('./download')) fs.mkdirSync('./download')
 //
 
 
-const maker = new ResourceMaker<IMedia>('Media');
+const maker = new ResourceMaker<IMediaBase>('Media');
 
 maker.addProperties([
   {

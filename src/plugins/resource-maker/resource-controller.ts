@@ -1,6 +1,6 @@
 import { ResourceModelProperty, IResource } from './resource-model-types';
 import { ResourceControllerContext } from './resource-controller-types';
-import { Model } from 'mongoose';
+import { Model, Document } from 'mongoose';
 import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { NotFoundError, InvalidRequestError } from '../../global/errors';
@@ -9,11 +9,11 @@ import { YEventManager } from '../event-manager/event-manager';
 // tslint:disable: no-any
 export class ResourceController<T extends IResource> {
 
-  constructor(private name: string, private model: Model<T, {}>, private properties: ResourceModelProperty[]) {
+  constructor(private name: string, private model: Model<T & Document, {}>, private properties: ResourceModelProperty[]) {
 
   }
 
-  public async list(context: ResourceControllerContext<T>): Promise<T[]> {
+  public async list(context: ResourceControllerContext<T>): Promise<(T & Document)[]> {
 
     validatePropertyKeys(context.filters ?? {}, this.properties);
     validatePropertyKeys(context.sorts ?? {}, this.properties);
@@ -53,7 +53,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async retrieve(context: ResourceControllerContext<T>): Promise<T> {
+  public async retrieve(context: ResourceControllerContext<T>): Promise<T & Document> {
 
     if (!context.resourceId) throw new InvalidRequestError('no resource id specified');
 
@@ -72,7 +72,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async findOne(context: ResourceControllerContext<T>): Promise<T> {
+  public async findOne(context: ResourceControllerContext<T>): Promise<T & Document> {
 
     const query = this.model.findOne(context.filters).select(context.selects);
 
@@ -89,7 +89,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async create(context: ResourceControllerContext<T>): Promise<T> {
+  public async create(context: ResourceControllerContext<T>): Promise<T & Document> {
 
     validatePropertyKeys(context.payload ?? {}, this.properties, true); // TODO: check value of payload
 
@@ -107,7 +107,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async edit(context: ResourceControllerContext<T>): Promise<T> {
+  public async edit(context: ResourceControllerContext<T>): Promise<T & Document> {
 
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
