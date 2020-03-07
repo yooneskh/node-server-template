@@ -5,6 +5,8 @@ import { ResourceRelation } from './resource-relation-types';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { NotFoundError, InvalidStateError } from '../../global/errors';
+import { YEventManager } from '../event-manager/event-manager';
+import { simplePascalize } from '../../global/util';
 
 // tslint:disable: no-any
 export class ResourceRelationController<T extends IResource> {
@@ -14,12 +16,14 @@ export class ResourceRelationController<T extends IResource> {
 
   private model: Model<T & Document>;
   private relation: ResourceRelation;
+  private relationName: string = '';
 
   constructor(sourceModelName: string, targetModelName: string, relationModel: Model<T & Document>, relation: ResourceRelation) {
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
     this.model = relationModel;
     this.relation = relation;
+    this.relationName = relation.relationModelName || simplePascalize([name, relation.targetModelName, 'Relation']);
   }
 
   public async listAll(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
@@ -35,7 +39,15 @@ export class ResourceRelationController<T extends IResource> {
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
-    return query;
+    const result = await query;
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Listed'],
+      result.map(d => d._id),
+      result
+    );
+
+    return result;
 
   }
 
@@ -52,7 +64,15 @@ export class ResourceRelationController<T extends IResource> {
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
-    return query;
+    const result = await query;
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Listed'],
+      result.map(d => d._id),
+      result
+    );
+
+    return result;
 
   }
 
@@ -60,7 +80,14 @@ export class ResourceRelationController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
 
-    return this.model.countDocuments({ ...context.filters, [this.sourcePropertyName]: context.sourceId });
+    const result = await this.model.countDocuments({ ...context.filters, [this.sourcePropertyName]: context.sourceId });
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Counted'],
+      result
+    );
+
+    return result;
 
   }
 
@@ -77,7 +104,15 @@ export class ResourceRelationController<T extends IResource> {
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
-    return query;
+    const result = await query;
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Listed'],
+      result.map(d => d._id),
+      result
+    );
+
+    return result;
 
   }
 
@@ -85,11 +120,18 @@ export class ResourceRelationController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.relation.properties || []);
 
-    return this.model.countDocuments({
+    const result = await this.model.countDocuments({
       ...context.filters,
       [this.sourcePropertyName]: context.sourceId,
       [this.targetPropertyName]: context.targetId
     });
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Counted'],
+      result
+    );
+
+    return result;
 
   }
 
@@ -101,6 +143,12 @@ export class ResourceRelationController<T extends IResource> {
 
     const relation = await query;
     if (!relation) throw new NotFoundError(`relation not found @${context.relationId}`);
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Retrieved'],
+      relation._id,
+      relation
+    );
 
     return relation;
 
@@ -136,7 +184,15 @@ export class ResourceRelationController<T extends IResource> {
       relation.set(key, objectToCreateFrom[key]);
     }
 
-    return relation.save();
+    await relation.save();
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Created'],
+      relation._id,
+      relation
+    );
+
+    return relation;
 
   }
 
@@ -158,8 +214,13 @@ export class ResourceRelationController<T extends IResource> {
     }
 
     item.updatedAt = Date.now();
-
     await item.save();
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Updated'],
+      item._id,
+      item
+    );
 
     return true;
 
@@ -174,7 +235,14 @@ export class ResourceRelationController<T extends IResource> {
       throw new NotFoundError('relation not found');
     }
 
+    const itemClone = JSON.parse(JSON.stringify(item));
     await item.remove();
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Deleted'],
+      itemClone._id,
+      itemClone
+    );
 
     return true;
 
