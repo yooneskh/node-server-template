@@ -91,3 +91,12 @@ export interface ITransactionBase extends IResource {
   amount: number;
   description: string;
 } export interface ITransaction extends ITransactionBase, Document {}
+
+export interface ITransferBase extends IResource {
+  fromAccount: string;
+  fromTransaction: string;
+  toAccount: string;
+  toTransaction: string;
+  amount: number;
+  description: string;
+} export interface ITransfer extends ITransferBase, Document {}
