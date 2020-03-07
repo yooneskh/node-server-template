@@ -46,6 +46,15 @@ app.use('/api/v1/factors', FactorRouter);
 import { PayTicketRouter } from './modules/shop/pay-ticket-resource';
 app.use('/api/v1/paytickets', PayTicketRouter);
 
+import { AccountRouter } from './modules/accounting/account-resource';
+app.use('/api/v1/accounts', AccountRouter);
+
+import { TransactionRouter } from './modules/accounting/transaction-resource';
+app.use('/api/v1/transactions', TransactionRouter);
+
+import { TransferRouter } from './modules/accounting/transfer-resource';
+app.use('/api/v1/transfers', TransferRouter);
+
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
 
