@@ -6,6 +6,7 @@ import { ForbiddenAccessError, InvalidRequestError } from '../../global/errors';
 import { ProductController } from '../shop/product-resource';
 import { FactorController, ProductOrderController } from '../shop/factor-resource';
 import { createPayTicket } from '../shop/pay-ticket-resource';
+import { depositIntoAccount } from './transfer-resource';
 
 
 const maker = new ResourceMaker<IAccountBase>('Account');

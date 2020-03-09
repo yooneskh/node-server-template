@@ -23,7 +23,7 @@ export class ResourceRelationController<T extends IResource> {
     this.targetPropertyName = targetModelName.toLowerCase();
     this.model = relationModel;
     this.relation = relation;
-    this.relationName = relation.relationModelName || simplePascalize([name, relation.targetModelName, 'Relation']);
+    this.relationName = relation.relationModelName || simplePascalize([sourceModelName, targetModelName, 'Relation']);
   }
 
   public async listAll(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
