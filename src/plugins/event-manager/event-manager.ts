@@ -25,6 +25,6 @@ export const YEventManager = {
   },
   // tslint:disable-next-line: no-any
   emit(room: string[], ...values: any[]) {
-    emitter.emit(room, ...values);
+    setImmediate(() => emitter.emit(room, ...values));
   }
 };
