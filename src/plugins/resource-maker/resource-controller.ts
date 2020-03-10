@@ -45,7 +45,7 @@ export class ResourceController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.properties);
 
-    const result = this.model.countDocuments(context.filters);
+    const result = await this.model.countDocuments(context.filters);
 
     YEventManager.emit(['Resource', this.name, 'Counted'], result);
 
