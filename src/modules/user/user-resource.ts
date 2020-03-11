@@ -7,15 +7,9 @@ const maker = new ResourceMaker<IUserBase>('User');
 
 maker.addProperties([
   {
-    key: 'firstName',
+    key: 'name',
     type: 'string',
     title: 'نام',
-    titleable: true
-  },
-  {
-    key: 'lastName',
-    type: 'string',
-    title: 'نام خانوادگی',
     titleable: true
   },
   {

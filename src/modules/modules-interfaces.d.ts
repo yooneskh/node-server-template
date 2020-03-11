@@ -70,8 +70,7 @@ export interface IProductBase extends IResource {
 } export interface IProduct extends IProductBase, Document {}
 
 export interface IUserBase extends IResource {
-  firstName: string;
-  lastName: string;
+  name: string;
   phoneNumber: string;
   profile: string;
   permissions: string[];

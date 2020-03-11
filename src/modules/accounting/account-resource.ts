@@ -81,7 +81,7 @@ maker.addActions([
 
       const product = await ProductController.create({
         payload: {
-          title: `شارژ اکانت برای ${user.firstName} ${user.lastName}`,
+          title: `شارژ اکانت برای ${user.name}`,
           price: payload.amount
         }
       });
@@ -89,7 +89,7 @@ maker.addActions([
       const factor = await FactorController.create({
         payload: {
           user: user._id,
-          title: `شارژ اکانت برای ${user.firstName} ${user.lastName}`,
+          title: `شارژ اکانت برای ${user.name}`,
           meta: {
             accountId: account._id,
             chargeAmount: payload.amount

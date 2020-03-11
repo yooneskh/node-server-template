@@ -3,8 +3,7 @@ import '../global/database';
 import { disconnect } from 'mongoose';
 import { UserController } from '../modules/user/user-resource';
 
-const FIRSTNAME = 'یونس';
-const LASTNAME = 'خوش قدم';
+const NAME = 'یونس خوش قدم';
 const PHONENUMBER = '+989364524952';
 const PERMISSIONS = ['user.*', 'admin.*'];
 
@@ -12,8 +11,7 @@ const PERMISSIONS = ['user.*', 'admin.*'];
 
   const user = await UserController.create({
     payload: {
-      firstName: FIRSTNAME,
-      lastName: LASTNAME,
+      name: NAME,
       phoneNumber: PHONENUMBER,
       permissions: PERMISSIONS
     }

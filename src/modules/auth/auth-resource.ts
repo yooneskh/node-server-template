@@ -138,8 +138,7 @@ maker.addAction({
 
     const user = await UserController.create({
       payload: {
-        firstName: payload.firstName,
-        lastName: payload.lastName,
+        name: payload.name,
         phoneNumber: payload.phoneNumber,
         permissions: ['user.*']
       }
