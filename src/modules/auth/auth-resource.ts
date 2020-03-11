@@ -196,13 +196,14 @@ maker.addAction({
 
     await authToken.save();
 
-    const userObj = authToken.user as unknown as IUser;
-    const user = JSON.parse(JSON.stringify(userObj));
-
-    YEventManager.emit(['Resource', 'User', 'Verified'], userObj._id, userObj);
+    YEventManager.emit(
+      ['Resource', 'User', 'Verified'],
+      (authToken.user as unknown as IUser)._id,
+      authToken.user
+    );
 
     return {
-      ...user,
+      user: authToken.user,
       token: authToken.token
     }
 
