@@ -23,13 +23,21 @@ export default async function(socket: Socket) {
     }
   });
 
-  socket.on('subscribe', (room) => {
+  socket.on('subscribe', (resource, action) => {
+
+    if (resource.includes('*') || action.includes('*')) {
+      socket.disconnect(true);
+      console.log('wildcard subscription disallowed');
+      return;
+    }
 
     if (!socket.user) {
       socket.disconnect(true);
       console.log('unauthenticated socket subscription');
       return;
     }
+
+    const room = `Resource.${resource}.${action}`;
 
     socket.subscriptions.push({
       room,
