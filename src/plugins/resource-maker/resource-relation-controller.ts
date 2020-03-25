@@ -1,4 +1,4 @@
-import { IResource } from './resource-model-types';
+import { IResource, ResourceModelProperty } from './resource-model-types';
 import { Model, Document } from 'mongoose';
 import { ResourceRelationControllerContext } from './resource-relation-controller-types';
 import { ResourceRelation } from './resource-relation-types';
@@ -17,19 +17,36 @@ export class ResourceRelationController<T extends IResource> {
   private model: Model<T & Document>;
   private relation: ResourceRelation;
   private relationName: string = '';
+  private validationProperties: ResourceModelProperty[];
 
   constructor(sourceModelName: string, targetModelName: string, relationModel: Model<T & Document>, relation: ResourceRelation) {
+
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
     this.model = relationModel;
     this.relation = relation;
     this.relationName = relation.relationModelName || simplePascalize([sourceModelName, targetModelName, 'Relation']);
+
+    this.validationProperties = [
+      ...(relation.properties ?? []),
+      {
+        key: this.sourcePropertyName,
+        type: 'string',
+        required: true
+      },
+      {
+        key: this.targetPropertyName,
+        type: 'string',
+        required: true
+      }
+    ];
+
   }
 
   public async listAll(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
-    validatePropertyKeys(context.sorts ?? {}, this.relation.properties ?? []);
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
     const query = this.model.find(context.filters);
     query.sort(context.sorts);
@@ -53,8 +70,8 @@ export class ResourceRelationController<T extends IResource> {
 
   public async listForSource(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
-    validatePropertyKeys(context.sorts ?? {}, this.relation.properties ?? []);
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
     const query = this.model.find({ ...context.filters, [this.sourcePropertyName]: context.sourceId })
     query.sort(context.sorts);
@@ -78,7 +95,7 @@ export class ResourceRelationController<T extends IResource> {
 
   public async countListForSource(context: ResourceRelationControllerContext<T>): Promise<number> {
 
-    validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
 
     const result = await this.model.countDocuments({ ...context.filters, [this.sourcePropertyName]: context.sourceId });
 
@@ -93,8 +110,8 @@ export class ResourceRelationController<T extends IResource> {
 
   public async getSingleRelation(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.relation.properties ?? []);
-    validatePropertyKeys(context.sorts ?? {}, this.relation.properties ?? []);
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
     const query = this.model.find({ ...context.filters, [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId })
     query.sort(context.sorts);
