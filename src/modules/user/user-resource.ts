@@ -21,10 +21,10 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
-    key: 'profilePicture',
+    key: 'profile',
     type: 'string',
     ref: 'Media',
-    // default: '' // put mediaId of default profilePicture here
+    // default: '' // put mediaId of default profile here
     title: 'تصویر پروفایل'
   },
   {

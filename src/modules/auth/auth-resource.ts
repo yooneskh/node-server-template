@@ -177,7 +177,7 @@ maker.addAction({
       sorts: { '_id': -1 },
       includes: {
         'user': '',
-        'user.profilePicture': ''
+        'user.profile': ''
       },
       limit: 1
     });
