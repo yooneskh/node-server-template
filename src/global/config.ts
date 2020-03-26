@@ -10,7 +10,7 @@ export const Config = {
     staticVerificationCode: '111111'
   },
   payment: {
-    callbackBase: 'http://localhost:8080/pay/verify',
+    callbackBase: 'http://localhost:8080/payment/verify',
     email: 'yooneskh@gmail.com',
     phone: '09364524952'
   },
