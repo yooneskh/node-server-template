@@ -16,6 +16,7 @@ export interface ResourceModelProperty {
   hidden?: boolean;
   hideInTable?: boolean;
   dir?: string;
+  richText?: boolean;
 }
 
 export interface IResource {
