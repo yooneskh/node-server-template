@@ -48,7 +48,7 @@ export class ResourceRelationController<T extends IResource> {
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
     validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
-    const query = this.model.find(context.filters);
+    const query = this.model.find(context.filters ?? {});
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);

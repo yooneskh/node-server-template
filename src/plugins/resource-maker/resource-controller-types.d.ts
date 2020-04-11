@@ -1,8 +1,10 @@
+import { FilterQuery, Document } from "mongoose";
+
 export interface ResourceControllerContext<T> {
   resourceId?: string;
   includes?: Record<string, string>;
   sorts?: Record<string, number>;
-  filters?: Record<string, any>;
+  filters?: FilterQuery<Document & T>;
   payload?: Partial<T>;
   selects?: string;
   limit?: number;

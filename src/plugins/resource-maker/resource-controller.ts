@@ -45,7 +45,7 @@ export class ResourceController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.properties);
 
-    const result = await this.model.countDocuments(context.filters);
+    const result = await this.model.countDocuments(context.filters ?? {});
 
     YEventManager.emit(['Resource', this.name, 'Counted'], result);
 
@@ -148,7 +148,7 @@ export class ResourceController<T extends IResource> {
       }
     }
 
-    await this.model.updateOne({ _id: context.resourceId }, context.query);
+    await this.model.findByIdAndUpdate(context.resourceId, context.query);
 
     // TODO: check if necessary to retrieve resource
     YEventManager.emit(['Resource', this.name, 'Updated'], context.resourceId, await this.retrieve({ resourceId: context.resourceId }));
