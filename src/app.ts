@@ -7,7 +7,7 @@ import './global/database';
 
 const app = Express();
 
-app.use(Logger(':date[clf] :method :url :status :response-time'));
+app.use(Logger('combined'));
 app.use(Express.json({ limit: '10mb' }));
 app.use(Express.urlencoded({ limit: '10mb', parameterLimit: 100000, extended: false }));
 app.use(CookieParser())
