@@ -99,3 +99,13 @@ export interface ITransferBase extends IResource {
   amount: number;
   description: string;
 } export interface ITransfer extends ITransferBase, Document {}
+
+export interface IUpdateBase extends IResource {
+  title: string;
+  description: string;
+  changes: string[];
+  version: number;
+  platform: string;
+  mandatory: boolean;
+  links: string[];
+} export interface IUpdate extends IUpdateBase, Document {}
