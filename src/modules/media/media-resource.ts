@@ -118,12 +118,9 @@ maker.addAction({
     const fileInfoList = await MediaController.list({
       filters: { _id: request.params.fileToken },
       selects: '+relativePath'
-    });
-
-    if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
+    }); if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
 
     const fileInfo = fileInfoList[0];
-
     if (!fileInfo || !fileInfo.size || fileInfo.size <= 0) throw new InvalidRequestError('saved media incorrect');
 
     const targetFile = fileInfo.relativePath;
