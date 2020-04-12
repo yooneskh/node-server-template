@@ -23,11 +23,12 @@ maker.addProperties([
     key: 'changes',
     type: 'string',
     title: 'تغییرات',
-    required: true
+    required: true,
+    isArray: true
   },
   {
     key: 'version',
-    type: 'string',
+    type: 'number',
     title: 'شماره نسخه',
     required: true,
     titleable: true
@@ -41,7 +42,7 @@ maker.addProperties([
   },
   {
     key: 'mandatory',
-    type: 'string',
+    type: 'boolean',
     title: 'اجباری',
     default: false
   },
@@ -49,7 +50,8 @@ maker.addProperties([
     key: 'links',
     type: 'string',
     title: 'لینک‌ها',
-    required: true
+    required: true,
+    isArray: true
   }
 ]);
 
