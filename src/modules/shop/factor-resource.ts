@@ -117,29 +117,27 @@ maker.addActions([
   { template: ResourceActionTemplate.CREATE },
   {
     template: ResourceActionTemplate.UPDATE,
-    payloadValidator: async ({ request }) => {
+    payloadValidator: async ({ resourceId }) => {
 
-      const factorId = request.params.resourceId;
-      const factor = await FactorController.retrieve({ resourceId: factorId });
+      const factor = await FactorController.retrieve({ resourceId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
 
     },
-    postprocessor: async ({ request, payload }) => {
+    postprocessor: async ({ resourceId, payload }) => {
       if (payload.closed === false) {
         YEventManager.emit(
           ['Resource', 'Factor', 'Closed'],
-          request.params.resourceId,
-          await FactorController.retrieve({ resourceId: request.params.resourceId })
+          resourceId,
+          await FactorController.retrieve({ resourceId })
         );
       }
     }
   },
   {
     template: ResourceActionTemplate.DELETE,
-    payloadValidator: async ({ request }) => {
+    payloadValidator: async ({ resourceId }) => {
 
-      const factorId = request.params.resourceId;
-      const factor = await FactorController.retrieve({ resourceId: factorId });
+      const factor = await FactorController.retrieve({ resourceId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
 
     }

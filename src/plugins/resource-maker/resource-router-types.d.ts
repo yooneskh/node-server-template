@@ -8,6 +8,7 @@ export interface ResourceRouterContext {
   next: Function;
   payload: any;
   data?: any;
+  resourceId?: string;
 }
 
 export interface ResourceRouterAction {

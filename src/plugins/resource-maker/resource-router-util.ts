@@ -132,8 +132,8 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.signal) action.signal = ['Route', name, 'Retrieve']
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.retrieve({
-        resourceId: request.params.resourceId,
+      action.dataProvider = async ({ request, resourceId }) => controller.retrieve({
+        resourceId,
         includes: extractIncludeQueryObject(request.query.includes as string),
         selects: request.query.selects as string
       });
@@ -156,8 +156,8 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.signal) action.signal = ['Route', name, 'Update']
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request, payload }) => controller.edit({
-        resourceId: request.params.resourceId,
+      action.dataProvider = async ({ resourceId, payload }) => controller.edit({
+        resourceId,
         payload
       });
     }
@@ -169,7 +169,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.path) action.path = '/:resourceId';
     if (!action.signal) action.signal = ['Route', name, 'Delete']
 
-    if (!action.dataProvider) action.dataProvider = async ({ request }) => controller.delete({ resourceId: request.params.resourceId });
+    if (!action.dataProvider) action.dataProvider = async ({ resourceId }) => controller.delete({ resourceId });
 
   }
   else {
