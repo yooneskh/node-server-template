@@ -108,6 +108,46 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
+  public async listForTarget(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
+
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
+
+    const query = this.model.find({ ...context.filters, [this.targetPropertyName]: context.targetId })
+    query.sort(context.sorts);
+    query.select(context.selects);
+    query.skip(context.skip ?? 0);
+    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+
+    for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+
+    const result = await query;
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Listed'],
+      result.map(d => d._id),
+      result
+    );
+
+    return result;
+
+  }
+
+  public async countListForTarget(context: ResourceRelationControllerContext<T>): Promise<number> {
+
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+
+    const result = await this.model.countDocuments({ ...context.filters, [this.targetPropertyName]: context.targetId });
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'Counted'],
+      result
+    );
+
+    return result;
+
+  }
+
   public async getSingleRelation(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
