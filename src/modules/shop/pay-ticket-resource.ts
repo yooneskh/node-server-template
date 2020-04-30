@@ -54,6 +54,12 @@ maker.addProperties([
     title: 'پایان یافته'
   },
   {
+    key: 'payed',
+    type: 'boolean',
+    default: false,
+    title: 'پرداخت شده'
+  },
+  {
     key: 'meta',
     type: 'object',
     default: {},
@@ -100,14 +106,16 @@ maker.addActions([
       if (!handler) throw new InvalidRequestError('invalid gateway');
 
       const result = await handler.verifyTicket(payTicket);
-      if (!result) throw new InvalidRequestError('failed verification');
+
+      YEventManager.emit(['Resource', 'PayTicket', 'Resolved'], payTicket._id, payTicket);
+      if (!result) throw new InvalidRequestError('pay ticket not verified');
 
       const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
       factor.payed = true;
       factor.payticket = payTicket._id;
       await factor.save();
 
-      YEventManager.emit(['Resource', 'PayTicket', 'Resolved'], payTicket._id, payTicket);
+      YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
       YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
 
       return {
@@ -193,7 +201,11 @@ gatewayHandlers.push({
       Authority: authority
     });
 
-    if (status === -21) throw new InvalidRequestError('pay ticket not verified');
+    if (status === -21) {
+      payTicket.resolved = true;
+      payTicket.payed = false;
+      return false;
+    }
 
     payTicket.meta.refId = RefID;
     payTicket.resolved = true;
