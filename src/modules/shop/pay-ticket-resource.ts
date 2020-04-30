@@ -204,6 +204,7 @@ gatewayHandlers.push({
     if (status === -21) {
       payTicket.resolved = true;
       payTicket.payed = false;
+      await payTicket.save();
       return false;
     }
 
