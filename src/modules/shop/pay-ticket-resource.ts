@@ -210,6 +210,7 @@ gatewayHandlers.push({
 
     payTicket.meta.refId = RefID;
     payTicket.resolved = true;
+    payTicket.payed = true;
     await payTicket.save();
 
     return true;
