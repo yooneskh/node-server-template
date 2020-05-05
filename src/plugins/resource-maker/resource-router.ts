@@ -83,6 +83,7 @@ export class ResourceRouter<T extends IResource> {
       targetModel: r[0].targetModelName,
       relationModelName: r[0].relationModelName,
       targetPropertyTitle: r[0].targetPropertyTitle,
+      sourcePropertyTitle: r[0].sourcePropertyTitle,
       singular: r[0].singular,
       maxCount: r[0].maxCount,
       title: r[0].title,

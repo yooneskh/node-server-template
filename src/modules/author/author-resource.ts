@@ -31,6 +31,7 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
   targetModelName: 'Book',
   singular: true,
   title: 'کتاب‌ها',
+  sourcePropertyTitle: 'نویسنده',
   targetPropertyTitle: 'کتاب',
   properties: [
     {
@@ -70,6 +71,7 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
   relationModelName: 'PageMaker',
   maxCount: 5,
   title: 'صفحات ایجاد شده',
+  sourcePropertyTitle: 'نویسنده',
   targetPropertyTitle: 'صفحه',
   properties: [
     {

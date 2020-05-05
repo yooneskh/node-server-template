@@ -11,4 +11,5 @@ export interface ResourceRelation {
   // metas
   title?: string;
   targetPropertyTitle?: string;
+  sourcePropertyTitle?: string;
 }
