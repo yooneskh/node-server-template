@@ -1,13 +1,12 @@
 import { Socket } from 'socket.io';
-import { YEventManager } from './plugins/event-manager/event-manager';
-import { Listener } from 'eventemitter2';
+import { YEventManager, EventListener } from './plugins/event-manager/event-manager';
 import { IUser } from './modules/modules-interfaces';
 import { getUserByToken } from './modules/auth/auth-resource';
 
 declare module 'socket.io' {
   interface Socket {
     user?: IUser;
-    subscriptions: { room: string, handler: Listener }[]
+    subscriptions: { room: string, handler: EventListener }[]
   }
 }
 
@@ -41,12 +40,12 @@ export default async function(socket: Socket) {
 
     socket.subscriptions.push({
       room,
-      handler: (...data) => {
+      handler: async (...data) => {
         socket.emit(room, ...data);
       }
     });
 
-    YEventManager.on(room.split('.'), socket.subscriptions.slice(-1)[0].handler);
+    YEventManager.on(room.split('.'), socket.subscriptions[socket.subscriptions.length - 1].handler);
 
   });
 

@@ -1,4 +1,4 @@
-import { EventEmitter2, Listener } from 'eventemitter2';
+import { EventEmitter2 } from 'eventemitter2';
 
 const emitter = new EventEmitter2({
   wildcard: true,
@@ -7,20 +7,23 @@ const emitter = new EventEmitter2({
   maxListeners: 0
 });
 
+// tslint:disable-next-line: no-any
+export type EventListener = (...args: any[]) => Promise<void>;
+
 export const YEventManager = {
-  on(room: string[], handler: Listener) {
+  on(room: string[], handler: EventListener) {
     emitter.on(room, handler);
   },
-  once(room: string[], handler: Listener) {
+  once(room: string[], handler: EventListener) {
     emitter.once(room, handler);
   },
-  many(room: string[], times: number, handler: Listener) {
+  many(room: string[], times: number, handler: EventListener) {
     emitter.many(room, times, handler);
   },
-  any(handler: Listener) {
+  any(handler: EventListener) {
     emitter.onAny(handler);
   },
-  off(room: string[], handler: Listener) {
+  off(room: string[], handler: EventListener) {
     emitter.removeListener(room, handler);
   },
   // tslint:disable-next-line: no-any
