@@ -34,6 +34,13 @@ maker.addProperties([
     titleable: true
   },
   {
+    key: 'packageName',
+    type: 'string',
+    title: 'نام پکیج',
+    required: true,
+    titleable: true
+  },
+  {
     key: 'platform',
     type: 'string',
     title: 'پلتفرم',
