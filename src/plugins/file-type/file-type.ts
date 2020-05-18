@@ -20,7 +20,6 @@ export function getFileType(input: Uint8Array | ArrayBuffer | Buffer) {
   const check = (header: number[], options: { offset: number, mask?: number[] } = { offset: 0 }) => {
 
     options = {
-      offset: 0,
       ...options
     };
 
