@@ -18,6 +18,7 @@ export interface ResourceModelProperty {
   dir?: string;
   longText?: boolean;
   richText?: boolean;
+  timeFormat?: string;
 }
 
 export interface IResource {
