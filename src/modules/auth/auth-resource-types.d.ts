@@ -10,6 +10,7 @@ declare module '../../plugins/resource-maker/resource-router-types' {
   interface ResourceRouterAction {
     permissions?: string[];
     permissionFunction?: (context: ResourceRouterContext) => Promise<boolean>;
+    stateValidator?: (context: ResourceRouterContext) => Promise<void>;
     payloadValidator?: (context: ResourceRouterContext) => Promise<void>;
     payloadPreprocessor?: (context: ResourceRouterContext) => Promise<void>;
     responsePreprocessor?: (context: ResourceRouterContext) => Promise<void>;

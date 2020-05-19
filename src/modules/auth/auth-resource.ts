@@ -295,6 +295,8 @@ ResourceRouter.addPreProcessor(async context => {
     throw new ForbiddenAccessError('forbidden access');
   }
 
+  action.stateValidator && await action.stateValidator(context);
+
   action.payloadValidator && await action.payloadValidator(context);
   action.payloadPreprocessor && await action.payloadPreprocessor(context);
 
