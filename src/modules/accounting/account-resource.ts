@@ -1,4 +1,4 @@
-import { IAccountBase, IFactor } from '../modules-interfaces';
+import { IAccountBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
@@ -6,7 +6,6 @@ import { ForbiddenAccessError, InvalidRequestError } from '../../global/errors';
 import { ProductController } from '../shop/product-resource';
 import { FactorController, ProductOrderController } from '../shop/factor-resource';
 import { createPayTicket } from '../shop/pay-ticket-resource';
-import { depositIntoAccount } from './transfer-resource';
 
 
 const maker = new ResourceMaker<IAccountBase>('Account');
@@ -119,6 +118,7 @@ maker.addActions([
 
 export const AccountRouter = maker.getRouter();
 
+
 // create account for each user
 YEventManager.on(['Resource', 'User', 'Created'], async (userId: string) => {
   await AccountController.create({
@@ -130,12 +130,6 @@ YEventManager.on(['Resource', 'User', 'Created'], async (userId: string) => {
       acceptsOutput: true
     }
   });
-});
-
-YEventManager.on(['Resource', 'Factor', 'Payed'], async (factorId: string, factor: IFactor) => {
-  if (factor.meta && factor.meta.accountId) {
-    await depositIntoAccount(factor.meta.accountId, factor.meta.chargeAmount);
-  }
 });
 
 export async function getGlobalSource() {

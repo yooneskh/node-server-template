@@ -1,9 +1,10 @@
-import { ITransferBase, ITransfer } from '../modules-interfaces';
+import { ITransferBase, ITransfer, IFactor } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
 import { AccountController, getAccountForUser, getGlobalSource, getGlobalDrain } from './account-resource';
 import { createTransaction } from './transaction-resource';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 
 const maker = new ResourceMaker<ITransferBase>('Transfer');
@@ -76,6 +77,13 @@ maker.addActions([
 
 export const TransferRouter = maker.getRouter();
 
+
+// charge account factor payment
+YEventManager.on(['Resource', 'Factor', 'Payed'], async (factorId: string, factor: IFactor) => {
+  if (factor.meta && factor.meta.accountId) {
+    await depositIntoAccount(factor.meta.accountId, factor.meta.chargeAmount);
+  }
+});
 
 export async function createTransfer(fromAccountId: string, toAccountId: string, amount: number, description?: string): Promise<ITransfer> {
   if (!amount || amount <= 0) throw new InvalidRequestError('invalid transfer amount');
