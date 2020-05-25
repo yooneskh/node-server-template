@@ -90,7 +90,7 @@ maker.addActions([
           user: user._id,
           title: `شارژ اکانت برای ${user.name}`,
           meta: {
-            accountId: account._id,
+            bankChargeAccountId: account._id,
             chargeAmount: payload.amount
           }
         }
