@@ -97,7 +97,7 @@ export async function createTransfer(fromAccountId: string, toAccountId: string,
   if (!toAccount.acceptsInput) throw new InvalidStateError('destination account does not accept input');
 
   // TODO: make code below happen in transaction
-  if (fromAccount.balance < amount && !fromAccount.meta.globalSource) {
+  if (fromAccount.balance < amount && !fromAccount.allowNegativeBalance) {
     throw new InvalidStateError('source account does not have sufficient balance');
   }
 

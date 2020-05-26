@@ -83,6 +83,7 @@ export interface IAccountBase extends IResource {
   balance: number;
   acceptsInput: boolean;
   acceptsOutput: boolean;
+  allowNegativeBalance: boolean;
   meta: any
 } export interface IAccount extends IAccountBase, Document {}
 

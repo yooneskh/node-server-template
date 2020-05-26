@@ -44,6 +44,12 @@ maker.addProperties([
     default: false
   },
   {
+    key: 'allowNegativeBalance',
+    type: 'boolean',
+    title: 'قابل منفی شدن',
+    default: false
+  },
+  {
     key: 'meta',
     type: 'object',
     title: 'اطلاعات',
@@ -164,6 +170,7 @@ export async function getAccountForUser(userId: string) {
         balance: 0,
         acceptsInput: false,
         acceptsOutput: true,
+        allowNegativeBalance: true,
         meta: {
           globalSource: true,
         }
