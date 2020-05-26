@@ -76,7 +76,7 @@ export async function createTransaction(accountId: string, amount: number, descr
     resourceId: accountId,
     query: {
       $inc: {
-        amount: amount
+        balance: amount
       }
     }
   });
