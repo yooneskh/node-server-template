@@ -19,6 +19,8 @@ export interface ResourceModelProperty {
   longText?: boolean;
   richText?: boolean;
   timeFormat?: string;
+  relationSourceModel?: string;
+  relationTargetModel?: string;
 }
 
 export interface IResource {
