@@ -39,6 +39,7 @@ maker.addProperties([
     key: 'payticket',
     type: 'string',
     ref: 'PayTicket',
+    title: 'بلیط پرداخت',
     hideInTable: true
   },
   {
