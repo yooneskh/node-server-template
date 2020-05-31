@@ -57,6 +57,7 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
   relationModelName: 'ProductOrder',
   singular: true,
   title: 'محصولات فاکتور',
+  sourcePropertyTitle: 'فاکتور',
   targetPropertyTitle: 'محصول',
   properties: [
     {
