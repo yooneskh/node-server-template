@@ -103,7 +103,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.dataProvider) {
       action.dataProvider = async ({ request }) => {
         if (request.query.single === 'true') {
-          controller.findOne({
+          return controller.findOne({
             filters: extractFilterQueryObject(request.query.filters as string),
             sorts: extractSortQueryObject(request.query.sorts as string),
             includes: extractIncludeQueryObject(request.query.includes as string),
@@ -111,7 +111,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
           });
         }
         else {
-          controller.list({
+          return controller.list({
             filters: extractFilterQueryObject(request.query.filters as string),
             sorts: extractSortQueryObject(request.query.sorts as string),
             includes: extractIncludeQueryObject(request.query.includes as string),
