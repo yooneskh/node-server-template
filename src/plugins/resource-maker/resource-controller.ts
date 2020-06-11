@@ -74,7 +74,12 @@ export class ResourceController<T extends IResource> {
 
   public async findOne(context: ResourceControllerContext<T>): Promise<T & Document> {
 
-    const query = this.model.findOne(context.filters).select(context.selects);
+    validatePropertyKeys(context.filters ?? {}, this.properties);
+
+    const query = this.model.findOne(context.filters);
+
+    query.sort(context.sorts ?? {});
+    query.select(context.selects);
 
     for (const include of transformIncludes(context.includes ?? {})) {
       query.populate(include);

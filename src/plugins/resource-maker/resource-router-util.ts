@@ -101,14 +101,26 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.signal) action.signal = ['Route', name, 'List']
 
     if (!action.dataProvider) {
-      action.dataProvider = async ({ request }) => controller.list({
-        filters: extractFilterQueryObject(request.query.filters as string),
-        sorts: extractSortQueryObject(request.query.sorts as string),
-        includes: extractIncludeQueryObject(request.query.includes as string),
-        selects: request.query.selects as string,
-        limit: Math.min(parseInt((request.query.limit as string) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
-        skip: parseInt((request.query.skip as string) || '0', 10) || 0
-      });
+      action.dataProvider = async ({ request }) => {
+        if (request.query.single === 'true') {
+          controller.findOne({
+            filters: extractFilterQueryObject(request.query.filters as string),
+            sorts: extractSortQueryObject(request.query.sorts as string),
+            includes: extractIncludeQueryObject(request.query.includes as string),
+            selects: request.query.selects as string
+          });
+        }
+        else {
+          controller.list({
+            filters: extractFilterQueryObject(request.query.filters as string),
+            sorts: extractSortQueryObject(request.query.sorts as string),
+            includes: extractIncludeQueryObject(request.query.includes as string),
+            selects: request.query.selects as string,
+            limit: Math.min(parseInt((request.query.limit as string) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+            skip: parseInt((request.query.skip as string) || '0', 10) || 0
+          });
+        }
+      };
     }
 
   }
