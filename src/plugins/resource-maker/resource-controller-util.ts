@@ -1,7 +1,7 @@
 import { ResourceModelProperty } from './resource-model-types';
 import { InvalidRequestError } from '../../global/errors';
 
-const GENERAL_RESOURCE_PROPERIES = {
+const GENERAL_RESOURCE_PROPERTIES = {
   _id: 'string',
   createdAt: 'number',
   updatedAt: 'number'
@@ -11,15 +11,14 @@ const GENERAL_RESOURCE_PROPERIES = {
 export function validatePropertyKeys(payload: Record<string, any>, properties: ResourceModelProperty[], twoWayCheck = false) {
 
   for (const key in payload) {
+    if (key in GENERAL_RESOURCE_PROPERTIES) continue;
 
-    if (key in GENERAL_RESOURCE_PROPERIES) continue;
+    const keyToCheck = key.includes('.') ? key.split('.')[0] : key;
 
-    const property = properties.find(p => p.key === key);
-
+    const property = properties.find(p => p.key === keyToCheck);
     if (!property) throw new InvalidRequestError('payload key invalid: ' + key);
 
     if (property.languages) {
-
       if (typeof payload[key] !== 'object') throw new InvalidRequestError(`payload ${key} is not multi language`);
 
       for (const languageKey in payload[key]) {
