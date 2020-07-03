@@ -74,6 +74,7 @@ function extractFilterQueryObject(queryString: string) {
 
     if (value === 'Xtrue') value = true;
     if (value === 'Xfalse') value = false;
+    if (value === 'Xnull') value = undefined;
 
     const filterOperator = FILTER_OPERATORS[operator];
 
