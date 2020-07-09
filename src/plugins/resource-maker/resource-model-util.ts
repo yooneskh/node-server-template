@@ -7,6 +7,12 @@ export function makeSchemaOptions(properties: ResourceModelProperty[]) {
 
   for (const property of properties) {
 
+    if (property.type === 'series') {
+      if (!property.serieSchema) throw new ServerError('series property does not have schema');
+      schemaOptions[property.key] = [makeSchemaOptions(property.serieSchema)];
+      continue;
+    }
+
     let scheme: Record<string, any> = {};
 
     scheme.type = mapPropertyTypeToMongooseType(property.type)
@@ -58,6 +64,7 @@ function mapPropertyTypeToMongooseType(propertyType: string): any {
     case 'number': return Number;
     case 'boolean': return Boolean;
     case 'object': return Object;
+    case 'series': throw new ServerError('code should not reach here');
     default: throw new ServerError(`resource property type unknown: ${propertyType}`);
   }
 }

@@ -1,5 +1,3 @@
-import { Document } from "mongoose";
-
 export interface ResourceModelProperty {
   key: string;
   type: string;
@@ -10,6 +8,7 @@ export interface ResourceModelProperty {
   select?: boolean;
   isArray?: boolean;
   languages?: Record<string, any>;
+  serieSchema?: ResourceModelProperty[];
   // metas
   title?: string;
   titleable?: boolean;
