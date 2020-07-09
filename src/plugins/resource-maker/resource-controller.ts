@@ -96,7 +96,8 @@ export class ResourceController<T extends IResource> {
 
   public async create(context: ResourceControllerContext<T>): Promise<T & Document> {
 
-    validatePropertyKeys(context.payload ?? {}, this.properties, true); // TODO: check value of payload
+    validatePropertyKeys(context.payload ?? {}, this.properties, true);
+    // TODO: check value of payload
 
     const resource = new this.model();
 
@@ -124,7 +125,7 @@ export class ResourceController<T extends IResource> {
 
     for (const key in context.payload) {
       if (key !== 'id' && key !== '_id') {
-        resource.set(key, context.payload[key]);
+        resource.set(key, context.payload[key]); // TODO: probably needs more work for series
       }
     }
 

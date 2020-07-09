@@ -29,6 +29,18 @@ export function validatePropertyKeys(payload: Record<string, any>, properties: R
 
     }
 
+    if (property.type === 'series' && payload[property.key]) {
+
+      if (!Array.isArray(payload[property.key])) {
+        throw new InvalidRequestError(`payload key should be array ${property.key}`);
+      }
+
+      for (const serie of payload[property.key]) {
+        validatePropertyKeys(serie, property.serieSchema ?? []); // property.serieSchema is never undefined here
+      }
+
+    }
+
   }
 
   if (twoWayCheck) {
