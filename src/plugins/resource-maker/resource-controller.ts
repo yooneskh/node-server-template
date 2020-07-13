@@ -48,7 +48,6 @@ export class ResourceController<T extends IResource> {
     const result = await this.model.countDocuments(context.filters ?? {});
 
     YEventManager.emit(['Resource', this.name, 'Counted'], result);
-
     return result;
 
   }
@@ -108,13 +107,11 @@ export class ResourceController<T extends IResource> {
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Created'], resource._id, resource);
-
     return resource;
 
   }
 
   public async edit(context: ResourceControllerContext<T>): Promise<T & Document> {
-
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     validatePropertyKeys(context.payload ?? {}, this.properties);
@@ -133,13 +130,11 @@ export class ResourceController<T extends IResource> {
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Updated'], resource._id, resource);
-
     return resource;
 
   }
 
   public async editQuery(context: ResourceControllerContext<T>): Promise<void> {
-
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     if ('$set' in context.query) {
@@ -162,7 +157,6 @@ export class ResourceController<T extends IResource> {
   }
 
   public async delete(context: ResourceControllerContext<T>): Promise<boolean> {
-
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     const resource = await this.model.findById(context.resourceId);
@@ -172,7 +166,6 @@ export class ResourceController<T extends IResource> {
     await resource.remove();
 
     YEventManager.emit(['Resource', this.name, 'Deleted'], resourceClone._id, resourceClone);
-
     return true;
 
   }

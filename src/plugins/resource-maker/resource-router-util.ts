@@ -65,11 +65,8 @@ function extractFilterQueryObject(queryString: string) {
     // tslint:disable-next-line: no-any prefer-const
     let [key, operator, value]: any = part.split(':');
 
-    // tslint:disable-next-line: strict-type-predicates
     if (key === undefined) throw new InvalidRequestError(`filter invalid key '${key}'`);
-    // tslint:disable-next-line: strict-type-predicates
     if (operator === undefined) throw new InvalidRequestError(`filter invalid operator '${operator}'`);
-    // tslint:disable-next-line: strict-type-predicates
     if (value === undefined) throw new InvalidRequestError(`filter invalid value '${value}'`);
 
     if (value === 'Xtrue') value = true;
@@ -77,7 +74,6 @@ function extractFilterQueryObject(queryString: string) {
     if (value === 'Xnull') value = undefined;
 
     const filterOperator = FILTER_OPERATORS[operator];
-
     if (!filterOperator) throw new InvalidRequestError(`filter invalid operator '${operator}'`);
 
     if (filterOperator === '$regex') value = new RegExp(value, 'i');
