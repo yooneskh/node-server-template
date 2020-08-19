@@ -1,19 +1,22 @@
 import '../global/database';
 
 import { disconnect } from 'mongoose';
-import { AuthController } from '../modules/auth/auth-resource';
+import { AuthTokenController } from '../modules/auth/auth-token-resource';
 
 (async () => {
 
-  const tokens = await AuthController.list({
-    filters: { valid: false }
+  const tokens = await AuthTokenController.list({
+    filters: {
+      type: 'OTP',
+      valid: false
+    }
   });
 
   console.log('count: ', tokens.length);
 
   await Promise.all(
     tokens.map(token =>
-      AuthController.delete({ resourceId: token._id })
+      AuthTokenController.delete({ resourceId: token._id })
     )
   )
 

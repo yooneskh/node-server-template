@@ -41,10 +41,7 @@ export class ResourceMaker<T extends IResource> {
   public addAction(action: ResourceRouterAction) {
 
     if (!this.resourceRouter) {
-      if (!this.resourceController) throw new ServerError('action added before making controller');
-
       this.resourceRouter = new ResourceRouter<T>(this.name, this.resourceModeler.getProperties(), this.resourceController);
-
     }
 
     this.resourceRouter.addAction(action);

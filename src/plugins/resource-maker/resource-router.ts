@@ -23,7 +23,7 @@ export class ResourceRouter<T extends IResource> {
   private relations: [ResourceRelation, ResourceRelationController<IResource>][] = [];
   private router?: Router = undefined;
 
-  constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T>) {
+  constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T> | undefined) {
 
   }
 
@@ -69,7 +69,8 @@ export class ResourceRouter<T extends IResource> {
     for (const action of this.actions) {
 
       if ('template' in action) {
-        populateAction(action, this.name, this.controller)
+        if (!this.controller) throw new ServerError('used template but controller not made');
+        populateAction(action, this.name, this.controller);
       }
 
       this.applyActionOnRouter(action);
