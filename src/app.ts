@@ -52,6 +52,8 @@ app.use('/api/v1/transactions', TransactionRouter);
 import { TransferRouter } from './modules/accounting/transfer-resource';
 app.use('/api/v1/transfers', TransferRouter);
 
+import './modules/sms-manager/sms-manager';
+
 
 // app specific routes
 

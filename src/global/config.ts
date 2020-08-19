@@ -21,5 +21,8 @@ export const Config = {
   languages: {
     en: { default: '' },
     fa: { default: '' }
+  },
+  kavenegar: {
+    apiKey: '31315054767A313565645A53616B766B7171544F505055394E415155386F4D76'
   }
 };
