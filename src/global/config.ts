@@ -24,5 +24,10 @@ export const Config = {
   },
   kavenegar: {
     apiKey: '31315054767A313565645A53616B766B7171544F505055394E415155386F4D76'
+  },
+  ifttt: {
+    telegram: {
+      key: 'bd9xshBbi7rURLfoTaN8d6'
+    }
   }
 };
