@@ -68,6 +68,7 @@ export interface IPayTicketBase extends IResource {
   gateway: string;
   payUrl: string;
   resolved: boolean;
+  resolvedAt: number;
   payed: boolean;
   amount: number;
   meta: any;

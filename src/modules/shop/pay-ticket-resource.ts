@@ -6,6 +6,9 @@ import { InvalidRequestError, InvalidStateError, ServerError } from '../../globa
 import { FactorController, calculateFactorAmount } from './factor-resource';
 import ZarinpalCheckout from 'zarinpal-checkout';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
+import { createErrorResultPage } from './payment-result-error';
+import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
+import { createSuccessResultPage } from './payment-result-success';
 
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
 
@@ -54,6 +57,12 @@ maker.addProperties([
     title: 'پایان یافته'
   },
   {
+    key: 'resolvedAt',
+    type: 'number',
+    default: 0,
+    title: 'زمان پایان یافتن'
+  },
+  {
     key: 'payed',
     type: 'boolean',
     default: false,
@@ -86,11 +95,11 @@ maker.addActions([
   { template: ResourceActionTemplate.DELETE },
   {
     signal: ['Route', 'PayTicket', 'Verify'],
-    method: ResourceActionMethod.POST,
-    path: '/verify/:ticketId',
-    payloadValidator: async ({ request }) => {
+    method: ResourceActionMethod.GET,
+    path: '/:resourceId/verify',
+    stateValidator: async ({ resourceId }) => {
 
-      const payTicket = await PayTicketController.retrieve({ resourceId: request.params.ticketId });
+      const payTicket = await PayTicketController.retrieve({ resourceId });
       if (payTicket.resolved) throw new InvalidStateError('paytcket is resolved');
 
       const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
@@ -98,31 +107,52 @@ maker.addActions([
       if (factor.payed) throw new InvalidStateError('factor is already payed');
 
     },
-    dataProvider: async ({ request }) => {
+    dataProvider: async ({ resourceId, response }) => {
+      try {
 
-      const payTicket = await PayTicketController.retrieve({ resourceId: request.params.ticketId });
+        const payTicket = await PayTicketController.retrieve({ resourceId });
 
-      const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
-      if (!handler) throw new InvalidRequestError('invalid gateway');
+        const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
+        if (!handler) throw new InvalidRequestError('invalid gateway');
 
-      const result = await handler.verifyTicket(payTicket);
+        const result = await handler.verifyTicket(payTicket);
 
-      YEventManager.emit(['Resource', 'PayTicket', 'Resolved'], payTicket._id, payTicket);
-      if (!result) throw new InvalidRequestError('pay ticket not verified');
+        YEventManager.emit(['Resource', 'PayTicket', 'Resolved'], payTicket._id, payTicket);
+        if (!result) throw new InvalidRequestError('pay ticket not verified');
 
-      const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
-      factor.payed = true;
-      factor.payticket = payTicket._id;
-      await factor.save();
+        const factor = await FactorController.edit({
+          resourceId: payTicket.factor,
+          payload: {
+            payed: true,
+            payticket: payTicket._id
+          }
+        });
 
-      YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
-      YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
+        YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
+        YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
 
-      return {
-        factorTitle: factor.title,
-        amount: payTicket.amount
-      };
+        response.send(createSuccessResultPage(
+          Config.payment.response.title,
+          `${payTicket.amount.toLocaleString()} تومان`,
+          factor.title,
+          Config.payment.response.callback
+        ));
 
+        return DISMISS_DATA_PROVIDER;
+
+      }
+      catch (error) {
+
+        response.send(createErrorResultPage(
+          Config.payment.response.title,
+          error.message,
+          Config.payment.response.callbackSupport,
+          Config.payment.response.callback
+        ));
+
+        return DISMISS_DATA_PROVIDER;
+
+      }
     }
   }
 ]);
@@ -133,9 +163,8 @@ export const PayTicketRouter = maker.getRouter();
 export async function createPayTicket(factorId: string, gateway: string) {
 
   const factor = await FactorController.retrieve({ resourceId: factorId });
-
   if (!factor.closed) throw new InvalidStateError('factor must be closed');
-  if (factor.payed) throw new InvalidStateError('factor is payed already');
+  if (factor.payed) throw new InvalidStateError('factor is already payed');
 
   const handler = gatewayHandlers.find(h => h.gateway === gateway);
   if (!handler) throw new InvalidRequestError('invalid gateway');
@@ -149,8 +178,7 @@ export async function createPayTicket(factorId: string, gateway: string) {
 
   await handler.initTicket(payTicket);
 
-  YEventManager.emit(['Resource', 'PayTicket', 'Created'], payTicket._id, payTicket);
-
+  YEventManager.emit(['Resource', 'PayTicket', 'Inited'], payTicket._id, payTicket);
   return payTicket;
 
 }
@@ -162,10 +190,10 @@ gatewayHandlers.push({
   async initTicket(payTicket) {
 
     const amount = await calculateFactorAmount(payTicket.factor);
-    const callBackUrl = `${Config.payment.callbackBase}?ticket=${payTicket._id}`;
-    const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).title || 'پرداخت فاکتور';
-    const email = Config.payment.email;
-    const mobile = Config.payment.phone;
+    const callBackUrl = `${Config.payment.callbackUrlBase}/${payTicket._id}/verify`;
+    const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).title;
+    const email = Config.payment.zarinpal.email;
+    const mobile = Config.payment.zarinpal.phone;
 
     const { status, url, authority } = await Zarinpal.PaymentRequest({
       Amount: amount.toString(10),
@@ -179,6 +207,7 @@ gatewayHandlers.push({
 
     payTicket.payUrl = url;
     payTicket.amount = amount;
+    payTicket.updatedAt = Date.now();
 
     payTicket.meta = {
       authority,
@@ -193,8 +222,7 @@ gatewayHandlers.push({
 
     const amount = payTicket.amount;
     const authority = payTicket.meta.authority;
-
-    if (!amount || !authority) throw new InvalidRequestError('invalid pay ticket state');
+    if (!amount || !authority) throw new InvalidStateError('invalid pay ticket state');
 
     const { status, RefID } = await Zarinpal.PaymentVerification({
       Amount: amount.toString(10),
@@ -204,6 +232,8 @@ gatewayHandlers.push({
     if (status === -21) {
       payTicket.resolved = true;
       payTicket.payed = false;
+      payTicket.resolvedAt = Date.now();
+      payTicket.updatedAt = Date.now();
       await payTicket.save();
       return false;
     }
@@ -211,6 +241,8 @@ gatewayHandlers.push({
     payTicket.meta.refId = RefID;
     payTicket.resolved = true;
     payTicket.payed = true;
+    payTicket.resolvedAt = Date.now();
+    payTicket.updatedAt = Date.now();
     await payTicket.save();
 
     return true;
