@@ -20,7 +20,7 @@ export class ResourceRouter<T extends IResource> {
   private static postProcessors: RouterProcessor[] = [];
 
   private actions: ResourceRouterAction[] = [];
-  private relations: [ResourceRelation, ResourceRelationController<IResource>][] = [];
+  private relations: [ResourceRelation, ResourceRelationController<any>][] = []; // tslint:disable-line: no-any
   private router?: Router = undefined;
 
   constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T> | undefined) {
@@ -106,14 +106,10 @@ export class ResourceRouter<T extends IResource> {
       const pluralTargetName = plural(relation.relationModelName || relation.targetModelName);
 
       for (const relationAction of relation?.actions ?? []) {
-
-        if ('template' in relationAction) {
-          populateRelationAction(relationAction, relationController, pluralTargetName)
-        }
-
+        if ('template' in relationAction) populateRelationAction(relationAction, relationController, pluralTargetName)
         this.applyActionOnRouter(relationAction);
-
       }
+
     }
   }
 
@@ -185,7 +181,6 @@ export class ResourceRouter<T extends IResource> {
   }
 
   public getRouter() {
-
     if (this.router === undefined) this.makeRouter();
     if (this.router === undefined) throw new ServerError('could not make router');
 
