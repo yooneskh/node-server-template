@@ -13,12 +13,13 @@ export function validatePropertyKeys(payload: Record<string, any>, properties: R
   for (const key in payload) {
     if (key in GENERAL_RESOURCE_PROPERTIES) continue;
 
-    const keyToCheck = key.includes('.') ? key.split('.')[0] : key;
+    const isSubPropertyCheck = key.includes('.');
+    const keyToCheck = isSubPropertyCheck ? key.split('.')[0] : key;
 
     const property = properties.find(p => p.key === keyToCheck);
-    if (!property) throw new InvalidRequestError('payload key invalid: ' + key);
+    if (!property) throw new InvalidRequestError(`payload key invalid: ${keyToCheck}`);
 
-    if (property.languages) {
+    if (property.languages && !isSubPropertyCheck) {
       if (typeof payload[key] !== 'object') throw new InvalidRequestError(`payload ${key} is not multi language`);
 
       for (const languageKey in payload[key]) {
@@ -29,13 +30,10 @@ export function validatePropertyKeys(payload: Record<string, any>, properties: R
 
     }
 
-    if (property.type === 'series' && payload[property.key]) {
+    if (property.type === 'series' && !isSubPropertyCheck && payload[key]) {
+      if (!Array.isArray(payload[key])) throw new InvalidRequestError(`payload key should be array ${key}`);
 
-      if (!Array.isArray(payload[property.key])) {
-        throw new InvalidRequestError(`payload key should be array ${property.key}`);
-      }
-
-      for (const serie of payload[property.key]) {
+      for (const serie of payload[key]) {
         validatePropertyKeys(serie, property.serieSchema ?? []); // property.serieSchema is never undefined here
       }
 
