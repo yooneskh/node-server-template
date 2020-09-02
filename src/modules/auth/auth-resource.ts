@@ -46,6 +46,12 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Login'],
   method: ResourceActionMethod.POST,
   path: '/login',
+  rateLimitOptions: {
+    pointsAmount: 5,
+    pointsInterval: 5 * 60,
+    blockDuration: 60,
+    consecutiveFailDurationMultiplier: 1.5
+  },
   async dataProvider({ payload }) {
 
     const user = await UserController.findOne({
@@ -76,6 +82,12 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Register'],
   method: ResourceActionMethod.POST,
   path: '/register',
+  rateLimitOptions: {
+    pointsAmount: 3,
+    pointsInterval: 5 * 60,
+    blockDuration: 60,
+    consecutiveFailDurationMultiplier: 2
+  },
   async dataProvider({ payload }) {
 
     const { name, phoneNumber } = payload;
@@ -135,6 +147,12 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Verify'],
   method: ResourceActionMethod.POST,
   path: '/verify',
+  rateLimitOptions: {
+    pointsAmount: 3,
+    pointsInterval: 2 * 60,
+    blockDuration: 60,
+    consecutiveFailDurationMultiplier: 1.5
+  },
   async dataProvider({ payload }) {
 
     const { phoneNumber, verificationCode } = payload;

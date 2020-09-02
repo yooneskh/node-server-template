@@ -24,11 +24,18 @@ export class InvalidStateError extends HandleableError {
   public code = 1005;
 }
 
+export class RouteBypassedError extends HandleableError {
+  public code = 1006;
+}
+
 export function errorHandler(error: Error, request: Request, response: Response, next: Function) {
 
-  console.log('Error ::', error.message);
+  console.error('Error ::', error.message);
 
-  if (error instanceof NotFoundError) {
+  if (error instanceof RouteBypassedError) {
+    // noop
+  }
+  else if (error instanceof NotFoundError) {
     response.status(404).json({ code: error.code, message: error.message});
   }
   else if (error instanceof ForbiddenAccessError) {
@@ -44,5 +51,5 @@ export function errorHandler(error: Error, request: Request, response: Response,
 }
 
 process.on('uncaughtException', (error) => {
-  console.log('socket/events error ::', error.message);
+  console.error('socket/events error ::', error.message);
 });
