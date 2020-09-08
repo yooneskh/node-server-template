@@ -11,6 +11,7 @@ maker.addProperties([
   {
     key: 'account',
     type: 'string',
+    ref: 'Account',
     required: true,
     title: 'حساب',
     titleable: true
