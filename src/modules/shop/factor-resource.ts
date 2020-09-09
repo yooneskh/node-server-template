@@ -76,6 +76,7 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
   ],
   actions: [
     { template: ResourceRelationActionTemplate.LIST_ALL },
+    { template: ResourceRelationActionTemplate.LIST_ALL_COUNT },
     { template: ResourceRelationActionTemplate.RETRIEVE_BY_ID },
     { template: ResourceRelationActionTemplate.LIST },
     { template: ResourceRelationActionTemplate.LIST_COUNT },
