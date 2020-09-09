@@ -18,6 +18,7 @@ export enum ResourceActionTemplate {
 
 export enum ResourceRelationActionTemplate {
   LIST_ALL,
+  LIST_ALL_COUNT,
   LIST,
   LIST_COUNT,
   RETRIEVE,

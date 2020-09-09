@@ -68,6 +68,25 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
+  public async countListAll(context: ResourceRelationControllerContext<T>): Promise<number> {
+
+    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+
+    const query = this.model.find(context.filters ?? {});
+    query.skip(context.skip ?? 0);
+    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+
+    const result = await query.countDocuments();
+
+    YEventManager.emit(
+      ['Relation', this.relationName, 'ListCounted'],
+      result
+    );
+
+    return result;
+
+  }
+
   public async listForSource(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
 
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);

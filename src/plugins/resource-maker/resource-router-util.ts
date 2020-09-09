@@ -205,6 +205,20 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
+  else if (action.template === ResourceRelationActionTemplate.LIST_ALL_COUNT) {
+
+    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.path) action.path = `/${pluralTargetName}/count`;
+    if (!action.signal) action.signal = ['Route', pluralTargetName, 'ListAllCount'];
+
+    if (!action.dataProvider) {
+      action.dataProvider = async ({ request }) => controller.countListAll({
+        filters: extractFilterQueryObject(request.query.filters as string),
+        limit: Math.min(parseInt((request.query.limit as string) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        skip: parseInt((request.query.skip as string) || '0', 10) || 0
+      });
+    }
+  }
   else if (action.template === ResourceRelationActionTemplate.LIST) {
 
     if (!action.method) action.method = ResourceActionMethod.GET;
