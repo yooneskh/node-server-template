@@ -20,6 +20,8 @@ export interface ResourceModelProperty {
   timeFormat?: string;
   relationSourceModel?: string;
   relationTargetModel?: string;
+  serieBase?: any;
+  width?: number;
 }
 
 export interface IResource {
