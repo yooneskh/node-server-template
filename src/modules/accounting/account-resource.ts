@@ -2,10 +2,11 @@ import { IAccountBase } from '../modules-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
-import { ForbiddenAccessError, InvalidRequestError } from '../../global/errors';
+import { ForbiddenAccessError, InvalidRequestError, InvalidStateError } from '../../global/errors';
 import { ProductController } from '../shop/product-resource';
 import { FactorController, ProductOrderController } from '../shop/factor-resource';
 import { createPayTicket } from '../shop/pay-ticket-resource';
+import { UserController } from '../user/user-resource';
 
 
 const maker = new ResourceMaker<IAccountBase>('Account');
@@ -68,7 +69,22 @@ maker.addActions([
   { template: ResourceActionTemplate.RETRIEVE },
   // { template: ResourceActionTemplate.CREATE },
   // { template: ResourceActionTemplate.UPDATE },
-  // { template: ResourceActionTemplate.DELETE }
+  {
+    template: ResourceActionTemplate.DELETE,
+    stateValidator: async ({ resourceId }) => {
+
+      const account = await AccountController.retrieve({ resourceId });
+
+      const usersCount = await UserController.count({
+        filters: {
+          _id: account.user
+        }
+      });
+
+      if (usersCount !== 0) throw new InvalidStateError('there is a user for this account');
+
+    }
+  },
   {
     method: ResourceActionMethod.POST,
     path: '/charge',
