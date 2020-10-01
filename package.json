@@ -21,7 +21,7 @@
     "rate-limiter-flexible": "^2.1.10",
     "read-chunk": "^3.2.0",
     "socket.io": "^2.3.0",
-    "ynetwork": "^2.5.0",
+    "ynetwork": "^2.6.0",
     "zarinpal-checkout": "^0.2.7"
   },
   "devDependencies": {
