@@ -38,16 +38,16 @@ maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
-  {
-    template: ResourceActionTemplate.CREATE,
-    dataProvider: async ({ request }) => createTransaction(
-      request.body.account,
-      request.body.amount,
-      request.body.description
-    )
-  },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  // {
+  //   template: ResourceActionTemplate.CREATE,
+  //   dataProvider: async ({ request }) => createTransaction(
+  //     request.body.account,
+  //     request.body.amount,
+  //     request.body.description
+  //   )
+  // },
+  // { template: ResourceActionTemplate.UPDATE },
+  // { template: ResourceActionTemplate.DELETE }
 ]);
 
 export const TransactionRouter = maker.getRouter();

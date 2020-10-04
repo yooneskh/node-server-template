@@ -131,7 +131,6 @@ maker.addActions([
       await factor.save();
 
       const payticket = await createPayTicket(factor._id, 'zarinpal');
-
       return payticket.payUrl;
 
     }

@@ -71,8 +71,8 @@ maker.addActions([
       request.body.description
     )
   },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  // { template: ResourceActionTemplate.UPDATE },
+  // { template: ResourceActionTemplate.DELETE }
 ]);
 
 export const TransferRouter = maker.getRouter();
