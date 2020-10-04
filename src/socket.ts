@@ -1,58 +1,57 @@
 import { Socket } from 'socket.io';
-import { YEventManager, EventListener } from './plugins/event-manager/event-manager';
-import { IUser } from './modules/modules-interfaces';
-import { getUserByToken } from './modules/auth/auth-resource';
+import { ServerError } from './global/errors';
 
 declare module 'socket.io' {
   interface Socket {
-    user?: IUser;
-    subscriptions: { room: string, handler: EventListener }[]
+
   }
 }
 
+type SocketInitializer = (socket: Socket) => void;
+
+interface SocketHandler {
+  room: string,
+  handler(socket: Socket, ...args: any[]): Promise<void>; // tslint:disable-line: no-any
+}
+
+const socketInitializers: SocketInitializer[] = [];
+const socketHandlers: SocketHandler[] = [];
+
+export function registerSocketInitializer(socketInitializer: SocketInitializer) {
+  socketInitializers.push(socketInitializer);
+}
+
+export function registerSocketHandler(socketHandler: SocketHandler) {
+  if (socketHandlers.find(sh => sh.room === socketHandler.room)) throw new ServerError('socket room already handled');
+
+  socketHandlers.push(socketHandler);
+
+}
+
 export default async function(socket: Socket) {
-
   console.log('socket connected: ' + socket.id);
-  socket.subscriptions = [];
 
-  socket.on('authenticate', async (data) => {
-    socket.user = await getUserByToken(data.token); // TODO: rate limit
-    if (socket.user) {
-      socket.emit('authenticated');
+  const initializations = await Promise.allSettled(
+    socketInitializers.map(init => init(socket))
+  );
+
+  for (const init of initializations) {
+    if (init.status === 'rejected') {
+      console.error('socket initialization failed: ', init.reason);
     }
-  });
+  }
 
-  socket.on('subscribe', (resource, action) => {
-
-    if (resource.includes('*') || action.includes('*')) {
-      socket.disconnect(true);
-      console.log('wildcard subscription disallowed');
-      return;
-    }
-
-    if (!socket.user) {
-      socket.disconnect(true);
-      console.log('unauthenticated socket subscription');
-      return;
-    }
-
-    const room = `Resource.${resource}.${action}`;
-
-    socket.subscriptions.push({
-      room,
-      handler: async (...data) => {
-        socket.emit(room, ...data);
+  for (const handler of socketHandlers) {
+    socket.on(handler.room, async (...args) => {
+      try {
+        await handler.handler(socket, ...args)
+        console.log(new Date(), 'socket', handler.room, socket.id);
+      }
+      catch (error) {
+        console.error('socket handler error', handler.room, error.message);
+        socket.disconnect(true);
       }
     });
-
-    YEventManager.on(room.split('.'), socket.subscriptions[socket.subscriptions.length - 1].handler);
-
-  });
-
-  socket.on('disconnect', () => {
-    for (const sub of socket.subscriptions) {
-      YEventManager.off(sub.room.split('.'), sub.handler);
-    }
-  });
+  }
 
 }
