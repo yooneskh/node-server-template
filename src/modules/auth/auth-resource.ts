@@ -1,4 +1,5 @@
-import { IUser, IRegisterToken } from '../modules-interfaces';
+import { IRegisterToken } from './auth-interfaces';
+import { IUser } from '../user/user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { UserController } from '../user/user-resource';
@@ -240,7 +241,7 @@ maker.addAction({
       }
     });
 
-    YEventManager.emit(['Resource', 'User', 'LoggedOut']); // TODO: check if needed to give user
+    YEventManager.emit(['Resource', 'User', 'LoggedOut'], authToken.user);
     return true;
 
   }

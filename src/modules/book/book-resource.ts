@@ -1,4 +1,4 @@
-import { IBookBase } from '../modules-interfaces';
+import { IBookBase } from './book-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionMethod, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
@@ -10,6 +10,7 @@ maker.addProperties([
   {
     key: 'name',
     type: 'string',
+    required: true,
     title: 'نام',
     titleable: true
   }

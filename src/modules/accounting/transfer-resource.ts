@@ -1,4 +1,5 @@
-import { ITransferBase, ITransfer, IFactor } from '../modules-interfaces';
+import { ITransferBase, ITransfer } from './accounting-interfaces';
+import { IFactor } from '../shop/shop-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';

@@ -1,4 +1,4 @@
-import { IUpdateBase } from '../modules-interfaces';
+import { IUpdateBase } from './update-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 

@@ -1,4 +1,4 @@
-import { IRegisterTokenBase } from '../modules-interfaces';
+import { IRegisterTokenBase } from './auth-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 

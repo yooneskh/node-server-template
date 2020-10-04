@@ -1,4 +1,4 @@
-import { ITransactionBase, ITransaction } from '../modules-interfaces';
+import { ITransactionBase, ITransaction } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError } from '../../global/errors';

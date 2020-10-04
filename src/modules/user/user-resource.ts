@@ -1,4 +1,4 @@
-import { IUserBase } from '../modules-interfaces';
+import { IUserBase } from './user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
@@ -9,14 +9,15 @@ maker.addProperties([
   {
     key: 'name',
     type: 'string',
+    required: true,
     title: 'نام',
     titleable: true
   },
   {
     key: 'phoneNumber',
     type: 'string',
-    unique: true,
     required: true,
+    unique: true,
     title: 'شماره تلفن',
     dir: 'ltr'
   },

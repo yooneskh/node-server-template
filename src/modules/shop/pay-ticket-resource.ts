@@ -1,5 +1,5 @@
 import { Config } from '../../global/config';
-import { IPayTicket, IPayTicketBase } from '../modules-interfaces';
+import { IPayTicket, IPayTicketBase } from './shop-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
@@ -47,6 +47,7 @@ maker.addProperties([
   {
     key: 'amount',
     type: 'number',
+    required: true,
     title: 'میزان',
     titleable: true
   },
@@ -172,7 +173,8 @@ export async function createPayTicket(factorId: string, gateway: string) {
   const payTicket = await PayTicketController.create({
     payload: {
       factor: factorId,
-      gateway
+      gateway,
+      amount: await calculateFactorAmount(factorId)
     }
   });
 
@@ -189,14 +191,14 @@ gatewayHandlers.push({
   gateway: 'zarinpal',
   async initTicket(payTicket) {
 
-    const amount = await calculateFactorAmount(payTicket.factor);
+    const amount = payTicket.amount;
     const callBackUrl = `${Config.payment.callbackUrlBase}/${payTicket._id}/verify`;
     const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).title;
     const email = Config.payment.zarinpal.email;
     const mobile = Config.payment.zarinpal.phone;
 
     const { status, url, authority } = await Zarinpal.PaymentRequest({
-      Amount: amount.toString(10),
+      Amount: String(amount),
       CallbackURL: callBackUrl,
       Description: description,
       Email: email,
@@ -205,17 +207,17 @@ gatewayHandlers.push({
 
     if (status !== 100) throw new ServerError('zarinpal gateway error');
 
-    payTicket.payUrl = url;
-    payTicket.amount = amount;
-    payTicket.updatedAt = Date.now();
-
-    payTicket.meta = {
-      authority,
-      status,
-      callBackUrl
-    };
-
-    await payTicket.save();
+    await PayTicketController.edit({
+      resourceId: payTicket._id,
+      payload: {
+        payUrl: url,
+        meta: {
+          authority,
+          status,
+          callBackUrl
+        }
+      }
+    });
 
   },
   async verifyTicket(payTicket) {
@@ -230,12 +232,14 @@ gatewayHandlers.push({
     });
 
     if (status === -21) {
-      payTicket.resolved = true;
-      payTicket.payed = false;
-      payTicket.resolvedAt = Date.now();
-      payTicket.updatedAt = Date.now();
-      await payTicket.save();
-      return false;
+      await PayTicketController.edit({
+        resourceId: payTicket._id,
+        payload: {
+          resolved: true,
+          payed: false,
+          resolvedAt: Date.now()
+        }
+      }); return false;
     }
 
     payTicket.meta.refId = RefID;

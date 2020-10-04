@@ -1,4 +1,4 @@
-import { IProductBase } from '../modules-interfaces';
+import { IProductBase } from './shop-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
@@ -55,7 +55,7 @@ maker.addActions([
   { template: ResourceActionTemplate.RETRIEVE },
   { template: ResourceActionTemplate.CREATE },
   { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  { template: ResourceActionTemplate.DELETE } // TODO: check no delete if in an order
 ]);
 
 export const ProductRouter = maker.getRouter();

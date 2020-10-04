@@ -1,4 +1,4 @@
-import { IFactorBase, IProductOrderBase } from '../modules-interfaces';
+import { IFactorBase, IProductOrderBase } from './shop-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceRelationActionTemplate, ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidStateError, InvalidRequestError } from '../../global/errors';
@@ -19,7 +19,7 @@ maker.addProperties([
   {
     key: 'title',
     type: 'string',
-    default: '',
+    required: true,
     title: 'عنوان',
     titleable: true
   },
@@ -84,24 +84,46 @@ export const { model: ProductOrderModel, controller: ProductOrderController } = 
     { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
     {
       template: ResourceRelationActionTemplate.CREATE,
-      payloadValidator: async ({ request, payload }) => {
+      stateValidator: async ({ request }) => {
 
         const factorId = request.params.sourceId;
         const factor = await FactorController.retrieve({ resourceId: factorId });
         if (factor.closed) throw new InvalidStateError('factor is closed');
         if (factor.payed) throw new InvalidStateError('factor is payed');
 
+      },
+      payloadValidator: async ({ request, payload }) => {
+
         const productId = request.params.targetId;
         const product = await ProductController.retrieve({ resourceId: productId });
         if (product.price !== payload.orderPrice) throw new InvalidRequestError('order price is not equal to product price');
+        if (payload.count <= 0) throw new InvalidRequestError('count must be positive integer');
 
+      }
+    },
+    {
+      template: ResourceRelationActionTemplate.UPDATE,
+      stateValidator: async ({ request }) => {
+
+        const factorId = request.params.sourceId;
+        const factor = await FactorController.retrieve({ resourceId: factorId });
+        if (factor.closed) throw new InvalidStateError('factor is closed');
+        if (factor.payed) throw new InvalidStateError('factor is payed');
+
+      },
+      payloadValidator: async ({ request, payload }) => {
+
+        const productId = request.params.targetId;
+        const product = await ProductController.retrieve({ resourceId: productId });
+
+        if ('orderPrice' in payload && product.price !== payload.orderPrice) throw new InvalidRequestError('order price is not equal to product price');
         if (payload.count <= 0) throw new InvalidRequestError('count must be positive integer');
 
       }
     },
     {
       template: ResourceRelationActionTemplate.DELETE,
-      payloadValidator: async ({ request }) => {
+      stateValidator: async ({ request }) => {
 
         const factorId = request.params.sourceId;
         const factor = await FactorController.retrieve({ resourceId: factorId });
@@ -120,11 +142,9 @@ maker.addActions([
   { template: ResourceActionTemplate.CREATE },
   {
     template: ResourceActionTemplate.UPDATE,
-    payloadValidator: async ({ resourceId }) => {
-
+    stateValidator: async ({ resourceId }) => {
       const factor = await FactorController.retrieve({ resourceId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
-
     },
     postprocessor: async ({ resourceId, payload }) => {
       if (payload.closed === false) {
@@ -138,11 +158,9 @@ maker.addActions([
   },
   {
     template: ResourceActionTemplate.DELETE,
-    payloadValidator: async ({ resourceId }) => {
-
+    stateValidator: async ({ resourceId }) => {
       const factor = await FactorController.retrieve({ resourceId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
-
     }
   }
 ]);
