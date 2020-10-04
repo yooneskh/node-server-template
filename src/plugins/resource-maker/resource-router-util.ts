@@ -155,7 +155,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     if (!action.path) action.path = '/';
     if (!action.signal) action.signal = ['Route', name, 'Create']
 
-    if (!action.dataProvider) action.dataProvider = async ({ request, payload }) => controller.create({ payload });
+    if (!action.dataProvider) action.dataProvider = async ({ payload }) => controller.create({ payload });
 
   }
   else if (action.template === ResourceActionTemplate.UPDATE) {

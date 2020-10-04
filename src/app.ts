@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
   console.log('cors loaded');
 }
 
-app.get('/ping', (request, response) => response.send('pong'));
+app.get('/ping', (_request, response) => response.send('pong'));
 
 
 // general routes

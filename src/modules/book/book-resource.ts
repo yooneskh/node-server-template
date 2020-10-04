@@ -25,7 +25,7 @@ maker.addAction({
   dataProvider: async () => 'test'
 });
 
-YEventManager.on(['Route', 'Book', 'Metas'], async (context) => {
+YEventManager.on(['Route', 'Book', 'Metas'], async (_context) => {
   // a custom additional route handler
 });
 

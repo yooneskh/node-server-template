@@ -79,7 +79,7 @@ export const TransferRouter = maker.getRouter();
 
 
 // charge account factor payment
-YEventManager.on(['Resource', 'Factor', 'Payed'], async (factorId: string, factor: IFactor) => {
+YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, factor: IFactor) => {
   if (factor.meta && factor.meta.bankChargeAccountId) {
     await depositIntoAccount(factor.meta.bankChargeAccountId, factor.meta.chargeAmount);
   }
