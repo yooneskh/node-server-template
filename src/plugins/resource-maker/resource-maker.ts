@@ -14,9 +14,7 @@ export class ResourceMaker<T extends IResource> {
   private resourceController?: ResourceController<T>;
   private resourceRouter?: ResourceRouter<T> = undefined;
 
-  constructor(private name: string) {
-
-  }
+  constructor(private name: string) {}
 
   public addProperty(property: ResourceModelProperty) {
     this.resourceModeler.addProperty(property)
