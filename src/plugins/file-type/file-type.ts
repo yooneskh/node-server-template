@@ -50,10 +50,10 @@ export function getFileType(input: Uint8Array | ArrayBuffer | Buffer) {
   if (check([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])) {
 
     const startIndex = 33;
-    const firstImageDataChunkIndex = buffer.findIndex((el, i) => i >= startIndex && buffer[i] === 0x49 && buffer[i + 1] === 0x44 && buffer[i + 2] === 0x41 && buffer[i + 3] === 0x54);
+    const firstImageDataChunkIndex = buffer.findIndex((_el, i) => i >= startIndex && buffer[i] === 0x49 && buffer[i + 1] === 0x44 && buffer[i + 2] === 0x41 && buffer[i + 3] === 0x54);
     const sliced = buffer.subarray(startIndex, firstImageDataChunkIndex);
 
-    if (sliced.findIndex((el, i) => sliced[i] === 0x61 && sliced[i + 1] === 0x63 && sliced[i + 2] === 0x54 && sliced[i + 3] === 0x4C) >= 0) {
+    if (sliced.findIndex((_el, i) => sliced[i] === 0x61 && sliced[i + 1] === 0x63 && sliced[i + 2] === 0x54 && sliced[i + 3] === 0x4C) >= 0) {
       return {
         ext: 'apng',
         mime: 'image/apng'
@@ -405,7 +405,7 @@ export function getFileType(input: Uint8Array | ArrayBuffer | Buffer) {
   // https://github.com/threatstack/libmagic/blob/master/magic/Magdir/matroska
   if (check([0x1A, 0x45, 0xDF, 0xA3])) {
     const sliced = buffer.subarray(4, 4 + 4096);
-    const idPos = sliced.findIndex((el, i, arr) => arr[i] === 0x42 && arr[i + 1] === 0x82);
+    const idPos = sliced.findIndex((_el, i, arr) => arr[i] === 0x42 && arr[i + 1] === 0x82);
 
     if (idPos !== -1) {
       const docTypePos = idPos + 3;

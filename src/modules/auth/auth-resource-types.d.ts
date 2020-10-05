@@ -1,4 +1,4 @@
-import { IUser } from "../modules-interfaces";
+import { IUser } from '../user/user-interfaces';
 
 declare module '../../plugins/resource-maker/resource-router-types' {
 

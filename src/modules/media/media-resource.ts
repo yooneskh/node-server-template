@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { IMediaBase } from '../modules-interfaces';
+import { IMediaBase } from './media-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { Config } from '../../global/config';
@@ -48,7 +48,6 @@ maker.addProperties([
     key: 'owner',
     type: 'string',
     ref: 'User',
-    required: false,
     title: 'صاحب'
   },
   {

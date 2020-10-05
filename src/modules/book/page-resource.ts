@@ -1,4 +1,4 @@
-import { IPageBase } from '../modules-interfaces';
+import { IPageBase } from './book-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
@@ -17,6 +17,7 @@ maker.addProperties([
     key: 'book',
     type: 'string',
     ref: 'Book',
+    required: true,
     title: 'کتاب'
   }
 ]);

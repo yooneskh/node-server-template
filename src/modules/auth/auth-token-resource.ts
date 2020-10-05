@@ -1,4 +1,4 @@
-import { IAuthTokenBase } from '../modules-interfaces';
+import { IAuthTokenBase } from './auth-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 

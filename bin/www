@@ -1,21 +1,20 @@
 'use strict';
-var beginTime = Date.now();
 
-var config = require('../dist/global/config').Config;
+const beginTime = Date.now();
 
-var app = require('../dist/app').default;
+const config = require('../dist/global/config').Config;
+const app = require('../dist/app').default;
 
-var debug = require('debug')('express:server');
-var http = require('http');
+const debug = require('debug')('express:server');
+const http = require('http');
 
-var port = normalizePort(config.port);
+const port = normalizePort(config.port);
 app.set('port', port);
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
-// var socketio = require('socket.io')(server);
-// var socketHandler = require('../dist/socket').default;
-
+// const socketio = require('socket.io')(server);
+// const socketHandler = require('../dist/socket').default;
 // socketio.on('connection', socketHandler);
 
 server.listen(port);
@@ -25,27 +24,19 @@ server.on('listening', onListening);
 
 function normalizePort(val) {
 
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
-  if (isNaN(port)) {
-    return val;
-  }
-
-  if (port >= 0) {
-    return port;
-  }
+  if (isNaN(port)) return val;
+  if (port >= 0) return port;
 
   return false;
 
 }
 
 function onError(error) {
+  if (error.syscall !== 'listen') throw error;
 
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
 
   switch (error.code) {
     case 'EACCES':
@@ -64,11 +55,11 @@ function onError(error) {
 
 function onListening() {
 
-  var addr = server.address();
+  const addr = server.address();
 
-  var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+  const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 
-  var allTime = Date.now() - beginTime;
+  const allTime = Date.now() - beginTime;
 
   debug('Listening on ' + bind + ', Startup time: ' + allTime + 'ms');
   console.log('Listening on ' + bind + ', Startup time: ' + allTime + 'ms');

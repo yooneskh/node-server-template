@@ -1,4 +1,5 @@
-import { ITransferBase, ITransfer, IFactor } from '../modules-interfaces';
+import { ITransferBase, ITransfer } from './accounting-interfaces';
+import { IFactor } from '../shop/shop-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
@@ -71,15 +72,15 @@ maker.addActions([
       request.body.description
     )
   },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  // { template: ResourceActionTemplate.UPDATE },
+  // { template: ResourceActionTemplate.DELETE }
 ]);
 
 export const TransferRouter = maker.getRouter();
 
 
 // charge account factor payment
-YEventManager.on(['Resource', 'Factor', 'Payed'], async (factorId: string, factor: IFactor) => {
+YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, factor: IFactor) => {
   if (factor.meta && factor.meta.bankChargeAccountId) {
     await depositIntoAccount(factor.meta.bankChargeAccountId, factor.meta.chargeAmount);
   }

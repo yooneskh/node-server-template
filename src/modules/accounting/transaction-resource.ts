@@ -1,4 +1,4 @@
-import { ITransactionBase, ITransaction } from '../modules-interfaces';
+import { ITransactionBase, ITransaction } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError } from '../../global/errors';
@@ -40,14 +40,21 @@ maker.addActions([
   { template: ResourceActionTemplate.RETRIEVE },
   {
     template: ResourceActionTemplate.CREATE,
+    permissions: ['admin.transaction.create'],
     dataProvider: async ({ request }) => createTransaction(
       request.body.account,
       request.body.amount,
       request.body.description
     )
   },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  {
+    template: ResourceActionTemplate.UPDATE,
+    permissions: ['admin.transaction.update'],
+  },
+  {
+    template: ResourceActionTemplate.DELETE,
+    permissions: ['admin.transaction.delete'],
+  }
 ]);
 
 export const TransactionRouter = maker.getRouter();

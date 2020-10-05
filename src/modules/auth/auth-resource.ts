@@ -1,4 +1,5 @@
-import { IUser, IRegisterToken } from '../modules-interfaces';
+import { IRegisterToken } from './auth-interfaces';
+import { IUser } from '../user/user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { UserController } from '../user/user-resource';
@@ -12,30 +13,26 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { AuthTokenController } from './auth-token-resource';
 import { RegisterTokenController } from './register-token-resource';
 
-export function hasPermission(allPermissions: string[], neededPermissions: string[]): boolean {
+function matchPermission(permit: string, permission: string): boolean {
 
-  for (const permission of neededPermissions) {
+  const permitParts = permit.split('.');
+  const permissionParts = permission.split('.');
 
-    let isPermitted = false;
-
-    for (const permit of allPermissions) {
-
-      const regexText = '^' + permit.replace(/\./g, '\\.').replace(/\*/g, '.*') + '$';
-      const regexp = new RegExp(regexText);
-
-      if (regexp.test(permission)) {
-        isPermitted = true;
-        break;
-      }
-
-    }
-
-    if (!isPermitted) return false;
-
+  for (let i = 0, len = permitParts.length; i < len; i++) {
+    if (permitParts[i] === '*') return  true;
+    if (permitParts[i] !== permissionParts[i]) return false;
   }
 
-  return true;
+  return permitParts.length === permissionParts.length;
 
+}
+
+function hasPermission(allPermissions: string[], permission: string): boolean {
+  return allPermissions.some(permit => matchPermission(permit, permission));
+}
+
+export function hasPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+  return neededPermissions.every(permission => hasPermission(allPermissions, permission));
 }
 
 
@@ -240,7 +237,7 @@ maker.addAction({
       }
     });
 
-    YEventManager.emit(['Resource', 'User', 'LoggedOut']); // TODO: check if needed to give user
+    YEventManager.emit(['Resource', 'User', 'LoggedOut'], authToken.user);
     return true;
 
   }
@@ -303,7 +300,7 @@ ResourceRouter.addPreProcessor(async context => {
 
   if (context.token) context.user = await getUserByToken(token);
 
-  if (action.permissions && (!context.user || !context.user.permissions || !hasPermission(context.user.permissions ?? [], action.permissions)) ) {
+  if (action.permissions && (!context.user || !context.user.permissions || !hasPermissions(context.user.permissions ?? [], action.permissions)) ) {
     throw new ForbiddenAccessError('forbidden access');
   }
 

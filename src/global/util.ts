@@ -1,6 +1,4 @@
-import { InvalidRequestError } from './errors';
 import { randomBytes, createHash } from 'crypto';
-import { ResourceModelProperty } from '../plugins/resource-maker/resource-model-types';
 
 export function simplePascalize(texts: string[]): string {
   return texts
@@ -29,46 +27,5 @@ export function generateRandomNumericCode(length: number) {
   }
 
   return res;
-
-}
-
-const addedProperties = {
-  _id: 'string',
-  createdAt: 'number',
-  updatedAt: 'number'
-};
-
-// tslint:disable-next-line: no-any
-export function validatePropertyKeys(payload: any, properties: ResourceModelProperty[], twoWayCheck = false) {
-
-  for (const key in payload) {
-
-    if (key in addedProperties) continue;
-
-    const property = properties.find(p => p.key === key);
-
-    if (!property) throw new InvalidRequestError('payload key invalid: ' + key);
-
-    if (property.languages) {
-
-      if (typeof payload[key] !== 'object') throw new InvalidRequestError(`payload ${key} is not multi language`);
-
-      for (const languageKey in payload[key]) {
-        if (!(languageKey in property.languages)) {
-          throw new InvalidRequestError(`language key '${languageKey}' is invalid!`);
-        }
-      }
-
-    }
-
-  }
-
-  if (twoWayCheck) {
-    for (const requiredProperty of properties.filter(property => property.required)) {
-      if (!(requiredProperty.key in payload)) {
-        throw new InvalidRequestError(`propery '${requiredProperty.key}' is required!`);
-      }
-    }
-  }
 
 }

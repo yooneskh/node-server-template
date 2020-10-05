@@ -28,7 +28,7 @@ export class RouteBypassedError extends HandleableError {
   public code = 1006;
 }
 
-export function errorHandler(error: Error, request: Request, response: Response, next: Function) {
+export function errorHandler(error: Error, _request: Request, response: Response, _next: Function) {
 
   console.error('Error ::', error.message);
 

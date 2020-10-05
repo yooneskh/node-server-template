@@ -1,4 +1,4 @@
-import { IAccountBase } from '../modules-interfaces';
+import { IAccountBase } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
@@ -131,7 +131,6 @@ maker.addActions([
       await factor.save();
 
       const payticket = await createPayTicket(factor._id, 'zarinpal');
-
       return payticket.payUrl;
 
     }
