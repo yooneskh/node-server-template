@@ -149,6 +149,7 @@ export class ResourceRouter<T extends IResource> {
         request,
         response,
         next,
+        bag: {},
         payload: request.body,
         resourceId: request.params.resourceId
       });
