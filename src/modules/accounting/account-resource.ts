@@ -128,6 +128,7 @@ maker.addActions([
       });
 
       factor.closed = true;
+      factor.closedAt = Date.now();
       await factor.save();
 
       const payticket = await createPayTicket(factor._id, 'zarinpal');

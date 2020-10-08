@@ -30,10 +30,22 @@ maker.addProperties([
     title: 'بسته شده'
   },
   {
+    key: 'closedAt',
+    type: 'number',
+    default: 0,
+    title: 'تاریخ بسته شدن'
+  },
+  {
     key: 'payed',
     type: 'boolean',
     default: false,
     title: 'پرداخت شده'
+  },
+  {
+    key: 'payedAt',
+    type: 'number',
+    default: 0,
+    title: 'تاریخ پرداخت'
   },
   {
     key: 'payticket',

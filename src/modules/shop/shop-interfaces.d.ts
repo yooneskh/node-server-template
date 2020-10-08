@@ -5,7 +5,9 @@ export interface IFactorBase extends IResource {
   user: string;
   title: string;
   closed: boolean;
+  closedAt: number;
   payed: boolean;
+  payedAt: number;
   payticket?: string;
   meta: any;
 } export interface IFactor extends IFactorBase, Document {}
@@ -25,6 +27,7 @@ export interface IPayTicketBase extends IResource {
   resolved: boolean;
   resolvedAt: number;
   payed: boolean;
+  payedAt: number;
   meta: any;
 } export interface IPayTicket extends IPayTicketBase, Document {}
 

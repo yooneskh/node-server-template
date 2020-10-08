@@ -70,6 +70,12 @@ maker.addProperties([
     title: 'پرداخت شده'
   },
   {
+    key: 'payedAt',
+    type: 'number',
+    default: 0,
+    title: 'تاریخ پرداخت'
+  },
+  {
     key: 'meta',
     type: 'object',
     default: {},
@@ -127,6 +133,7 @@ maker.addActions([
           resourceId: payTicket.factor,
           payload: {
             payed: true,
+            payedAt: Date.now(),
             payticket: payTicket._id
           }
         });
@@ -244,12 +251,19 @@ gatewayHandlers.push({
       }); return false;
     }
 
-    payTicket.meta.refId = RefID;
-    payTicket.resolved = true;
-    payTicket.payed = true;
-    payTicket.resolvedAt = Date.now();
-    payTicket.updatedAt = Date.now();
-    await payTicket.save();
+    await PayTicketController.edit({
+      resourceId: payTicket._id,
+      payload: {
+        meta: {
+          ...payTicket.meta,
+          refId: RefID
+        },
+        resolved: true,
+        resolvedAt: Date.now(),
+        payed: true,
+        payedAt: Date.now()
+      }
+    });
 
     return true;
 
