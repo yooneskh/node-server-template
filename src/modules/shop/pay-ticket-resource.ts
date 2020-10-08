@@ -98,7 +98,7 @@ maker.addActions([
     signal: ['Route', 'PayTicket', 'Verify'],
     method: ResourceActionMethod.GET,
     path: '/:resourceId/verify',
-    stateValidator: async ({ resourceId }) => {
+    stateValidator: async ({ resourceId, bag }) => {
 
       const payTicket = await PayTicketController.retrieve({ resourceId });
       if (payTicket.resolved) throw new InvalidStateError('paytcket is resolved');
@@ -107,11 +107,13 @@ maker.addActions([
       if (!factor.closed) throw new InvalidStateError('factor is not closed');
       if (factor.payed) throw new InvalidStateError('factor is already payed');
 
+      bag.payTicket = payTicket;
+
     },
-    dataProvider: async ({ resourceId, response }) => {
+    dataProvider: async ({ response, bag }) => {
       try {
 
-        const payTicket = await PayTicketController.retrieve({ resourceId });
+        const payTicket = bag.payTicket as IPayTicket;
 
         const handler = gatewayHandlers.find(h => h.gateway === payTicket.gateway);
         if (!handler) throw new InvalidRequestError('invalid gateway');
