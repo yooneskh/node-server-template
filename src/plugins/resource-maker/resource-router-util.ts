@@ -37,7 +37,7 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
 
 }
 
-function extractSortQueryObject(queryString: string): Record<string, number> {
+export function extractSortQueryObject(queryString: string): Record<string, number> {
 
   const result: Record<string, number> = {};
 
@@ -51,7 +51,7 @@ function extractSortQueryObject(queryString: string): Record<string, number> {
 
 }
 
-function extractFilterQueryObject(queryString: string) {
+export function extractFilterQueryObject(queryString: string) {
 
   // tslint:disable-next-line: no-any
   const result: any = {};
@@ -86,7 +86,7 @@ function extractFilterQueryObject(queryString: string) {
 
 }
 
-function extractIncludeQueryObject(queryString: string): Record<string, string> {
+export function extractIncludeQueryObject(queryString: string): Record<string, string> {
   return extractQueryObject(queryString, true);
 }
 

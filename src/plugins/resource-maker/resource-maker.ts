@@ -24,6 +24,10 @@ export class ResourceMaker<T extends IResource> {
     properties.forEach(property => this.addProperty(property) );
   }
 
+  public getProperties(): ResourceModelProperty[] {
+    return this.resourceModeler.getProperties();
+  }
+
   public getModel() {
     return this.resourceModeler.getModel();
   }
