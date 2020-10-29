@@ -67,6 +67,9 @@ app.use('/api/v1/pages', PageRouter);
 import { AuthorRouter } from './modules/author/author-resource';
 app.use('/api/v1/authors', AuthorRouter);
 
+import { ApplicationSettingRouter } from './modules/settings/application-settings';
+app.use('/api/v1/settings/application', ApplicationSettingRouter);
+
 
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
