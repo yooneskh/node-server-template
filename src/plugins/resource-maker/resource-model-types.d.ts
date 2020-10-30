@@ -22,6 +22,7 @@ export interface ResourceModelProperty {
   relationTargetModel?: string;
   serieBase?: any;
   width?: number;
+  itemWidth?: number;
 }
 
 export interface IResource {
