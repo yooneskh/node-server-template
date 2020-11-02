@@ -1,7 +1,7 @@
 import { SettingResourceMaker } from '../../plugins/setting-resource-maker/setting-resource-maker';
-import { IApplicationSetting } from './settings-interfaces';
+import { IApplicationSettingBase } from './settings-interfaces';
 
-const maker = new SettingResourceMaker<IApplicationSetting>('ApplicationSetting');
+const maker = new SettingResourceMaker<IApplicationSettingBase>('ApplicationSetting');
 
 maker.addProperties([
   {
