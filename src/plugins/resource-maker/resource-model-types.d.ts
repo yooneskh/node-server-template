@@ -23,6 +23,7 @@ export interface ResourceModelProperty {
   serieBase?: any;
   width?: number;
   itemWidth?: number;
+  disabled?: boolean;
 }
 
 export interface IResource {
