@@ -150,6 +150,7 @@ export class ResourceRouter<T extends IResource> {
         response,
         next,
         bag: {},
+        version: request.headers['x-version'] ?? '1',
         payload: request.body,
         resourceId: request.params.resourceId
       });

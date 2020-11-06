@@ -8,6 +8,7 @@ export interface ResourceRouterContext {
   next: Function;
   payload: any;
   bag: any;
+  version: string;
   data?: any;
   resourceId?: string;
 }
