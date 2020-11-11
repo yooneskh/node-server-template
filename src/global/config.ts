@@ -10,14 +10,14 @@ export const Config = {
     staticVerificationCode: '111111'
   },
   payment: {
-    callbackUrlBase: 'https://api.yooneskh.ir/api/v1/paytickets',
+    callbackUrlBase: 'https://api.yooneskh.ir/api/paytickets',
     informUrlBase: 'https://yooneskh.ir/payment',
     zarinpal: {
       email: 'yooneskh@gmail.com',
       phone: '09364524952'
     },
     response: {
-      title: 'مرکز طب | نتیجه پرداخت',
+      title: 'اپلیکیشن | نتیجه پرداخت',
       callback: 'https://yooneskh.ir',
       callbackSupport: 'https://yooneskh.ir'
     }
