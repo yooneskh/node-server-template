@@ -12,6 +12,7 @@ import { ResourceRouter } from '../../plugins/resource-maker/resource-router';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { AuthTokenController } from './auth-token-resource';
 import { RegisterTokenController } from './register-token-resource';
+import { IMedia } from '../media/media-interfaces';
 
 function matchPermission(permit: string, permission: string): boolean {
 
@@ -251,7 +252,7 @@ maker.addAction({
   async dataProvider({ user }) {
 
     if (user!.profile) {
-      user!.profile = await MediaController.retrieve({ resourceId: user!.profile }) as unknown as string;
+      (user!.profile as unknown as IMedia) = await MediaController.retrieve({ resourceId: user!.profile });
     }
 
     return user;
