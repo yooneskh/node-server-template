@@ -19,4 +19,7 @@ export interface ResourceRouterAction {
   method?: ResourceActionMethod;
   signal?: string[];
   dataProvider?: (context: ResourceRouterContext) => Promise<any>;
+  versionedDataproviders?: {
+    [version: string]: (context: ResourceRouterContext) => Promise<any>
+  };
 }

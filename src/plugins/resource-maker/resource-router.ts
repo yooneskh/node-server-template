@@ -1,6 +1,6 @@
 import { ResourceRouterAction, ResourceRouterContext } from './resource-router-types';
 import { Router, Request, Response } from 'express';
-import { ServerError } from '../../global/errors';
+import { InvalidRequestError, ServerError } from '../../global/errors';
 import { ResourceActionMethod } from './resource-maker-router-enums';
 import { YEventManager } from '../event-manager/event-manager';
 import { ResourceModelProperty, IResource } from './resource-model-types';
@@ -116,7 +116,7 @@ export class ResourceRouter<T extends IResource> {
   private applyActionOnRouter(action: ResourceRouterAction) {
     if (!action.path) throw new ServerError('action does not have path');
     if (!('method' in action)) throw new ServerError('action does not have method');
-    if (!action.dataProvider) throw new ServerError('action does not have dataProvider');
+    if (!action.dataProvider && !action.versionedDataproviders) throw new ServerError('action does not have dataProvider');
     if (!action.signal) throw new ServerError('action does not have signal');
     if (this.router === undefined) throw new ServerError('router is not initialized');
 
@@ -125,7 +125,15 @@ export class ResourceRouter<T extends IResource> {
 
         for (const processor of ResourceRouter.preProcessors) await processor(context);
 
-        context.data = await action.dataProvider?.(context);
+        if (action.versionedDataproviders?.[context.version]) {
+          context.data = await action.versionedDataproviders[context.version](context);
+        }
+        else if (action.dataProvider) {
+          context.data = await action.dataProvider(context);
+        }
+        else {
+          throw new InvalidRequestError('this version of api is not implemented');
+        }
 
         for (const processor of ResourceRouter.preResponseProcessors) await processor(context);
 
