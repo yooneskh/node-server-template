@@ -92,7 +92,7 @@ export class ResourceRelationController<T extends IResource> {
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
     validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
-    const query = this.model.find({ ...context.filters, [this.sourcePropertyName]: context.sourceId })
+    const query = this.model.find(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId}))
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
@@ -116,7 +116,7 @@ export class ResourceRelationController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
 
-    const result = await this.model.countDocuments({ ...context.filters, [this.sourcePropertyName]: context.sourceId });
+    const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId }));
 
     YEventManager.emit(
       ['Relation', this.relationName, 'Counted'],
@@ -132,7 +132,7 @@ export class ResourceRelationController<T extends IResource> {
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
     validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
-    const query = this.model.find({ ...context.filters, [this.targetPropertyName]: context.targetId })
+    const query = this.model.find(Object.assign({}, context.filters, { [this.targetPropertyName]: context.targetId }))
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
@@ -156,7 +156,7 @@ export class ResourceRelationController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
 
-    const result = await this.model.countDocuments({ ...context.filters, [this.targetPropertyName]: context.targetId });
+    const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.targetPropertyName]: context.targetId }));
 
     YEventManager.emit(
       ['Relation', this.relationName, 'Counted'],
@@ -172,7 +172,7 @@ export class ResourceRelationController<T extends IResource> {
     validatePropertyKeys(context.filters ?? {}, this.validationProperties);
     validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
 
-    const query = this.model.find({ ...context.filters, [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId })
+    const query = this.model.find(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId }))
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
@@ -196,11 +196,7 @@ export class ResourceRelationController<T extends IResource> {
 
     validatePropertyKeys(context.filters ?? {}, this.relation.properties || []);
 
-    const result = await this.model.countDocuments({
-      ...context.filters,
-      [this.sourcePropertyName]: context.sourceId,
-      [this.targetPropertyName]: context.targetId
-    });
+    const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId }));
 
     YEventManager.emit(
       ['Relation', this.relationName, 'Counted'],
