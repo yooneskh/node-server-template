@@ -1,5 +1,6 @@
 import { ResourceModelProperty } from './resource-model-types';
 import { ServerError } from '../../global/errors';
+import { Schema } from 'mongoose';
 
 // tslint:disable: no-any
 export function makeSchemaOptions(properties: ResourceModelProperty[]) {
@@ -64,6 +65,7 @@ function mapPropertyTypeToMongooseType(propertyType: string): any {
     case 'number': return Number;
     case 'boolean': return Boolean;
     case 'object': return Object;
+    case 'any': return Schema.Types.Mixed;
     case 'series': throw new ServerError('code should not reach here');
     default: throw new ServerError(`resource property type unknown: ${propertyType}`);
   }
