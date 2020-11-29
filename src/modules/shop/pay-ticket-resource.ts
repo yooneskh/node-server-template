@@ -189,8 +189,10 @@ export async function createPayTicket(factorId: string, gateway: string) {
 
   await handler.initTicket(payTicket);
 
-  YEventManager.emit(['Resource', 'PayTicket', 'Inited'], payTicket._id, payTicket);
-  return payTicket;
+  const filledPayticket = await PayTicketController.retrieve({ resourceId: payTicket._id });
+
+  YEventManager.emit(['Resource', 'PayTicket', 'Inited'], filledPayticket._id, filledPayticket);
+  return filledPayticket;
 
 }
 
