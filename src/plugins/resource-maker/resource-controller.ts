@@ -148,7 +148,7 @@ export class ResourceController<T extends IResource> {
       }
     }
 
-    const model = await this.model.findByIdAndUpdate(context.resourceId, context.query);
+    const model = await this.model.findByIdAndUpdate(context.resourceId, context.query, { new: true });
     if (!model) throw new NotFoundError('resourceId not found')
 
     YEventManager.emit(['Resource', this.name, 'Updated'], model._id, model);
