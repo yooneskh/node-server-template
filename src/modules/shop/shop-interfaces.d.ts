@@ -22,6 +22,7 @@ export interface IProductOrderBase extends IResource {
 export interface IPayTicketBase extends IResource {
   factor: string;
   gateway: string;
+  returnUrl?: string;
   payUrl?: string;
   amount: number;
   resolved: boolean;

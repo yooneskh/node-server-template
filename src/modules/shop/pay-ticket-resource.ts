@@ -40,6 +40,11 @@ maker.addProperties([
     titleable: true
   },
   {
+    key: 'returnUrl',
+    type: 'string',
+    title: 'لینک بازگشت'
+  },
+  {
     key: 'payUrl',
     type: 'string',
     title: 'لینک پرداخت'
@@ -91,7 +96,7 @@ maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },
   { template: ResourceActionTemplate.RETRIEVE },
-  {
+  { // create
     template: ResourceActionTemplate.CREATE,
     dataProvider: async ({ payload }) => createPayTicket(payload.factor, payload.gateway),
     responsePreprocessor: async ({ data }) => {
@@ -100,7 +105,7 @@ maker.addActions([
   },
   { template: ResourceActionTemplate.UPDATE },
   { template: ResourceActionTemplate.DELETE },
-  {
+  { // verify
     signal: ['Route', 'PayTicket', 'Verify'],
     method: ResourceActionMethod.GET,
     path: '/:resourceId/verify',
@@ -145,7 +150,7 @@ maker.addActions([
           Config.payment.response.title,
           `${payTicket.amount.toLocaleString()} تومان`,
           factor.title,
-          Config.payment.response.callback
+          payTicket.returnUrl || Config.payment.response.callback
         ));
 
         return DISMISS_DATA_PROVIDER;
@@ -170,7 +175,7 @@ maker.addActions([
 export const PayTicketRouter = maker.getRouter();
 
 
-export async function createPayTicket(factorId: string, gateway: string) {
+export async function createPayTicket(factorId: string, gateway: string, returnUrl?: string) {
 
   const factor = await FactorController.retrieve({ resourceId: factorId });
   if (!factor.closed) throw new InvalidStateError('factor must be closed');
@@ -183,7 +188,8 @@ export async function createPayTicket(factorId: string, gateway: string) {
     payload: {
       factor: factorId,
       gateway,
-      amount: await calculateFactorAmount(factorId)
+      amount: await calculateFactorAmount(factorId),
+      returnUrl
     }
   });
 
