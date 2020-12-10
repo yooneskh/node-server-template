@@ -15,7 +15,6 @@ maker.addProperties([
   {
     key: 'title',
     type: 'string',
-    required: true,
     title: 'عنوان',
     titleable: true
   },

@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 import { IResource } from '../../plugins/resource-maker/resource-model-types';
 
 export interface IAccountBase extends IResource {
-  title: string;
+  title?: string;
   user: string;
   balance: number;
   acceptsInput: boolean;
