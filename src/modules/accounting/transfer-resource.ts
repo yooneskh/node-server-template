@@ -3,7 +3,7 @@ import { IFactor } from '../shop/shop-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
-import { AccountController, getAccountForUser, getGlobalSource, getGlobalDrain } from './account-resource';
+import { AccountController, getAccountForUser, getGlobalSourceAccount, getGlobalDrainAccount } from './account-resource';
 import { createTransaction } from './transaction-resource';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
@@ -131,7 +131,7 @@ export async function depositIntoUserAccount(userId: string, amount: number, des
 export async function depositIntoAccount(accountId: string, amount: number, description?: string) {
   if (!accountId || !amount || amount < 0) throw new InvalidRequestError('invalid account or amount');
 
-  const sourceAccount = await getGlobalSource();
+  const sourceAccount = await getGlobalSourceAccount();
   return createTransfer(sourceAccount._id, accountId, amount, description || 'واریز به حساب');
 
 }
@@ -144,7 +144,7 @@ export async function withdrawFromUserAccount(userId: string, amount: number, de
 export async function withdrawFromAccount(accountId: string, amount: number, description?: string) {
   if (!accountId || !amount || amount < 0) throw new InvalidRequestError('invalid account or amount');
 
-  const drainAccount = await getGlobalDrain();
+  const drainAccount = await getGlobalDrainAccount();
   return createTransfer(accountId, drainAccount._id, amount, description || 'برداشت از حساب');
 
 }

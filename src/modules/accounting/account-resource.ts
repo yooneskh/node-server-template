@@ -153,13 +153,13 @@ YEventManager.on(['Resource', 'User', 'Created'], async (userId: string) => {
   });
 });
 
-export async function getGlobalSource() {
+export async function getGlobalSourceAccount() {
   return AccountController.findOne({
     filters: { 'meta.globalSource': true }
   });
 }
 
-export async function getGlobalDrain() {
+export async function getGlobalDrainAccount() {
   return AccountController.findOne({
     filters: { 'meta.globalDrain': true }
   });
@@ -175,7 +175,7 @@ export async function getAccountForUser(userId: string) {
 (async () => {
 
   try {
-    await getGlobalSource();
+    await getGlobalSourceAccount();
   }
   catch {
     await AccountController.create({
@@ -194,7 +194,7 @@ export async function getAccountForUser(userId: string) {
   }
 
   try {
-    await getGlobalDrain();
+    await getGlobalDrainAccount();
   }
   catch {
     await AccountController.create({

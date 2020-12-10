@@ -9,6 +9,7 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { createErrorResultPage } from './payment-result-error';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
 import { createSuccessResultPage } from './payment-result-success';
+import { depositIntoUserAccount } from '../accounting/transfer-resource';
 
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
 
@@ -142,6 +143,8 @@ maker.addActions([
             payticket: payTicket._id
           }
         });
+
+        await depositIntoUserAccount(factor.user, payTicket.amount);
 
         YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
         YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
