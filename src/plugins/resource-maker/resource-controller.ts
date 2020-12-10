@@ -53,7 +53,6 @@ export class ResourceController<T extends IResource> {
   }
 
   public async retrieve(context: ResourceControllerContext<T>): Promise<T & Document> {
-
     if (!context.resourceId) throw new InvalidRequestError('no resource id specified');
 
     const query = this.model.findById(context.resourceId).select(context.selects);
@@ -134,7 +133,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async editQuery(context: ResourceControllerContext<T>): Promise<void> {
+  public async editQuery(context: ResourceControllerContext<T>): Promise<T & Document> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     if ('$set' in context.query) {
@@ -149,10 +148,11 @@ export class ResourceController<T extends IResource> {
       }
     }
 
-    await this.model.findByIdAndUpdate(context.resourceId, context.query);
+    const model = await this.model.findByIdAndUpdate(context.resourceId, context.query);
+    if (!model) throw new NotFoundError('resourceId not found')
 
-    // TODO: check if necessary to retrieve resource
-    YEventManager.emit(['Resource', this.name, 'Updated'], context.resourceId, await this.retrieve({ resourceId: context.resourceId }));
+    YEventManager.emit(['Resource', this.name, 'Updated'], model._id, model);
+    return model;
 
   }
 
@@ -160,7 +160,7 @@ export class ResourceController<T extends IResource> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     const resource = await this.model.findById(context.resourceId);
-    if (!resource) throw new InvalidRequestError(`resource not found: ${this.name}@${context.resourceId}`);
+    if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${context.resourceId}`);
 
     const resourceClone = JSON.parse(JSON.stringify(resource));
     await resource.remove();
