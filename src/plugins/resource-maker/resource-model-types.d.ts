@@ -24,6 +24,7 @@ export interface ResourceModelProperty {
   width?: number;
   itemWidth?: number;
   disabled?: boolean;
+  readonly?: boolean;
 }
 
 export interface IResource {

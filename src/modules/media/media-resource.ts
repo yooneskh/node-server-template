@@ -58,7 +58,9 @@ maker.addProperties([
   {
     key: 'path',
     type: 'string',
-    hidden: true
+    title: 'آدرس',
+    hideInTable: true,
+    readonly: true
   }
 ]);
 
