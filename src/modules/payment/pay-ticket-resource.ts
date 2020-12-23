@@ -1,9 +1,9 @@
 import { Config } from '../../global/config';
-import { IPayTicket, IPayTicketBase } from './shop-interfaces';
+import { IPayTicket, IPayTicketBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
-import { FactorController, calculateFactorAmount } from './factor-resource';
+import { FactorController } from './factor-resource';
 import ZarinpalCheckout from 'zarinpal-checkout';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { createErrorResultPage } from './payment-result-error';
@@ -116,7 +116,6 @@ maker.addActions([
       if (payTicket.resolved) throw new InvalidStateError('paytcket is resolved');
 
       const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
-      if (!factor.closed) throw new InvalidStateError('factor is not closed');
       if (factor.payed) throw new InvalidStateError('factor is already payed');
 
       bag.payTicket = payTicket;
@@ -140,11 +139,11 @@ maker.addActions([
           payload: {
             payed: true,
             payedAt: Date.now(),
-            payticket: payTicket._id
+            paymentPayticket: payTicket._id
           }
         });
 
-        await depositIntoUserAccount(factor.user, payTicket.amount);
+        await depositIntoUserAccount(factor.user, factor.amount);
 
         YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
         YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
@@ -152,7 +151,7 @@ maker.addActions([
         response.send(createSuccessResultPage(
           Config.payment.response.title,
           `${payTicket.amount.toLocaleString()} تومان`,
-          factor.title,
+          factor.name,
           payTicket.returnUrl || Config.payment.response.callback
         ));
 
@@ -181,7 +180,6 @@ export const PayTicketRouter = maker.getRouter();
 export async function createPayTicket(factorId: string, gateway: string, returnUrl?: string) {
 
   const factor = await FactorController.retrieve({ resourceId: factorId });
-  if (!factor.closed) throw new InvalidStateError('factor must be closed');
   if (factor.payed) throw new InvalidStateError('factor is already payed');
 
   const handler = gatewayHandlers.find(h => h.gateway === gateway);
@@ -191,7 +189,7 @@ export async function createPayTicket(factorId: string, gateway: string, returnU
     payload: {
       factor: factorId,
       gateway,
-      amount: await calculateFactorAmount(factorId),
+      amount: factor.amount,
       returnUrl
     }
   });
@@ -213,7 +211,7 @@ gatewayHandlers.push({
 
     const amount = payTicket.amount;
     const callBackUrl = `${Config.payment.callbackUrlBase}/${payTicket._id}/verify`;
-    const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).title;
+    const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).name;
     const email = Config.payment.zarinpal.email;
     const mobile = Config.payment.zarinpal.phone;
 

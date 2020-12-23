@@ -34,13 +34,10 @@ app.use('/api/media', MediaRouter);
 import { UpdateRouter } from './modules/update/update-resource';
 app.use('/api/updates', UpdateRouter);
 
-import { ProductRouter } from './modules/shop/product-resource';
-app.use('/api/products', ProductRouter);
-
-import { FactorRouter } from './modules/shop/factor-resource';
+import { FactorRouter } from './modules/payment/factor-resource';
 app.use('/api/factors', FactorRouter);
-
-import { PayTicketRouter } from './modules/shop/pay-ticket-resource';
+``
+import { PayTicketRouter } from './modules/payment/pay-ticket-resource';
 app.use('/api/paytickets', PayTicketRouter);
 
 import { AccountRouter } from './modules/accounting/account-resource';

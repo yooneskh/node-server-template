@@ -51,7 +51,7 @@ export const createSuccessResultPage = (title: string, heading: string, reason: 
     <div class="caption">جهت</div>
     <h2>${reason}</h2>
     <p>با موفقیت پرداخت شد.</p>
-    <a href="${callback}">بازگشت</a>
+    <a href="${callback}">مشاهده</a>
   </div>
 </body>
 </html>`;

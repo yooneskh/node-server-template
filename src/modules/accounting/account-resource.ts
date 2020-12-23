@@ -1,12 +1,10 @@
 import { IAccountBase } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
+import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
-import { ForbiddenAccessError, InvalidRequestError, InvalidStateError } from '../../global/errors';
-import { ProductController } from '../shop/product-resource';
-import { FactorController, ProductOrderController } from '../shop/factor-resource';
-import { createPayTicket } from '../shop/pay-ticket-resource';
+import { InvalidStateError } from '../../global/errors';
 import { UserController } from '../user/user-resource';
+import { hasPermissions } from '../auth/auth-resource';
 
 
 const maker = new ResourceMaker<IAccountBase>('Account');
@@ -65,7 +63,14 @@ export const AccountController = maker.getController();
 maker.addActions([
   { template: ResourceActionTemplate.LIST },
   { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
+  { // retrieve
+    template: ResourceActionTemplate.RETRIEVE,
+    permissionFunction: async ({ user, resourceId }) => {
+      if (hasPermissions(user?.permissions ?? [], ['admin.account.retrieve'])) return true;
+      const account = await AccountController.retrieve({ resourceId });
+      return account.user === String(user?._id);
+    }
+  },
   // { template: ResourceActionTemplate.CREATE },
   // { template: ResourceActionTemplate.UPDATE },
   {
@@ -74,64 +79,8 @@ maker.addActions([
 
       const account = await AccountController.retrieve({ resourceId });
 
-      const usersCount = await UserController.count({
-        filters: {
-          _id: account.user
-        }
-      });
-
+      const usersCount = await UserController.count({ filters: { _id: account.user } });
       if (usersCount !== 0) throw new InvalidStateError('there is a user for this account');
-
-    }
-  },
-  {
-    method: ResourceActionMethod.POST,
-    path: '/charge',
-    signal: ['Route', 'Account', 'Charge'],
-    payloadValidator: async ({ payload }) => {
-      if (!(payload.balance > 0)) throw new InvalidRequestError('wrong charge balance');
-    },
-    permissionFunction: async ({ user }) => !!user,
-    dataProvider: async ({ user, payload }) => {
-      if (!user) throw new ForbiddenAccessError();
-
-      const account = await AccountController.findOne({
-        filters: { user: user._id }
-      });
-
-      const product = await ProductController.create({
-        payload: {
-          title: `شارژ اکانت برای ${user.name}`,
-          price: payload.amount
-        }
-      });
-
-      const factor = await FactorController.create({
-        payload: {
-          user: user._id,
-          title: `شارژ اکانت برای ${user.name}`,
-          meta: {
-            bankChargeAccountId: account._id,
-            chargeAmount: payload.amount
-          }
-        }
-      });
-
-      await ProductOrderController.addRelation({
-        sourceId: factor._id,
-        targetId: product._id,
-        payload: {
-          orderPrice: product.price,
-          count: 1
-        }
-      });
-
-      factor.closed = true;
-      factor.closedAt = Date.now();
-      await factor.save();
-
-      const payticket = await createPayTicket(factor._id, 'zarinpal');
-      return payticket.payUrl;
 
     }
   }
