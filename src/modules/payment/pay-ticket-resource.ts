@@ -143,7 +143,9 @@ maker.addActions([
           }
         });
 
-        await depositIntoUserAccount(factor.user, factor.amount);
+        if (factor.user) {
+          await depositIntoUserAccount(factor.user, factor.amount);
+        }
 
         YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
         YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);

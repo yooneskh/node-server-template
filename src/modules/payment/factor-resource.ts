@@ -10,7 +10,6 @@ maker.addProperties([
   {
     key: 'user',
     type: 'string',
-    required: true,
     ref: 'User',
     title: 'کاربر'
   },
