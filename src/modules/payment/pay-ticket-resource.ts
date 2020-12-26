@@ -214,15 +214,11 @@ gatewayHandlers.push({
     const amount = payTicket.amount;
     const callBackUrl = `${Config.payment.callbackUrlBase}/${payTicket._id}/verify`;
     const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).name;
-    const email = Config.payment.zarinpal.email;
-    const mobile = Config.payment.zarinpal.phone;
 
     const { status, url, authority } = await Zarinpal.PaymentRequest({
       Amount: String(amount),
       CallbackURL: callBackUrl,
-      Description: description,
-      Email: email,
-      Mobile: mobile
+      Description: description
     });
 
     if (status !== 100) throw new ServerError('zarinpal gateway error');

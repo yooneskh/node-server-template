@@ -12,10 +12,6 @@ export const Config = {
   payment: {
     callbackUrlBase: 'https://api.yooneskh.ir/api/paytickets',
     informUrlBase: 'https://yooneskh.ir/payment',
-    zarinpal: {
-      email: 'yooneskh@gmail.com',
-      phone: '09364524952'
-    },
     response: {
       title: 'اپلیکیشن | نتیجه پرداخت',
       callback: 'https://yooneskh.ir',
