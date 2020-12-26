@@ -8,5 +8,6 @@ const DB_URI = `mongodb://${Config.database.host}:${Config.database.port}/${Conf
 connect(DB_URI, {
   useNewUrlParser: true,
   useCreateIndex: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useFindAndModify: false
 });
