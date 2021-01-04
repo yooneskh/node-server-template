@@ -67,12 +67,12 @@ export const UpdateController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
-  { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.update.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.update.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.update.retrieve'] },
+  { template: ResourceActionTemplate.CREATE, permissions: ['admin.update.create'] },
+  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.update.update'] },
+  { template: ResourceActionTemplate.DELETE, permissions: ['admin.update.delete'] }
 ]);
 
 export const UpdateRouter = maker.getRouter();

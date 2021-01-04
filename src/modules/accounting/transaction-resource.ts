@@ -35,16 +35,16 @@ export const TransactionController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.transaction.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.transaction.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.transaction.retrieve'] },
   {
     template: ResourceActionTemplate.CREATE,
     permissions: ['admin.transaction.create'],
-    dataProvider: async ({ request }) => createTransaction(
-      request.body.account,
-      request.body.amount,
-      request.body.description
+    dataProvider: async ({ payload }) => createTransaction(
+      payload.account,
+      payload.amount,
+      payload.description
     )
   },
   {

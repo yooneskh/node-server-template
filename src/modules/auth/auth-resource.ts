@@ -260,6 +260,19 @@ maker.addAction({
   }
 });
 
+maker.addAction({
+  signal: ['Route', 'Auth', 'IdentityUpdate'],
+  method: ResourceActionMethod.PATCH,
+  path: '/identity',
+  permissionFunction: async ({ user }) => !!user,
+  async dataProvider({ payload, user }) {
+    return UserController.edit({
+      resourceId: user!!._id,
+      payload
+    });
+  }
+});
+
 export const AuthRouter = maker.getRouter();
 
 

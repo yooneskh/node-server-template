@@ -57,12 +57,13 @@ export const FactorModel      = maker.getModel();
 export const FactorController = maker.getController();
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
-  { template: ResourceActionTemplate.CREATE },
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.factor.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.factor.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.factor.retrieve'] },
+  { template: ResourceActionTemplate.CREATE, permissions: ['admin.factor.create'] },
   {
     template: ResourceActionTemplate.UPDATE,
+    permissions: ['admin.factor.update'],
     stateValidator: async ({ resourceId }) => {
       const factor = await FactorController.retrieve({ resourceId });
       if (factor.payed) throw new InvalidStateError('factor is payed');
@@ -70,6 +71,7 @@ maker.addActions([
   },
   {
     template: ResourceActionTemplate.DELETE,
+    permissions: ['admin.factor.delete'],
     stateValidator: async ({ resourceId }) => {
       const factor = await FactorController.retrieve({ resourceId });
       if (factor.payed) throw new InvalidStateError('factor is payed');

@@ -61,8 +61,8 @@ export const AccountController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.account.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.account.list-count'] },
   { // retrieve
     template: ResourceActionTemplate.RETRIEVE,
     permissionFunction: async ({ user, resourceId }) => {
@@ -75,6 +75,7 @@ maker.addActions([
   // { template: ResourceActionTemplate.UPDATE },
   {
     template: ResourceActionTemplate.DELETE,
+    permissions: ['admin.account.delete'],
     stateValidator: async ({ resourceId }) => {
 
       const account = await AccountController.retrieve({ resourceId });

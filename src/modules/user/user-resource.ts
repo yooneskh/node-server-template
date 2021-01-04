@@ -42,12 +42,12 @@ export const UserModel      = maker.getModel();
 export const UserController = maker.getController();
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
-  { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.user.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.user.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.user.retrieve'] },
+  { template: ResourceActionTemplate.CREATE, permissions: ['admin.user.create'] },
+  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.user.update'] },
+  { template: ResourceActionTemplate.DELETE, permissions: ['admin.user.delete'] }
 ]);
 
 export const UserRouter = maker.getRouter();

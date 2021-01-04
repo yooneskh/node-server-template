@@ -94,18 +94,19 @@ export const PayTicketController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.payticket.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.payticket.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.payticket.retrieve'] },
   { // create
     template: ResourceActionTemplate.CREATE,
+    permissions: ['admin.payticket.create'],
     dataProvider: async ({ payload }) => createPayTicket(payload.factor, payload.gateway),
     responsePreprocessor: async ({ data }) => {
       delete data.meta;
     }
   },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE },
+  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.payticket.update'] },
+  { template: ResourceActionTemplate.DELETE, permissions: ['admin.payticket.delete'] },
   { // verify
     signal: ['Route', 'PayTicket', 'Verify'],
     method: ResourceActionMethod.GET,

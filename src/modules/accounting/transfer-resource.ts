@@ -58,11 +58,12 @@ export const TransferController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.transfer.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.transfer.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.transfer.retrieve'] },
   {
     template: ResourceActionTemplate.CREATE,
+    permissions: ['admin.transfer.create'],
     dataProvider: async ({ request }) => createTransfer(
       request.body.fromAccount,
       request.body.toAccount,
@@ -70,8 +71,8 @@ maker.addActions([
       request.body.description
     )
   },
-  // { template: ResourceActionTemplate.UPDATE },
-  // { template: ResourceActionTemplate.DELETE }
+  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.transfer.update'] },
+  { template: ResourceActionTemplate.DELETE, permissions: ['admin.transfer.delete'] }
 ]);
 
 export const TransferRouter = maker.getRouter();

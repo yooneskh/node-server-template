@@ -69,15 +69,16 @@ export const MediaController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE }
+  { template: ResourceActionTemplate.LIST, permissions: ['admin.media.list'] },
+  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.media.list-count'] },
+  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.media.retrieve'] }
 ]);
 
 maker.addAction({
   signal: ['Route', 'Media', 'InitUpload'],
   path: '/init/upload',
   method: ResourceActionMethod.POST,
+  permissions: ['user.media.init-upload'],
   async dataProvider({ request, user }) {
 
     const media = await MediaController.create({
@@ -114,6 +115,7 @@ maker.addAction({
   signal: ['Route', 'Media', 'Upload'],
   path: '/upload/:fileToken',
   method: ResourceActionMethod.POST,
+  permissions: ['user.media.upload'],
   async dataProvider({ request, response }) {
 
     const fileInfoList = await MediaController.list({
