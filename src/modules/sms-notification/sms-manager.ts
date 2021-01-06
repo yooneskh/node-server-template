@@ -7,7 +7,7 @@ YEventManager.on(['Resource', 'AuthToken', 'Created'], async (_authTokenId: stri
   if (!Config.authentication.staticVerificationCode && authToken.propertyType === 'phoneNumber') {
     sendLookupSMS({
       receptor: authToken.propertyValue!,
-      template: 'MarkazeTebVerify',
+      template: '---',
       token: authToken.verificationCode!
     });
   }
