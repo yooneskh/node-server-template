@@ -1,7 +1,7 @@
 import { Config } from '../../global/config';
 
 interface IPaymentResultError {
-  locale: string;
+  locale?: string;
   title?: string;
   reason?: string;
   callback?: string;
@@ -46,7 +46,7 @@ export const createErrorResultPage = ({ locale, title, reason, callback, callbac
       body {
         background: #FAFAFA;
         text-align: center;
-        direction: ${['fa', 'ar'].includes(locale) ? 'rtl' : 'ltr'};
+        direction: ${['fa', 'ar'].includes(locale!!) ? 'rtl' : 'ltr'};
       }
       #card {
         position: absolute;

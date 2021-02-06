@@ -1,7 +1,7 @@
 import { Config } from '../../global/config';
 
 interface IPaymentResultSuccess {
-  locale: string;
+  locale?: string;
   title?: string;
   heading?: string;
   reason?: string;
@@ -43,7 +43,7 @@ export const createSuccessResultPage = ({ locale, title, heading, reason, callba
       body {
         background: #FAFAFA;
         text-align: center;
-        direction: ${['fa', 'ar'].includes(locale) ? 'rtl' : 'ltr'};
+        direction: ${['fa', 'ar'].includes(locale!!) ? 'rtl' : 'ltr'};
       }
       #card {
         position: absolute;

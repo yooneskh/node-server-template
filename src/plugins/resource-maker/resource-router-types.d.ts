@@ -1,4 +1,3 @@
-import { ResourceActionMethod, ResourceActionTemplate, ResourceRelationActionTemplate } from "./resource-maker-router-enums";
 import { Request, Response } from "express";
 
 export interface ResourceRouterContext {
@@ -13,10 +12,13 @@ export interface ResourceRouterContext {
   resourceId?: string;
 }
 
+type IX = 'LIST' | 'LIST_COUNT' | 'RETRIEVE' | 'CREATE' | 'UPDATE' | 'DELETE';
+type IY = 'LIST_ALL' | 'LIST_ALL_COUNT' | 'LIST' | 'LIST_COUNT' | 'RETRIEVE' | 'RETRIEVE_COUNT' | 'RETRIEVE_BY_ID' | 'CREATE' | 'UPDATE' | 'DELETE';
+
 export interface ResourceRouterAction {
-  template?: ResourceActionTemplate | ResourceRelationActionTemplate;
+  template?: IX | IY;
   path?: string;
-  method?: ResourceActionMethod;
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'HEAD';
   signal?: string[];
   dataProvider?: (context: ResourceRouterContext) => Promise<any>;
   versionedDataproviders?: {

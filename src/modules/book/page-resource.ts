@@ -1,6 +1,5 @@
 import { IPageBase } from './book-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
 
 const maker = new ResourceMaker<IPageBase>('Page');
@@ -27,12 +26,12 @@ export const PageController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
-  { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  { template: 'LIST' },
+  { template: 'LIST_COUNT' },
+  { template: 'RETRIEVE' },
+  { template: 'CREATE' },
+  { template: 'UPDATE' },
+  { template: 'DELETE' }
 ]);
 
 export const PageRouter = maker.getRouter();

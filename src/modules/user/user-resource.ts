@@ -1,6 +1,5 @@
 import { IUserBase } from './user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
 
 const maker = new ResourceMaker<IUserBase>('User');
@@ -42,12 +41,12 @@ export const UserModel      = maker.getModel();
 export const UserController = maker.getController();
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.user.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.user.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.user.retrieve'] },
-  { template: ResourceActionTemplate.CREATE, permissions: ['admin.user.create'] },
-  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.user.update'] },
-  { template: ResourceActionTemplate.DELETE, permissions: ['admin.user.delete'] }
+  { template: 'LIST', permissions: ['admin.user.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.user.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.user.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.user.create'] },
+  { template: 'UPDATE', permissions: ['admin.user.update'] },
+  { template: 'DELETE', permissions: ['admin.user.delete'] }
 ]);
 
 export const UserRouter = maker.getRouter();

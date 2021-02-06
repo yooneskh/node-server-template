@@ -1,5 +1,4 @@
 import { ResourceRouterAction } from './resource-router-types';
-import { ResourceActionTemplate, ResourceActionMethod, ResourceRelationActionTemplate } from './resource-maker-router-enums';
 import { ServerError, InvalidRequestError } from '../../global/errors';
 import { ResourceController } from './resource-controller';
 import { IResource } from './resource-model-types';
@@ -91,9 +90,9 @@ export function extractIncludeQueryObject(queryString: string): Record<string, s
 }
 
 export function populateAction<T extends IResource>(action: ResourceRouterAction, name: string, controller: ResourceController<T>) {
-  if (action.template === ResourceActionTemplate.LIST) {
+  if (action.template === 'LIST') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = '/';
     if (!action.signal) action.signal = ['Route', name, 'List']
 
@@ -121,9 +120,9 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     }
 
   }
-  else if (action.template === ResourceActionTemplate.LIST_COUNT) {
+  else if (action.template === 'LIST_COUNT') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = '/count';
     if (!action.signal) action.signal = ['Route', name, 'Count']
 
@@ -134,9 +133,9 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     }
 
   }
-  else if (action.template === ResourceActionTemplate.RETRIEVE) {
+  else if (action.template === 'RETRIEVE') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = '/:resourceId';
     if (!action.signal) action.signal = ['Route', name, 'Retrieve']
 
@@ -149,18 +148,18 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     }
 
   }
-  else if (action.template === ResourceActionTemplate.CREATE) {
+  else if (action.template === 'CREATE') {
 
-    if (!action.method) action.method = ResourceActionMethod.POST;
+    if (!action.method) action.method = 'POST';
     if (!action.path) action.path = '/';
     if (!action.signal) action.signal = ['Route', name, 'Create']
 
     if (!action.dataProvider) action.dataProvider = async ({ payload }) => controller.create({ payload });
 
   }
-  else if (action.template === ResourceActionTemplate.UPDATE) {
+  else if (action.template === 'UPDATE') {
 
-    if (!action.method) action.method = ResourceActionMethod.PATCH;
+    if (!action.method) action.method = 'PATCH';
     if (!action.path) action.path = '/:resourceId';
     if (!action.signal) action.signal = ['Route', name, 'Update']
 
@@ -172,9 +171,9 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
     }
 
   }
-  else if (action.template === ResourceActionTemplate.DELETE) {
+  else if (action.template === 'DELETE') {
 
-    if (!action.method) action.method = ResourceActionMethod.DELETE;
+    if (!action.method) action.method = 'DELETE';
     if (!action.path) action.path = '/:resourceId';
     if (!action.signal) action.signal = ['Route', name, 'Delete']
 
@@ -187,9 +186,9 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
 }
 
 export function populateRelationAction(action: ResourceRouterAction, controller: ResourceRelationController<IResource>, pluralTargetName: string) {
-  if (action.template === ResourceRelationActionTemplate.LIST_ALL) {
+  if (action.template === 'LIST_ALL') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/${pluralTargetName}`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'ListAll'];
 
@@ -205,9 +204,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.LIST_ALL_COUNT) {
+  else if (action.template === 'LIST_ALL_COUNT') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/${pluralTargetName}/count`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'ListAllCount'];
 
@@ -219,9 +218,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
       });
     }
   }
-  else if (action.template === ResourceRelationActionTemplate.LIST) {
+  else if (action.template === 'LIST') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'ListSource'];
 
@@ -238,9 +237,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.LIST_COUNT) {
+  else if (action.template === 'LIST_COUNT') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/count`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'CountSource'];
 
@@ -252,9 +251,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.RETRIEVE) {
+  else if (action.template === 'RETRIEVE') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'RetrieveRelation'];
 
@@ -267,9 +266,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.RETRIEVE_COUNT) {
+  else if (action.template === 'RETRIEVE_COUNT') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/count`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'CountRelation'];
 
@@ -282,9 +281,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.RETRIEVE_BY_ID) {
+  else if (action.template === 'RETRIEVE_BY_ID') {
 
-    if (!action.method) action.method = ResourceActionMethod.GET;
+    if (!action.method) action.method = 'GET';
     if (!action.path) action.path = `/${pluralTargetName}/:relationId`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'RetrieveRelationId'];
 
@@ -297,9 +296,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.CREATE) {
+  else if (action.template === 'CREATE') {
 
-    if (!action.method) action.method = ResourceActionMethod.POST;
+    if (!action.method) action.method = 'POST';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'CreateRelation'];
 
@@ -312,9 +311,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.UPDATE) {
+  else if (action.template === 'UPDATE') {
 
-    if (!action.method) action.method = ResourceActionMethod.PATCH;
+    if (!action.method) action.method = 'PATCH';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'UpdateRelation'];
 
@@ -328,9 +327,9 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     }
 
   }
-  else if (action.template === ResourceRelationActionTemplate.DELETE) {
+  else if (action.template === 'DELETE') {
 
-    if (!action.method) action.method = ResourceActionMethod.DELETE;
+    if (!action.method) action.method = 'DELETE';
     if (!action.path) action.path = `/:sourceId/${pluralTargetName}/:targetId/:relationId`;
     if (!action.signal) action.signal = ['Route', pluralTargetName, 'DeleteRelation'];
 

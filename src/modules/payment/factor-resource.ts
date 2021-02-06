@@ -1,6 +1,5 @@
 import { IFactorBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidStateError } from '../../global/errors';
 
 
@@ -57,12 +56,12 @@ export const FactorModel      = maker.getModel();
 export const FactorController = maker.getController();
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.factor.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.factor.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.factor.retrieve'] },
-  { template: ResourceActionTemplate.CREATE, permissions: ['admin.factor.create'] },
+  { template: 'LIST', permissions: ['admin.factor.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.factor.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.factor.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.factor.create'] },
   {
-    template: ResourceActionTemplate.UPDATE,
+    template: 'UPDATE',
     permissions: ['admin.factor.update'],
     stateValidator: async ({ resourceId }) => {
       const factor = await FactorController.retrieve({ resourceId });
@@ -70,7 +69,7 @@ maker.addActions([
     }
   },
   {
-    template: ResourceActionTemplate.DELETE,
+    template: 'DELETE',
     permissions: ['admin.factor.delete'],
     stateValidator: async ({ resourceId }) => {
       const factor = await FactorController.retrieve({ resourceId });

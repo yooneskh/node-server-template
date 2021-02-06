@@ -1,6 +1,5 @@
 import { ITransferBase, ITransfer } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
 import { AccountController, getAccountForUser, getGlobalSourceAccount, getGlobalDrainAccount } from './account-resource';
 import { createTransaction } from './transaction-resource';
@@ -58,11 +57,11 @@ export const TransferController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.transfer.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.transfer.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.transfer.retrieve'] },
+  { template: 'LIST', permissions: ['admin.transfer.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.transfer.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.transfer.retrieve'] },
   {
-    template: ResourceActionTemplate.CREATE,
+    template: 'CREATE',
     permissions: ['admin.transfer.create'],
     dataProvider: async ({ request }) => createTransfer(
       request.body.fromAccount,
@@ -71,8 +70,8 @@ maker.addActions([
       request.body.description
     )
   },
-  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.transfer.update'] },
-  { template: ResourceActionTemplate.DELETE, permissions: ['admin.transfer.delete'] }
+  { template: 'UPDATE', permissions: ['admin.transfer.update'] },
+  { template: 'DELETE', permissions: ['admin.transfer.delete'] }
 ]);
 
 export const TransferRouter = maker.getRouter();

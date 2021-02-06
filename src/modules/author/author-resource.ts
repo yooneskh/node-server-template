@@ -1,6 +1,5 @@
 import { IAuthorBase, IAuthorBookBase, IAuthorPageMakerBase } from './author-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate, ResourceRelationActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { Config } from '../../global/config';
 
 
@@ -19,12 +18,12 @@ export const AuthorModel      = maker.getModel();
 export const AuthorController = maker.getController();
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST },
-  { template: ResourceActionTemplate.LIST_COUNT },
-  { template: ResourceActionTemplate.RETRIEVE },
-  { template: ResourceActionTemplate.CREATE },
-  { template: ResourceActionTemplate.UPDATE },
-  { template: ResourceActionTemplate.DELETE }
+  { template: 'LIST' },
+  { template: 'LIST_COUNT' },
+  { template: 'RETRIEVE' },
+  { template: 'CREATE' },
+  { template: 'UPDATE' },
+  { template: 'DELETE' }
 ]);
 
 export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation<IAuthorBookBase>({
@@ -54,16 +53,16 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
     }
   ],
   actions: [
-    { template: ResourceRelationActionTemplate.LIST_ALL },
-    { template: ResourceRelationActionTemplate.LIST_ALL_COUNT },
-    { template: ResourceRelationActionTemplate.RETRIEVE_BY_ID },
-    { template: ResourceRelationActionTemplate.LIST },
-    { template: ResourceRelationActionTemplate.LIST_COUNT },
-    { template: ResourceRelationActionTemplate.RETRIEVE },
-    { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
-    { template: ResourceRelationActionTemplate.CREATE },
-    { template: ResourceRelationActionTemplate.UPDATE },
-    { template: ResourceRelationActionTemplate.DELETE }
+    { template: 'LIST_ALL' },
+    { template: 'LIST_ALL_COUNT' },
+    { template: 'RETRIEVE_BY_ID' },
+    { template: 'LIST' },
+    { template: 'LIST_COUNT' },
+    { template: 'RETRIEVE' },
+    { template: 'RETRIEVE_COUNT' },
+    { template: 'CREATE' },
+    { template: 'UPDATE' },
+    { template: 'DELETE' }
   ]
 });
 
@@ -88,16 +87,16 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
     }
   ],
   actions: [
-    { template: ResourceRelationActionTemplate.LIST_ALL },
-    { template: ResourceRelationActionTemplate.LIST_ALL_COUNT },
-    { template: ResourceRelationActionTemplate.RETRIEVE_BY_ID },
-    { template: ResourceRelationActionTemplate.LIST },
-    { template: ResourceRelationActionTemplate.LIST_COUNT },
-    { template: ResourceRelationActionTemplate.RETRIEVE },
-    { template: ResourceRelationActionTemplate.RETRIEVE_COUNT },
-    { template: ResourceRelationActionTemplate.CREATE },
-    { template: ResourceRelationActionTemplate.UPDATE },
-    { template: ResourceRelationActionTemplate.DELETE }
+    { template: 'LIST_ALL' },
+    { template: 'LIST_ALL_COUNT' },
+    { template: 'RETRIEVE_BY_ID' },
+    { template: 'LIST' },
+    { template: 'LIST_COUNT' },
+    { template: 'RETRIEVE' },
+    { template: 'RETRIEVE_COUNT' },
+    { template: 'CREATE' },
+    { template: 'UPDATE' },
+    { template: 'DELETE' }
   ]
 });
 

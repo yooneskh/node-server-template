@@ -2,7 +2,6 @@ import * as fs from 'fs';
 
 import { IMediaBase } from './media-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { Config } from '../../global/config';
 import { InvalidRequestError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
@@ -69,15 +68,15 @@ export const MediaController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.media.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.media.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.media.retrieve'] }
+  { template: 'LIST', permissions: ['admin.media.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.media.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.media.retrieve'] }
 ]);
 
 maker.addAction({
   signal: ['Route', 'Media', 'InitUpload'],
   path: '/init/upload',
-  method: ResourceActionMethod.POST,
+  method: 'POST',
   permissions: ['user.media.init-upload'],
   async dataProvider({ request, user }) {
 
@@ -114,7 +113,7 @@ maker.addAction({
 maker.addAction({
   signal: ['Route', 'Media', 'Upload'],
   path: '/upload/:fileToken',
-  method: ResourceActionMethod.POST,
+  method: 'POST',
   permissions: ['user.media.upload'],
   async dataProvider({ request, response }) {
 

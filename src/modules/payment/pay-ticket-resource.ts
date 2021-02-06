@@ -1,7 +1,6 @@
 import { Config } from '../../global/config';
 import { IPayTicket, IPayTicketBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate, ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
 import { FactorController } from './factor-resource';
 import ZarinpalCheckout from 'zarinpal-checkout';
@@ -94,22 +93,22 @@ export const PayTicketController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.payticket.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.payticket.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.payticket.retrieve'] },
+  { template: 'LIST', permissions: ['admin.payticket.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.payticket.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.payticket.retrieve'] },
   { // create
-    template: ResourceActionTemplate.CREATE,
+    template: 'CREATE',
     permissions: ['admin.payticket.create'],
     dataProvider: async ({ payload }) => createPayTicket(payload.factor, payload.gateway),
     responsePreprocessor: async ({ data }) => {
       delete data.meta;
     }
   },
-  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.payticket.update'] },
-  { template: ResourceActionTemplate.DELETE, permissions: ['admin.payticket.delete'] },
+  { template: 'UPDATE', permissions: ['admin.payticket.update'] },
+  { template: 'DELETE', permissions: ['admin.payticket.delete'] },
   { // verify
     signal: ['Route', 'PayTicket', 'Verify'],
-    method: ResourceActionMethod.GET,
+    method: 'GET',
     path: '/:resourceId/verify',
     stateValidator: async ({ resourceId, bag }) => {
 
@@ -151,24 +150,24 @@ maker.addActions([
         YEventManager.emit(['Resource', 'PayTicket', 'Payed'], payTicket._id, payTicket);
         YEventManager.emit(['Resource', 'Factor', 'Payed'], factor._id, factor);
 
-        response.send(createSuccessResultPage(
-          Config.payment.response.title,
-          `${payTicket.amount.toLocaleString()} تومان`,
-          factor.name,
-          payTicket.returnUrl || Config.payment.response.callback
-        ));
+        response.send(createSuccessResultPage({
+          title: Config.payment.response.title,
+          heading: `${payTicket.amount.toLocaleString()} تومان`,
+          reason: factor.name,
+          callback: payTicket.returnUrl || Config.payment.response.callback
+        }));
 
         return DISMISS_DATA_PROVIDER;
 
       }
       catch (error) {
 
-        response.send(createErrorResultPage(
-          Config.payment.response.title,
-          error.message,
-          Config.payment.response.callbackSupport,
-          Config.payment.response.callback
-        ));
+        response.send(createErrorResultPage({
+          title: Config.payment.response.title,
+          reason: error.message,
+          callback: Config.payment.response.callback,
+          callbackSupport: Config.payment.response.callbackSupport
+        }));
 
         return DISMISS_DATA_PROVIDER;
 

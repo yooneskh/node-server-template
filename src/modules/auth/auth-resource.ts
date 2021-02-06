@@ -1,7 +1,6 @@
 import { IRegisterToken } from './auth-interfaces';
 import { IUser } from '../user/user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionMethod } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { UserController } from '../user/user-resource';
 import { Config } from '../../global/config';
 import { generateRandomNumericCode, generateToken } from '../../global/util';
@@ -42,7 +41,7 @@ const maker = new ResourceMaker('Auth');
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Login'],
-  method: ResourceActionMethod.POST,
+  method: 'POST',
   path: '/login',
   rateLimitOptions: {
     pointsAmount: 5,
@@ -78,7 +77,7 @@ maker.addAction({
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Register'],
-  method: ResourceActionMethod.POST,
+  method: 'POST',
   path: '/register',
   rateLimitOptions: {
     pointsAmount: 3,
@@ -143,7 +142,7 @@ maker.addAction({
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Verify'],
-  method: ResourceActionMethod.POST,
+  method: 'POST',
   path: '/verify',
   rateLimitOptions: {
     pointsAmount: 3,
@@ -221,7 +220,7 @@ maker.addAction({
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Logout'],
-  method: ResourceActionMethod.POST,
+  method: 'POST',
   path: '/logout',
   async dataProvider({ token }) {
 
@@ -246,7 +245,7 @@ maker.addAction({
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Identity'],
-  method: ResourceActionMethod.GET,
+  method: 'GET',
   path: '/identity',
   permissionFunction: async ({ user }) => !!user,
   async dataProvider({ user }) {
@@ -262,7 +261,7 @@ maker.addAction({
 
 maker.addAction({
   signal: ['Route', 'Auth', 'IdentityUpdate'],
-  method: ResourceActionMethod.PATCH,
+  method: 'PATCH',
   path: '/identity',
   permissionFunction: async ({ user }) => !!user,
   async dataProvider({ payload, user }) {

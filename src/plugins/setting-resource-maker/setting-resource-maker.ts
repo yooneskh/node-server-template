@@ -1,7 +1,6 @@
 import { ServerError } from '../../global/errors';
 import { ResourceController } from '../resource-maker/resource-controller';
 import { ResourceMaker } from '../resource-maker/resource-maker';
-import { ResourceActionMethod } from '../resource-maker/resource-maker-router-enums';
 import { IResource, ResourceModelProperty } from '../resource-maker/resource-model-types';
 import { ResourceRouterAction } from '../resource-maker/resource-router-types';
 import { extractIncludeQueryObject } from '../resource-maker/resource-router-util';
@@ -37,7 +36,7 @@ export class SettingResourceMaker<T extends IResource> {
 
   public getRouteActionRetrieve(): ResourceRouterAction {
     return {
-      method: ResourceActionMethod.GET,
+      method: 'GET',
       path: '/',
       signal: ['Route', this.name, 'Retrieve'],
       dataProvider: async ({ request }) => this.controller?.retrieve({
@@ -49,7 +48,7 @@ export class SettingResourceMaker<T extends IResource> {
 
   public getRouteActionUpdate(): ResourceRouterAction {
     return {
-      method: ResourceActionMethod.PATCH,
+      method: 'PATCH',
       path: '/',
       signal: ['Route', this.name, 'Update'],
       dataProvider: async ({ payload }) => this.controller?.update({

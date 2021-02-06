@@ -1,7 +1,6 @@
 import { ResourceRouterAction, ResourceRouterContext } from './resource-router-types';
 import { Router, Request, Response } from 'express';
 import { InvalidRequestError, ServerError } from '../../global/errors';
-import { ResourceActionMethod } from './resource-maker-router-enums';
 import { YEventManager } from '../event-manager/event-manager';
 import { ResourceModelProperty, IResource } from './resource-model-types';
 import { populateAction, populateRelationAction } from './resource-router-util';
@@ -57,7 +56,7 @@ export class ResourceRouter<T extends IResource> {
     const metaAction: ResourceRouterAction = {
       signal: ['Route', this.name, 'Metas'],
       path: '/metas',
-      method: ResourceActionMethod.GET,
+      method: 'GET',
       dataProvider: async () => filteredProperties
     };
 
@@ -93,7 +92,7 @@ export class ResourceRouter<T extends IResource> {
 
     this.applyActionOnRouter({
       signal: ['Route', this.name, 'Relations'],
-      method: ResourceActionMethod.GET,
+      method: 'GET',
       path: '/relations',
       dataProvider: async () => relationsMeta
     });
@@ -165,12 +164,12 @@ export class ResourceRouter<T extends IResource> {
     }
 
     switch (action.method) {
-      case ResourceActionMethod.GET: this.router.get(action.path, routerHandler); break;
-      case ResourceActionMethod.POST: this.router.post(action.path, routerHandler); break;
-      case ResourceActionMethod.PATCH: this.router.patch(action.path, routerHandler); break;
-      case ResourceActionMethod.PUT: this.router.put(action.path, routerHandler); break;
-      case ResourceActionMethod.DELETE: this.router.delete(action.path, routerHandler); break;
-      case ResourceActionMethod.HEAD: this.router.head(action.path, routerHandler); break;
+      case 'GET': this.router.get(action.path, routerHandler); break;
+      case 'POST': this.router.post(action.path, routerHandler); break;
+      case 'PATCH': this.router.patch(action.path, routerHandler); break;
+      case 'PUT': this.router.put(action.path, routerHandler); break;
+      case 'DELETE': this.router.delete(action.path, routerHandler); break;
+      case 'HEAD': this.router.head(action.path, routerHandler); break;
       default: throw new ServerError('action method type invalid');
     }
 

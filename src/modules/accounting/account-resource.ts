@@ -1,6 +1,5 @@
 import { IAccountBase } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { InvalidStateError } from '../../global/errors';
 import { UserController } from '../user/user-resource';
@@ -61,20 +60,20 @@ export const AccountController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.account.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.account.list-count'] },
+  { template: 'LIST', permissions: ['admin.account.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.account.list-count'] },
   { // retrieve
-    template: ResourceActionTemplate.RETRIEVE,
+    template: 'RETRIEVE',
     permissionFunction: async ({ user, resourceId }) => {
       if (hasPermissions(user?.permissions ?? [], ['admin.account.retrieve'])) return true;
       const account = await AccountController.retrieve({ resourceId });
       return account.user === String(user?._id);
     }
   },
-  // { template: ResourceActionTemplate.CREATE },
-  // { template: ResourceActionTemplate.UPDATE },
+  // { template: 'CREATE' },
+  // { template: 'UPDATE' },
   {
-    template: ResourceActionTemplate.DELETE,
+    template: 'DELETE',
     permissions: ['admin.account.delete'],
     stateValidator: async ({ resourceId }) => {
 

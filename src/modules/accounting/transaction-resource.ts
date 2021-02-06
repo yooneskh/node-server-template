@@ -1,6 +1,5 @@
 import { ITransactionBase, ITransaction } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 import { InvalidRequestError } from '../../global/errors';
 import { AccountController } from './account-resource';
 
@@ -35,11 +34,11 @@ export const TransactionController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.transaction.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.transaction.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.transaction.retrieve'] },
+  { template: 'LIST', permissions: ['admin.transaction.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.transaction.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.transaction.retrieve'] },
   {
-    template: ResourceActionTemplate.CREATE,
+    template: 'CREATE',
     permissions: ['admin.transaction.create'],
     dataProvider: async ({ payload }) => createTransaction(
       payload.account,
@@ -48,11 +47,11 @@ maker.addActions([
     )
   },
   {
-    template: ResourceActionTemplate.UPDATE,
+    template: 'UPDATE',
     permissions: ['admin.transaction.update'],
   },
   {
-    template: ResourceActionTemplate.DELETE,
+    template: 'DELETE',
     permissions: ['admin.transaction.delete'],
   }
 ]);

@@ -1,6 +1,5 @@
 import { IUpdateBase } from './update-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { ResourceActionTemplate } from '../../plugins/resource-maker/resource-maker-router-enums';
 
 
 const maker = new ResourceMaker<IUpdateBase>('Update');
@@ -67,12 +66,12 @@ export const UpdateController = maker.getController();
 
 
 maker.addActions([
-  { template: ResourceActionTemplate.LIST, permissions: ['admin.update.list'] },
-  { template: ResourceActionTemplate.LIST_COUNT, permissions: ['admin.update.list-count'] },
-  { template: ResourceActionTemplate.RETRIEVE, permissions: ['admin.update.retrieve'] },
-  { template: ResourceActionTemplate.CREATE, permissions: ['admin.update.create'] },
-  { template: ResourceActionTemplate.UPDATE, permissions: ['admin.update.update'] },
-  { template: ResourceActionTemplate.DELETE, permissions: ['admin.update.delete'] }
+  { template: 'LIST', permissions: ['admin.update.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.update.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.update.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.update.create'] },
+  { template: 'UPDATE', permissions: ['admin.update.update'] },
+  { template: 'DELETE', permissions: ['admin.update.delete'] }
 ]);
 
 export const UpdateRouter = maker.getRouter();
