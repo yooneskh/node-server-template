@@ -9,13 +9,21 @@ export const Config = {
   authentication: {
     staticVerificationCode: '111111'
   },
+  localization: {
+    defaultLocalization: 'fa'
+  },
   payment: {
     callbackUrlBase: 'https://api.yooneskh.ir/api/paytickets',
     informUrlBase: 'https://yooneskh.ir/payment',
     response: {
       title: 'اپلیکیشن | نتیجه پرداخت',
       callback: 'https://yooneskh.ir',
-      callbackSupport: 'https://yooneskh.ir'
+      callbackSupport: 'https://yooneskh.ir',
+      favicon: 'https://yooneskh.ir/favicon.ico',
+      font: {
+        fa: 'https://cdn.khosh-ghadam.ir/font/iryekan.css',
+        en: 'https://cdn.khosh-ghadam.ir/font/roboto.css'
+      }
     }
   },
   zarinpal: {
