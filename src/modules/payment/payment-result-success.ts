@@ -40,6 +40,9 @@ export const createSuccessResultPage = ({ locale, title, heading, reason, callba
     <link rel="stylesheet" href="${fontUrl}">
     <title>${title}</title>
     <style>
+      * {
+        font-family: iryekan, roboto;
+      }
       body {
         background: #FAFAFA;
         text-align: center;
