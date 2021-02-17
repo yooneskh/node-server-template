@@ -5,13 +5,36 @@ import { IResource } from './resource-model-types';
 import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from './config';
 import { ResourceRelationController } from './resource-relation-controller';
 
-const FILTER_OPERATORS: Record<string, string> = {
-  '=': '$eq',
-  '!=': '$ne',
-  '<': '$lt',
-  '>': '$gt',
-  '~=': '$regex'
-};
+// tslint:disable-next-line: no-any
+function applyOperatorOnFilter(filter: any, key: string, operator: string, value: any) {
+  switch (operator) {
+    case '=':
+      filter[key] = { $eq: value };
+      break;
+    case '!=':
+      filter[key] = { $ne: value };
+      break;
+    case '<':
+      filter[key] = { $lt: value };
+      break;
+    case '<=':
+      filter[key] = { $lte: value };
+      break;
+    case '>':
+      filter[key] = { $gt: value };
+      break;
+    case '>=':
+      filter[key] = { $gte: value };
+      break;
+    case '~=':
+      filter[key] = { $regex: new RegExp(value, 'i') };
+      break;
+    case '==':
+      filter[key] = value;
+      break;
+    default: throw new InvalidRequestError(`filter invalid operator '${operator}'`);
+  }
+}
 
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
 
@@ -51,12 +74,10 @@ export function extractSortQueryObject(queryString: string): Record<string, numb
 }
 
 export function extractFilterQueryObject(queryString: string) {
+  if (!queryString) return {};
 
   // tslint:disable-next-line: no-any
   const result: any = {};
-
-  if (!queryString) return result;
-
   const filtersParts = queryString.split(',');
 
   for (const part of filtersParts) {
@@ -72,12 +93,7 @@ export function extractFilterQueryObject(queryString: string) {
     if (value === 'Xfalse') value = false;
     if (value === 'Xnull') value = undefined;
 
-    const filterOperator = FILTER_OPERATORS[operator];
-    if (!filterOperator) throw new InvalidRequestError(`filter invalid operator '${operator}'`);
-
-    if (filterOperator === '$regex') value = new RegExp(value, 'i');
-
-    result[key] = { [FILTER_OPERATORS[operator]]: value };
+    applyOperatorOnFilter(result, key, operator, value);
 
   }
 
