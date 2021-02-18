@@ -18,6 +18,13 @@ maker.addProperties([
 export const BookModel      = maker.getModel();
 export const BookController = maker.getController();
 
+maker.setValidations({
+  'name': [
+    async (it, e) => it.name?.includes('Book') || e('name must have "Book"'),
+    async (it, e) => it.name !== 'Test Book' || e('name must not be "Test Book"')
+  ]
+});
+
 maker.addAction({
   path: '/test',
   method: 'GET',

@@ -7,12 +7,14 @@ import { ResourceRouter } from './resource-router';
 import { ResourceRelation } from './resource-relation-types';
 import { ResourceRelationController } from './resource-relation-controller';
 import { makeResourceRelationModel } from './resource-relation-model';
+import { ResourceValidation, ResourceValidator } from './resource-validator';
 
 export class ResourceMaker<T extends IResource> {
 
   private resourceModeler = new ResourceModel<T>(this.name);
   private resourceController?: ResourceController<T>;
-  private resourceRouter?: ResourceRouter<T> = undefined;
+  private resourceRouter?: ResourceRouter<T>;
+  private resourceValidator?: ResourceValidator<T>;
 
   constructor(private name: string) {}
 
@@ -37,6 +39,14 @@ export class ResourceMaker<T extends IResource> {
 
     this.resourceController = new ResourceController(this.name, this.getModel(), this.resourceModeler.getProperties());
     return this.resourceController;
+
+  }
+
+  public setValidations(validations: ResourceValidation<T>) {
+    if (!this.resourceController) throw new ServerError('must make controller before setting validations');
+
+    this.resourceValidator = new ResourceValidator<T>(this.name, validations);
+    this.resourceController!!.setValidator(this.resourceValidator);
 
   }
 

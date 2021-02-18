@@ -5,12 +5,19 @@ import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { NotFoundError, InvalidRequestError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
+import { ResourceValidator } from './resource-validator';
 
 // tslint:disable: no-any
 export class ResourceController<T extends IResource> {
 
+  private resourceValidator?: ResourceValidator<T>;
+
   constructor(private name: string, private model: Model<T & Document, {}>, private properties: ResourceModelProperty[]) {
 
+  }
+
+  public setValidator(validator: ResourceValidator<T>) {
+    this.resourceValidator = validator;
   }
 
   public async list(context: ResourceControllerContext<T>): Promise<(T & Document)[]> {
@@ -103,6 +110,7 @@ export class ResourceController<T extends IResource> {
       resource.set(key, context.payload[key]);
     }
 
+    if (this.resourceValidator) this.resourceValidator.validate(resource);
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Created'], resource._id, resource);
@@ -126,6 +134,7 @@ export class ResourceController<T extends IResource> {
     }
 
     resource.updatedAt = Date.now();
+    if (this.resourceValidator) this.resourceValidator.validate(resource);
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Updated'], resource._id, resource);
@@ -133,6 +142,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
+  // todo: apply validators on this
   public async editQuery(context: ResourceControllerContext<T>): Promise<T & Document> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 

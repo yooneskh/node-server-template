@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-class HandleableError extends Error {
+export class HandleableError extends Error {
   public code = 1000;
 }
 
