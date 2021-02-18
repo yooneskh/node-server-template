@@ -3,7 +3,6 @@ import { ServerError } from '../../global/errors';
 import { Schema, model, Model, Document } from 'mongoose';
 import { makeSchemaOptions } from './resource-model-util';
 
-// tslint:disable: no-any
 export class ResourceModel<T extends IResource> {
 
   private properties: ResourceModelProperty[] = [];
@@ -28,7 +27,6 @@ export class ResourceModel<T extends IResource> {
   }
 
   public getModel() {
-
     if (this.model !== undefined) return this.model;
 
     this.model = model<T & Document>(this.name, this.makeSchema());
