@@ -26,6 +26,8 @@ export interface ResourceModelProperty {
   itemWidth?: number;
   disabled?: boolean;
   readonly?: boolean;
+  labelFormat?: string;
+  valueFormat?: string;
   items?: { value: string, text: string }[];
 }
 
