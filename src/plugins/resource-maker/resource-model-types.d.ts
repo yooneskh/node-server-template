@@ -6,6 +6,7 @@ export interface ResourceModelProperty {
   required?: boolean;
   unique?: boolean;
   select?: boolean;
+  enum?: string[];
   isArray?: boolean;
   languages?: Record<string, any>;
   serieSchema?: ResourceModelProperty[];
@@ -25,6 +26,7 @@ export interface ResourceModelProperty {
   itemWidth?: number;
   disabled?: boolean;
   readonly?: boolean;
+  items?: { value: string, text: string }[];
 }
 
 export interface IResource {

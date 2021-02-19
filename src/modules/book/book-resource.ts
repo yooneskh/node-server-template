@@ -10,8 +10,13 @@ maker.addProperties([
     key: 'name',
     type: 'string',
     required: true,
+    enum: ['My Book', 'Your Book'],
     title: 'نام',
-    titleable: true
+    titleable: true,
+    items: [
+      { value: 'My Book', text: 'Book that is mine' },
+      { value: 'Your Book', text: 'Book that is yours' }
+    ]
   }
 ]);
 
