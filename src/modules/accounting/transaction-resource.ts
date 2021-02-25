@@ -12,6 +12,7 @@ maker.addProperties([
     type: 'string',
     ref: 'Account',
     required: true,
+    index: true,
     title: 'حساب',
     titleable: true
   },

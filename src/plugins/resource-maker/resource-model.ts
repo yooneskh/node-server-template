@@ -1,4 +1,4 @@
-import { ResourceModelProperty, IResource } from './resource-model-types';
+import { ResourceModelProperty, IResource, CompoundIndex } from './resource-model-types';
 import { ServerError } from '../../global/errors';
 import { Schema, model, Model, Document } from 'mongoose';
 import { makeSchemaOptions } from './resource-model-util';
@@ -6,7 +6,8 @@ import { makeSchemaOptions } from './resource-model-util';
 export class ResourceModel<T extends IResource> {
 
   private properties: ResourceModelProperty[] = [];
-  private model?: Model<T & Document, {}> = undefined;
+  private model?: Model<T & Document, {}>;
+  private compoundIndexes?: CompoundIndex[];
 
   constructor(private name: string) { }
 
@@ -26,10 +27,28 @@ export class ResourceModel<T extends IResource> {
     return this.properties;
   }
 
+  public setCompoundIndexes(indexes: CompoundIndex[]) {
+    this.compoundIndexes = indexes;
+  }
+
   public getModel() {
     if (this.model !== undefined) return this.model;
 
-    this.model = model<T & Document>(this.name, this.makeSchema());
+    const schema = this.makeSchema();
+
+    if (this.compoundIndexes && this.compoundIndexes.length > 0) {
+      for (const index of this.compoundIndexes) {
+        if (index.indexes) {
+          // tslint:disable-next-line: no-any
+          schema.index(index.indexes, index.options as Record<string, any>)
+        }
+        else {
+          schema.index(index)
+        }
+      }
+    }
+
+    this.model = model<T & Document>(this.name, schema);
     return this.model;
 
   }

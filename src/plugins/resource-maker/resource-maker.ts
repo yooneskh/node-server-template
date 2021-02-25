@@ -1,4 +1,4 @@
-import { IResource, ResourceModelProperty } from './resource-model-types';
+import { CompoundIndex, IResource, ResourceModelProperty } from './resource-model-types';
 import { ResourceModel } from './resource-model';
 import { ResourceController } from './resource-controller';
 import { ServerError } from '../../global/errors';
@@ -28,6 +28,10 @@ export class ResourceMaker<T extends IResource> {
 
   public getProperties(): ResourceModelProperty[] {
     return this.resourceModeler.getProperties();
+  }
+
+  public setCompoundIndexes(indexes: CompoundIndex[]) {
+    this.resourceModeler.setCompoundIndexes(indexes);
   }
 
   public getModel() {

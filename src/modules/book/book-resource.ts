@@ -20,6 +20,14 @@ maker.addProperties([
   }
 ]);
 
+maker.setCompoundIndexes([
+  { 'name': 1, 'book': -1 },
+  {
+    indexes: { 'book': 1, 'name': -1 },
+    options: { unique: true }
+  }
+]);
+
 export const BookModel      = maker.getModel();
 export const BookController = maker.getController();
 

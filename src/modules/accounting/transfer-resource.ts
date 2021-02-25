@@ -13,6 +13,7 @@ maker.addProperties([
     type: 'string',
     ref: 'Account',
     required: true,
+    index: true,
     title: 'حساب مبدا',
     titleable: true
   },
@@ -20,6 +21,7 @@ maker.addProperties([
     key: 'fromTransaction',
     type: 'string',
     ref: 'Transaction',
+    index: true,
     title: 'تراکنش مبدا',
     hideInTable: true
   },
@@ -28,6 +30,7 @@ maker.addProperties([
     type: 'string',
     ref: 'Account',
     required: true,
+    index: true,
     title: 'حساب مقصد',
     titleable: true
   },
@@ -35,6 +38,7 @@ maker.addProperties([
     key: 'toTransaction',
     type: 'string',
     ref: 'Transaction',
+    index: true,
     title: 'تراکنش مقصد',
     hideInTable: true
   },

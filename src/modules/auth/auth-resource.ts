@@ -96,7 +96,10 @@ maker.addAction({
     let registerToken: IRegisterToken;
 
     const previousRegisterTokens = await RegisterTokenController.list({
-      filters: { phoneNumber }
+      filters: {
+        phoneNumber,
+        closed: false
+      }
     });
 
     if (previousRegisterTokens.length > 0) {

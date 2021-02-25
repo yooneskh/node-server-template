@@ -9,12 +9,14 @@ maker.addProperties([
     key: 'registerToken',
     type: 'string',
     ref: 'RegisterToken',
+    index: true,
     title: 'توکن ثبت نام'
   },
   {
     key: 'user',
     type: 'string',
     ref: 'User',
+    index: true,
     title: 'کاربر',
     titleable: true
   },
@@ -28,6 +30,7 @@ maker.addProperties([
   {
     key: 'propertyType',
     type: 'string',
+    index: true,
     title: 'مقدار شناساگر',
     titleable: true
   },
@@ -47,6 +50,7 @@ maker.addProperties([
     key: 'valid',
     type: 'boolean',
     default: false,
+    index: true,
     title: 'مورد تایید'
   },
   {
@@ -65,6 +69,7 @@ maker.addProperties([
     key: 'closed',
     type: 'boolean',
     default: false,
+    index: true,
     title: 'بسته شده'
   },
   {
@@ -82,6 +87,7 @@ maker.addProperties([
   {
     key: 'token',
     type: 'string',
+    index: true,
     hidden: true
   }
 ]);

@@ -89,11 +89,7 @@ maker.addAction({
       }
     });
 
-    const userDirectory = `download/${media.owner || 'public'}`;
-
-    if (!fs.existsSync(userDirectory)) fs.mkdirSync(userDirectory);
-
-    const relativePath = `${userDirectory}/${media._id}.${media.extension}`;
+    const relativePath = `download/${media._id}.${media.extension}`;
     const absolutePath = `${Config.filesBaseUrl}/${relativePath}`;
 
     media.relativePath = relativePath;

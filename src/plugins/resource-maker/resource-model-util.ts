@@ -21,9 +21,11 @@ export function makeSchemaOptions(properties: ResourceModelProperty[]) {
     if (property.ref !== undefined) scheme.ref = property.ref;
     if (property.default !== undefined) scheme.default = property.default;
     if (property.required !== undefined) scheme.required = property.required;
-    if (property.unique !== undefined) scheme.unique = property.unique;
     if (property.select !== undefined) scheme.select = property.select;
     if (property.enum !== undefined) scheme.enum = property.enum;
+    if (property.index !== undefined) scheme.index = property.index;
+    if (property.unique !== undefined) scheme.unique = property.unique;
+    if (property.sparse !== undefined) scheme.sparse = property.sparse;
 
     if (property.languages) {
 

@@ -10,6 +10,7 @@ maker.addProperties([
     key: 'user',
     type: 'string',
     ref: 'User',
+    index: true,
     title: 'کاربر'
   },
   {
@@ -29,6 +30,7 @@ maker.addProperties([
     key: 'payed',
     type: 'boolean',
     default: false,
+    index: true,
     title: 'پرداخت شده'
   },
   {

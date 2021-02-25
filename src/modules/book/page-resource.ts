@@ -17,6 +17,7 @@ maker.addProperties([
     type: 'string',
     ref: 'Book',
     required: true,
+    index: true,
     title: 'کتاب'
   }
 ]);

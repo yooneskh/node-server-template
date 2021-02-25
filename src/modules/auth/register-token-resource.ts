@@ -9,6 +9,7 @@ maker.addProperties([
     key: 'phoneNumber',
     type: 'string',
     required: true,
+    index: true,
     title: 'شماره تلفن',
     titleable: true
   },
@@ -22,6 +23,7 @@ maker.addProperties([
   {
     key: 'closed',
     type: 'boolean',
+    index: true,
     title: 'بسته شده',
     default: false
   },

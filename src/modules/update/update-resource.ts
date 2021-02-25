@@ -28,6 +28,7 @@ maker.addProperties([
   {
     key: 'version',
     type: 'number',
+    index: true,
     title: 'شماره نسخه',
     required: true,
     titleable: true
@@ -35,6 +36,7 @@ maker.addProperties([
   {
     key: 'platform',
     type: 'string',
+    index: true,
     title: 'پلتفرم',
     required: true,
     titleable: true
@@ -42,6 +44,7 @@ maker.addProperties([
   {
     key: 'packageName',
     type: 'string',
+    index: true,
     title: 'نام پکیج',
     required: true,
     titleable: true

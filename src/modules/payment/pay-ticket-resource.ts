@@ -27,8 +27,9 @@ maker.addProperties([
   {
     key: 'factor',
     type: 'string',
-    required: true,
     ref: 'Factor',
+    required: true,
+    index: true,
     title: 'فاکتور',
     titleable: true
   },
@@ -59,6 +60,7 @@ maker.addProperties([
   {
     key: 'resolved',
     type: 'boolean',
+    index: true,
     default: false,
     title: 'پایان یافته'
   },
@@ -71,6 +73,7 @@ maker.addProperties([
   {
     key: 'payed',
     type: 'boolean',
+    index: true,
     default: false,
     title: 'پرداخت شده'
   },

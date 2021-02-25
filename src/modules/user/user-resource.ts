@@ -16,6 +16,7 @@ maker.addProperties([
     key: 'phoneNumber',
     type: 'string',
     required: true,
+    index: true,
     unique: true,
     title: 'شماره تلفن',
     dir: 'ltr'
