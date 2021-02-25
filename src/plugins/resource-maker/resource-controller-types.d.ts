@@ -10,4 +10,5 @@ export interface ResourceControllerContext<T> {
   limit?: number;
   skip?: number;
   query?: any;
+  lean?: boolean;
 }

@@ -119,7 +119,8 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
             filters: extractFilterQueryObject(request.query.filters as string),
             sorts: extractSortQueryObject(request.query.sorts as string),
             includes: extractIncludeQueryObject(request.query.includes as string),
-            selects: request.query.selects as string
+            selects: request.query.selects as string,
+            lean: true
           });
         }
         else {
@@ -129,7 +130,8 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
             includes: extractIncludeQueryObject(request.query.includes as string),
             selects: request.query.selects as string,
             limit: Math.min(parseInt((request.query.limit as string) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
-            skip: parseInt((request.query.skip as string) || '0', 10) || 0
+            skip: parseInt((request.query.skip as string) || '0', 10) || 0,
+            lean: true
           });
         }
       };
@@ -159,7 +161,8 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
       action.dataProvider = async ({ request, resourceId }) => controller.retrieve({
         resourceId,
         includes: extractIncludeQueryObject(request.query.includes as string),
-        selects: request.query.selects as string
+        selects: request.query.selects as string,
+        lean: true
       });
     }
 
@@ -215,7 +218,8 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
         includes: extractIncludeQueryObject(request.query.includes as string),
         selects: request.query.selects as string,
         limit: Math.min(parseInt((request.query.limit as string) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
-        skip: parseInt((request.query.skip as string) || '0', 10) || 0
+        skip: parseInt((request.query.skip as string) || '0', 10) || 0,
+        lean: true
       });
     }
 
@@ -248,7 +252,8 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
         includes: extractIncludeQueryObject(request.query.includes as string),
         selects: request.query.selects as string,
         limit: Math.min(parseInt((request.query.limit as string) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
-        skip: parseInt((request.query.skip as string) || '0', 10) || 0
+        skip: parseInt((request.query.skip as string) || '0', 10) || 0,
+        lean: true
       });
     }
 
@@ -277,7 +282,8 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
       action.dataProvider = async ({ request }) => controller.getSingleRelation({
         sourceId: request.params.sourceId,
         targetId: request.params.targetId,
-        selects: request.query.selects as string
+        selects: request.query.selects as string,
+        lean: true
       });
     }
 
@@ -307,7 +313,8 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
       action.dataProvider = async ({ request }) => controller.retrieveRelation({
         relationId: request.params.relationId,
         includes: extractIncludeQueryObject(request.query.includes as string),
-        selects: request.query.selects as string
+        selects: request.query.selects as string,
+        lean: true
       });
     }
 

@@ -53,6 +53,7 @@ export class ResourceRelationController<T extends IResource> {
     query.select(context.selects);
     query.skip(context.skip ?? 0);
     query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
@@ -97,6 +98,7 @@ export class ResourceRelationController<T extends IResource> {
     query.select(context.selects);
     query.skip(context.skip ?? 0);
     query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
@@ -137,6 +139,7 @@ export class ResourceRelationController<T extends IResource> {
     query.select(context.selects);
     query.skip(context.skip ?? 0);
     query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
@@ -177,6 +180,7 @@ export class ResourceRelationController<T extends IResource> {
     query.select(context.selects);
     query.skip(context.skip ?? 0);
     query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
 
@@ -212,6 +216,7 @@ export class ResourceRelationController<T extends IResource> {
     const query = this.model.findById(context.relationId).select(context.selects);
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+    if (context.lean) query.lean();
 
     const relation = await query;
     if (!relation) throw new NotFoundError(`relation not found @${context.relationId}`);

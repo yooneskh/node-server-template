@@ -31,6 +31,7 @@ export class ResourceController<T extends IResource> {
     query.select(context.selects);
     query.skip(context.skip ?? 0);
     query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) {
       query.populate(include);
@@ -63,6 +64,7 @@ export class ResourceController<T extends IResource> {
     if (!context.resourceId) throw new InvalidRequestError('no resource id specified');
 
     const query = this.model.findById(context.resourceId).select(context.selects);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) {
       query.populate(include);
@@ -85,6 +87,7 @@ export class ResourceController<T extends IResource> {
 
     query.sort(context.sorts ?? {});
     query.select(context.selects);
+    if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) {
       query.populate(include);
