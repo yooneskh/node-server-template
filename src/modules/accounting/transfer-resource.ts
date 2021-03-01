@@ -67,11 +67,11 @@ maker.addActions([
   {
     template: 'CREATE',
     permissions: ['admin.transfer.create'],
-    dataProvider: async ({ request }) => createTransfer(
-      request.body.fromAccount,
-      request.body.toAccount,
-      request.body.amount,
-      request.body.description
+    dataProvider: async ({ payload }) => createTransfer(
+      payload.fromAccount,
+      payload.toAccount,
+      payload.amount,
+      payload.description
     )
   },
   { template: 'UPDATE', permissions: ['admin.transfer.update'] },
