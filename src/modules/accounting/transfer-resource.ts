@@ -82,7 +82,7 @@ export const TransferRouter = maker.getRouter();
 
 
 export async function createTransfer(fromAccountId: string, toAccountId: string, amount: number, description?: string): Promise<ITransfer> {
-  if (!amount || amount <= 0) throw new InvalidRequestError('invalid transfer amount');
+  if (!(amount > 0)) throw new InvalidRequestError('invalid transfer amount');
 
   const [fromAccount, toAccount] = await Promise.all([
     AccountController.retrieve({ resourceId: fromAccountId }),
