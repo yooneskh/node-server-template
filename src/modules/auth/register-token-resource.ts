@@ -23,15 +23,15 @@ maker.addProperties([
   {
     key: 'closed',
     type: 'boolean',
+    default: false,
     index: true,
-    title: 'بسته شده',
-    default: false
+    title: 'بسته شده'
   },
   {
     key: 'closedAt',
     type: 'number',
-    title: 'زمان بسته شدن',
-    default: 0
+    default: 0,
+    title: 'زمان بسته شدن'
   }
 ]);
 
