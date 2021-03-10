@@ -3,7 +3,6 @@ import { Model, Document } from 'mongoose';
 import { ResourceRelationControllerContext } from './resource-relation-controller-types';
 import { ResourceRelation } from './resource-relation-types';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
-import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { NotFoundError, InvalidStateError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
 import { simplePascalize } from '../../global/util';
@@ -52,7 +51,7 @@ export class ResourceRelationController<T extends IResource> {
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
-    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
@@ -75,7 +74,7 @@ export class ResourceRelationController<T extends IResource> {
 
     const query = this.model.find(context.filters ?? {});
     query.skip(context.skip ?? 0);
-    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.limit) query.limit(context.limit);
 
     const result = await query.countDocuments();
 
@@ -97,7 +96,7 @@ export class ResourceRelationController<T extends IResource> {
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
-    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
@@ -138,7 +137,7 @@ export class ResourceRelationController<T extends IResource> {
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
-    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
@@ -179,7 +178,7 @@ export class ResourceRelationController<T extends IResource> {
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
-    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+    if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
