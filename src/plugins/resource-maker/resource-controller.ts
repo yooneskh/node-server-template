@@ -1,7 +1,6 @@
 import { ResourceModelProperty, IResource } from './resource-model-types';
 import { ResourceControllerContext } from './resource-controller-types';
 import { Model, Document } from 'mongoose';
-import { RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT } from './config';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { NotFoundError, InvalidRequestError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
@@ -30,7 +29,8 @@ export class ResourceController<T extends IResource> {
     query.sort(context.sorts ?? {});
     query.select(context.selects);
     query.skip(context.skip ?? 0);
-    query.limit(context.limit ?? RESOURCE_CONTROLLER_LIST_LIMIT_DEFAULT);
+
+    if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
     for (const include of transformIncludes(context.includes ?? {})) {
