@@ -22,6 +22,8 @@ app.get('/ping', (_request, response) => response.send('pong'));
 
 // general routes
 
+import './plugins/rate-limiter/rate-limiter';
+
 import { AuthRouter } from './modules/auth/auth-resource';
 app.use('/api/auth', AuthRouter);
 
