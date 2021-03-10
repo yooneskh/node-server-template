@@ -1,5 +1,5 @@
 import { Config } from '../../global/config';
-import { IPayTicket, IPayTicketBase } from './payment-interfaces';
+import { IFactor, IPayTicket, IPayTicketBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
 import { FactorController } from './factor-resource';
@@ -18,8 +18,14 @@ interface IGatewayHandler {
   verifyTicket(payTicket: IPayTicket): Promise<Boolean>;
 }
 
-const gatewayHandlers: IGatewayHandler[] = [];
+export type IPayticketStateValidator = (payticket: IPayTicket, factor: IFactor) => Promise<boolean | string>;
 
+const gatewayHandlers: IGatewayHandler[] = [];
+const payticketStateValidators: IPayticketStateValidator[] = [];
+
+export function registerPayticketStateValidator(validator: IPayticketStateValidator) {
+  payticketStateValidators.push(validator);
+}
 
 const maker = new ResourceMaker<IPayTicketBase>('PayTicket');
 
@@ -84,6 +90,24 @@ maker.addProperties([
     title: 'تاریخ پرداخت'
   },
   {
+    key: 'rejected',
+    type: 'boolean',
+    index: true,
+    default: false,
+    title: 'رد شده'
+  },
+  {
+    key: 'rejectedAt',
+    type: 'number',
+    default: 0,
+    title: 'تاریخ رد'
+  },
+  {
+    key: 'rejectedFor',
+    type: 'string',
+    title: 'علت رد'
+  },
+  {
     key: 'meta',
     type: 'object',
     default: {},
@@ -116,10 +140,33 @@ maker.addActions([
     stateValidator: async ({ resourceId, bag }) => {
 
       const payTicket = await PayTicketController.retrieve({ resourceId });
-      if (payTicket.resolved) throw new InvalidStateError('paytcket is resolved');
+      if (payTicket.resolved) throw new InvalidStateError('payticket is resolved');
 
       const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
       if (factor.payed) throw new InvalidStateError('factor is already payed');
+
+      for (const validator of payticketStateValidators) {
+        try {
+          await validator(payTicket, factor);
+        }
+        catch (error) {
+
+          const newPayTicket = await PayTicketController.edit({
+            resourceId,
+            payload: {
+              resolved: true,
+              resolvedAt: Date.now(),
+              rejected: true,
+              rejectedAt: Date.now(),
+              rejectedFor: error.message
+            }
+          });
+
+          YEventManager.emit(['Resource', 'PayTicket', 'Rejected'], resourceId, newPayTicket, error);
+          throw error;
+
+        }
+      }
 
       bag.payTicket = payTicket;
 

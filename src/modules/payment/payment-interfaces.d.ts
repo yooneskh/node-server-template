@@ -21,5 +21,8 @@ export interface IPayTicketBase extends IResource {
   resolvedAt: number;
   payed: boolean;
   payedAt: number;
+  rejected: boolean;
+  rejectedAt: number;
+  rejectedFor?: string;
   meta: any;
 } export interface IPayTicket extends IPayTicketBase, Document {}
