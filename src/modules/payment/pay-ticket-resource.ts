@@ -9,6 +9,7 @@ import { createErrorResultPage } from './payment-result-error';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
 import { createSuccessResultPage } from './payment-result-success';
 import { depositIntoUserAccount } from '../accounting/transfer-resource';
+import { UserController } from '../user/user-resource';
 
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
 
@@ -263,12 +264,24 @@ gatewayHandlers.push({
 
     const amount = payTicket.amount;
     const callBackUrl = `${Config.payment.callbackUrlBase}/${payTicket._id}/verify`;
-    const description = (await FactorController.retrieve({ resourceId: payTicket.factor })).name;
+    const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
+    const description = factor.name;
+
+    let userMobile = undefined;
+    let userEmail = undefined;
+
+    if (factor.user) {
+      const user = await UserController.retrieve({ resourceId: factor.user });
+      userMobile = user.phoneNumber;
+      userEmail = user.email;
+    }
 
     const { status, url, authority } = await Zarinpal.PaymentRequest({
       Amount: String(amount),
       CallbackURL: callBackUrl,
-      Description: description
+      Description: description,
+      Email: userEmail,
+      Mobile: userMobile
     });
 
     if (status !== 100) throw new ServerError('zarinpal gateway error');

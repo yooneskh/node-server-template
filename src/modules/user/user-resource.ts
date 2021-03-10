@@ -22,6 +22,12 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
+    key: 'email',
+    type: 'string',
+    title: 'ایمیل',
+    dir: 'ltr'
+  },
+  {
     key: 'profile',
     type: 'string',
     ref: 'Media',
