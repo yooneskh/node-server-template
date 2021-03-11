@@ -3,14 +3,23 @@ import * as fs from 'fs';
 import { IMediaBase } from './media-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { Config } from '../../global/config';
-import { InvalidRequestError } from '../../global/errors';
+import { InvalidRequestError, ServerError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
 import ReadChunk from 'read-chunk';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
+import './media-addons';
 
 // init code
-if (!fs.existsSync('./download')) fs.mkdirSync('./download')
+fs.access('./download', fs.constants.F_OK, accessError => {
+  if (accessError) {
+    fs.mkdir('./download', makeError => {
+      if (makeError) {
+        throw new ServerError('could not make ./download directory ' + makeError.message);
+      }
+    })
+  }
+})
 //
 
 
