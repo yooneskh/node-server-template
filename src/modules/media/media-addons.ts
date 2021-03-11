@@ -10,7 +10,8 @@ YEventManager.on(['Resource', 'Media', 'Uploaded'], async (_mediaId: string, med
   const newFilePath = media.relativePath.slice( 0, media.relativePath.lastIndexOf('.') ) + '.webp';
 
   await sharp(media.relativePath)
-    .webp({ quality: 50 })
+    .resize({ width: 1680, withoutEnlargement: true })
+    .webp({ quality: 30 })
     .toFile(newFilePath);
 
 });
