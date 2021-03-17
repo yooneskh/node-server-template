@@ -1,3 +1,4 @@
+import { Config } from '../../global/config';
 import { paymentResultPage } from './payment-result-general';
 
 interface IPaymentResultError {
@@ -23,7 +24,7 @@ const staticMessages = {
 
 export const createErrorResultPage = ({ locale, title, reason, callback, callbackSupport }: IPaymentResultError) => {
 
-  const messages = staticMessages[locale as 'fa' | 'en'];
+  const messages = staticMessages[locale as 'fa' | 'en' ?? Config.localization.defaultLocalization];
 
   return paymentResultPage({
     locale,

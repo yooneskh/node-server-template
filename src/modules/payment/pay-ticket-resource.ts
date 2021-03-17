@@ -1,7 +1,7 @@
 import { Config } from '../../global/config';
 import { IFactor, IPayTicket, IPayTicketBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { InvalidRequestError, InvalidStateError, ServerError } from '../../global/errors';
+import { InvalidRequestError, InvalidStateError, RouteBypassedError, ServerError } from '../../global/errors';
 import { FactorController } from './factor-resource';
 import ZarinpalCheckout from 'zarinpal-checkout';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
@@ -138,39 +138,53 @@ maker.addActions([
     signal: ['Route', 'PayTicket', 'Verify'],
     method: 'GET',
     path: '/:resourceId/verify',
-    stateValidator: async ({ resourceId, bag }) => {
+    stateValidator: async ({ response, resourceId, bag }) => {
+      try {
 
-      const payTicket = await PayTicketController.retrieve({ resourceId });
-      if (payTicket.resolved) throw new InvalidStateError('payticket is resolved');
+        const payTicket = await PayTicketController.retrieve({ resourceId });
+        if (payTicket.resolved) throw new InvalidStateError('payticket is resolved');
 
-      const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
-      if (factor.payed) throw new InvalidStateError('factor is already payed');
+        const factor = await FactorController.retrieve({ resourceId: payTicket.factor });
+        if (factor.payed) throw new InvalidStateError('factor is already payed');
 
-      for (const validator of payticketStateValidators) {
-        try {
-          await validator(payTicket, factor);
+        for (const validator of payticketStateValidators) {
+          try {
+            await validator(payTicket, factor);
+          }
+          catch (error) {
+
+            const newPayTicket = await PayTicketController.edit({
+              resourceId,
+              payload: {
+                resolved: true,
+                resolvedAt: Date.now(),
+                rejected: true,
+                rejectedAt: Date.now(),
+                rejectedFor: error.message
+              }
+            });
+
+            YEventManager.emit(['Resource', 'PayTicket', 'Rejected'], resourceId, newPayTicket, error);
+            throw error;
+
+          }
         }
-        catch (error) {
 
-          const newPayTicket = await PayTicketController.edit({
-            resourceId,
-            payload: {
-              resolved: true,
-              resolvedAt: Date.now(),
-              rejected: true,
-              rejectedAt: Date.now(),
-              rejectedFor: error.message
-            }
-          });
+        bag.payTicket = payTicket;
 
-          YEventManager.emit(['Resource', 'PayTicket', 'Rejected'], resourceId, newPayTicket, error);
-          throw error;
-
-        }
       }
+      catch (error) {
 
-      bag.payTicket = payTicket;
+        response.send(createErrorResultPage({
+          title: Config.payment.response.title,
+          reason: error.message,
+          callback: Config.payment.response.callback,
+          callbackSupport: Config.payment.response.callbackSupport
+        }));
 
+        throw new RouteBypassedError('');
+
+      }
     },
     dataProvider: async ({ response, bag }) => {
       try {
