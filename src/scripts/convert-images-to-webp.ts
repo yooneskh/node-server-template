@@ -19,7 +19,7 @@ const WEBP_ABLE_MIMES = ['image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'i
 
       const result = await sharp(media.relativePath)
         .resize({ width: 1680, withoutEnlargement: true })
-        .webp({ quality: 30 })
+        .webp({ quality: 50 })
         .toFile(newFilePath);
 
       console.log(

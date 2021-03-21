@@ -7,11 +7,11 @@ const WEBP_ABLE_MIMES = ['image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'i
 YEventManager.on(['Resource', 'Media', 'Uploaded'], async (_mediaId: string, media: IMedia) => {
   if (!WEBP_ABLE_MIMES.includes(media.type)) return;
 
-  const newFilePath = media.relativePath.slice( 0, media.relativePath.lastIndexOf('.') ) + '.webp';
+  const newFilePath = media.relativePath + '.webp';
 
   await sharp(media.relativePath)
     .resize({ width: 1680, withoutEnlargement: true })
-    .webp({ quality: 30 })
+    .webp({ quality: 50 })
     .toFile(newFilePath);
 
 });
