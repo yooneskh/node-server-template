@@ -113,7 +113,7 @@ export class ResourceController<T extends IResource> {
       resource.set(key, context.payload[key]);
     }
 
-    if (this.resourceValidator) this.resourceValidator.validate(resource);
+    if (this.resourceValidator) await this.resourceValidator.validate(resource);
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Created'], resource._id, resource);
@@ -137,7 +137,7 @@ export class ResourceController<T extends IResource> {
     }
 
     resource.updatedAt = Date.now();
-    if (this.resourceValidator) this.resourceValidator.validate(resource);
+    if (this.resourceValidator) await this.resourceValidator.validate(resource);
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Updated'], resource._id, resource);
