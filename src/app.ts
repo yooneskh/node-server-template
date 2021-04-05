@@ -10,7 +10,7 @@ const app = Express();
 app.use(Logger(':date[clf] :method :url :status :res[content-length] :response-time ms'));
 app.use(Express.json({ limit: '10mb' }));
 app.use(Express.urlencoded({ limit: '10mb', parameterLimit: 100000, extended: false }));
-app.use(CookieParser())
+app.use(CookieParser());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(Cors());
@@ -38,7 +38,7 @@ app.use('/api/updates', UpdateRouter);
 
 import { FactorRouter } from './modules/payment/factor-resource';
 app.use('/api/factors', FactorRouter);
-``
+
 import { PayTicketRouter } from './modules/payment/pay-ticket-resource';
 app.use('/api/paytickets', PayTicketRouter);
 
