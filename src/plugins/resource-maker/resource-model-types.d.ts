@@ -41,6 +41,7 @@ export interface ResourceModelProperty {
   labelFormat?: string;
   valueFormat?: string;
   items?: { value: string, text: string }[];
+  handlerElement?: string;
 }
 
 export interface IResource {
