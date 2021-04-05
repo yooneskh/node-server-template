@@ -21,8 +21,8 @@ export const Config = {
       callbackSupport: 'https://yooneskh.ir',
       favicon: 'https://yooneskh.ir/favicon.ico',
       font: {
-        fa: 'https://cdn.khosh-ghadam.ir/font/iryekan/iryekan.css',
-        en: 'https://cdn.khosh-ghadam.ir/font/roboto/roboto.css'
+        fa: 'https://cdn.khoshghadam.com/font/iryekan/iryekan.css',
+        en: 'https://cdn.khoshghadam.com/font/roboto/roboto.css'
       }
     }
   },
