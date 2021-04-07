@@ -9,7 +9,7 @@ export type CompoundIndex = SimpleCompoundIndex | FullCompoundIndex
 
 export interface ResourceModelProperty {
   key: string;
-  type: string;
+  type: 'string' | 'number' | 'boolean' | 'object' | 'any' | 'series';
   ref?: string;
   default?: any;
   required?: boolean;
