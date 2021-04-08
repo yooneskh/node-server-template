@@ -5,7 +5,7 @@ import { AccountController, getAccountForUser, getGlobalSourceAccount, getGlobal
 import { createTransaction } from './transaction-resource';
 
 
-const maker = new ResourceMaker<ITransferBase>('Transfer');
+const maker = new ResourceMaker<ITransferBase, ITransfer>('Transfer');
 
 maker.addProperties([
   {

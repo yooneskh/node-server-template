@@ -1,17 +1,17 @@
-import { ResourceModelProperty, IResource } from './resource-model-types';
+import { ResourceModelProperty, IResource, IResourceDocument } from './resource-model-types';
 import { ResourceControllerContext } from './resource-controller-types';
-import { Model, Document } from 'mongoose';
+import { Model } from 'mongoose';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
 import { NotFoundError, InvalidRequestError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
 import { ResourceValidator } from './resource-validator';
 
 // tslint:disable: no-any
-export class ResourceController<T extends IResource> {
+export class ResourceController<T extends IResource, TF extends IResourceDocument> {
 
   private resourceValidator?: ResourceValidator<T>;
 
-  constructor(private name: string, private model: Model<T & Document, {}>, private properties: ResourceModelProperty[]) {
+  constructor(private name: string, private model: Model<TF>, private properties: ResourceModelProperty[]) {
 
   }
 
@@ -19,21 +19,21 @@ export class ResourceController<T extends IResource> {
     this.resourceValidator = validator;
   }
 
-  public async list(context: ResourceControllerContext<T>): Promise<(T & Document)[]> {
+  public async list(context: ResourceControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.properties);
-    validatePropertyKeys(context.sorts ?? {}, this.properties);
+    validatePropertyKeys(context.filters || {}, this.properties);
+    validatePropertyKeys(context.sorts || {}, this.properties);
 
-    const query = this.model.find(context.filters ?? {});
+    const query = this.model.find(context.filters || {});
 
-    query.sort(context.sorts ?? {});
+    query.sort(context.sorts || {});
     query.select(context.selects);
     query.skip(context.skip ?? 0);
 
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) {
+    for (const include of transformIncludes(context.includes || {})) {
       query.populate(include);
     }
 
@@ -49,24 +49,24 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async count(context: ResourceControllerContext<T>): Promise<number> {
+  public async count(context: ResourceControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters ?? {}, this.properties);
+    validatePropertyKeys(context.filters || {}, this.properties);
 
-    const result = await this.model.countDocuments(context.filters ?? {});
+    const result = await this.model.countDocuments(context.filters || {});
 
     YEventManager.emit(['Resource', this.name, 'Counted'], result);
     return result;
 
   }
 
-  public async retrieve(context: ResourceControllerContext<T>): Promise<T & Document> {
+  public async retrieve(context: ResourceControllerContext<T, TF>): Promise<TF> {
     if (!context.resourceId) throw new InvalidRequestError('no resource id specified');
 
     const query = this.model.findById(context.resourceId).select(context.selects);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) {
+    for (const include of transformIncludes(context.includes || {})) {
       query.populate(include);
     }
 
@@ -79,17 +79,17 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async findOne(context: ResourceControllerContext<T>): Promise<T & Document> {
+  public async findOne(context: ResourceControllerContext<T, TF>): Promise<TF> {
 
-    validatePropertyKeys(context.filters ?? {}, this.properties);
+    validatePropertyKeys(context.filters || {}, this.properties);
 
     const query = this.model.findOne(context.filters);
 
-    query.sort(context.sorts ?? {});
+    query.sort(context.sorts || {});
     query.select(context.selects);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) {
+    for (const include of transformIncludes(context.includes || {})) {
       query.populate(include);
     }
 
@@ -102,9 +102,9 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async create(context: ResourceControllerContext<T>): Promise<T & Document> {
+  public async create(context: ResourceControllerContext<T, TF>): Promise<TF> {
 
-    validatePropertyKeys(context.payload ?? {}, this.properties, true);
+    validatePropertyKeys(context.payload || {}, this.properties, true);
     // TODO: check value of payload
 
     const resource = new this.model();
@@ -113,7 +113,7 @@ export class ResourceController<T extends IResource> {
       resource.set(key, context.payload[key]);
     }
 
-    if (this.resourceValidator) await this.resourceValidator.validate(resource);
+    if (this.resourceValidator) await this.resourceValidator.validate(resource as unknown as T);
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Created'], resource._id, resource);
@@ -121,10 +121,10 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async edit(context: ResourceControllerContext<T>): Promise<T & Document> {
+  public async edit(context: ResourceControllerContext<T, TF>): Promise<TF> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
-    validatePropertyKeys(context.payload ?? {}, this.properties);
+    validatePropertyKeys(context.payload || {}, this.properties);
     // TODO: check value of payload
 
     const resource = await this.model.findById(context.resourceId);
@@ -137,7 +137,7 @@ export class ResourceController<T extends IResource> {
     }
 
     resource.updatedAt = Date.now();
-    if (this.resourceValidator) await this.resourceValidator.validate(resource);
+    if (this.resourceValidator) await this.resourceValidator.validate(resource as unknown as T);
     await resource.save();
 
     YEventManager.emit(['Resource', this.name, 'Updated'], resource._id, resource);
@@ -146,7 +146,7 @@ export class ResourceController<T extends IResource> {
   }
 
   // todo: apply validators on this
-  public async editQuery(context: ResourceControllerContext<T>): Promise<T & Document> {
+  public async editQuery(context: ResourceControllerContext<T, TF>): Promise<TF> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     if ('$set' in context.query) {
@@ -169,7 +169,7 @@ export class ResourceController<T extends IResource> {
 
   }
 
-  public async delete(context: ResourceControllerContext<T>): Promise<boolean> {
+  public async delete(context: ResourceControllerContext<T, TF>): Promise<boolean> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
 
     const resource = await this.model.findById(context.resourceId);

@@ -1,8 +1,8 @@
-import { IUserBase } from './user-interfaces';
+import { IUser, IUserBase } from './user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 
-const maker = new ResourceMaker<IUserBase>('User');
+const maker = new ResourceMaker<IUserBase, IUser>('User');
 
 maker.addProperties([
   {

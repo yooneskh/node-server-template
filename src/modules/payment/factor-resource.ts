@@ -1,9 +1,9 @@
-import { IFactorBase } from './payment-interfaces';
+import { IFactor, IFactorBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidStateError } from '../../global/errors';
 
 
-const maker = new ResourceMaker<IFactorBase>('Factor');
+const maker = new ResourceMaker<IFactorBase, IFactor>('Factor');
 
 maker.addProperties([
   {

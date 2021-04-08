@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export type SimpleCompoundIndex = { [key: string]: 1 | -1 };
 
 export type FullCompoundIndex = {
@@ -48,3 +50,5 @@ export interface IResource {
   createdAt: number;
   updatedAt: number;
 }
+
+export interface IResourceDocument extends IResource, Document {}

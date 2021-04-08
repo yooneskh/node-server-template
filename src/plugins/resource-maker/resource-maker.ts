@@ -1,4 +1,4 @@
-import { CompoundIndex, IResource, ResourceModelProperty } from './resource-model-types';
+import { CompoundIndex, IResource, IResourceDocument, ResourceModelProperty } from './resource-model-types';
 import { ResourceModel } from './resource-model';
 import { ResourceController } from './resource-controller';
 import { ServerError } from '../../global/errors';
@@ -9,11 +9,11 @@ import { ResourceRelationController } from './resource-relation-controller';
 import { makeResourceRelationModel } from './resource-relation-model';
 import { ResourceValidation, ResourceValidator } from './resource-validator';
 
-export class ResourceMaker<T extends IResource> {
+export class ResourceMaker<T extends IResource, TF extends IResourceDocument> {
 
-  private resourceModeler = new ResourceModel<T>(this.name);
-  private resourceController?: ResourceController<T>;
-  private resourceRouter?: ResourceRouter<T>;
+  private resourceModeler = new ResourceModel<TF>(this.name);
+  private resourceController?: ResourceController<T, TF>;
+  private resourceRouter?: ResourceRouter<T, TF>;
   private resourceValidator?: ResourceValidator<T>;
 
   constructor(private name: string) {}
@@ -50,31 +50,28 @@ export class ResourceMaker<T extends IResource> {
     if (!this.resourceController) throw new ServerError('must make controller before setting validations');
 
     this.resourceValidator = new ResourceValidator<T>(this.name, validations);
-    this.resourceController!!.setValidator(this.resourceValidator);
+    this.resourceController.setValidator(this.resourceValidator);
 
   }
 
   public addAction(action: ResourceRouterAction) {
 
     if (!this.resourceRouter) {
-      this.resourceRouter = new ResourceRouter<T>(this.name, this.resourceModeler.getProperties(), this.resourceController);
+      this.resourceRouter = new ResourceRouter<T, TF>(this.name, this.resourceModeler.getProperties(), this.resourceController);
     }
 
     this.resourceRouter.addAction(action);
 
   }
 
-  public addRelation<U extends IResource>(relation: ResourceRelation) {
+  public addRelation<U extends IResource, UF extends IResourceDocument>(relation: ResourceRelation) {
 
     if (!this.resourceRouter) {
-      if (!this.resourceController) throw new ServerError('action added before making controller');
-
-      this.resourceRouter = new ResourceRouter<T>(this.name, this.resourceModeler.getProperties(), this.resourceController);
-
+      this.resourceRouter = new ResourceRouter<T, TF>(this.name, this.resourceModeler.getProperties(), this.resourceController);
     }
 
-    const relationModel = makeResourceRelationModel<U>(this.name, relation);
-    const relationController = new ResourceRelationController<U>(this.name, relation.targetModelName, relationModel, relation);
+    const relationModel = makeResourceRelationModel<UF>(this.name, relation);
+    const relationController = new ResourceRelationController<U, UF>(this.name, relation.targetModelName, relationModel, relation);
 
     this.resourceRouter.addRelation(relation, relationController);
 

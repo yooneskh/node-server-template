@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { IMediaBase } from './media-interfaces';
+import { IMedia, IMediaBase } from './media-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { Config } from '../../global/config';
 import { InvalidRequestError, ServerError } from '../../global/errors';
@@ -23,7 +23,7 @@ fs.access('./download', fs.constants.F_OK, accessError => {
 //
 
 
-const maker = new ResourceMaker<IMediaBase>('Media');
+const maker = new ResourceMaker<IMediaBase, IMedia>('Media');
 
 maker.addProperties([
   {

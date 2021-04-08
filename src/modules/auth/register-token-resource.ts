@@ -1,8 +1,8 @@
-import { IRegisterTokenBase } from './auth-interfaces';
+import { IRegisterToken, IRegisterTokenBase } from './auth-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 
-const maker = new ResourceMaker<IRegisterTokenBase>('RegisterToken');
+const maker = new ResourceMaker<IRegisterTokenBase, IRegisterToken>('RegisterToken');
 
 maker.addProperties([
   {

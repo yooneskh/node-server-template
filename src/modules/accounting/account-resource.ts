@@ -1,4 +1,4 @@
-import { IAccountBase } from './accounting-interfaces';
+import { IAccount, IAccountBase } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { InvalidStateError } from '../../global/errors';
@@ -6,7 +6,7 @@ import { UserController } from '../user/user-resource';
 import { hasPermissions } from '../auth/auth-resource';
 
 
-const maker = new ResourceMaker<IAccountBase>('Account');
+const maker = new ResourceMaker<IAccountBase, IAccount>('Account');
 
 maker.addProperties([
   {

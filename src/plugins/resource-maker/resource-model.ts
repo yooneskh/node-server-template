@@ -1,12 +1,12 @@
-import { ResourceModelProperty, IResource, CompoundIndex } from './resource-model-types';
+import { ResourceModelProperty, CompoundIndex, IResourceDocument } from './resource-model-types';
 import { ServerError } from '../../global/errors';
-import { Schema, model, Model, Document } from 'mongoose';
+import { Schema, model, Model } from 'mongoose';
 import { makeSchemaOptions } from './resource-model-util';
 
-export class ResourceModel<T extends IResource> {
+export class ResourceModel<TF extends IResourceDocument> {
 
   private properties: ResourceModelProperty[] = [];
-  private model?: Model<T & Document, {}>;
+  private model?: Model<TF, {}>;
   private compoundIndexes?: CompoundIndex[];
 
   constructor(private name: string) { }
@@ -48,7 +48,7 @@ export class ResourceModel<T extends IResource> {
       }
     }
 
-    this.model = model<T & Document>(this.name, schema);
+    this.model = model<TF>(this.name, schema);
     return this.model;
 
   }

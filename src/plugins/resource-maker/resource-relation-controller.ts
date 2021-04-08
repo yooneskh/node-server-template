@@ -1,5 +1,5 @@
-import { IResource, ResourceModelProperty } from './resource-model-types';
-import { Model, Document } from 'mongoose';
+import { IResource, IResourceDocument, ResourceModelProperty } from './resource-model-types';
+import { Model } from 'mongoose';
 import { ResourceRelationControllerContext } from './resource-relation-controller-types';
 import { ResourceRelation } from './resource-relation-types';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
@@ -8,17 +8,17 @@ import { YEventManager } from '../event-manager/event-manager';
 import { simplePascalize } from '../../global/util';
 
 // tslint:disable: no-any
-export class ResourceRelationController<T extends IResource> {
+export class ResourceRelationController<T extends IResource, TF extends IResourceDocument> {
 
   private sourcePropertyName: string;
   private targetPropertyName: string;
 
-  private model: Model<T & Document>;
+  private model: Model<TF>;
   private relation: ResourceRelation;
   private relationName: string = '';
   private validationProperties: ResourceModelProperty[];
 
-  constructor(sourceModelName: string, targetModelName: string, relationModel: Model<T & Document>, relation: ResourceRelation) {
+  constructor(sourceModelName: string, targetModelName: string, relationModel: Model<TF>, relation: ResourceRelation) {
 
     this.sourcePropertyName = sourceModelName.toLowerCase();
     this.targetPropertyName = targetModelName.toLowerCase();
@@ -42,19 +42,19 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async listAll(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
+  public async listAll(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
-    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
-    const query = this.model.find(context.filters ?? {});
+    const query = this.model.find(context.filters || {});
     query.sort(context.sorts);
     query.select(context.selects);
     query.skip(context.skip ?? 0);
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+    for (const include of transformIncludes(context.includes || {})) query.populate(include);
 
     const result = await query;
 
@@ -68,11 +68,11 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async countListAll(context: ResourceRelationControllerContext<T>): Promise<number> {
+  public async countListAll(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
 
-    const query = this.model.find(context.filters ?? {});
+    const query = this.model.find(context.filters || {});
     query.skip(context.skip ?? 0);
     if (context.limit) query.limit(context.limit);
 
@@ -87,10 +87,10 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async listForSource(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
+  public async listForSource(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
-    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId}))
     query.sort(context.sorts);
@@ -99,7 +99,7 @@ export class ResourceRelationController<T extends IResource> {
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+    for (const include of transformIncludes(context.includes || {})) query.populate(include);
 
     const result = await query;
 
@@ -113,9 +113,9 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async countListForSource(context: ResourceRelationControllerContext<T>): Promise<number> {
+  public async countListForSource(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
 
     const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId }));
 
@@ -128,10 +128,10 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async listForTarget(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
+  public async listForTarget(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
-    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(Object.assign({}, context.filters, { [this.targetPropertyName]: context.targetId }))
     query.sort(context.sorts);
@@ -140,7 +140,7 @@ export class ResourceRelationController<T extends IResource> {
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+    for (const include of transformIncludes(context.includes || {})) query.populate(include);
 
     const result = await query;
 
@@ -154,9 +154,9 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async countListForTarget(context: ResourceRelationControllerContext<T>): Promise<number> {
+  public async countListForTarget(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
 
     const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.targetPropertyName]: context.targetId }));
 
@@ -169,10 +169,10 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async getSingleRelation(context: ResourceRelationControllerContext<T>): Promise<(T & Document)[]> {
+  public async getSingleRelation(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters ?? {}, this.validationProperties);
-    validatePropertyKeys(context.sorts ?? {}, this.validationProperties);
+    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId }))
     query.sort(context.sorts);
@@ -181,7 +181,7 @@ export class ResourceRelationController<T extends IResource> {
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+    for (const include of transformIncludes(context.includes || {})) query.populate(include);
 
     const result = await query;
 
@@ -195,9 +195,9 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async getSingleRelationCount(context: ResourceRelationControllerContext<T>): Promise<number> {
+  public async getSingleRelationCount(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters ?? {}, this.relation.properties || []);
+    validatePropertyKeys(context.filters || {}, this.relation.properties || []);
 
     const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId }));
 
@@ -210,11 +210,11 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async retrieveRelation(context: ResourceRelationControllerContext<T>): Promise<T & Document> {
+  public async retrieveRelation(context: ResourceRelationControllerContext<T, TF>): Promise<TF> {
 
     const query = this.model.findById(context.relationId).select(context.selects);
 
-    for (const include of transformIncludes(context.includes ?? {})) query.populate(include);
+    for (const include of transformIncludes(context.includes || {})) query.populate(include);
     if (context.lean) query.lean();
 
     const relation = await query;
@@ -230,7 +230,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async addRelation(context: ResourceRelationControllerContext<T>): Promise<T & Document> {
+  public async addRelation(context: ResourceRelationControllerContext<T, TF>): Promise<TF> {
 
     // TODO: validate payload
 
@@ -272,7 +272,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async updateRelation(context: ResourceRelationControllerContext<T>): Promise<boolean> {
+  public async updateRelation(context: ResourceRelationControllerContext<T, TF>): Promise<boolean> {
 
     const item = await this.model.findById(context.relationId);
     if (!item) throw new NotFoundError('relation not found');
@@ -283,7 +283,7 @@ export class ResourceRelationController<T extends IResource> {
 
     // TODO: validate payload
 
-    for (const key in context.payload ?? {}) {
+    for (const key in context.payload || {}) {
       if (key !== this.sourcePropertyName || key !== this.targetPropertyName || key !== '_id') {
         item.set(key, (context.payload as any)[key]);
       }
@@ -302,7 +302,7 @@ export class ResourceRelationController<T extends IResource> {
 
   }
 
-  public async removeRelation(context: ResourceRelationControllerContext<T>): Promise<boolean> {
+  public async removeRelation(context: ResourceRelationControllerContext<T, TF>): Promise<boolean> {
 
     const item = await this.model.findById(context.relationId);
     if (!item) throw new NotFoundError('relation not found');

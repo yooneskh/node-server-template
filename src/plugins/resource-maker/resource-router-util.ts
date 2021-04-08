@@ -1,7 +1,7 @@
 import { ResourceRouterAction } from './resource-router-types';
 import { ServerError, InvalidRequestError } from '../../global/errors';
 import { ResourceController } from './resource-controller';
-import { IResource } from './resource-model-types';
+import { IResource, IResourceDocument } from './resource-model-types';
 import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from './config';
 import { ResourceRelationController } from './resource-relation-controller';
 
@@ -105,7 +105,7 @@ export function extractIncludeQueryObject(queryString: string): Record<string, s
   return extractQueryObject(queryString, true);
 }
 
-export function populateAction<T extends IResource>(action: ResourceRouterAction, name: string, controller: ResourceController<T>) {
+export function populateAction<T extends IResource, TF extends IResourceDocument>(action: ResourceRouterAction, name: string, controller: ResourceController<T, TF>) {
   if (action.template === 'LIST') {
 
     if (!action.method) action.method = 'GET';
@@ -204,7 +204,7 @@ export function populateAction<T extends IResource>(action: ResourceRouterAction
   }
 }
 
-export function populateRelationAction(action: ResourceRouterAction, controller: ResourceRelationController<IResource>, pluralTargetName: string) {
+export function populateRelationAction(action: ResourceRouterAction, controller: ResourceRelationController<IResource, IResourceDocument>, pluralTargetName: string) {
   if (action.template === 'LIST_ALL') {
 
     if (!action.method) action.method = 'GET';

@@ -4,7 +4,7 @@ import { InvalidRequestError } from '../../global/errors';
 import { AccountController } from './account-resource';
 
 
-const maker = new ResourceMaker<ITransactionBase>('Transaction');
+const maker = new ResourceMaker<ITransactionBase, ITransaction>('Transaction');
 
 maker.addProperties([
   {

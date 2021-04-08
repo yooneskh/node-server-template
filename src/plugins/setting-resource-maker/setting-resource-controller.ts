@@ -1,13 +1,12 @@
-import { Document } from 'mongoose';
 import { ResourceController } from '../resource-maker/resource-controller';
-import { IResource } from '../resource-maker/resource-model-types';
+import { IResource, IResourceDocument } from '../resource-maker/resource-model-types';
 import { SettingResourceControllerContext } from './setting-resource-controller-types';
 
-export class SettingResourceController<T extends IResource> {
+export class SettingResourceController<T extends IResource, TF extends IResourceDocument> {
 
   private isEnsured = false;
 
-  constructor(private controller: ResourceController<T>) {
+  constructor(private controller: ResourceController<T, TF>) {
 
   }
 
@@ -25,7 +24,7 @@ export class SettingResourceController<T extends IResource> {
 
   }
 
-  public async retrieve(context: SettingResourceControllerContext<T>): Promise<T & Document> {
+  public async retrieve(context: SettingResourceControllerContext<T>): Promise<TF> {
     await this.ensureItem();
 
     return this.controller.findOne({
@@ -36,7 +35,7 @@ export class SettingResourceController<T extends IResource> {
 
   }
 
-  public async update(context: SettingResourceControllerContext<T>): Promise<T & Document> {
+  public async update(context: SettingResourceControllerContext<T>): Promise<TF> {
     await this.ensureItem();
 
     const item = await this.retrieve({});

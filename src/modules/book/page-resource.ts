@@ -1,8 +1,8 @@
-import { IPageBase } from './book-interfaces';
+import { IPage, IPageBase } from './book-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 
-const maker = new ResourceMaker<IPageBase>('Page');
+const maker = new ResourceMaker<IPageBase, IPage>('Page');
 
 maker.addProperties([
   {

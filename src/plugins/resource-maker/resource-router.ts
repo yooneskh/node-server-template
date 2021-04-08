@@ -2,7 +2,7 @@ import { ResourceRouterAction, ResourceRouterContext } from './resource-router-t
 import { Router, Request, Response } from 'express';
 import { InvalidRequestError, ServerError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
-import { ResourceModelProperty, IResource } from './resource-model-types';
+import { ResourceModelProperty, IResource, IResourceDocument } from './resource-model-types';
 import { populateAction, populateRelationAction } from './resource-router-util';
 import { ResourceController } from './resource-controller';
 import { ResourceRelation } from './resource-relation-types';
@@ -12,17 +12,17 @@ import { ResourceRelationController } from './resource-relation-controller';
 export const DISMISS_DATA_PROVIDER = Symbol('dismiss data provider');
 type RouterProcessor = (context: ResourceRouterContext) => Promise<void>;
 
-export class ResourceRouter<T extends IResource> {
+export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
 
   private static preProcessors: RouterProcessor[] = [];
   private static preResponseProcessors: RouterProcessor[] = [];
   private static postProcessors: RouterProcessor[] = [];
 
   private actions: ResourceRouterAction[] = [];
-  private relations: [ResourceRelation, ResourceRelationController<any>][] = []; // tslint:disable-line: no-any
+  private relations: [ResourceRelation, ResourceRelationController<any, any>][] = []; // tslint:disable-line: no-any
   private router?: Router = undefined;
 
-  constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T> | undefined) {
+  constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T, TF> | undefined) {
 
   }
 
@@ -182,7 +182,7 @@ export class ResourceRouter<T extends IResource> {
 
   }
 
-  public addRelation<U extends IResource>(relation: ResourceRelation, relationController: ResourceRelationController<U>) {
+  public addRelation<U extends IResource, UF extends IResourceDocument>(relation: ResourceRelation, relationController: ResourceRelationController<U, UF>) {
     if (this.router !== undefined) throw new ServerError('router is already made');
 
     this.relations.push([ relation, relationController ]);

@@ -1,12 +1,13 @@
-import { FilterQuery, Document } from "mongoose";
+import { FilterQuery } from "mongoose";
+import { IResource, IResourceDocument } from "./resource-model-types";
 
-export interface ResourceRelationControllerContext<T> {
+export interface ResourceRelationControllerContext<T extends IResource, TF extends IResourceDocument> {
   relationId?: string;
   sourceId?: string;
   targetId?: string;
   includes?: Record<string, string>;
   sorts?: Record<string, number>;
-  filters?: FilterQuery<Document & T>;
+  filters?: FilterQuery<TF>;
   payload?: Partial<T>;
   selects?: string;
   limit?: number;

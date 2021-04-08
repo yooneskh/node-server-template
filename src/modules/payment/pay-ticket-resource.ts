@@ -28,7 +28,7 @@ export function registerPayticketStateValidator(validator: IPayticketStateValida
   payticketStateValidators.push(validator);
 }
 
-const maker = new ResourceMaker<IPayTicketBase>('PayTicket');
+const maker = new ResourceMaker<IPayTicketBase, IPayTicket>('PayTicket');
 
 maker.addProperties([
   {

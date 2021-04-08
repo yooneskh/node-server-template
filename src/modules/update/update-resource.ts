@@ -1,8 +1,8 @@
-import { IUpdateBase } from './update-interfaces';
+import { IUpdate, IUpdateBase } from './update-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 
-const maker = new ResourceMaker<IUpdateBase>('Update');
+const maker = new ResourceMaker<IUpdateBase, IUpdate>('Update');
 
 maker.addProperties([
   {

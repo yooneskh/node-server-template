@@ -1,9 +1,9 @@
-import { IAuthorBase, IAuthorBookBase, IAuthorPageMakerBase } from './author-interfaces';
+import { IAuthor, IAuthorBase, IAuthorBook, IAuthorBookBase, IAuthorPageMaker, IAuthorPageMakerBase } from './author-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { Config } from '../../global/config';
 
 
-const maker = new ResourceMaker<IAuthorBase>('Author');
+const maker = new ResourceMaker<IAuthorBase, IAuthor>('Author');
 
 maker.addProperties([
   {
@@ -26,7 +26,7 @@ maker.addActions([
   { template: 'DELETE' }
 ]);
 
-export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation<IAuthorBookBase>({
+export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation<IAuthorBookBase, IAuthorBook>({
   targetModelName: 'Book',
   singular: true,
   title: 'کتاب‌ها',
@@ -66,7 +66,7 @@ export const { model: AuthorBookRelationModel, controller: AuthorBookRelationCon
   ]
 });
 
-export const { model: PageMakerModel, controller: PageMakerController } = maker.addRelation<IAuthorPageMakerBase>({
+export const { model: PageMakerModel, controller: PageMakerController } = maker.addRelation<IAuthorPageMakerBase, IAuthorPageMaker>({
   targetModelName: 'Page',
   relationModelName: 'PageMaker',
   maxCount: 5,

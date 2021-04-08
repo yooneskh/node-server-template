@@ -1,8 +1,8 @@
-import { IAuthTokenBase } from './auth-interfaces';
+import { IAuthToken, IAuthTokenBase } from './auth-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 
-const maker = new ResourceMaker<IAuthTokenBase>('AuthToken');
+const maker = new ResourceMaker<IAuthTokenBase, IAuthToken>('AuthToken');
 
 maker.addProperties([
   {

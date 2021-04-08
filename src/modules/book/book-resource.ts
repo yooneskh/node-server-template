@@ -1,9 +1,9 @@
-import { IBookBase } from './book-interfaces';
+import { IBook, IBookBase } from './book-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 
-const maker = new ResourceMaker<IBookBase>('Book');
+const maker = new ResourceMaker<IBookBase, IBook>('Book');
 
 maker.addProperties([
   {

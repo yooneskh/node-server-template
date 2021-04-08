@@ -1,15 +1,15 @@
 import { ServerError } from '../../global/errors';
 import { ResourceController } from '../resource-maker/resource-controller';
 import { ResourceMaker } from '../resource-maker/resource-maker';
-import { IResource, ResourceModelProperty } from '../resource-maker/resource-model-types';
+import { IResource, IResourceDocument, ResourceModelProperty } from '../resource-maker/resource-model-types';
 import { ResourceRouterAction } from '../resource-maker/resource-router-types';
 import { extractIncludeQueryObject } from '../resource-maker/resource-router-util';
 import { SettingResourceController } from './setting-resource-controller';
 
-export class SettingResourceMaker<T extends IResource> {
+export class SettingResourceMaker<T extends IResource, TF extends IResourceDocument> {
 
-  private resourceMaker = new ResourceMaker<T>(this.name);
-  private controller?: SettingResourceController<T> = undefined;
+  private resourceMaker = new ResourceMaker<T, TF>(this.name);
+  private controller?: SettingResourceController<T, TF> = undefined;
 
   constructor(private name: string) {}
 
@@ -29,7 +29,7 @@ export class SettingResourceMaker<T extends IResource> {
   public getController() {
     if (this.controller) return this.controller;
 
-    const resourceController = new ResourceController<T>(this.name, this.resourceMaker.getModel(), this.resourceMaker.getProperties());
+    const resourceController = new ResourceController<T, TF>(this.name, this.resourceMaker.getModel(), this.resourceMaker.getProperties());
     return this.controller = new SettingResourceController(resourceController);
 
   }
