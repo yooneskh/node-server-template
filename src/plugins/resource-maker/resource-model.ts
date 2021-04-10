@@ -6,7 +6,7 @@ import { makeSchemaOptions } from './resource-model-util';
 export class ResourceModel<TF extends IResourceDocument> {
 
   private properties: ResourceModelProperty[] = [];
-  private model?: Model<TF, {}>;
+  private model?: Model<TF>;
   private compoundIndexes?: CompoundIndex[];
 
   constructor(private name: string) { }
