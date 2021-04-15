@@ -52,3 +52,12 @@ export interface IResource {
 }
 
 export interface IResourceDocument extends IResource, Document {}
+
+export interface GeoSpat {
+  type: 'Point'
+}
+
+export interface GeoSpatPoint extends GeoSpat {
+  type: 'Point';
+  coordinates: [longitude: number, latitude: number, zoom?: number]
+}
