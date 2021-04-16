@@ -1,10 +1,10 @@
 export const Config = {
-  port: 48500,
-  filesBaseUrl: 'http://localhost:8080',
+  port: process.env.PORT || 48500,
+  filesBaseUrl: process.env.FILES_BASE_URL || 'http://localhost:8080',
   database: {
-    port: 27017,
-    host: 'localhost',
-    name: 'yback'
+    port: process.env.DB_PORT || 27017,
+    host: process.env.DB_HOST || 'localhost',
+    name: process.env.DB_NAME || 'yback'
   },
   authentication: {
     staticVerificationCode: '111111'
