@@ -20,7 +20,7 @@
     "pluralize": "^8.0.0",
     "rate-limiter-flexible": "^2.1.10",
     "read-chunk": "^3.2.0",
-    "sharp": "^0.27.2",
+    "sharp": "0.28.1",
     "socket.io": "^2.3.0",
     "ynetwork": "^2.6.0",
     "zarinpal-checkout": "^0.2.7"
