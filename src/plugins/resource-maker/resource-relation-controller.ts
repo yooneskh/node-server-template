@@ -44,7 +44,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async listAll(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
     validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(context.filters || {});
@@ -70,7 +70,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async countListAll(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
 
     const query = this.model.find(context.filters || {});
     query.skip(context.skip ?? 0);
@@ -89,7 +89,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async listForSource(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
     validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId}))
@@ -115,7 +115,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async countListForSource(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
 
     const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId }));
 
@@ -130,7 +130,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async listForTarget(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
     validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(Object.assign({}, context.filters, { [this.targetPropertyName]: context.targetId }))
@@ -156,7 +156,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async countListForTarget(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
 
     const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.targetPropertyName]: context.targetId }));
 
@@ -171,7 +171,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async getSingleRelation(context: ResourceRelationControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters || {}, this.validationProperties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.validationProperties);
     validatePropertyKeys(context.sorts || {}, this.validationProperties);
 
     const query = this.model.find(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId }))
@@ -197,7 +197,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
   public async getSingleRelationCount(context: ResourceRelationControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters || {}, this.relation.properties || []);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.relation.properties || []);
 
     const result = await this.model.countDocuments(Object.assign({}, context.filters, { [this.sourcePropertyName]: context.sourceId, [this.targetPropertyName]: context.targetId }));
 

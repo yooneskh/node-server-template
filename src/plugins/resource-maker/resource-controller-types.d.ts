@@ -12,4 +12,5 @@ export interface ResourceControllerContext<T extends IResource, TF extends IReso
   skip?: number;
   query?: any;
   lean?: boolean;
+  skipKeyCheck?: boolean;
 }

@@ -21,7 +21,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
 
   public async list(context: ResourceControllerContext<T, TF>): Promise<TF[]> {
 
-    validatePropertyKeys(context.filters || {}, this.properties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.properties);
     validatePropertyKeys(context.sorts || {}, this.properties);
 
     const query = this.model.find(context.filters || {});
@@ -51,7 +51,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
 
   public async count(context: ResourceControllerContext<T, TF>): Promise<number> {
 
-    validatePropertyKeys(context.filters || {}, this.properties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.properties);
 
     const result = await this.model.countDocuments(context.filters || {});
 
@@ -81,7 +81,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
 
   public async findOne(context: ResourceControllerContext<T, TF>): Promise<TF> {
 
-    validatePropertyKeys(context.filters || {}, this.properties);
+    if (!context.skipKeyCheck) validatePropertyKeys(context.filters || {}, this.properties);
 
     const query = this.model.findOne(context.filters);
 

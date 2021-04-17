@@ -14,4 +14,5 @@ export interface ResourceRelationControllerContext<T extends IResource, TF exten
   skip?: number;
   query?: any;
   lean?: boolean;
+  skipKeyCheck?: boolean;
 }
