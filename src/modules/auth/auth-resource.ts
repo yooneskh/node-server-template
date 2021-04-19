@@ -49,6 +49,9 @@ maker.addAction({
     blockDuration: 60,
     consecutiveFailDurationMultiplier: 1.5
   },
+  captchaOptions: {
+    enabled: true
+  },
   async dataProvider({ payload }) {
 
     const user = await UserController.findOne({
@@ -84,6 +87,9 @@ maker.addAction({
     pointsInterval: 5 * 60,
     blockDuration: 60,
     consecutiveFailDurationMultiplier: 2
+  },
+  captchaOptions: {
+    enabled: true
   },
   async dataProvider({ payload }) {
 
