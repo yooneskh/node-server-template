@@ -23,6 +23,7 @@
     "read-chunk": "^3.2.0",
     "sharp": "0.28.1",
     "socket.io": "^2.3.0",
+    "svg-captcha": "^1.4.0",
     "ynetwork": "^2.6.0",
     "zarinpal-checkout": "^0.2.7"
   },
