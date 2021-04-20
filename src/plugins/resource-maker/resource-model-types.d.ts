@@ -40,6 +40,7 @@ export interface ResourceModelProperty {
   itemWidth?: number;
   disabled?: boolean;
   readonly?: boolean;
+  nonCreating?: boolean;
   labelFormat?: string;
   valueFormat?: string;
   items?: { value: string, text: string }[];
