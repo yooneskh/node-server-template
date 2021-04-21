@@ -1,7 +1,8 @@
 import { loadFont, create, ConfigObject, options } from 'svg-captcha';
 
 options.charPreset = '123456789';
-options.noise = 3;
+options.noise = 5;
+options.fontSize = 20;
 
 loadFont(`${process.cwd()}/assets/iranyekan.ttf`);
 
