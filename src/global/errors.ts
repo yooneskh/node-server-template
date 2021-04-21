@@ -1,15 +1,24 @@
 import { Request, Response } from 'express';
 
 export class HandleableError extends Error {
+
   public code = 1000;
+  public statusCode = 400;
+
+  constructor(message?: string | undefined, public responseMessage?: string | undefined, public extra?: Object | undefined) {
+    super(message);
+  }
+
 }
 
 export class NotFoundError extends HandleableError {
   public code = 1001;
+  public statusCode = 404;
 }
 
 export class ForbiddenAccessError extends HandleableError {
   public code = 1002;
+  public statusCode = 403;
 }
 
 export class InvalidRequestError extends HandleableError {
@@ -30,22 +39,16 @@ export class RouteBypassedError extends HandleableError {
 
 export function errorHandler(error: Error, _request: Request, response: Response, _next: Function) {
 
-  console.error('Error ::', error.message);
+  if (!(error instanceof RouteBypassedError)) console.error('Error ::', error.message);
 
   if (error instanceof RouteBypassedError) {
     // noop
   }
-  else if (error instanceof NotFoundError) {
-    response.status(404).json({ code: error.code, message: error.message});
-  }
-  else if (error instanceof ForbiddenAccessError) {
-    response.status(403).json({ code: error.code, message: error.message});
-  }
   else if (error instanceof HandleableError) {
-    response.status(403).json({ code: error.code, message: error.message});
+    response.status(error.statusCode).json({ code: error.code, message: error.responseMessage ?? error.message, ...(error.extra || {}) });
   }
   else {
-    response.status(400).json({ code: -1, message: error.message});
+    response.status(400).json({ code: -1, message: error.message });
   }
 
 }

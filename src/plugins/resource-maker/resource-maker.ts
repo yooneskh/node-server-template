@@ -57,7 +57,7 @@ export class ResourceMaker<T extends IResource, TF extends IResourceDocument> {
   public addAction(action: ResourceRouterAction) {
 
     if (!this.resourceRouter) {
-      this.resourceRouter = new ResourceRouter<T, TF>(this.name, this.resourceModeler.getProperties(), this.resourceController);
+      this.resourceRouter = new ResourceRouter<T, TF>(this.name, this.resourceModeler.getProperties(), this.resourceController, this.resourceValidator);
     }
 
     this.resourceRouter.addAction(action);
@@ -67,7 +67,7 @@ export class ResourceMaker<T extends IResource, TF extends IResourceDocument> {
   public addRelation<U extends IResource, UF extends IResourceDocument>(relation: ResourceRelation) {
 
     if (!this.resourceRouter) {
-      this.resourceRouter = new ResourceRouter<T, TF>(this.name, this.resourceModeler.getProperties(), this.resourceController);
+      this.resourceRouter = new ResourceRouter<T, TF>(this.name, this.resourceModeler.getProperties(), this.resourceController, this.resourceValidator);
     }
 
     const relationModel = makeResourceRelationModel<UF>(this.name, relation);

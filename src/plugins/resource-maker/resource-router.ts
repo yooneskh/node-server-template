@@ -8,6 +8,7 @@ import { ResourceController } from './resource-controller';
 import { ResourceRelation } from './resource-relation-types';
 import { plural } from 'pluralize';
 import { ResourceRelationController } from './resource-relation-controller';
+import { ResourceValidator } from './resource-validator';
 
 export const DISMISS_DATA_PROVIDER = Symbol('dismiss data provider');
 type RouterProcessor = (context: ResourceRouterContext) => Promise<void>;
@@ -22,7 +23,12 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
   private relations: [ResourceRelation, ResourceRelationController<any, any>][] = []; // tslint:disable-line: no-any
   private router?: Router = undefined;
 
-  constructor(private name: string, private properties: ResourceModelProperty[], private controller: ResourceController<T, TF> | undefined) {
+  constructor(
+    private name: string,
+    private properties: ResourceModelProperty[],
+    private controller: ResourceController<T, TF> | undefined,
+    private validator: ResourceValidator<T> | undefined
+  ) {
 
   }
 
@@ -43,6 +49,7 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
     this.router = Router();
 
     this.injectMetaAction();
+    this.injectValidationActions();
     this.injectRelationsMetaAction();
     this.injectRelationsActions();
     this.injectMainActions();
@@ -61,6 +68,25 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
     };
 
     this.applyActionOnRouter(metaAction);
+
+  }
+
+  private injectValidationActions() {
+    if (!this.validator) return;
+
+    this.applyActionOnRouter({
+      method: 'GET',
+      path: '/validate',
+      signal: ['Route', this.name, 'ValidateCheck'],
+      dataProvider: async () => true
+    });
+
+    this.applyActionOnRouter({
+      method: 'POST',
+      path: '/validate',
+      signal: ['Route', this.name, 'Validate'],
+      dataProvider: async ({ payload }) => this.validator!.validate(payload)
+    });
 
   }
 

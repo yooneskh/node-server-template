@@ -16,16 +16,26 @@ export class ResourceValidator<T extends IResource> {
 
   public async validate(item: T) {
 
-    const errorThrower = (message: string) => {
-      throw new ValidationError(`validation failed for ${this.name} -- ${message} -- ${JSON.stringify(item)}`);
-    }
+    const errorThrowerMaker = (key: string) => (
+      (message: string) => {
+        throw new ValidationError(
+          `validation failed: ${this.name} -- ${key} -- ${message} -- ${JSON.stringify(item)}`,
+          message,
+          {
+            fields: {
+              [key]: [message]
+            }
+          }
+        );
+      }
+    )
 
     const freezedItem = Object.freeze(JSON.parse(JSON.stringify(item))) as T;
 
     await Promise.all(
       Object.keys(this.validations).map(async key => {
         for (const validFn of this.validations[key as keyof T] ?? []) {
-          await validFn(freezedItem, errorThrower)
+          await validFn(freezedItem, errorThrowerMaker(key))
         }
       })
     );
