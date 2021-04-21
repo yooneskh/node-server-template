@@ -1,5 +1,5 @@
 import { HandleableError } from '../../global/errors';
-import { IResource } from './resource-model-types';
+import { IResource, ResourceModelProperty } from './resource-model-types';
 
 
 class ValidationError extends HandleableError {
@@ -12,7 +12,27 @@ export type ResourceValidation<I> = {
 
 export class ResourceValidator<T extends IResource> {
 
-  constructor (private name: string, private validations: ResourceValidation<T>) {}
+  private validations: ResourceValidation<T> = {};
+
+  constructor (private name: string, private properties: ResourceModelProperty[], validations: ResourceValidation<T>) {
+
+    for (const property of this.properties) {
+
+      let rules = validations[property.key as keyof T];
+
+      if (property.required) {
+        if (!rules) rules = [];
+        rules.unshift(async (it, e) => {
+          const v = it[property.key as keyof T] as any; // tslint:disable-line: no-any
+          return v !== undefined && v !== null && v !== '' || e(`${property.title || property.key} الزامی است.`);
+        });
+      }
+
+      this.validations[property.key as keyof T] = rules;
+
+    }
+
+  }
 
   public async validate(item: T) {
 

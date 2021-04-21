@@ -49,7 +49,7 @@ export class ResourceMaker<T extends IResource, TF extends IResourceDocument> {
   public setValidations(validations: ResourceValidation<T>) {
     if (!this.resourceController) throw new ServerError('must make controller before setting validations');
 
-    this.resourceValidator = new ResourceValidator<T>(this.name, validations);
+    this.resourceValidator = new ResourceValidator<T>(this.name, this.getProperties(), validations);
     this.resourceController.setValidator(this.resourceValidator);
 
   }
