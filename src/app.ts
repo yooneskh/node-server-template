@@ -26,9 +26,8 @@ import './plugins/rate-limiter/rate-limiter';
 import './plugins/captcha/captcha-processor';
 
 import { AuthRouter } from './modules/auth/auth-resource';
-app.use('/api/auth', AuthRouter);
-
 import { CaptchaRouter } from './plugins/captcha/captcha-resource';
+app.use('/api/auth', AuthRouter);
 app.use('/api/captchas', CaptchaRouter);
 
 import { UserRouter } from './modules/user/user-resource';
@@ -41,18 +40,15 @@ import { UpdateRouter } from './modules/update/update-resource';
 app.use('/api/updates', UpdateRouter);
 
 import { FactorRouter } from './modules/payment/factor-resource';
-app.use('/api/factors', FactorRouter);
-
 import { PayTicketRouter } from './modules/payment/pay-ticket-resource';
+app.use('/api/factors', FactorRouter);
 app.use('/api/paytickets', PayTicketRouter);
 
 import { AccountRouter } from './modules/accounting/account-resource';
-app.use('/api/accounts', AccountRouter);
-
 import { TransactionRouter } from './modules/accounting/transaction-resource';
-app.use('/api/transactions', TransactionRouter);
-
 import { TransferRouter } from './modules/accounting/transfer-resource';
+app.use('/api/accounts', AccountRouter);
+app.use('/api/transactions', TransactionRouter);
 app.use('/api/transfers', TransferRouter);
 
 import './modules/sms-notification/sms-manager';
