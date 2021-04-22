@@ -5,7 +5,7 @@ export class HandleableError extends Error {
   public code = 1000;
   public statusCode = 400;
 
-  constructor(message?: string | undefined, public responseMessage?: string | undefined, public extra?: Object | undefined) {
+  constructor(message?: string | undefined, public responseMessage?: string | undefined, public extra?: Record<string, any> | undefined) {
     super(message);
   }
 

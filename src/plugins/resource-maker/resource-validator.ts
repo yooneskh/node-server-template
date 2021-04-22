@@ -44,7 +44,8 @@ export class ResourceValidator<T extends IResource> {
           {
             fields: {
               [key]: [message]
-            }
+            },
+            key
           }
         );
       }
@@ -52,13 +53,32 @@ export class ResourceValidator<T extends IResource> {
 
     const freezedItem = Object.freeze(JSON.parse(JSON.stringify(item))) as T;
 
-    await Promise.all(
+    const checkResults = await Promise.all(
       Object.keys(this.validations).map(async key => {
-        for (const validFn of this.validations[key as keyof T] ?? []) {
-          await validFn(freezedItem, errorThrowerMaker(key))
+        try {
+          for (const validFn of this.validations[key as keyof T] ?? []) {
+            await validFn(freezedItem, errorThrowerMaker(key))
+          } return undefined;
+        }
+        catch (error) {
+          return error;
         }
       })
     );
+
+    const errors: ValidationError[] = checkResults.filter(Boolean);
+    if (errors.length === 0) return;
+
+    const allKeys = errors.map(it => it.extra!.key);
+    const allMessages = errors.map(it => it.responseMessage);
+
+    throw new ValidationError(
+      `validation failed: ${this.name} -- ${allKeys.join(', ')} -- ${allMessages.join(', ')} -- ${JSON.stringify(item)}`,
+      allMessages.join(' - '),
+      {
+        fields: errors.reduce((a, b) => ({ ...a, ...(b.extra!.fields) }), {})
+      }
+    )
 
   }
 
