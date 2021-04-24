@@ -58,7 +58,7 @@ maker.addAction({
       filters: { phoneNumber: payload.phoneNumber }
     });
 
-    const authToken = await AuthTokenController.create({ // TODO: reuse previuosly made auth token for this user and phoneNumber
+    const authToken = await AuthTokenController.create({
       payload: {
         user: user._id,
         type: 'OTP',
@@ -256,7 +256,7 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Identity'],
   method: 'GET',
   path: '/identity',
-  permissionFunction: async ({ user }) => !!user,
+  permissions: ['user.profile.retrieve'],
   async dataProvider({ user }) {
 
     if (user!.profile) {
@@ -272,7 +272,7 @@ maker.addAction({
   signal: ['Route', 'Auth', 'IdentityUpdate'],
   method: 'PATCH',
   path: '/identity',
-  permissionFunction: async ({ user }) => !!user,
+  permissions: ['user.profile.update'],
   async dataProvider({ payload, user }) {
     return UserController.edit({
       resourceId: user!!._id,
@@ -299,6 +299,17 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
   }); if (authTokens.length === 0) return undefined;
 
   const authToken = authTokens[0];
+
+  if (Config.authentication.tokenValidationDuration && authToken.validatedAt + Config.authentication.tokenValidationDuration < Date.now()) {
+    await AuthTokenController.edit({
+      resourceId: authToken._id,
+      payload: {
+        valid: false,
+        closed: true,
+        closedAt: Date.now()
+      }
+    }); return undefined;
+  }
 
   authToken.lastAccessAt = Date.now();
   authToken.save();
@@ -337,25 +348,15 @@ ResourceRouter.addPreProcessor(async context => {
 });
 
 ResourceRouter.addPreResponseProcessor(async context => {
-
-  const { action, request } = context;
-  const { token } = transmuteRequest(request);
-
-  if (action.responsePreprocessor) {
-    if (!context.user && token) context.user = await getUserByToken(token);
-    await action.responsePreprocessor(context);
+  if (context.action.responsePreprocessor) {
+    if (!context.user && context.token) context.user = await getUserByToken(context.token);
+    await context.action.responsePreprocessor(context);
   }
-
 });
 
 ResourceRouter.addPostProcessor(async context => {
-
-  const { action, request } = context;
-  const { token } = transmuteRequest(request);
-
-  if (action.postprocessor) {
-    if (!context.user && token) context.user = await getUserByToken(token);
-    await action.postprocessor(context);
+  if (context.action.postprocessor) {
+    if (!context.user && context.token) context.user = await getUserByToken(context.token);
+    await context.action.postprocessor(context);
   }
-
 });

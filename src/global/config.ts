@@ -7,7 +7,8 @@ export const Config = {
     name: process.env.DB_NAME || 'yback'
   },
   authentication: {
-    staticVerificationCode: '111111'
+    staticVerificationCode: '111111',
+    tokenValidationDuration: 0
   },
   localization: {
     defaultLocalization: 'fa'
