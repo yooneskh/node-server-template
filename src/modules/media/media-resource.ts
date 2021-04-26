@@ -19,9 +19,41 @@ fs.access('./download', fs.constants.F_OK, accessError => {
       }
     })
   }
-})
+});
 //
 
+async function unlinkFile(path: string) {
+  return new Promise<void>((resolve, reject) => {
+    fs.unlink(path, error => {
+      if (error) {
+        reject(error);
+      }
+      else {
+        resolve();
+      }
+    })
+  });
+}
+
+type FileValidator = (file: IMedia) => Promise<void>;
+const fileValidators: FileValidator[] = [];
+
+export async function registerFileValidator(validator: FileValidator) {
+  fileValidators.push(validator);
+}
+
+async function validateFile(file: IMedia) {
+  try {
+    for (const validator of fileValidators) {
+      await validator(file);
+    }
+  }
+  catch (error) {
+    await unlinkFile(file.relativePath);
+    await file.delete();
+    throw error;
+  }
+}
 
 const maker = new ResourceMaker<IMediaBase, IMedia>('Media');
 
@@ -83,9 +115,9 @@ maker.addActions([
 ]);
 
 maker.addAction({
-  signal: ['Route', 'Media', 'InitUpload'],
-  path: '/init/upload',
   method: 'POST',
+  path: '/init/upload',
+  signal: ['Route', 'Media', 'InitUpload'],
   permissions: ['user.media.init-upload'],
   async dataProvider({ request, user }) {
 
@@ -116,9 +148,9 @@ maker.addAction({
 });
 
 maker.addAction({
-  signal: ['Route', 'Media', 'Upload'],
-  path: '/upload/:fileToken',
   method: 'POST',
+  path: '/upload/:fileToken',
+  signal: ['Route', 'Media', 'Upload'],
   permissions: ['user.media.upload'],
   async dataProvider({ request, response }) {
 
@@ -139,7 +171,6 @@ maker.addAction({
     if (request.headers['content-range']) {
 
       const match = request.headers['content-range'].match(/(\d+)-(\d+)\/(\d+)/);
-
       if (!match || !match[1] || !match[2] || !match[3]) throw new InvalidRequestError('upload request not correct');
 
       const start = parseInt(match[1], 10);
@@ -151,15 +182,8 @@ maker.addAction({
         size = fs.statSync(targetFile).size;
       }
 
-      if ((end + 1) === size) {
-        response.status(100).send('Continue');
-        return;
-      }
-
-      if (start !== size) {
-        response.status(400).send('Bad Request');
-        return;
-      }
+      if ((end + 1) === size) return response.status(100).send('Continue');
+      if (start !== size) return response.status(400).send('Bad Request');
 
     }
 
@@ -177,6 +201,15 @@ maker.addAction({
           await fileInfo.save();
         }
 
+        try {
+          await validateFile(fileInfo);
+        }
+        catch (error) {
+          response.status(400).json({
+            message: error.responseMessage || error.message
+          }); return;
+        }
+
         response.status(201).json({
           success: true,
           mediaId: fileInfo._id
@@ -189,12 +222,11 @@ maker.addAction({
         response.status(100).send('Continue');
       }
 
-      fs.unlinkSync(<string> request.headers['x-file']);
+      fs.unlinkSync(request.headers['x-file'] as string);
 
     });
 
     inputStream.pipe(outputStream);
-
     return DISMISS_DATA_PROVIDER;
 
   }
