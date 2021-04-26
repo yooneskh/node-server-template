@@ -24,6 +24,8 @@ export class ResourceValidator<T extends IResource> {
         if (!rules) rules = [];
         rules.unshift(async (it, e) => {
           const v = it[property.key as keyof T] as any; // tslint:disable-line: no-any
+          if (property.type === 'number' && (v !== undefined && v !== null && !isNaN(v))) return;
+          if (property.isArray && (!!v && v.length > 0)) return;
           return v !== undefined && v !== null && v !== '' || e(`${property.title || property.key} الزامی است.`);
         });
       }
