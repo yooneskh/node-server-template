@@ -12,32 +12,10 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { AuthTokenController } from './auth-token-resource';
 import { RegisterTokenController } from './register-token-resource';
 import { IMedia } from '../media/media-interfaces';
-
-function matchPermission(permit: string, permission: string): boolean {
-
-  const permitParts = permit.split('.');
-  const permissionParts = permission.split('.');
-
-  for (let i = 0, len = permitParts.length; i < len; i++) {
-    if (permitParts[i] === '*') return  true;
-    if (permitParts[i] !== permissionParts[i]) return false;
-  }
-
-  return permitParts.length === permissionParts.length;
-
-}
-
-function hasPermission(allPermissions: string[], permission: string): boolean {
-  return allPermissions.some(permit => matchPermission(permit, permission));
-}
-
-export function hasPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
-  return neededPermissions.every(permission => hasPermission(allPermissions, permission));
-}
+import { hasPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 
 const maker = new ResourceMaker('Auth');
-
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Login'],
@@ -203,8 +181,13 @@ maker.addAction({
 
     }
 
+    let token = generateToken();
+    while ((await AuthTokenController.count({ filters: { token, valid: true, closed: false } })) > 0) {
+      token = generateToken();
+    }
+
     authToken.verificationCode = undefined;
-    authToken.token = generateToken(); // TODO: make sure is unique
+    authToken.token = token;
     authToken.valid = true;
     authToken.validatedAt = Date.now();
     authToken.updatedAt = Date.now();
@@ -249,6 +232,19 @@ maker.addAction({
     YEventManager.emit(['Resource', 'User', 'LoggedOut'], authToken.user);
     return true;
 
+  }
+});
+
+maker.addAction({
+  method: 'GET',
+  path: '/permissions',
+  signal: ['Route', 'Auth', 'ListPermissions'],
+  permissions: ['admin.permissions.list'],
+  async dataProvider() {
+    return {
+      permissions: PERMISSIONS,
+      locales: PERMISSIONS_LOCALES
+    };
   }
 });
 

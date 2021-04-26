@@ -31,16 +31,16 @@ maker.addProperties([
     key: 'profile',
     type: 'string',
     ref: 'Media',
-    // default: '' // put mediaId of default profile here
     title: 'تصویر پروفایل'
   },
   {
     key: 'permissions',
     type: 'string',
     isArray: true,
-    default: ['user.*'],
+    required: true,
     title: 'مجوزها',
-    hideInTable: true
+    hideInTable: true,
+    handlerElement: 'permissions'
   }
 ]);
 

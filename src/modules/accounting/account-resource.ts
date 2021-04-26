@@ -3,7 +3,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { InvalidStateError } from '../../global/errors';
 import { UserController } from '../user/user-resource';
-import { hasPermissions } from '../auth/auth-resource';
+import { hasPermissions } from '../auth/auth-util';
 
 
 const maker = new ResourceMaker<IAccountBase, IAccount>('Account');
