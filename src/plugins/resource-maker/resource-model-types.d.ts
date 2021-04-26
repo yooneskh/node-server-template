@@ -55,10 +55,11 @@ export interface IResource {
 export interface IResourceDocument extends IResource, Document {}
 
 export interface GeoSpat {
-  type: 'Point'
+  type: 'Point';
+  zoom?: number;
 }
 
 export interface GeoSpatPoint extends GeoSpat {
   type: 'Point';
-  coordinates: [longitude: number, latitude: number, zoom?: number]
+  coordinates: [longitude: number, latitude: number]
 }
