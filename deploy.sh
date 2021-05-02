@@ -1,1 +1,1 @@
-git push root@api.yooneskh.ir:/home/yooneskh/yooneskh-server master
+git push root@api.aaa.opendata.khoshghadam.com:/home/yooneskh/opendata-aaa-server master

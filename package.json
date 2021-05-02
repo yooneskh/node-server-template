@@ -1,7 +1,7 @@
 {
-  "name": "yback",
+  "name": "opendata-aaa-server",
   "version": "3.9.1",
-  "description": "Yoonsekh backend template",
+  "description": "Server for Opendata AAA service",
   "main": "bin/www",
   "scripts": {
     "build": "tsc",

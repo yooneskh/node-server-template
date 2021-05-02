@@ -57,17 +57,8 @@ import './modules/telegram-notification/telegram-manager';
 
 // app specific routes
 
-import { BookRouter } from './modules/book/book-resource';
-app.use('/api/books', BookRouter);
-
-import { PageRouter } from './modules/book/page-resource';
-app.use('/api/pages', PageRouter);
-
-import { AuthorRouter } from './modules/author/author-resource';
-app.use('/api/authors', AuthorRouter);
-
-import { ApplicationSettingRouter } from './modules/settings/application-settings';
-app.use('/api/settings/application', ApplicationSettingRouter);
+// import { BookRouter } from './modules/book/book-resource';
+// app.use('/api/books', BookRouter);
 
 
 import { errorHandler } from './global/errors';

@@ -1,10 +1,10 @@
 export const Config = {
-  port: process.env.PORT || 48500,
-  filesBaseUrl: process.env.FILES_BASE_URL || 'http://localhost:8080',
+  port: process.env.PORT || 48501,
+  filesBaseUrl: process.env.FILES_BASE_URL || 'https://api.aaa.opendata.khoshghadam.com',
   database: {
     port: process.env.DB_PORT || 27017,
     host: process.env.DB_HOST || 'localhost',
-    name: process.env.DB_NAME || 'yback'
+    name: process.env.DB_NAME || 'opendata_aaa'
   },
   authentication: {
     staticVerificationCode: '111111',
@@ -14,13 +14,13 @@ export const Config = {
     defaultLocalization: 'fa'
   },
   payment: {
-    callbackUrlBase: 'https://api.yooneskh.ir/api/paytickets',
-    informUrlBase: 'https://yooneskh.ir/payment',
+    callbackUrlBase: 'https://api.aaa.opendata.khoshghadam.com/api/paytickets',
+    informUrlBase: 'https://panel.aaa.opendata.khoshghadam.com/payment',
     response: {
       title: 'اپلیکیشن | نتیجه پرداخت',
-      callback: 'https://yooneskh.ir',
-      callbackSupport: 'https://yooneskh.ir',
-      favicon: 'https://yooneskh.ir/favicon.ico',
+      callback: 'https://panel.aaa.opendata.khoshghadam.com',
+      callbackSupport: 'https://panel.aaa.opendata.khoshghadam.com',
+      favicon: 'https://panel.aaa.opendata.khoshghadam.com/favicon.ico',
       font: {
         fa: 'https://cdn.khoshghadam.com/font/iryekan/iryekan.css',
         en: 'https://cdn.khoshghadam.com/font/roboto/roboto.css'
