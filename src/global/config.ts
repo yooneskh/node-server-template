@@ -10,6 +10,12 @@ export const Config = {
     staticVerificationCode: '111111',
     tokenValidationDuration: 0
   },
+  sso: {
+    userInfoUrl: process.env.SSO_USER_INFO_URL || 'https://sso-sarv.rojansoft.com/auth/realms/master/protocol/openid-connect/userinfo'
+  },
+  sarv: {
+    userProfileUrl: process.env.SARV_USER_PROFILE_URL || 'https://api-sarv.rojansoft.com/api/v1/citizen/profile'
+  },
   localization: {
     defaultLocalization: 'fa'
   },
@@ -17,7 +23,7 @@ export const Config = {
     callbackUrlBase: 'https://api.aaa.opendata.khoshghadam.com/api/paytickets',
     informUrlBase: 'https://panel.aaa.opendata.khoshghadam.com/payment',
     response: {
-      title: 'اپلیکیشن | نتیجه پرداخت',
+      title: 'پورتال | نتیجه پرداخت',
       callback: 'https://panel.aaa.opendata.khoshghadam.com',
       callbackSupport: 'https://panel.aaa.opendata.khoshghadam.com',
       favicon: 'https://panel.aaa.opendata.khoshghadam.com/favicon.ico',

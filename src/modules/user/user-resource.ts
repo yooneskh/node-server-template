@@ -22,25 +22,32 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
+    key: 'ssoId',
+    type: 'string',
+    required: true,
+    index: true,
+    unique: true,
+    hidden: true
+  },
+  {
     key: 'email',
     type: 'string',
     title: 'ایمیل',
     dir: 'ltr'
   },
   {
-    key: 'profile',
-    type: 'string',
-    ref: 'Media',
-    title: 'تصویر پروفایل'
-  },
-  {
     key: 'permissions',
     type: 'string',
     isArray: true,
-    required: true,
+    default: ['user.*'],
     title: 'مجوزها',
     hideInTable: true,
     handlerElement: 'permissions'
+  },
+  {
+    key: 'sarvInfo',
+    type: 'object',
+    hidden: true
   }
 ]);
 
