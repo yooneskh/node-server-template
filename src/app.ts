@@ -2,6 +2,7 @@ import Express from 'express';
 import Logger from 'morgan';
 import CookieParser from 'cookie-parser';
 import Cors from 'cors';
+import { Config } from './global/config';
 
 import './global/database';
 
@@ -57,7 +58,6 @@ app.use('/api/data', DataRouter);
 
 
 import { errorHandler } from './global/errors';
-import { Config } from './global/config';
 app.use(errorHandler);
 
 export default app;
