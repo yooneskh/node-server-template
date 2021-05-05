@@ -78,7 +78,7 @@ maker.addActions([
       const result: IDataCategory[] = [];
       let category = await DataCategoryController.retrieve({ resourceId });
 
-      while (category.parent && !result.find(it => it._id === category._id) && result.length < 30) {
+      while (category.parent && !result.find(it => it._id === category.parent) && result.length < 30) {
 
         category = await DataCategoryController.retrieve({
           resourceId: category.parent,
