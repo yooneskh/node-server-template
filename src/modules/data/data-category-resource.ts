@@ -88,7 +88,7 @@ maker.addActions([
           }
         });
 
-        result.push(category);
+        result.unshift(category);
 
       }
 
