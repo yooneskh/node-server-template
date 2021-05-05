@@ -59,10 +59,8 @@ import './modules/sms-notification/sms-manager';
 
 import { DataCategoryRouter } from './modules/data/data-category-resource';
 import { DataRouter } from './modules/data/data-resource';
-import { DataRequestRouter } from './modules/data/data-request-resource';
 app.use('/api/datacategories', DataCategoryRouter);
 app.use('/api/data', DataRouter);
-app.use('/api/datarequests', DataRequestRouter);
 
 
 import { errorHandler } from './global/errors';

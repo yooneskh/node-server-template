@@ -16,16 +16,3 @@ export interface IDataBase extends IResource {
   file?: string;
   showAllImage?: boolean;
 } export interface IData extends IDataBase, Document {}
-
-export interface IDataRequestBase extends IResource {
-  user: string;
-  status: string;
-  organization: string;
-  organizationalTitle: string;
-  usage: string;
-  accpeted: boolean;
-  acceptedAt: number;
-  rejected: boolean;
-  rejectedAt: number;
-  rejectionReason: string;
-} export interface IDataRequest extends IDataRequestBase, Document {}
