@@ -6,6 +6,10 @@ export const Config = {
     host: process.env.DB_HOST || 'localhost',
     name: process.env.DB_NAME || 'opendata_aaa'
   },
+  cors: {
+    handleCors: process.env.HANDLE_CORS === 'true',
+    whitelistOrigins: ['https://aaa.shiraz.ir', 'https://api-data.shiraz.ir']
+  },
   authentication: {
     staticVerificationCode: '111111',
     tokenValidationDuration: 0

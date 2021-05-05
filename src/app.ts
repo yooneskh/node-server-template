@@ -12,9 +12,17 @@ app.use(Express.json({ limit: '10mb' }));
 app.use(Express.urlencoded({ limit: '10mb', parameterLimit: 100000, extended: false }));
 app.use(CookieParser());
 
-if (process.env.NODE_ENV === 'development') {
-  app.use(Cors());
-  console.log('cors loaded');
+if (Config.cors.handleCors) {
+  app.use(Cors({
+    origin: (origin, callback) => {
+      if (Config.cors.whitelistOrigins.includes(origin || '')) {
+        callback(null, true); // tslint:disable-line: no-null-keyword
+      }
+      else {
+        callback(new Error('Invalid CORS'));
+      }
+    }
+  })); console.log('cors loaded');
 }
 
 app.get('/ping', (_request, response) => response.send('pong'));
@@ -36,21 +44,6 @@ app.use('/api/users', UserRouter);
 import { MediaRouter } from './modules/media/media-resource';
 app.use('/api/media', MediaRouter);
 
-// import { UpdateRouter } from './modules/update/update-resource';
-// app.use('/api/updates', UpdateRouter);
-
-// import { FactorRouter } from './modules/payment/factor-resource';
-// import { PayTicketRouter } from './modules/payment/pay-ticket-resource';
-// app.use('/api/factors', FactorRouter);
-// app.use('/api/paytickets', PayTicketRouter);
-
-// import { AccountRouter } from './modules/accounting/account-resource';
-// import { TransactionRouter } from './modules/accounting/transaction-resource';
-// import { TransferRouter } from './modules/accounting/transfer-resource';
-// app.use('/api/accounts', AccountRouter);
-// app.use('/api/transactions', TransactionRouter);
-// app.use('/api/transfers', TransferRouter);
-
 import './modules/sms-notification/sms-manager';
 // import './modules/telegram-notification/telegram-manager';
 
@@ -64,6 +57,7 @@ app.use('/api/data', DataRouter);
 
 
 import { errorHandler } from './global/errors';
+import { Config } from './global/config';
 app.use(errorHandler);
 
 export default app;
