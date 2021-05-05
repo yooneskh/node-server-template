@@ -4,17 +4,13 @@ export const PERMISSIONS = [
     ['media', 'init-upload', 'upload']
   ],
   ['admin',
-    ['account', 'list', 'list-count', 'retrieve', 'delete'],
-    ['transaction', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['transfer', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['factor', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['payticket', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['update', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+    ['data-category', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+    ['data', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
     ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
     ['permissions', 'list'],
-    ['setting',
-      ['application']
-    ]
+    // ['setting',
+    //   ['application']
+    // ]
   ]
 ];
 
@@ -25,14 +21,9 @@ export const PERMISSIONS_LOCALES = {
   'media': 'مدیا',
   'init-upload': 'شروع بارگذاری',
   'upload': 'بارگذاری',
-  'account': 'حساب',
-  'transaction': 'تراکنش',
-  'transfer': 'انتقال',
-  'factor': 'فاکتور',
-  'payticket': 'تیکت پرداخت',
+  'data-category': 'دسته‌بندی داده',
+  'data': 'داده',
   'permissions': 'تنظیمات',
-  'setting': 'تنظیمات',
-  'application': 'برنامه',
   'list': 'لیست',
   'list-count': 'تعداد لیست',
   'retrieve': 'گرفتن',

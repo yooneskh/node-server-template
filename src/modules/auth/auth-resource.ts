@@ -8,83 +8,10 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { AuthTokenController } from './auth-token-resource';
 import { getSSOUserByToken } from '../sarv/sarv-sso';
 import { getUserProfile } from '../sarv/sarv-server';
-
-const PERMISSIONS = [
-  ['user',
-    ['profile', 'retrieve', 'update'],
-    ['data-request', 'mine'],
-    ['media', 'init-upload', 'upload']
-  ],
-  ['admin',
-    ['account', 'list', 'list-count', 'retrieve', 'delete'],
-    ['transaction', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['transfer', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['factor', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['payticket', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['update', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['permissions', 'list'],
-    ['data-category', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['data-request', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['data', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['setting',
-      ['website', 'explore', 'footer', 'home', 'navbar']
-    ]
-  ]
-];
-
-const PERMISSIONS_LOCALES = {
-  'user': 'کاربر',
-  'admin': 'مدیر',
-  'profile': 'پروفایل',
-  'data-request': 'درخواست داده',
-  'media': 'مدیا',
-  'account': 'حساب',
-  'transaction': 'تراکنش',
-  'transfer': 'انتقال',
-  'factor': 'فاکتور',
-  'update': 'به روز رسانی',
-  'payticket': 'تیکت پرداخت',
-  'data-category': 'دسته‌بندی داده',
-  'data': 'داده',
-  'setting': 'تنظیمات',
-  'website': 'وب‌سایت',
-  'explore': 'گردش',
-  'footer': 'پاصفحه',
-  'home': 'خانه',
-  'navbar': 'سرصفحه',
-  'list': 'لیست',
-  'list-count': 'تعداد لیست',
-  'retrieve': 'گرفتن',
-  'create': 'ایجاد کردن',
-  'delete': 'حذف'
-};
-
-function matchPermission(permit: string, permission: string): boolean {
-
-  const permitParts = permit.split('.');
-  const permissionParts = permission.split('.');
-
-  for (let i = 0, len = permitParts.length; i < len; i++) {
-    if (permitParts[i] === '*') return  true;
-    if (permitParts[i] !== permissionParts[i]) return false;
-  }
-
-  return permitParts.length === permissionParts.length;
-
-}
-
-function hasPermission(allPermissions: string[], permission: string): boolean {
-  return allPermissions.some(permit => matchPermission(permit, permission));
-}
-
-export function hasPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
-  return neededPermissions.every(permission => hasPermission(allPermissions, permission));
-}
+import { hasPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 
 const maker = new ResourceMaker('Auth');
-
 
 maker.addAction({
   signal: ['Route', 'Auth', 'Logout'],
