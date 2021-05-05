@@ -7,6 +7,16 @@ interface ISarvUser {
   firstName: string;
   lastName: string;
   email?: string;
+  fatherName?: string;
+  dateOfBirth?: string;
+  address?: string;
+  type?: string;
+  nationalCode?: string;
+  companyName?: string;
+  companyRegistrationDate?: string;
+  companyType?: string;
+  economicalCode?: string;
+  registrationCode?: string;
 }
 
 export async function getUserProfile(token: string): Promise<ISarvUser> {

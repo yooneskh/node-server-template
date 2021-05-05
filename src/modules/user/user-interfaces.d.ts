@@ -9,4 +9,16 @@ export interface IUserBase extends IResource {
   profile?: string;
   permissions: string[];
   sarvInfo: Record<string, any>;
+  firstName?: string;
+  lastName?: string;
+  fatherName?: string;
+  dateOfBirth?: string;
+  address?: string;
+  type?: string;
+  nationalCode?: string;
+  companyName?: string;
+  companyRegistrationDate?: string;
+  companyType?: string;
+  economicalCode?: string;
+  registrationCode?: string;
 } export interface IUser extends IUserBase, Document {}

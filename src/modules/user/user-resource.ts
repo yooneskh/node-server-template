@@ -8,8 +8,8 @@ maker.addProperties([
   {
     key: 'name',
     type: 'string',
-    required: true,
-    title: 'نام',
+    title: 'نام کامل',
+    disabled: true,
     titleable: true
   },
   {
@@ -48,6 +48,76 @@ maker.addProperties([
     key: 'sarvInfo',
     type: 'object',
     hidden: true
+  },
+  {
+    key: 'firstName',
+    type: 'string',
+    title: 'نام',
+    hideInTable: true
+  },
+  {
+    key: 'lastName',
+    type: 'string',
+    title: 'نام خانوادگی',
+    hideInTable: true
+  },
+  {
+    key: 'fatherName',
+    type: 'string',
+    title: 'نام پدر',
+    hideInTable: true
+  },
+  {
+    key: 'dateOfBirth',
+    type: 'string',
+    title: 'تاریخ تولد',
+    hideInTable: true
+  },
+  {
+    key: 'address',
+    type: 'string',
+    title: 'آدرس',
+    hideInTable: true
+  },
+  {
+    key: 'type',
+    type: 'string',
+    title: 'نوع'
+  },
+  {
+    key: 'nationalCode',
+    type: 'string',
+    title: 'کد ملی',
+    hideInTable: true
+  },
+  {
+    key: 'companyName',
+    type: 'string',
+    title: 'نام شرکت'
+  },
+  {
+    key: 'companyRegistrationDate',
+    type: 'string',
+    title: 'تاریخ ثبت شرکت',
+    hideInTable: true
+  },
+  {
+    key: 'companyType',
+    type: 'string',
+    title: 'نوع شرکت',
+    hideInTable: true
+  },
+  {
+    key: 'economicalCode',
+    type: 'string',
+    title: 'کد اقتصادی',
+    hideInTable: true
+  },
+  {
+    key: 'registrationCode',
+    type: 'string',
+    title: 'کد ثبت',
+    hideInTable: true
   }
 ]);
 

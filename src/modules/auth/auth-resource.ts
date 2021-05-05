@@ -106,7 +106,19 @@ maker.addAction({
       payload: {
         name: `${profile.firstName || ''} ${profile.lastName || ''}`,
         email: profile.email,
-        sarvInfo: profile
+        sarvInfo: profile,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        fatherName: profile.fatherName,
+        dateOfBirth: profile.dateOfBirth,
+        address: profile.address,
+        type: profile.type,
+        nationalCode: profile.nationalCode,
+        companyName: profile.companyName,
+        companyRegistrationDate: profile.companyRegistrationDate,
+        companyType: profile.companyType,
+        economicalCode: profile.economicalCode,
+        registrationCode: profile.registrationCode
       }
     });
 
@@ -138,10 +150,22 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
   return UserController.edit({
     resourceId: user._id,
     payload: {
-      name: `${profile.firstName} ${profile.lastName}`,
+      name: `${profile.firstName || ''} ${profile.lastName || ''}`,
       phoneNumber: phone,
       email: profile.email,
-      sarvInfo: profile
+      sarvInfo: profile,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      fatherName: profile.fatherName,
+      dateOfBirth: profile.dateOfBirth,
+      address: profile.address,
+      type: profile.type,
+      nationalCode: profile.nationalCode,
+      companyName: profile.companyName,
+      companyRegistrationDate: profile.companyRegistrationDate,
+      companyType: profile.companyType,
+      economicalCode: profile.economicalCode,
+      registrationCode: profile.registrationCode
     }
   });
 
