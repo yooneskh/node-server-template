@@ -53,70 +53,82 @@ maker.addProperties([
     key: 'firstName',
     type: 'string',
     title: 'نام',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'lastName',
     type: 'string',
     title: 'نام خانوادگی',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'fatherName',
     type: 'string',
     title: 'نام پدر',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'dateOfBirth',
     type: 'string',
     title: 'تاریخ تولد',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'address',
     type: 'string',
     title: 'آدرس',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'type',
     type: 'string',
-    title: 'نوع'
+    title: 'نوع',
+    disabled: true
   },
   {
     key: 'nationalCode',
     type: 'string',
     title: 'کد ملی',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'companyName',
     type: 'string',
-    title: 'نام شرکت'
+    title: 'نام شرکت',
+    disabled: true
   },
   {
     key: 'companyRegistrationDate',
     type: 'string',
     title: 'تاریخ ثبت شرکت',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'companyType',
     type: 'string',
     title: 'نوع شرکت',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'economicalCode',
     type: 'string',
     title: 'کد اقتصادی',
+    disabled: true,
     hideInTable: true
   },
   {
     key: 'registrationCode',
     type: 'string',
     title: 'کد ثبت',
+    disabled: true,
     hideInTable: true
   }
 ]);
