@@ -61,5 +61,5 @@ export interface GeoSpat {
 
 export interface GeoSpatPoint extends GeoSpat {
   type: 'Point';
-  coordinates: [longitude: number, latitude: number]
+  coordinates: [longitude: number, latitude: number];
 }
