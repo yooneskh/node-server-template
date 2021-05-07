@@ -185,6 +185,7 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
         bag: {},
         version: request.headers['x-version'] ?? '1',
         payload: request.body ?? {},
+        params: request.params ?? {},
         resourceId: request.params.resourceId
       });
     }
