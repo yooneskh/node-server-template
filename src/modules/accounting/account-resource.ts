@@ -71,8 +71,8 @@ maker.addActions([
       return account.user === String(user?._id);
     }
   },
-  // { template: 'CREATE' },
-  // { template: 'UPDATE' },
+  { template: 'CREATE', permissions: ['admin.account.create'] },
+  { template: 'UPDATE', permissions: ['admin.account.update'] },
   {
     template: 'DELETE',
     permissions: ['admin.account.delete'],
