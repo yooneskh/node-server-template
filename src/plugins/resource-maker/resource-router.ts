@@ -177,12 +177,14 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
     YEventManager.on(action.signal, actionHandler);
 
     const routerHandler = (request: Request, response: Response, next: Function) => {
-      YEventManager.emit(action.signal ?? ['Route', 'NoSignal'], {
+      YEventManager.emit(action.signal!, {
         action,
         request,
         response,
         next,
         bag: {},
+        params: request.params ?? {},
+        query: request.query ?? {},
         version: request.headers['x-version'] ?? '1',
         payload: request.body,
         resourceId: request.params.resourceId

@@ -29,7 +29,7 @@ export interface ResourceModelProperty {
   titleable?: boolean;
   hidden?: boolean;
   hideInTable?: boolean;
-  dir?: string;
+  dir?: 'ltr' | 'rtl';
   longText?: boolean;
   richText?: boolean;
   timeFormat?: string;
@@ -53,13 +53,3 @@ export interface IResource {
 }
 
 export interface IResourceDocument extends IResource, Document {}
-
-export interface GeoSpat {
-  type: 'Point';
-  zoom?: number;
-}
-
-export interface GeoSpatPoint extends GeoSpat {
-  type: 'Point';
-  coordinates: [longitude: number, latitude: number]
-}
