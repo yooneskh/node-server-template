@@ -56,8 +56,44 @@ maker.addAction({
   method: 'GET',
   path: '/identity',
   permissions: ['user.profile.retrieve'],
-  async dataProvider({ user }) {
-    return user;
+  async dataProvider({ token }) {
+
+    const [ssoUser, profile] = await Promise.all([getSSOUserByToken(token!), getUserProfile(token!)]);
+
+    const user = await UserController.findOne({
+      filters: {
+        ssoId: ssoUser.sub
+      }
+    });
+
+    const phone = (ssoUser.preferred_username.startsWith('+') ?
+      ssoUser.preferred_username : (ssoUser.preferred_username.startsWith('09') ?
+        `+98${ssoUser.preferred_username.slice(1)}` : (() => { throw new InvalidRequestError('phone from sso is unrecognizeable ' + ssoUser.preferred_username, 'مشاره تلفن در sso قابل شناسایی نبود') })()
+      )
+    );
+
+    return UserController.edit({
+      resourceId: user._id,
+      payload: {
+        name: `${profile.firstName || ''} ${profile.lastName || ''}`,
+        phoneNumber: phone,
+        email: profile.email,
+        sarvInfo: profile,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        fatherName: profile.fatherName,
+        dateOfBirth: profile.dateOfBirth,
+        address: profile.address,
+        type: profile.type,
+        nationalCode: profile.nationalCode,
+        companyName: profile.companyName,
+        companyRegistrationDate: profile.companyRegistrationDate,
+        companyType: profile.companyType,
+        economicalCode: profile.economicalCode,
+        registrationCode: profile.registrationCode
+      }
+    });
+
   }
 });
 
@@ -133,39 +169,11 @@ export const AuthRouter = maker.getRouter();
 export async function getUserByToken(token?: string): Promise<IUser | undefined> {
   if (!token) return undefined;
 
-  const [ssoUser, profile] = await Promise.all([getSSOUserByToken(token), getUserProfile(token)]);
+  const ssoUser = await getSSOUserByToken(token);
 
-  const user = await UserController.findOne({
+  return UserController.findOne({
     filters: {
       ssoId: ssoUser.sub
-    }
-  });
-
-  const phone = (ssoUser.preferred_username.startsWith('+') ?
-    ssoUser.preferred_username : (ssoUser.preferred_username.startsWith('09') ?
-      `+98${ssoUser.preferred_username.slice(1)}` : (() => { throw new InvalidRequestError('phone from sso is unrecognizeable ' + ssoUser.preferred_username, 'مشاره تلفن در sso قابل شناسایی نبود') })()
-    )
-  );
-
-  return UserController.edit({
-    resourceId: user._id,
-    payload: {
-      name: `${profile.firstName || ''} ${profile.lastName || ''}`,
-      phoneNumber: phone,
-      email: profile.email,
-      sarvInfo: profile,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      fatherName: profile.fatherName,
-      dateOfBirth: profile.dateOfBirth,
-      address: profile.address,
-      type: profile.type,
-      nationalCode: profile.nationalCode,
-      companyName: profile.companyName,
-      companyRegistrationDate: profile.companyRegistrationDate,
-      companyType: profile.companyType,
-      economicalCode: profile.economicalCode,
-      registrationCode: profile.registrationCode
     }
   });
 
