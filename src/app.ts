@@ -32,8 +32,15 @@ app.get('/ping', (_request, response) => response.send('pong'));
 // general routes
 
 import './plugins/html-sanitizer/html-sanitizer-processor';
-import './plugins/rate-limiter/rate-limiter';
+import { setGlobalRateLimitOption } from './plugins/rate-limiter/rate-limiter';
 import './plugins/captcha/captcha-processor';
+
+setGlobalRateLimitOption({
+  pointsAmount: 5,
+  pointsInterval: 10,
+  blockDuration: 60,
+  consecutiveFailDurationMultiplier: 1.5
+});
 
 import { AuthRouter } from './modules/auth/auth-resource';
 import { CaptchaRouter } from './plugins/captcha/captcha-resource';
