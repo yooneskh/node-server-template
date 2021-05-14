@@ -29,7 +29,7 @@ export interface ResourceModelProperty {
   titleable?: boolean;
   hidden?: boolean;
   hideInTable?: boolean;
-  dir?: string;
+  dir?: 'ltr' | 'rtl';
   longText?: boolean;
   richText?: boolean;
   timeFormat?: string;
