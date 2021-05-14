@@ -119,14 +119,14 @@ maker.addAction({
   path: '/init/upload',
   signal: ['Route', 'Media', 'InitUpload'],
   permissions: ['user.media.init-upload'],
-  async dataProvider({ request, user }) {
+  async dataProvider({ payload, user }) {
 
     const media = await MediaController.create({
       payload: {
         owner: user?._id,
-        name: request.body.fileName,
-        extension: request.body.fileExtension,
-        size: request.body.fileSize
+        name: payload.fileName,
+        extension: payload.fileExtension,
+        size: payload.fileSize
       }
     });
 
@@ -152,10 +152,10 @@ maker.addAction({
   path: '/upload/:fileToken',
   signal: ['Route', 'Media', 'Upload'],
   permissions: ['user.media.upload'],
-  async dataProvider({ request, response }) {
+  async dataProvider({ params, request, response }) {
 
     const fileInfoList = await MediaController.list({
-      filters: { _id: request.params.fileToken },
+      filters: { _id: params.fileToken },
       selects: '+relativePath'
     }); if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
 

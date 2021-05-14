@@ -316,7 +316,7 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
 
 function transmuteRequest(request: Request) {
   return {
-    token: request.headers.authorization || request.query.x_token as string || request.body.x_token as string || ''
+    token: request.headers.authorization || request.query['x-token'] as string || request.body.xToken as string || ''
   };
 }
 

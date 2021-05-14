@@ -7,6 +7,7 @@ export interface ResourceRouterContext {
   next: Function;
   payload: any;
   params: Record<string, string>;
+  query: Record<string, string>;
   bag: any;
   version: string;
   data?: any;
