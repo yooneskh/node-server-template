@@ -22,6 +22,7 @@ app.get('/ping', (_request, response) => response.send('pong'));
 
 // general routes
 
+import './plugins/html-sanitizer/html-sanitizer-processor';
 import './plugins/rate-limiter/rate-limiter';
 import './plugins/captcha/captcha-processor';
 
