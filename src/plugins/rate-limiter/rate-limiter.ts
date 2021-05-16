@@ -47,8 +47,8 @@ ResourceRouter.addPreProcessor(async ({ action, request, response }) => {
     response.setHeader('X-RateLimit-Remaining', rateLimitResult.remainingPoints);
     response.setHeader('X-RateLimit-Reset', String(new Date(Date.now() + rateLimitResult.msBeforeNext)));
 
-    response.status(429).send('Too Many Requests').end();
-    throw new RouteBypassedError('too many requests', 'تعداد درخواست‌های شما از حد مجاز فراتر رفته است.');
+    response.status(429).json({ message: 'تعداد درخواست‌های شما از حد مجاز فراتر رفته است.' }).end();
+    throw new RouteBypassedError('too many requests');
 
   }
 
