@@ -12,7 +12,6 @@ declare module '../../plugins/resource-maker/resource-router-types' {
 }
 
 export interface ICaptchaBase extends IResource {
-  data: string;
   text: string;
   validUntil: number;
   used: boolean;

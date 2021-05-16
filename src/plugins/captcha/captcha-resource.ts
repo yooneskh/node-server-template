@@ -7,12 +7,6 @@ const maker = new ResourceMaker<ICaptchaBase, ICaptcha>('Captcha');
 
 maker.addProperties([
   {
-    key: 'data',
-    type: 'string',
-    title: 'داده',
-    required: true
-  },
-  {
     key: 'text',
     type: 'string',
     title: 'متن',
@@ -79,7 +73,6 @@ maker.addActions([
 
       const captcha = await CaptchaController.create({
         payload: {
-          data,
           text,
           validUntil: Date.now() + Config.captcha.validDuration
         }
@@ -87,7 +80,7 @@ maker.addActions([
 
       return {
         id: captcha._id,
-        data: captcha.data
+        data
       };
 
     }
