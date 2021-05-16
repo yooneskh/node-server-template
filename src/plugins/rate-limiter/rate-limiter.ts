@@ -42,12 +42,13 @@ ResourceRouter.addPreProcessor(async ({ action, request, response }) => {
 
     const rateLimitResult = error as RateLimiterRes;
 
-    response.setHeader('Retry-After', Math.ceil(rateLimitResult.msBeforeNext / 1000));
+    const seconds = Math.ceil(rateLimitResult.msBeforeNext / 1000);
+    response.setHeader('Retry-After', seconds);
     response.setHeader('X-RateLimit-Limit', rateLimit.pointsAmount);
     response.setHeader('X-RateLimit-Remaining', rateLimitResult.remainingPoints);
     response.setHeader('X-RateLimit-Reset', String(new Date(Date.now() + rateLimitResult.msBeforeNext)));
 
-    response.status(429).json({ message: 'تعداد درخواست‌های شما از حد مجاز فراتر رفته است.' }).end();
+    response.status(429).json({ message: `تعداد درخواست‌های شما از حد مجاز فراتر رفته است. شما باید ${seconds} ثانیه صبر کنید.` }).end();
     throw new RouteBypassedError('too many requests');
 
   }
