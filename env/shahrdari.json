@@ -1,0 +1,17 @@
+{
+  "port": 0,
+  "db": {
+    "host": "",
+    "port": "",
+    "name": ""
+  },
+  "media": {
+    "baseUrl": "",
+    "directory": ""
+  },
+  "corsHandle": "true",
+  "sarv": {
+    "ssoUserUrl": "",
+    "profileUrl": ""
+  }
+}

@@ -13,7 +13,7 @@ export const Config = {
     directory: getConfig('media.directory', 'download')
   },
   cors: {
-    handleCors: process.env.HANDLE_CORS === 'true',
+    handleCors: getConfig('corsHandle', '' as string) === 'true',
     whitelistOrigins: ['https://aaa.shiraz.ir', 'https://api-data.shiraz.ir']
   },
   authentication: {
@@ -21,10 +21,10 @@ export const Config = {
     tokenValidationDuration: 0
   },
   sso: {
-    userInfoUrl: process.env.SSO_USER_INFO_URL || 'https://sso-sarv.rojansoft.com/auth/realms/master/protocol/openid-connect/userinfo'
+    userInfoUrl: getConfig('sarv.ssoUserUrl', 'https://sso-sarv.rojansoft.com/auth/realms/master/protocol/openid-connect/userinfo')
   },
   sarv: {
-    userProfileUrl: process.env.SARV_USER_PROFILE_URL || 'https://api-sarv.rojansoft.com/api/v1/citizen/profile'
+    userProfileUrl: getConfig('sarv.profileUrl', 'https://api-sarv.rojansoft.com/api/v1/citizen/profile')
   },
   localization: {
     defaultLocalization: 'fa'

@@ -30,13 +30,6 @@ export const ConfigLoader = Convict({
     env: 'PORT',
     arg: 'port'
   },
-  filesBaseUrl: {
-    format: 'url',
-    nullable: true,
-    default: null,
-    env: 'FILES_BASE_URL',
-    arg: 'files-base-url'
-  },
   db: {
     host: {
       format: String,
@@ -74,6 +67,29 @@ export const ConfigLoader = Convict({
       default: null,
       env: 'MEDIA_DIRECTORY',
       arg: 'media-directory'
+    }
+  },
+  corsHandle: {
+    format: String,
+    nullable: true,
+    default: null,
+    env: 'CORS_HANDLE',
+    arg: 'cors-handle'
+  },
+  sarv: {
+    ssoUserUrl: {
+      format: String,
+      nullable: true,
+      default: null,
+      env: 'SARV_SSO_USER_URL',
+      arg: 'sarv-sso-user-url'
+    },
+    profileUrl: {
+      format: String,
+      nullable: true,
+      default: null,
+      env: 'SARV_PROFILE_URL',
+      arg: 'sarv-profile-url'
     }
   }
 });
