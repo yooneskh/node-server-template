@@ -1,5 +1,5 @@
 import YNetwork from 'ynetwork';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 import { InvalidRequestError } from '../../global/errors';
 
 interface ISarvUser {

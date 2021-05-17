@@ -183,8 +183,6 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
         response,
         next,
         bag: {},
-        params: request.params ?? {},
-        query: request.query ?? {},
         version: request.headers['x-version'] ?? '1',
         payload: request.body ?? {},
         params: request.params ?? {},

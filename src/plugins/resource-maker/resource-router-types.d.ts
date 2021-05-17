@@ -9,8 +9,6 @@ export interface ResourceRouterContext {
   params: Record<string, string>;
   query: Record<string, string>;
   bag: any;
-  params: Record<string, string>;
-  query: Record<string, string>;
   version: string;
   data?: any;
   resourceId?: string;

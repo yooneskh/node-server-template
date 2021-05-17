@@ -2,7 +2,7 @@ import Express from 'express';
 import Logger from 'morgan';
 import CookieParser from 'cookie-parser';
 import Cors from 'cors';
-import { Config } from './global/config';
+import { Config } from './config/config';
 
 import './global/database';
 
