@@ -3,11 +3,14 @@ import { getConfig } from './config-loader';
 export const Config = {
   env: getConfig('env', ''),
   port: getConfig('port', 48500),
-  filesBaseUrl: getConfig('filesBaseUrl', 'http://localhost:8080'),
   database: {
     host: getConfig('db.host', 'localhost'),
     port: getConfig('db.port', 27017),
     name: getConfig('db.name', 'yback')
+  },
+  media: {
+    baseUrl: getConfig('media.baseUrl', 'http://localhost:8080'),
+    directory: getConfig('media.directory', 'download')
   },
   authentication: {
     staticVerificationCode: '111111',

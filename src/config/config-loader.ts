@@ -59,6 +59,22 @@ export const ConfigLoader = Convict({
       env: 'DB_NAME',
       arg: 'db-name'
     }
+  },
+  media: {
+    baseUrl: {
+      format: 'url',
+      nullable: true,
+      default: null,
+      env: 'MEDIA_BASE_URL',
+      arg: 'media-base-url'
+    },
+    directory: {
+      format: String,
+      nullable: true,
+      default: null,
+      env: 'MEDIA_DIRECTORY',
+      arg: 'media-directory'
+    }
   }
 });
 
