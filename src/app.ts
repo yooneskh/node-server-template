@@ -36,9 +36,9 @@ import { setGlobalRateLimitOption } from './plugins/rate-limiter/rate-limiter';
 import './plugins/captcha/captcha-processor';
 
 setGlobalRateLimitOption({
-  pointsAmount: 5,
-  pointsInterval: 10,
-  blockDuration: 60,
+  pointsAmount: 30,
+  pointsInterval: 1,
+  blockDuration: 10,
   consecutiveFailDurationMultiplier: 1.5
 });
 
