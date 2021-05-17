@@ -2,19 +2,19 @@ import { getConfig } from './config-loader';
 
 export const Config = {
   env: getConfig('env', ''),
-  port: getConfig('port', 48500),
+  port: getConfig('port', 48501),
   database: {
     host: getConfig('db.host', 'localhost'),
     port: getConfig('db.port', 27017),
-    name: getConfig('db.name', 'yback')
+    name: getConfig('db.name', 'opendata_aaa')
   },
   media: {
-    baseUrl: getConfig('media.baseUrl', 'http://localhost:8080'),
+    baseUrl: getConfig('media.baseUrl', 'http://api.aaa.opendata.khoshghadam.com'),
     directory: getConfig('media.directory', 'download')
   },
   cors: {
     handleCors: getConfig('corsHandle', '' as string) === 'true',
-    whitelistOrigins: ['https://aaa.shiraz.ir', 'https://api-data.shiraz.ir']
+    whitelistOrigins: ['https://panel-aaa-opendata.shiraz.ir', 'https://api-data.shiraz.ir']
   },
   authentication: {
     staticVerificationCode: '111111',
