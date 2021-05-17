@@ -30,13 +30,6 @@ export const ConfigLoader = Convict({
     env: 'PORT',
     arg: 'port'
   },
-  filesBaseUrl: {
-    format: 'url',
-    nullable: true,
-    default: null,
-    env: 'FILES_BASE_URL',
-    arg: 'files-base-url'
-  },
   db: {
     host: {
       format: String,

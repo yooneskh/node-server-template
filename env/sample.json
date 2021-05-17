@@ -1,6 +1,12 @@
 {
-  "filesBaseUrl": "",
+  "port": 0,
   "db": {
-    "host": ""
+    "host": "",
+    "port": "",
+    "name": ""
+  },
+  "media": {
+    "baseUrl": "",
+    "directory": ""
   }
 }
