@@ -1,17 +1,11 @@
 import { ICaptcha, ICaptchaBase } from './captcha-interfaces';
 import { ResourceMaker } from '../resource-maker/resource-maker';
 import { createCaptcha } from './captcha-svg';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 
 const maker = new ResourceMaker<ICaptchaBase, ICaptcha>('Captcha');
 
 maker.addProperties([
-  {
-    key: 'data',
-    type: 'string',
-    title: 'داده',
-    required: true
-  },
   {
     key: 'text',
     type: 'string',
@@ -79,7 +73,6 @@ maker.addActions([
 
       const captcha = await CaptchaController.create({
         payload: {
-          data,
           text,
           validUntil: Date.now() + Config.captcha.validDuration
         }
@@ -87,7 +80,7 @@ maker.addActions([
 
       return {
         id: captcha._id,
-        data: captcha.data
+        data
       };
 
     }

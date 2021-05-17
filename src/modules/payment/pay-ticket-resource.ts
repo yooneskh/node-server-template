@@ -1,4 +1,4 @@
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 import { IFactor, IPayTicket, IPayTicketBase } from './payment-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError, InvalidStateError, RouteBypassedError, ServerError } from '../../global/errors';

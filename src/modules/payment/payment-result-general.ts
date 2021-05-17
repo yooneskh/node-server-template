@@ -1,4 +1,4 @@
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 
 const defaultLocale = Config.localization.defaultLocalization;
 

@@ -1,5 +1,5 @@
 import { connect } from 'mongoose';
-import { Config } from './config';
+import { Config } from '../config/config';
 
 if (!Config.database.host || !Config.database.port || !Config.database.name) throw new Error('database config not set');
 

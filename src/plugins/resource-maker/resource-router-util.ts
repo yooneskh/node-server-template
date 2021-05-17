@@ -237,6 +237,7 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
         skip: parseInt((query.skip) || '0', 10) || 0
       });
     }
+
   }
   else if (action.template === 'LIST') {
 
@@ -345,7 +346,7 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
         sourceId: params.sourceId,
         targetId: params.targetId,
         relationId: params.relationId,
-        payload: payload
+        payload
       });
     }
 

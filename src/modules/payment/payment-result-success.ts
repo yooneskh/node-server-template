@@ -1,4 +1,4 @@
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 import { paymentResultPage } from './payment-result-general';
 
 interface IPaymentResultSuccess {

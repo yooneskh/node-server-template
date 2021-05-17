@@ -1,10 +1,16 @@
+import { getConfig } from './config-loader';
+
 export const Config = {
-  port: process.env.PORT || 48501,
-  filesBaseUrl: process.env.FILES_BASE_URL || 'https://api.aaa.opendata.khoshghadam.com',
+  env: getConfig('env', ''),
+  port: getConfig('port', 48500),
   database: {
-    port: process.env.DB_PORT || 27017,
-    host: process.env.DB_HOST || 'localhost',
-    name: process.env.DB_NAME || 'opendata_aaa'
+    host: getConfig('db.host', 'localhost'),
+    port: getConfig('db.port', 27017),
+    name: getConfig('db.name', 'yback')
+  },
+  media: {
+    baseUrl: getConfig('media.baseUrl', 'http://localhost:8080'),
+    directory: getConfig('media.directory', 'download')
   },
   cors: {
     handleCors: process.env.HANDLE_CORS === 'true',

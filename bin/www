@@ -2,7 +2,7 @@
 
 const beginTime = Date.now();
 
-const config = require('../dist/global/config').Config;
+const config = require('../dist/config/config').Config;
 const app = require('../dist/app').default;
 
 const debug = require('debug')('express:server');
@@ -56,12 +56,11 @@ function onError(error) {
 function onListening() {
 
   const addr = server.address();
-
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
 
   const allTime = Date.now() - beginTime;
 
-  debug('Listening on ' + bind + ', Startup time: ' + allTime + 'ms');
-  console.log('Listening on ' + bind + ', Startup time: ' + allTime + 'ms');
+  debug(`Listening on ${bind}, Startup time: ${allTime}ms, Mode: ${config.env}`);
+  console.log(`Listening on ${bind}, Startup time: ${allTime}ms, Mode: ${config.env}`);
 
 }

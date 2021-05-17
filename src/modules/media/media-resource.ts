@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 import { IMedia, IMediaBase } from './media-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 import { InvalidRequestError, ServerError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
@@ -11,13 +11,13 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import './media-addons';
 
 // init code
-fs.access('./download', fs.constants.F_OK, accessError => {
+fs.access(`./${Config.media.directory}`, fs.constants.F_OK, accessError => {
   if (accessError) {
-    fs.mkdir('./download', makeError => {
+    fs.mkdir(`./${Config.media.directory}`, makeError => {
       if (makeError) {
-        throw new ServerError('could not make ./download directory ' + makeError.message);
+        throw new ServerError(`could not make ./${Config.media.directory} directory ${makeError.message}`);
       }
-    })
+    });
   }
 });
 //
@@ -130,12 +130,11 @@ maker.addAction({
       }
     });
 
-    const relativePath = `download/${media._id}.${media.extension}`;
-    const absolutePath = `${Config.filesBaseUrl}/${relativePath}`;
+    const relativePath = `${Config.media.directory}/${media._id}.${media.extension}`;
+    const absolutePath = `${Config.media.baseUrl}/${relativePath}`;
 
     media.relativePath = relativePath;
-    media.path         = absolutePath;
-
+    media.path = absolutePath;
     await media.save();
 
     YEventManager.emit(['Resource', 'Media', 'InitiatedUpload'], media._id, media);

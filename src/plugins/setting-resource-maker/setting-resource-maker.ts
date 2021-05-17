@@ -39,9 +39,9 @@ export class SettingResourceMaker<T extends IResource, TF extends IResourceDocum
       method: 'GET',
       path: '/',
       signal: ['Route', this.name, 'Retrieve'],
-      dataProvider: async ({ request }) => this.controller?.retrieve({
-        includes: extractIncludeQueryObject(request.query.includes as string),
-        selects: request.query.selects as string
+      dataProvider: async ({ query }) => this.controller?.retrieve({
+        includes: extractIncludeQueryObject(query.includes),
+        selects: query.selects
       })
     };
   }
