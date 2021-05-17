@@ -1,5 +1,5 @@
 import * as YNetwork from 'ynetwork';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 
 const API_KEY = Config.kavenegar.apiKey;
 

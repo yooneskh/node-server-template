@@ -2,7 +2,7 @@ import { IRegisterToken } from './auth-interfaces';
 import { IUser } from '../user/user-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { UserController } from '../user/user-resource';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 import { generateRandomNumericCode, generateToken } from '../../global/util';
 import { InvalidRequestError, ForbiddenAccessError, InvalidStateError } from '../../global/errors';
 import { MediaController } from '../media/media-resource';

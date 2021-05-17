@@ -1,7 +1,7 @@
 import { ICaptcha, ICaptchaBase } from './captcha-interfaces';
 import { ResourceMaker } from '../resource-maker/resource-maker';
 import { createCaptcha } from './captcha-svg';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 
 const maker = new ResourceMaker<ICaptchaBase, ICaptcha>('Captcha');
 

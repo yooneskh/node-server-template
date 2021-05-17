@@ -1,6 +1,6 @@
 import { IAuthor, IAuthorBase, IAuthorBook, IAuthorBookBase, IAuthorPageMaker, IAuthorPageMakerBase } from './author-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 
 
 const maker = new ResourceMaker<IAuthorBase, IAuthor>('Author');

@@ -1,10 +1,13 @@
+import { getConfig } from './config-loader';
+
 export const Config = {
-  port: process.env.PORT || 48500,
-  filesBaseUrl: process.env.FILES_BASE_URL || 'http://localhost:8080',
+  env: getConfig('env', ''),
+  port: getConfig('port', 48500),
+  filesBaseUrl: getConfig('filesBaseUrl', 'http://localhost:8080'),
   database: {
-    port: process.env.DB_PORT || 27017,
-    host: process.env.DB_HOST || 'localhost',
-    name: process.env.DB_NAME || 'yback'
+    host: getConfig('db.host', 'localhost'),
+    port: getConfig('db.port', 27017),
+    name: getConfig('db.name', 'yback')
   },
   authentication: {
     staticVerificationCode: '111111',

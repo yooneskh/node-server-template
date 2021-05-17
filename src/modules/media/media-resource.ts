@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 import { IMedia, IMediaBase } from './media-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { Config } from '../../global/config';
+import { Config } from '../../config/config';
 import { InvalidRequestError, ServerError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
