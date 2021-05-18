@@ -100,6 +100,7 @@ if (ConfigLoader.has('subenvs')) {
   const subenvs = ConfigLoader.get('subenvs') as unknown as (string | null);
   if (subenvs !== null) {
     ConfigLoader.loadFile( subenvs.split(',').map(it => `./env/${it}.json`) );
+    console.log('subenvs loaded', subenvs.split(','));
   }
 }
 
