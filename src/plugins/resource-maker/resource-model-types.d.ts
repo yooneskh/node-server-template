@@ -48,6 +48,7 @@ export interface ResourceModelProperty {
 }
 
 export interface IResource {
+  _id?: any;
   createdAt: number;
   updatedAt: number;
 }
