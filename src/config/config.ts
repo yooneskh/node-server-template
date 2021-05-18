@@ -14,7 +14,7 @@ export const Config = {
   },
   cors: {
     handleCors: getConfig('corsHandle', '' as string) === 'true',
-    whitelistOrigins: ['https://panel-aaa-opendata.shiraz.ir', 'https://api-data.shiraz.ir']
+    whitelistOrigins: ['https://panel-aaa-opendata.shiraz.ir', 'https://api-opendata.shiraz.ir', '']
   },
   authentication: {
     staticVerificationCode: '111111',
