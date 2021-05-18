@@ -330,11 +330,11 @@ ResourceRouter.addPreProcessor(async context => {
   if (context.token) context.user = await getUserByToken(token);
 
   if (action.permissions && (!context.user || !context.user.permissions || !hasPermissions(context.user.permissions ?? [], action.permissions)) ) {
-    throw new ForbiddenAccessError('forbidden access');
+    throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 
   if (action.permissionFunction && !(await action.permissionFunction(context)) ) {
-    throw new ForbiddenAccessError('forbidden access');
+    throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 
   action.stateValidator && await action.stateValidator(context);
