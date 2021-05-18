@@ -53,7 +53,7 @@ app.use('/api/users', UserRouter);
 import { MediaRouter } from './modules/media/media-resource';
 app.use('/api/media', MediaRouter);
 
-import './modules/sms-notification/sms-manager';
+// import './modules/sms-notification/sms-manager';
 // import './modules/telegram-notification/telegram-manager';
 
 

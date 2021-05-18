@@ -1,17 +1,17 @@
 {
-  "port": 0,
+  "port": 48501,
   "db": {
-    "host": "",
-    "port": "",
-    "name": ""
+    "host": "172.17.203.137",
+    "port": 19222,
+    "name": "opendata_aaa"
   },
   "media": {
-    "baseUrl": "",
-    "directory": ""
+    "baseUrl": "https://api-opendata.shiraz.ir",
+    "directory": "downloada"
   },
   "corsHandle": "true",
   "sarv": {
-    "ssoUserUrl": "",
-    "profileUrl": ""
+    "ssoUserUrl": "https://sso-sarv.shiraz.ir/auth/realms/master/protocol/openid-connect/userinfo",
+    "profileUrl": "https://api-sarv.shiraz.ir/api/v1/citizen/profile"
   }
 }
