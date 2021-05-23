@@ -25,6 +25,7 @@ maker.addProperties([
     type: 'string',
     ref: 'TimeTag',
     isArray: true,
+    required: true,
     title: 'تگ‌های زمانی',
     hideInTable: true
   },
@@ -53,6 +54,8 @@ maker.addProperties([
 
 export const DataModel      = maker.getModel();
 export const DataController = maker.getController();
+
+maker.setValidations({ });
 
 maker.addActions([
   { template: 'LIST' },
