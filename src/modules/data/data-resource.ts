@@ -81,6 +81,7 @@ maker.addActions([
           'timeTags': '',
           'type': '',
           'type.emptyIcon': 'path',
+          'type.smallIcon': 'path',
           'file': ''
         },
         skipKeyCheck: true
