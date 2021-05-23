@@ -21,6 +21,14 @@ maker.addProperties([
     title: 'دسته‌بندی'
   },
   {
+    key: 'timeTags',
+    type: 'string',
+    ref: 'TimeTag',
+    isArray: true,
+    title: 'تگ‌های زمانی',
+    hideInTable: true
+  },
+  {
     key: 'description',
     type: 'string',
     title: 'توضیحات',
@@ -30,13 +38,9 @@ maker.addProperties([
   {
     key: 'type',
     type: 'string',
-    enum: ['file', 'image'],
+    ref: 'DataType',
     required: true,
-    title: 'نوع',
-    items: [
-      { value: 'file', text: 'فایل' },
-      { value: 'image', text: 'تصویر' }
-    ]
+    title: 'نوع'
   },
   {
     key: 'file',
@@ -44,11 +48,6 @@ maker.addProperties([
     ref: 'Media',
     required: true,
     title: 'فایل'
-  },
-  {
-    key: 'showAllImage',
-    type: 'boolean',
-    title: 'نمایش همه تصویر'
   }
 ]);
 
@@ -56,7 +55,7 @@ export const DataModel      = maker.getModel();
 export const DataController = maker.getController();
 
 maker.addActions([
-  { template: 'LIST' },//, permissions: ['admin.data.list'] },
+  { template: 'LIST' },
   { template: 'LIST_COUNT', permissions: ['admin.data.list-count'] },
   { template: 'RETRIEVE', permissions: ['admin.data.retrieve'] },
   { template: 'CREATE', permissions: ['admin.data.create'] },
@@ -79,6 +78,9 @@ maker.addActions([
           ]
         },
         includes: {
+          'timeTags': '',
+          'type': '',
+          'type.emptyIcon': 'path',
           'file': ''
         },
         skipKeyCheck: true

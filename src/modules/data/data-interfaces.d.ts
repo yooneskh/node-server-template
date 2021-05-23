@@ -12,7 +12,18 @@ export interface IDataCategoryBase extends IResource {
 export interface IDataBase extends IResource {
   title: string;
   category: string;
-  type: 'file' | 'image';
-  file?: string;
-  showAllImage?: boolean;
+  timeTags: string[];
+  description: string;
+  type: string;
+  file: string;
 } export interface IData extends IDataBase, Document {}
+
+export interface ITimeTagBase extends IResource {
+  title: string;
+} export interface ITimeTag extends ITimeTagBase, Document {}
+
+export interface IDataTypeBase extends IResource {
+  title: string;
+  viewType: string;
+  emptyIcon: string;
+} export interface IDataType extends IDataTypeBase, Document {}
