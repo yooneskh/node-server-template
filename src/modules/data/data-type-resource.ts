@@ -25,6 +25,13 @@ maker.addProperties([
     ]
   },
   {
+    key: 'smallIcon',
+    type: 'string',
+    ref: 'Media',
+    required: true,
+    title: 'آیکن کوچک'
+  },
+  {
     key: 'emptyIcon',
     type: 'string',
     ref: 'Media',
