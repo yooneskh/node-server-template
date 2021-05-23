@@ -61,8 +61,12 @@ app.use('/api/media', MediaRouter);
 
 import { DataCategoryRouter } from './modules/data/data-category-resource';
 import { DataRouter } from './modules/data/data-resource';
+import { TimeTagRouter } from './modules/data/time-tag-resource';
+import { DataTypeRouter } from './modules/data/data-type-resource';
 app.use('/api/datacategories', DataCategoryRouter);
 app.use('/api/data', DataRouter);
+app.use('/api/timetags', TimeTagRouter);
+app.use('/api/datatypes', DataTypeRouter);
 
 
 import { errorHandler } from './global/errors';
