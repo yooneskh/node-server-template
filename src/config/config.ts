@@ -9,7 +9,7 @@ export const Config = {
     name: getConfig('db.name', 'opendata_aaa')
   },
   media: {
-    baseUrl: getConfig('media.baseUrl', 'http://api.aaa.opendata.khoshghadam.com'),
+    baseUrl: getConfig('media.baseUrl', 'https://api.aaa.opendata.khoshghadam.com'),
     directory: getConfig('media.directory', 'download')
   },
   cors: {
