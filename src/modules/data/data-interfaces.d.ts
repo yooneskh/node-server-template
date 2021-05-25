@@ -27,3 +27,7 @@ export interface IDataTypeBase extends IResource {
   viewType: string;
   emptyIcon: string;
 } export interface IDataType extends IDataTypeBase, Document {}
+
+export interface IPublisherBase extends IResource {
+  title: string;
+} export interface IPublisher extends IPublisherBase, Document {}

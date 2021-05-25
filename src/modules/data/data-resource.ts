@@ -49,6 +49,18 @@ maker.addProperties([
     ref: 'Media',
     required: true,
     title: 'فایل'
+  },
+  {
+    key: 'publisher',
+    type: 'string',
+    ref: 'Publisher',
+    title: 'انتشار دهنده'
+  },
+  {
+    key: 'tags',
+    type: 'string',
+    isArray: true,
+    title: 'کلمات کلیدی'
   }
 ]);
 
@@ -85,7 +97,8 @@ maker.addActions([
           'type': '',
           'type.emptyIcon': 'path',
           'type.smallIcon': 'path',
-          'file': ''
+          'file': '',
+          'publisher': ''
         },
         skipKeyCheck: true
       });

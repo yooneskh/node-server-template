@@ -34,17 +34,6 @@ maker.addProperties([
     title: 'تصویر'
   },
   {
-    key: 'viewType',
-    type: 'string',
-    enum: ['card', 'list'],
-    default: 'card',
-    title: 'نحوه نمایش',
-    items: [
-      { value: 'card', text: 'کارتی' },
-      { value: 'list', text: 'لیستی' }
-    ]
-  },
-  {
     key: 'thumbnail',
     type: 'string',
     ref: 'Media',
