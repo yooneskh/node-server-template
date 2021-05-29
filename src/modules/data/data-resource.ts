@@ -54,13 +54,15 @@ maker.addProperties([
     key: 'publisher',
     type: 'string',
     ref: 'Publisher',
+    required: true,
     title: 'انتشار دهنده'
   },
   {
     key: 'tags',
     type: 'string',
     isArray: true,
-    title: 'کلمات کلیدی'
+    title: 'کلمات کلیدی',
+    hideInTable: true
   }
 ]);
 
