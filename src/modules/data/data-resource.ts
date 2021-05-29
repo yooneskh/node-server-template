@@ -54,7 +54,6 @@ maker.addProperties([
     key: 'publisher',
     type: 'string',
     ref: 'Publisher',
-    required: true,
     title: 'انتشار دهنده'
   },
   {
