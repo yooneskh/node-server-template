@@ -18,7 +18,7 @@
     "eventemitter2": "6.4.4",
     "express": "4.17.1",
     "lodash": "4.17.21",
-    "mongoose": "5.12.10",
+    "mongoose": "5.12.12",
     "morgan": "1.10.0",
     "pdf-parse": "1.1.1",
     "pluralize": "8.0.0",
