@@ -39,6 +39,11 @@ maker.addProperties([
     ref: 'Media',
     required: true,
     title: 'تصویر کوچک'
+  },
+  {
+    key: 'order',
+    type: 'number',
+    title: 'ترتیب'
   }
 ]);
 

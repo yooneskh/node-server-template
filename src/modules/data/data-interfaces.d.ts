@@ -7,6 +7,7 @@ export interface IDataCategoryBase extends IResource {
   parent?: string;
   picture: string;
   thumbnail: string;
+  order?: number;
 } export interface IDataCategory extends IDataCategoryBase, Document {}
 
 export interface IDataBase extends IResource {
