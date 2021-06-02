@@ -99,6 +99,16 @@ maker.addActions([
         }
       });
     }
+  },
+  { // retrieve sitemap
+    method: 'GET',
+    path: '/retrieve/sitemap',
+    signal: ['Resource', 'DataCategory', 'RetrieveSitemap'],
+    dataProvider: async () => {
+      return DataCategoryController.list({
+        selects: 'title slug parent'
+      });
+    }
   }
 ]);
 
