@@ -103,14 +103,20 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
   }
 
   public async create(context: ResourceControllerContext<T, TF>): Promise<TF> {
+    if (!context.payload) throw new InvalidRequestError('payload not defined', 'داده ای ارسال نشده است.');
 
-    validatePropertyKeys(context.payload || {}, this.properties, true);
+    validatePropertyKeys(context.payload, this.properties, true);
     // TODO: check value of payload
 
     const resource = new this.model();
 
-    for (const key in context.payload) {
-      resource.set(key, context.payload[key]);
+    for (const property of this.properties) {
+      if (property.key in context.payload) {
+        if (property.nonCreating) throw new InvalidRequestError(`non creating key '${property.key}' given for creation.`, 'اطلاعات داده شده صحیح نیست.'); // todo: move to validate
+
+        resource.set(property.key, context.payload[property.key as keyof T]);
+
+      }
     }
 
     if (this.resourceValidator) await this.resourceValidator.validate(resource as unknown as T);
@@ -123,16 +129,17 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
 
   public async edit(context: ResourceControllerContext<T, TF>): Promise<TF> {
     if (!context.resourceId) throw new InvalidRequestError('resourceId not specified');
+    if (!context.payload) throw new InvalidRequestError('payload not defined', 'داده ای ارسال نشده است.');
 
-    validatePropertyKeys(context.payload || {}, this.properties);
+    validatePropertyKeys(context.payload, this.properties);
     // TODO: check value of payload
 
     const resource = await this.model.findById(context.resourceId);
     if (!resource) throw new InvalidRequestError(`resource not found: ${this.name}@${context.resourceId}`, 'مورد خواسته شده یافت نشد.');
 
-    for (const key in context.payload) {
-      if (key !== 'id' && key !== '_id') {
-        resource.set(key, context.payload[key]); // TODO: probably needs more work for series
+    for (const property of this.properties) {
+      if (property.key in context.payload) {
+        resource.set(property.key, context.payload[property.key as keyof T]);
       }
     }
 
