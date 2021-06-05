@@ -66,12 +66,10 @@ import './modules/telegram-notification/telegram-manager';
 // app specific routes
 
 import { BookRouter } from './modules/book/book-resource';
-app.use('/api/books', BookRouter);
-
 import { PageRouter } from './modules/book/page-resource';
-app.use('/api/pages', PageRouter);
-
 import { AuthorRouter } from './modules/author/author-resource';
+app.use('/api/books', BookRouter);
+app.use('/api/pages', PageRouter);
 app.use('/api/authors', AuthorRouter);
 
 import { ApplicationSettingRouter } from './modules/settings/application-settings';
