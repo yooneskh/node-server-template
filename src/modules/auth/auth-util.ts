@@ -11,6 +11,7 @@ export const PERMISSIONS = [
     ['payticket', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
     ['update', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
     ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+    ['media', 'list', 'list-count', 'retrieve'],
     ['permissions', 'list'],
     ['setting',
       ['application']
