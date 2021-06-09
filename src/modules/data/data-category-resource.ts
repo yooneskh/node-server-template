@@ -44,6 +44,11 @@ maker.addProperties([
     key: 'order',
     type: 'number',
     title: 'ترتیب'
+  },
+  {
+    key: 'hidden',
+    type: 'boolean',
+    title: 'مخفی شده'
   }
 ]);
 
