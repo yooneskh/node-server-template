@@ -17,6 +17,7 @@ import { hasPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 const maker = new ResourceMaker('Auth');
 
+
 maker.addAction({
   signal: ['Route', 'Auth', 'Login'],
   method: 'POST',
@@ -276,6 +277,7 @@ maker.addAction({
     });
   }
 });
+
 
 export const AuthRouter = maker.getRouter();
 

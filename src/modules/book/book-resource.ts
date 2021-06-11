@@ -5,6 +5,7 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 const maker = new ResourceMaker<IBookBase, IBook>('Book');
 
+
 maker.addProperties([
   {
     key: 'name',
@@ -20,6 +21,7 @@ maker.addProperties([
   }
 ]);
 
+
 maker.setCompoundIndexes([
   { 'name': 1, 'book': -1 },
   {
@@ -28,8 +30,10 @@ maker.setCompoundIndexes([
   }
 ]);
 
+
 export const BookModel      = maker.getModel();
 export const BookController = maker.getController();
+
 
 maker.setValidations({
   'name': [
@@ -38,6 +42,7 @@ maker.setValidations({
   ]
 });
 
+
 maker.addAction({
   path: '/test',
   method: 'GET',
@@ -45,9 +50,6 @@ maker.addAction({
   dataProvider: async () => 'test'
 });
 
-YEventManager.on(['Route', 'Book', 'Metas'], async (_context) => {
-  // a custom additional route handler
-});
 
 maker.addActions([
   { template: 'LIST' },
@@ -58,4 +60,10 @@ maker.addActions([
   { template: 'DELETE' }
 ]);
 
+
 export const BookRouter = maker.getRouter();
+
+
+YEventManager.on(['Route', 'Book', 'Metas'], async (_context) => {
+  // a custom additional route handler
+});

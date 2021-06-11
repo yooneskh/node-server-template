@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IUserBase, IUser>('User');
 
+
 maker.addProperties([
   {
     key: 'name',
@@ -44,8 +45,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const UserModel      = maker.getModel();
 export const UserController = maker.getController();
+
+
+maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST', permissions: ['admin.user.list'] },
@@ -55,5 +61,6 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.user.update'] },
   { template: 'DELETE', permissions: ['admin.user.delete'] }
 ]);
+
 
 export const UserRouter = maker.getRouter();

@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IPageBase, IPage>('Page');
 
+
 maker.addProperties([
   {
     key: 'content',
@@ -22,8 +23,12 @@ maker.addProperties([
   }
 ]);
 
+
 export const PageModel      = maker.getModel();
 export const PageController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -34,5 +39,6 @@ maker.addActions([
   { template: 'UPDATE' },
   { template: 'DELETE' }
 ]);
+
 
 export const PageRouter = maker.getRouter();

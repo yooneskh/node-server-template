@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IRegisterTokenBase, IRegisterToken>('RegisterToken');
 
+
 maker.addProperties([
   {
     key: 'phoneNumber',
@@ -35,5 +36,9 @@ maker.addProperties([
   }
 ]);
 
+
 export const RegisterTokenModel      = maker.getModel();
 export const RegisterTokenController = maker.getController();
+
+
+maker.setValidations({ });

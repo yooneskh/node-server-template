@@ -7,6 +7,7 @@ import { createTransaction } from './transaction-resource';
 
 const maker = new ResourceMaker<ITransferBase, ITransfer>('Transfer');
 
+
 maker.addProperties([
   {
     key: 'fromAccount',
@@ -56,8 +57,12 @@ maker.addProperties([
   }
 ]);
 
+
 export const TransferModel      = maker.getModel();
 export const TransferController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -77,6 +82,7 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.transfer.update'] },
   { template: 'DELETE', permissions: ['admin.transfer.delete'] }
 ]);
+
 
 export const TransferRouter = maker.getRouter();
 

@@ -10,6 +10,7 @@ import ReadChunk from 'read-chunk';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import './media-addons';
 
+
 // init code
 fs.access(`./${Config.media.directory}`, fs.constants.F_OK, accessError => {
   if (accessError) {
@@ -21,6 +22,7 @@ fs.access(`./${Config.media.directory}`, fs.constants.F_OK, accessError => {
   }
 });
 //
+
 
 async function unlinkFile(path: string) {
   return new Promise<void>((resolve, reject) => {
@@ -35,12 +37,14 @@ async function unlinkFile(path: string) {
   });
 }
 
+
 type FileValidator = (file: IMedia) => Promise<void>;
 const fileValidators: FileValidator[] = [];
 
 export async function registerFileValidator(validator: FileValidator) {
   fileValidators.push(validator);
 }
+
 
 async function validateFile(file: IMedia) {
   try {
@@ -55,7 +59,9 @@ async function validateFile(file: IMedia) {
   }
 }
 
+
 const maker = new ResourceMaker<IMediaBase, IMedia>('Media');
+
 
 maker.addProperties([
   {
@@ -104,8 +110,12 @@ maker.addProperties([
   }
 ]);
 
+
 export const MediaModel      = maker.getModel();
 export const MediaController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -230,5 +240,6 @@ maker.addAction({
 
   }
 });
+
 
 export const MediaRouter = maker.getRouter();

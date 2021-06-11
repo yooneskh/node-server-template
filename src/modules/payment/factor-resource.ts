@@ -5,6 +5,7 @@ import { InvalidStateError } from '../../global/errors';
 
 const maker = new ResourceMaker<IFactorBase, IFactor>('Factor');
 
+
 maker.addProperties([
   {
     key: 'user',
@@ -54,8 +55,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const FactorModel      = maker.getModel();
 export const FactorController = maker.getController();
+
+
+maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST', permissions: ['admin.factor.list'] },
@@ -79,5 +85,6 @@ maker.addActions([
     }
   }
 ]);
+
 
 export const FactorRouter = maker.getRouter();

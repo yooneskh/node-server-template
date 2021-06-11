@@ -5,6 +5,7 @@ import { Config } from '../../config/config';
 
 const maker = new ResourceMaker<IAuthorBase, IAuthor>('Author');
 
+
 maker.addProperties([
   {
     key: 'familyName',
@@ -14,8 +15,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const AuthorModel      = maker.getModel();
 export const AuthorController = maker.getController();
+
+
+maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST' },
@@ -25,6 +31,7 @@ maker.addActions([
   { template: 'UPDATE' },
   { template: 'DELETE' }
 ]);
+
 
 export const { model: AuthorBookRelationModel, controller: AuthorBookRelationController } = maker.addRelation<IAuthorBookBase, IAuthorBook>({
   targetModelName: 'Book',
@@ -99,5 +106,6 @@ export const { model: PageMakerModel, controller: PageMakerController } = maker.
     { template: 'DELETE' }
   ]
 });
+
 
 export const AuthorRouter = maker.getRouter();
