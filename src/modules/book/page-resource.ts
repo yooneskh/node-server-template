@@ -32,12 +32,12 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST' },
-  { template: 'LIST_COUNT' },
-  { template: 'RETRIEVE' },
-  { template: 'CREATE' },
-  { template: 'UPDATE' },
-  { template: 'DELETE' }
+  { template: 'LIST', permissions: ['admin.page.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.page.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.page.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.page.create'] },
+  { template: 'UPDATE', permissions: ['admin.page.update'] },
+  { template: 'DELETE', permissions: ['admin.page.delete'] }
 ]);
 
 

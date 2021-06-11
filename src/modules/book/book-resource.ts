@@ -52,12 +52,12 @@ maker.addAction({
 
 
 maker.addActions([
-  { template: 'LIST' },
-  { template: 'LIST_COUNT' },
-  { template: 'RETRIEVE' },
-  { template: 'CREATE' },
-  { template: 'UPDATE' },
-  { template: 'DELETE' }
+  { template: 'LIST', permissions: ['admin.book.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.book.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.book.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.book.create'] },
+  { template: 'UPDATE', permissions: ['admin.book.update'] },
+  { template: 'DELETE', permissions: ['admin.book.delete'] }
 ]);
 
 

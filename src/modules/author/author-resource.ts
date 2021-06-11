@@ -24,12 +24,12 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST' },
-  { template: 'LIST_COUNT' },
-  { template: 'RETRIEVE' },
-  { template: 'CREATE' },
-  { template: 'UPDATE' },
-  { template: 'DELETE' }
+  { template: 'LIST', permissions: ['admin.author.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.author.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.author.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.author.create'] },
+  { template: 'UPDATE', permissions: ['admin.author.update'] },
+  { template: 'DELETE', permissions: ['admin.author.delete'] }
 ]);
 
 
