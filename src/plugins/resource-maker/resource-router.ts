@@ -58,13 +58,16 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
 
   private injectMetaAction() {
 
-    const filteredProperties = this.properties.filter(property => !property.hidden);
+    const filteredProperties = JSON.stringify(this.properties.filter(property => !property.hidden));
 
     const metaAction: ResourceRouterAction = {
       signal: ['Route', this.name, 'Metas'],
       path: '/metas',
       method: 'GET',
-      dataProvider: async () => filteredProperties
+      dataProvider: async ({ setHeader }) => {
+        setHeader('Content-Type', 'application/json');
+        return filteredProperties;
+      }
     };
 
     this.applyActionOnRouter(metaAction);
@@ -182,11 +185,12 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
         request,
         response,
         next,
-        bag: {},
-        version: request.headers['x-version'] ?? '1',
+        setHeader: (header: string, value: string) => response.setHeader(header, value),
         payload: request.body ?? {},
         params: request.params ?? {},
         query: request.query ?? {},
+        bag: {},
+        version: request.headers['x-version'] ?? '1',
         resourceId: request.params.resourceId
       });
     }
@@ -197,7 +201,6 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
       case 'PATCH': this.router.patch(action.path, routerHandler); break;
       case 'PUT': this.router.put(action.path, routerHandler); break;
       case 'DELETE': this.router.delete(action.path, routerHandler); break;
-      case 'HEAD': this.router.head(action.path, routerHandler); break;
       default: throw new ServerError('action method type invalid');
     }
 
