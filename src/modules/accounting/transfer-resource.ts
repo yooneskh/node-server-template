@@ -113,14 +113,15 @@ export async function createTransfer(fromAccountId: string, toAccountId: string,
   });
 
   const fromTransaction = await createTransaction(fromAccountId, -amount, `برداشت جهت ${description}`);
-  transfer.fromTransaction = fromTransaction._id;
-  await transfer.save();
-
   const toTransaction = await createTransaction(toAccountId, amount, `واریز جهت ${description}`);
-  transfer.toTransaction = toTransaction._id;
-  await transfer.save();
 
-  return transfer;
+  return TransferController.edit({
+    resourceId: transfer._id,
+    payload: {
+      fromTransaction: fromTransaction._id,
+      toTransaction: toTransaction._id
+    }
+  });
 
 }
 

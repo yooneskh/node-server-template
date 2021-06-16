@@ -187,15 +187,18 @@ maker.addAction({
       token = generateToken();
     }
 
-    authToken.verificationCode = undefined;
-    authToken.token = token;
-    authToken.valid = true;
-    authToken.validatedAt = Date.now();
-    authToken.updatedAt = Date.now();
-    await authToken.save();
+    const validatedAuthToken = await AuthTokenController.edit({
+      resourceId: authToken._id,
+      payload: {
+        verificationCode: undefined,
+        token,
+        valid: true,
+        validatedAt: Date.now()
+      }
+    });
 
     const user = await UserController.retrieve({
-      resourceId: authToken.user,
+      resourceId: validatedAuthToken.user,
       includes: {
         'profile': ''
       }
@@ -205,7 +208,7 @@ maker.addAction({
 
     return {
       user,
-      token: authToken.token
+      token: validatedAuthToken.token
     }
 
   }
@@ -309,8 +312,13 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
     }); return undefined;
   }
 
-  authToken.lastAccessAt = Date.now();
-  authToken.save();
+  // intentionally not awaited
+  AuthTokenController.edit({
+    resourceId: authToken._id,
+    payload: {
+      lastAccessAt: Date.now()
+    }
+  });
 
   return authToken.user as unknown as IUser;
 
