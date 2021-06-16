@@ -6,6 +6,7 @@ import { Config } from '../../config/config';
 import { InvalidRequestError, ServerError } from '../../global/errors';
 import { minimumBytes, getFileType } from '../../plugins/file-type/file-type';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
+import { joinUrls } from '../../global/util';
 import ReadChunk from 'read-chunk';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import './media-addons';
@@ -140,17 +141,21 @@ maker.addAction({
       }
     });
 
-    const relativePath = `${Config.media.directory}/${media._id}.${media.extension}`;
-    const absolutePath = `${Config.media.baseUrl}/${relativePath}`;
+    const relativePath = joinUrls(Config.media.directory, `${media._id}.${media.extension}`);
+    const absolutePath = joinUrls(Config.media.baseUrl, relativePath);
 
-    media.relativePath = relativePath;
-    media.path = absolutePath;
-    await media.save();
+    const updatedMedia = await MediaController.edit({
+      resourceId: media._id,
+      payload: {
+        relativePath,
+        path: absolutePath
+      }
+    });
 
-    YEventManager.emit(['Resource', 'Media', 'InitiatedUpload'], media._id, media);
+    YEventManager.emit(['Resource', 'Media', 'InitiatedUpload'], updatedMedia._id, updatedMedia);
 
     return {
-      fileToken: media._id
+      fileToken: updatedMedia._id
     };
 
   }
@@ -164,9 +169,12 @@ maker.addAction({
   async dataProvider({ params, request, response }) {
 
     const fileInfoList = await MediaController.list({
-      filters: { _id: params.fileToken },
+      filters: {
+        _id: params.fileToken
+      },
       selects: '+relativePath'
-    }); if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
+    });
+    if (!fileInfoList || fileInfoList.length !== 1) throw new InvalidRequestError('no such saved media');
 
     const fileInfo = fileInfoList[0];
     if (!fileInfo || !fileInfo.size || fileInfo.size <= 0) throw new InvalidRequestError('saved media incorrect');
@@ -205,13 +213,19 @@ maker.addAction({
         const chunk = await ReadChunk(targetFile, 0, minimumBytes);
         const type = getFileType(chunk);
 
+        let uploadedMedia = fileInfo;
+
         if (type) {
-          fileInfo.type = type.mime;
-          await fileInfo.save();
+          uploadedMedia = await MediaController.edit({
+            resourceId: uploadedMedia._id,
+            payload: {
+              type: type.mime
+            }
+          });
         }
 
         try {
-          await validateFile(fileInfo);
+          await validateFile(uploadedMedia);
         }
         catch (error) {
           response.status(400).json({
@@ -221,10 +235,10 @@ maker.addAction({
 
         response.status(201).json({
           success: true,
-          mediaId: fileInfo._id
+          mediaId: uploadedMedia._id
         });
 
-        YEventManager.emit(['Resource', 'Media', 'Uploaded'], fileInfo._id, fileInfo);
+        YEventManager.emit(['Resource', 'Media', 'Uploaded'], uploadedMedia._id, uploadedMedia);
 
       }
       else {

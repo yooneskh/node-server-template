@@ -29,3 +29,12 @@ export function generateRandomNumericCode(length: number) {
   return res;
 
 }
+
+export function joinUrls(base: string, ...affixes: string[]): string {
+
+  if (base.endsWith('/')) base = base.slice(0, -1);
+  affixes = affixes.map(it => it.startsWith('/') ? it.slice(1) : it);
+
+  return `${base}/${affixes.join('/')}`;
+
+}
