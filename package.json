@@ -29,7 +29,7 @@
     "sharp": "0.28.3",
     "socket.io": "4.1.2",
     "svg-captcha": "1.4.0",
-    "ynetwork": "2.6.0",
+    "ynetwork": "2.7.0",
     "zarinpal-checkout": "0.2.7"
   },
   "devDependencies": {
