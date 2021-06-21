@@ -4,8 +4,8 @@ export const PERMISSIONS = [
     ['media', 'init-upload', 'upload']
   ],
   ['admin',
-    ['data-category', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['data', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+    ['data-category', 'retrieve', 'create', 'update', 'delete'],
+    ['data', 'retrieve', 'create', 'update', 'delete'],
     ['time-tag', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
     ['data-type', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
     ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],

@@ -72,7 +72,7 @@ maker.setValidations({ });
 
 maker.addActions([
   { template: 'LIST' },
-  { template: 'LIST_COUNT', permissions: ['admin.data.list-count'] },
+  { template: 'LIST_COUNT' },
   { template: 'RETRIEVE', permissions: ['admin.data.retrieve'] },
   { template: 'CREATE', permissions: ['admin.data.create'] },
   { template: 'UPDATE', permissions: ['admin.data.update'] },
