@@ -6,7 +6,7 @@
     "name": "opendata_aaa"
   },
   "media": {
-    "baseUrl": "https://api-opendata.shiraz.ir",
+    "baseUrl": "https://data.shiraz.ir/oapi",
     "directory": "downloada"
   },
   "corsHandle": "true",
