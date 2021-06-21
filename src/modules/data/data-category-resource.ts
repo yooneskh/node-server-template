@@ -44,6 +44,11 @@ maker.addProperties([
     key: 'order',
     type: 'number',
     title: 'ترتیب'
+  },
+  {
+    key: 'hidden',
+    type: 'boolean',
+    title: 'مخفی شده'
   }
 ]);
 
@@ -111,7 +116,7 @@ maker.addActions([
     signal: ['Resource', 'DataCategory', 'RetrieveSitemap'],
     dataProvider: async () => {
       return DataCategoryController.list({
-        selects: 'title slug parent'
+        selects: 'title slug parent hidden'
       });
     }
   }
