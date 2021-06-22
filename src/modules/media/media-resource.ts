@@ -234,7 +234,7 @@ maker.addAction({
         }
 
         response.status(201).json({
-          success: true,
+          ...uploadedMedia,
           mediaId: uploadedMedia._id
         });
 
