@@ -62,6 +62,18 @@ maker.addProperties([
     isArray: true,
     title: 'کلمات کلیدی',
     hideInTable: true
+  },
+  {
+    key: 'hidden',
+    type: 'boolean',
+    title: 'مخفی کردن داده',
+    hideInTable: true
+  },
+  {
+    key: 'hideMetas',
+    type: 'boolean',
+    title: 'مخفی کردن اطلاعات',
+    hideInTable: true
   }
 ]);
 

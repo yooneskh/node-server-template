@@ -18,6 +18,10 @@ export interface IDataBase extends IResource {
   description: string;
   type: string;
   file: string;
+  publisher?: string;
+  tags?: string[];
+  hidden: boolean;
+  hideMetas: boolean;
 } export interface IData extends IDataBase, Document {}
 
 export interface ITimeTagBase extends IResource {
