@@ -11,7 +11,9 @@ import { createSuccessResultPage } from './payment-result-success';
 import { depositIntoUserAccount } from '../accounting/transfer-resource';
 import { UserController } from '../user/user-resource';
 
+
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
+
 
 interface IGatewayHandler {
   gateway: string;
@@ -28,7 +30,9 @@ export function registerPayticketStateValidator(validator: IPayticketStateValida
   payticketStateValidators.push(validator);
 }
 
+
 const maker = new ResourceMaker<IPayTicketBase, IPayTicket>('PayTicket');
+
 
 maker.addProperties([
   {
@@ -116,8 +120,12 @@ maker.addProperties([
   }
 ]);
 
+
 export const PayTicketModel      = maker.getModel();
 export const PayTicketController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -241,6 +249,7 @@ maker.addActions([
   }
 ]);
 
+
 export const PayTicketRouter = maker.getRouter();
 
 
@@ -269,6 +278,7 @@ export async function createPayTicket(factorId: string, gateway: string, returnU
   return filledPayticket;
 
 }
+
 
 // GATEWAY HANDLERS
 

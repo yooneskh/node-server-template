@@ -1,41 +1,91 @@
 export const PERMISSIONS = [
   ['user',
-    ['profile', 'retrieve', 'update'],
-    ['media', 'init-upload', 'upload']
+    ...[ // general
+      ['profile', 'retrieve', 'update'],
+      ['media', 'init-upload', 'upload']
+    ],
+    ...[ // app specific
+
+    ]
   ],
   ['admin',
-    ['data-category', 'retrieve', 'create', 'update', 'delete'],
-    ['data', 'retrieve', 'create', 'update', 'delete'],
-    ['time-tag', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['data-type', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-    ['permissions', 'list'],
-    // ['setting',
-    //   ['application']
-    // ]
+    ...[ // general
+      ...[ // resources
+        ['permissions', 'list'],
+        ['media', 'list', 'list-count', 'retrieve'],
+        // ['account', 'list', 'list-count', 'retrieve', 'delete'],
+        // ['transaction', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        // ['transfer', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        // ['factor', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        // ['payticket', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        // ['update', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+      ],
+      ...[ // others
+        // ['setting',
+        //   ['application']
+        // ]
+      ]
+    ],
+    ...[ // app specific
+      ...[ // resources
+        ['data-category', 'retrieve', 'create', 'update', 'delete'],
+        ['data', 'retrieve', 'create', 'update', 'delete'],
+        ['time-tag', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['data-type', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+      ],
+      ...[ // others
+
+      ]
+    ]
   ]
 ];
 
 export const PERMISSIONS_LOCALES = {
   'user': 'کاربر',
   'admin': 'مدیر',
-  'profile': 'پروفایل',
-  'media': 'مدیا',
-  'init-upload': 'شروع بارگذاری',
-  'upload': 'بارگذاری',
-  'data-category': 'دسته‌بندی داده',
-  'data': 'داده',
-  'time-tag': 'تگ زمانی',
-  'data-type': 'نوع داده',
-  'publisher': 'انتشار دهنده',
-  'permissions': 'تنظیمات',
-  'list': 'لیست',
-  'list-count': 'تعداد لیست',
-  'retrieve': 'گرفتن',
-  'create': 'ایجاد کردن',
-  'update': 'به روز رسانی',
-  'delete': 'حذف'
+  ...{ // general
+    ...{ // resources
+      'media': 'مدیا',
+      'account': 'حساب',
+      'transaction': 'تراکنش',
+      'transfer': 'انتقال',
+      'factor': 'فاکتور',
+      'payticket': 'تیکت پرداخت',
+      'permissions': 'تنظیمات',
+    },
+    ...{ // actions
+      'list': 'لیست',
+      'list-count': 'تعداد لیست',
+      'retrieve': 'گرفتن',
+      'create': 'ایجاد کردن',
+      'update': 'به روز رسانی',
+      'delete': 'حذف',
+      'profile': 'پروفایل',
+      'init-upload': 'شروع بارگذاری',
+      'upload': 'بارگذاری',
+    },
+    ...{ // others
+      'setting': 'تنظیمات',
+      'application': 'برنامه',
+    }
+  },
+  ...{ // app specific
+    ...{ // resources
+      'data-category': 'دسته‌بندی داده',
+      'data': 'داده',
+      'time-tag': 'تگ زمانی',
+      'data-type': 'نوع داده',
+      'publisher': 'انتشار دهنده',
+    },
+    ...{ // actions
+
+    },
+    ...{ // others
+
+    }
+  }
 };
 
 function matchPermission(permit: string, permission: string): boolean {

@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { ResourceRelationControllerContext } from './resource-relation-controller-types';
 import { ResourceRelation } from './resource-relation-types';
 import { validatePropertyKeys, transformIncludes } from './resource-controller-util';
-import { NotFoundError, InvalidStateError } from '../../global/errors';
+import { NotFoundError, InvalidStateError, InvalidRequestError } from '../../global/errors';
 import { YEventManager } from '../event-manager/event-manager';
 import { simplePascalize } from '../../global/util';
 
@@ -218,7 +218,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
     if (context.lean) query.lean();
 
     const relation = await query;
-    if (!relation) throw new NotFoundError(`relation not found @${context.relationId}`);
+    if (!relation) throw new NotFoundError(`relation not found @${context.relationId}`, 'مورد خواسته شده یافت نشد.');
 
     YEventManager.emit(
       ['Relation', this.relationName, 'Retrieved'],
@@ -239,25 +239,30 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
       const currentCount = await this.getSingleRelationCount({ sourceId: context.sourceId, targetId: context.targetId });
 
       if ('singular' in this.relation && this.relation.singular && currentCount >= 1) {
-        throw new InvalidStateError('relation already exists')
+        throw new InvalidStateError('relation already exists', 'این مورد وجود دارد.')
       }
 
       if ('maxCount' in this.relation && this.relation.maxCount !== undefined && currentCount >= this.relation.maxCount) {
-        throw new InvalidStateError('relation max count reached')
+        throw new InvalidStateError('relation max count reached', 'حداکثر تعداد وجود دارد.')
       }
 
     }
 
     const objectToCreateFrom: any = {
-      ...context.payload,
+      ...(context.payload ?? {}),
       [this.sourcePropertyName]: context.sourceId,
       [this.targetPropertyName]: context.targetId
     };
 
     const relation = new this.model();
 
-    for (const key in objectToCreateFrom) {
-      relation.set(key, objectToCreateFrom[key]);
+    for (const property of this.validationProperties) {
+      if (property.key in objectToCreateFrom) {
+        if (property.nonCreating) throw new InvalidRequestError(`non creating key '${property.key}' given for creation.`, 'اطلاعات داده شده صحیح نیست.'); // todo: move to validate
+
+        relation.set(property.key, objectToCreateFrom[property.key as keyof T]);
+
+      }
     }
 
     await relation.save();
@@ -273,19 +278,23 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
   }
 
   public async updateRelation(context: ResourceRelationControllerContext<T, TF>): Promise<boolean> {
+    if (!context.payload) throw new InvalidRequestError('payload not defined.', 'داده‌ای ارسال نشده است.');
 
     const item = await this.model.findById(context.relationId);
-    if (!item) throw new NotFoundError('relation not found');
+    if (!item) throw new NotFoundError('relation not found', 'مورد یافت نشد.');
 
     if (item.get(this.sourcePropertyName) !== context.sourceId || item.get(this.targetPropertyName) !== context.targetId) {
-      throw new NotFoundError('relation not found');
+      throw new NotFoundError('relation not found', 'مورد یافت نشد.');
     }
 
     // TODO: validate payload
 
-    for (const key in context.payload || {}) {
-      if (key !== this.sourcePropertyName || key !== this.targetPropertyName || key !== '_id') {
-        item.set(key, (context.payload as any)[key]);
+    for (const property of this.validationProperties) {
+      if (property.key in context.payload) {
+        if (property.key === this.sourcePropertyName || property.key === this.targetPropertyName) throw new InvalidRequestError('you cannot change the relation.', 'تغییر غیر مجاز خواسته شده است.');
+
+        item.set(property.key, context.payload[property.key as keyof T]);
+
       }
     }
 
@@ -305,10 +314,10 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
   public async removeRelation(context: ResourceRelationControllerContext<T, TF>): Promise<boolean> {
 
     const item = await this.model.findById(context.relationId);
-    if (!item) throw new NotFoundError('relation not found');
+    if (!item) throw new NotFoundError('relation not found', 'موردی یافت نشد.');
 
     if (item.get(this.sourcePropertyName) !== context.sourceId || item.get(this.targetPropertyName) !== context.targetId) {
-      throw new NotFoundError('relation not found');
+      throw new NotFoundError('relation not found', 'موردی یافت نشد.');
     }
 
     const itemClone = JSON.parse(JSON.stringify(item));

@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IAuthTokenBase, IAuthToken>('AuthToken');
 
+
 maker.addProperties([
   {
     key: 'registerToken',
@@ -92,5 +93,9 @@ maker.addProperties([
   }
 ]);
 
+
 export const AuthTokenModel      = maker.getModel();
 export const AuthTokenController = maker.getController();
+
+
+maker.setValidations({ });

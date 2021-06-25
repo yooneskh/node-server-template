@@ -1,10 +1,15 @@
-import { HandleableError } from '../../global/errors';
+import { HandleableError, ServerError } from '../../global/errors';
 import { IResource, ResourceModelProperty } from './resource-model-types';
-
+import { Query } from 'mingo';
 
 class ValidationError extends HandleableError {
   public code = 1100;
 };
+
+// tslint:disable-next-line: no-any
+function conforms(object: any, rule: any): boolean {
+  return new Query(rule).test(object);
+}
 
 export type ResourceValidation<I> = {
   [P in keyof I]?: ((it: I, e: (message: string) => never) => Promise<unknown>)[]
@@ -24,8 +29,9 @@ export class ResourceValidator<T extends IResource> {
         if (!rules) rules = [];
         rules.unshift(async (it, e) => {
           const v = it[property.key as keyof T] as any; // tslint:disable-line: no-any
+          if (property.vIf && !conforms(it, property.vIf)) return;
           if (property.type === 'number' && (v !== undefined && v !== null && !isNaN(v))) return;
-          if (property.isArray && (!!v && v.length > 0)) return;
+          if ((property.isArray || property.type === 'series') && (!!v && v.length > 0)) return;
           return v !== undefined && v !== null && v !== '' || e(`${property.title || property.key} الزامی است.`);
         });
       }
@@ -56,16 +62,25 @@ export class ResourceValidator<T extends IResource> {
     const freezedItem = Object.freeze(JSON.parse(JSON.stringify(item))) as T;
 
     const checkResults = await Promise.all(
-      Object.keys(this.validations).map(async key => {
-        try {
-          for (const validFn of this.validations[key as keyof T] ?? []) {
-            await validFn(freezedItem, errorThrowerMaker(key))
-          } return undefined;
-        }
-        catch (error) {
-          return error;
-        }
-      })
+      Object.keys(this.validations)
+        .filter(key => {
+
+          const property = this.properties.find(it => it.key === key);
+          if (!property) throw new ServerError('no property for a validation.', 'بررسی صحت ممکن نیست.');
+
+          return !property.vIf || conforms(freezedItem, property.vIf);
+
+        })
+        .map(async key => {
+          try {
+            for (const validFn of this.validations[key as keyof T] ?? []) {
+              await validFn(freezedItem, errorThrowerMaker(key))
+            } return undefined;
+          }
+          catch (error) {
+            return error;
+          }
+        })
     );
 
     const errors: ValidationError[] = checkResults.filter(Boolean);

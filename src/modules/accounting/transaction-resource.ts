@@ -6,6 +6,7 @@ import { AccountController } from './account-resource';
 
 const maker = new ResourceMaker<ITransactionBase, ITransaction>('Transaction');
 
+
 maker.addProperties([
   {
     key: 'account',
@@ -30,8 +31,12 @@ maker.addProperties([
   },
 ]);
 
+
 export const TransactionModel      = maker.getModel();
 export const TransactionController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -56,6 +61,7 @@ maker.addActions([
     permissions: ['admin.transaction.delete'],
   }
 ]);
+
 
 export const TransactionRouter = maker.getRouter();
 

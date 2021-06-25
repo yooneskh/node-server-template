@@ -20,6 +20,8 @@ export interface ResourceModelProperty {
   isArray?: boolean;
   languages?: Record<string, any>;
   serieSchema?: ResourceModelProperty[];
+  // existence criteria
+  vIf?: any;
   // index
   index?: boolean | { unique?: boolean; sparse?: boolean };
   unique?: boolean;
@@ -48,6 +50,7 @@ export interface ResourceModelProperty {
 }
 
 export interface IResource {
+  _id?: any;
   createdAt: number;
   updatedAt: number;
 }

@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IUpdateBase, IUpdate>('Update');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -64,8 +65,12 @@ maker.addProperties([
   }
 ]);
 
+
 export const UpdateModel      = maker.getModel();
 export const UpdateController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -76,5 +81,6 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.update.update'] },
   { template: 'DELETE', permissions: ['admin.update.delete'] }
 ]);
+
 
 export const UpdateRouter = maker.getRouter();

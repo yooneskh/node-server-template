@@ -8,6 +8,7 @@ import { hasPermissions } from '../auth/auth-util';
 
 const maker = new ResourceMaker<IAccountBase, IAccount>('Account');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -56,8 +57,12 @@ maker.addProperties([
   },
 ]);
 
+
 export const AccountModel      = maker.getModel();
 export const AccountController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -86,6 +91,7 @@ maker.addActions([
     }
   }
 ]);
+
 
 export const AccountRouter = maker.getRouter();
 
@@ -120,6 +126,7 @@ export async function getAccountForUser(userId: string) {
     filters: { user: userId }
   });
 }
+
 
 // setup global accounts
 (async () => {

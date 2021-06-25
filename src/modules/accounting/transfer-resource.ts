@@ -7,6 +7,7 @@ import { createTransaction } from './transaction-resource';
 
 const maker = new ResourceMaker<ITransferBase, ITransfer>('Transfer');
 
+
 maker.addProperties([
   {
     key: 'fromAccount',
@@ -56,8 +57,12 @@ maker.addProperties([
   }
 ]);
 
+
 export const TransferModel      = maker.getModel();
 export const TransferController = maker.getController();
+
+
+maker.setValidations({ });
 
 
 maker.addActions([
@@ -77,6 +82,7 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.transfer.update'] },
   { template: 'DELETE', permissions: ['admin.transfer.delete'] }
 ]);
+
 
 export const TransferRouter = maker.getRouter();
 
@@ -107,14 +113,15 @@ export async function createTransfer(fromAccountId: string, toAccountId: string,
   });
 
   const fromTransaction = await createTransaction(fromAccountId, -amount, `برداشت جهت ${description}`);
-  transfer.fromTransaction = fromTransaction._id;
-  await transfer.save();
-
   const toTransaction = await createTransaction(toAccountId, amount, `واریز جهت ${description}`);
-  transfer.toTransaction = toTransaction._id;
-  await transfer.save();
 
-  return transfer;
+  return TransferController.edit({
+    resourceId: transfer._id,
+    payload: {
+      fromTransaction: fromTransaction._id,
+      toTransaction: toTransaction._id
+    }
+  });
 
 }
 
