@@ -33,7 +33,8 @@ export const PERMISSIONS = [
         ['data', 'retrieve', 'create', 'update', 'delete'],
         ['time-tag', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['data-type', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+        ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
 
@@ -78,6 +79,7 @@ export const PERMISSIONS_LOCALES = {
       'time-tag': 'تگ زمانی',
       'data-type': 'نوع داده',
       'publisher': 'انتشار دهنده',
+      'api-service': 'سرویس Api'
     },
     ...{ // actions
 

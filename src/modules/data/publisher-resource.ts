@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IPublisherBase, IPublisher>('Publisher');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -14,10 +15,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const PublisherModel      = maker.getModel();
 export const PublisherController = maker.getController();
 
+
 maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST', permissions: ['admin.publisher.list'] },
@@ -27,5 +31,6 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.publisher.update'] },
   { template: 'DELETE', permissions: ['admin.publisher.delete'] }
 ]);
+
 
 export const PublisherRouter = maker.getRouter();

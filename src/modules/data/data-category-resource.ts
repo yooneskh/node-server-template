@@ -5,6 +5,7 @@ import { isSlug } from '../../util/validators';
 
 const maker = new ResourceMaker<IDataCategoryBase, IDataCategory>('DataCategory');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -52,14 +53,17 @@ maker.addProperties([
   }
 ]);
 
+
 export const DataCategoryModel      = maker.getModel();
 export const DataCategoryController = maker.getController();
+
 
 maker.setValidations({
   'slug': [
     async (it, e) => isSlug(it.slug) || e('کد صحیح نیست')
   ]
 });
+
 
 maker.addActions([
   { template: 'LIST' },
@@ -121,5 +125,6 @@ maker.addActions([
     }
   }
 ]);
+
 
 export const DataCategoryRouter = maker.getRouter();

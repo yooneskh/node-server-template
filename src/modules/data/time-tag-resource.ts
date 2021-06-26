@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<ITimeTagBase, ITimeTag>('TimeTag');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -14,10 +15,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const TimeTagModel      = maker.getModel();
 export const TimeTagController = maker.getController();
 
+
 maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST', permissions: ['admin.time-tag.list'] },
@@ -27,5 +31,6 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.time-tag.update'] },
   { template: 'DELETE', permissions: ['admin.time-tag.delete'] }
 ]);
+
 
 export const TimeTagRouter = maker.getRouter();

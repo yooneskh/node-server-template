@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IDataTypeBase, IDataType>('DataType');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -40,10 +41,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const DataTypeModel      = maker.getModel();
 export const DataTypeController = maker.getController();
 
+
 maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST', permissions: ['admin.data-type.list'] },
@@ -53,5 +57,6 @@ maker.addActions([
   { template: 'UPDATE', permissions: ['admin.data-type.update'] },
   { template: 'DELETE', permissions: ['admin.data-type.delete'] }
 ]);
+
 
 export const DataTypeRouter = maker.getRouter();

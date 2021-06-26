@@ -4,6 +4,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 
 const maker = new ResourceMaker<IDataBase, IData>('Data');
 
+
 maker.addProperties([
   {
     key: 'title',
@@ -77,10 +78,13 @@ maker.addProperties([
   }
 ]);
 
+
 export const DataModel      = maker.getModel();
 export const DataController = maker.getController();
 
+
 maker.setValidations({ });
+
 
 maker.addActions([
   { template: 'LIST' },
@@ -121,5 +125,6 @@ maker.addActions([
     }
   }
 ]);
+
 
 export const DataRouter = maker.getRouter();
