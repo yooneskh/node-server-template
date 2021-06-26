@@ -130,22 +130,33 @@ maker.addActions([
     signal: ['Resource', 'Data', 'SearchCustom'],
     dataProvider: async ({ query }) => {
 
-      const { title } = query;
+      const { title, description, timeTags, publisher, tags } = query;
+
+      // tslint:disable-next-line: no-any
+      const filters: any = {};
+
+      if (title) {
+        filters['title'] = { $regex: new RegExp(title, 'i') };
+      }
+
+      if (description) {
+        filters['description'] = { $regex: new RegExp(description, 'i') };
+      }
+
+      if (publisher) {
+        filters['publisher'] = publisher;
+      }
+
+      if (timeTags) {
+        filters['timeTags'] = timeTags.split(',');
+      }
+
+      if (tags) {
+        filters['tags'] = tags.split(',');
+      }
 
       return DataController.list({
-        filters: {
-          $or: [
-            {
-              title: { $regex: new RegExp(title, 'i') }
-            },
-            // {
-            //   description: { $regex: new RegExp(query, 'i') }
-            // },
-            // {
-            //   tags: { $regex: new RegExp(query, 'i') }
-            // }
-          ]
-        },
+        filters,
         includes: {
           'timeTags': '',
           'type': '',
