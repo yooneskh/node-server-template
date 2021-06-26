@@ -126,7 +126,7 @@ maker.addActions([
   },
   { // search
     method: 'GET',
-    path: '/search/custom/:query',
+    path: '/custom/search',
     signal: ['Resource', 'Data', 'SearchCustom'],
     dataProvider: async ({ query }) => {
 
