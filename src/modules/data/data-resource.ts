@@ -154,6 +154,7 @@ maker.addActions([
           'file': '',
           'publisher': ''
         },
+        limit: 30,
         skipKeyCheck: true
       });
     }
