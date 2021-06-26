@@ -166,7 +166,12 @@ export class ResourceRouter<T extends IResource, TF extends IResourceDocument> {
         for (const processor of ResourceRouter.preResponseProcessors) await processor(context);
 
         if (context.data !== DISMISS_DATA_PROVIDER) {
-          context.response.json(context.data);
+          if (typeof context.data === 'string') {
+            context.response.send(context.data);
+          }
+          else {
+            context.response.json(context.data);
+          }
         }
 
         for (const processor of ResourceRouter.postProcessors) await processor(context);
