@@ -123,6 +123,40 @@ maker.addActions([
         skipKeyCheck: true
       });
     }
+  },
+  { // search
+    method: 'GET',
+    path: '/search/custom/:query',
+    signal: ['Resource', 'Data', 'SearchCustom'],
+    dataProvider: async ({ query }) => {
+
+      const { title } = query;
+
+      return DataController.list({
+        filters: {
+          $or: [
+            {
+              title: { $regex: new RegExp(title, 'i') }
+            },
+            // {
+            //   description: { $regex: new RegExp(query, 'i') }
+            // },
+            // {
+            //   tags: { $regex: new RegExp(query, 'i') }
+            // }
+          ]
+        },
+        includes: {
+          'timeTags': '',
+          'type': '',
+          'type.emptyIcon': 'path',
+          'type.smallIcon': 'path',
+          'file': '',
+          'publisher': ''
+        },
+        skipKeyCheck: true
+      });
+    }
   }
 ]);
 
