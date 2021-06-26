@@ -1,5 +1,7 @@
 import { IData, IDataBase } from './data-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { PublisherController } from './publisher-resource';
+import { TimeTagController } from './time-tag-resource';
 
 
 const maker = new ResourceMaker<IDataBase, IData>('Data');
@@ -144,15 +146,31 @@ maker.addActions([
       }
 
       if (publisher) {
-        filters['publisher'] = publisher;
+
+        const filteredPublishers = await PublisherController.list({
+          filters: {
+            title: { $regex: new RegExp(publisher, 'i') }
+          }
+        });
+
+        filters['publisher'] = { $in: filteredPublishers.map(it => it._id) };
+
       }
 
       if (timeTags) {
-        filters['timeTags'] = timeTags.split(',');
+
+        const filteredTimeTags = await TimeTagController.list({
+          filters: {
+            title: { $regex: new RegExp(timeTags, 'i') }
+          }
+        });
+
+        filters['timeTags'] = { $elemMatch: { $in: filteredTimeTags.map(it => it._id) } };
+
       }
 
       if (tags) {
-        filters['tags'] = tags.split(',');
+        filters['tags'] = { $regex: new RegExp(tags, 'i') };
       }
 
       return DataController.list({
