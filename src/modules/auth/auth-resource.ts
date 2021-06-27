@@ -312,6 +312,9 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
     }); return undefined;
   }
 
+  const user = authToken.user as unknown as IUser;
+  if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+
   // intentionally not awaited
   AuthTokenController.edit({
     resourceId: authToken._id,
@@ -320,7 +323,7 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
     }
   });
 
-  return authToken.user as unknown as IUser;
+  return user;
 
 }
 

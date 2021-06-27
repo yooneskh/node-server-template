@@ -7,4 +7,5 @@ export interface IUserBase extends IResource {
   email?: string;
   profile?: string;
   permissions: string[];
+  blocked?: boolean;
 } export interface IUser extends IUserBase, Document {}

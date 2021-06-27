@@ -42,6 +42,12 @@ maker.addProperties([
     title: 'مجوزها',
     hideInTable: true,
     handlerElement: 'permissions'
+  },
+  {
+    key: 'blocked',
+    type: 'boolean',
+    title: 'مسدود شده',
+    hideInTable: true
   }
 ]);
 
