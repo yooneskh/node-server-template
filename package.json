@@ -1,6 +1,6 @@
 {
   "name": "yback",
-  "version": "3.10.4",
+  "version": "3.10.5",
   "description": "Yoonsekh backend template",
   "main": "bin/www",
   "scripts": {
