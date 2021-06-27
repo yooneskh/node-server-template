@@ -1,5 +1,6 @@
 import { IApiService, IApiServiceBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { isSlug } from '../../util/validators';
 
 
 const maker = new ResourceMaker<IApiServiceBase, IApiService>('ApiService');
@@ -14,6 +15,20 @@ maker.addProperties([
     titleable: true
   },
   {
+    key: 'publisher',
+    type: 'string',
+    ref: 'Publisher',
+    required: true,
+    title: 'انتشار دهنده'
+  },
+  {
+    key: 'slug',
+    type: 'string',
+    required: true,
+    title: 'شناسه',
+    dir: 'ltr'
+  },
+  {
     key: 'picture',
     type: 'string',
     ref: 'Media',
@@ -26,7 +41,7 @@ maker.addProperties([
     required: true,
     title: 'توضیحات',
     longText: true
-  },
+  }
 ]);
 
 
@@ -34,7 +49,12 @@ export const ApiServiceModel      = maker.getModel();
 export const ApiServiceController = maker.getController();
 
 
-maker.setValidations({ });
+maker.setValidations({
+  'slug': [
+    async ({ slug }, e) => isSlug(slug) || e('شناسه صحیح وارد نشده است.'),
+    async ({ _id, slug }, e) => (await ApiServiceController.count({ filters: { _id: { $ne: _id }, slug } })) === 0 || e('این شناسه قبلا وارد شده است.')
+  ]
+});
 
 
 maker.addActions([

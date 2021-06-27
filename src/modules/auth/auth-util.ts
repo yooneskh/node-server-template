@@ -13,18 +13,10 @@ export const PERMISSIONS = [
       ...[ // resources
         ['permissions', 'list'],
         ['media', 'list', 'list-count', 'retrieve'],
-        // ['account', 'list', 'list-count', 'retrieve', 'delete'],
-        // ['transaction', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        // ['transfer', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        // ['factor', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        // ['payticket', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        // ['update', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
-        // ['setting',
-        //   ['application']
-        // ]
+
       ]
     ],
     ...[ // app specific
@@ -34,7 +26,9 @@ export const PERMISSIONS = [
         ['time-tag', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['data-type', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+        ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['api-endpoint', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
 
@@ -79,7 +73,9 @@ export const PERMISSIONS_LOCALES = {
       'time-tag': 'تگ زمانی',
       'data-type': 'نوع داده',
       'publisher': 'انتشار دهنده',
-      'api-service': 'سرویس Api'
+      'api-service': 'سرویس Api',
+      'api-endpoint': 'واحد Api',
+      'api-version': 'نسخه Api'
     },
     ...{ // actions
 

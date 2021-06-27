@@ -70,6 +70,13 @@ app.use('/api/timetags', TimeTagRouter);
 app.use('/api/datatypes', DataTypeRouter);
 app.use('/api/publishers', PublisherRouter);
 
+import { ApiServiceRouter } from './modules/api/api-service-resource';
+import { ApiEndpointRouter } from './modules/api/api-endpoint-resource';
+import { ApiVersionRouter } from './modules/api/api-version-resource';
+app.use('/api/apiservices', ApiServiceRouter);
+app.use('/api/apiendpoints', ApiEndpointRouter);
+app.use('/api/apiversions', ApiVersionRouter);
+
 
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
