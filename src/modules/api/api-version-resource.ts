@@ -172,7 +172,7 @@ maker.addProperties([
         title: 'توضیحات کلیدهای جواب'
       }
     ],
-    title: 'اسکیمای Body',
+    title: 'جواب‌ها',
     hideInTable: true
   },
 ]);
