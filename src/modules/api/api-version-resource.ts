@@ -15,7 +15,8 @@ const makeHttpParamProperty = (key: string, title: string): ResourceModelPropert
       key: 'key',
       type: 'string',
       required: true,
-      title: 'کلید'
+      title: 'کلید',
+      width: 6
     },
     {
       key: 'type',
@@ -26,8 +27,9 @@ const makeHttpParamProperty = (key: string, title: string): ResourceModelPropert
       items: [
         { value: 'string', text: 'String' },
         { value: 'number', text: 'Number' }
-      ]
-    },
+      ],
+      width: 6
+    }
   ],
   title
 });
@@ -38,13 +40,15 @@ maker.addProperties([
     type: 'string',
     ref: 'ApiEndpoint',
     required: true,
-    title: 'واحد Api'
+    title: 'واحد Api',
+    width: 4
   },
   {
     key: 'version',
     type: 'number',
     required: true,
-    title: 'شماره نسخه'
+    title: 'شماره نسخه',
+    width: 4
   },
   {
     key: 'type',
@@ -56,13 +60,15 @@ maker.addProperties([
     items: [
       { value: 'http', text: 'HTTP' },
       // { value: 'soap', text: 'SOAP' }
-    ]
+    ],
+    width: 4
   },
   {
     key: 'url',
     type: 'string',
     title: 'مسیر',
-    dir: 'ltr'
+    dir: 'ltr',
+    width: 8
   },
   {
     key: 'method',
@@ -76,18 +82,22 @@ maker.addProperties([
       { value: 'patch', text: 'Patch' },
       { value: 'delete', text: 'Delete' }
     ],
-    hideInTable: true
+    hideInTable: true,
+    width: 4
   },
   {
     ...makeHttpParamProperty('queryParams', 'پارامتر کوئری'),
+    width: 4,
     hideInTable: true
   },
   {
     ...makeHttpParamProperty('pathParams', 'پارامتر مسیر'),
+    width: 4,
     hideInTable: true
   },
   {
     ...makeHttpParamProperty('headers', 'Headerها'),
+    width: 4,
     hideInTable: true
   },
   {
@@ -118,6 +128,7 @@ maker.addProperties([
       }
     ],
     title: 'توضیحات کلید‌های Body',
+    itemWidth: 4,
     hideInTable: true
   },
   {
@@ -129,13 +140,15 @@ maker.addProperties([
         key: 'title',
         type: 'string',
         required: true,
-        title: 'عنوان'
+        title: 'عنوان',
+        width: 6
       },
       {
         key: 'status',
         type: 'number',
         required: true,
-        title: 'مقدار Http Status'
+        title: 'مقدار Http Status',
+        width: 6
       },
       {
         key: 'description',
@@ -173,6 +186,7 @@ maker.addProperties([
       }
     ],
     title: 'جواب‌ها',
+    itemWidth: 6,
     hideInTable: true
   },
 ]);
