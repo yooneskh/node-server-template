@@ -5,6 +5,7 @@ import { ResourceModelProperty } from '../../plugins/resource-maker/resource-mod
 
 const maker = new ResourceMaker<IApiVersionBase, IApiVersion>('ApiVersion');
 
+
 const makeHttpParamProperty = (key: string, title: string): ResourceModelProperty => ({
   key,
   type: 'series',
@@ -74,22 +75,27 @@ maker.addProperties([
       { value: 'put', text: 'Put' },
       { value: 'patch', text: 'Patch' },
       { value: 'delete', text: 'Delete' }
-    ]
+    ],
+    hideInTable: true
   },
   {
     ...makeHttpParamProperty('queryParams', 'پارامتر کوئری'),
+    hideInTable: true
   },
   {
     ...makeHttpParamProperty('pathParams', 'پارامتر مسیر'),
+    hideInTable: true
   },
   {
     ...makeHttpParamProperty('headers', 'Headerها'),
+    hideInTable: true
   },
   {
     key: 'bodySchema',
     type: 'any',
     title: 'اسکیمای Body',
-    handlerElement: 'json-schema'
+    handlerElement: 'json-schema',
+    hideInTable: true
   },
   {
     key: 'bodyKeyDescriptions',
@@ -111,7 +117,8 @@ maker.addProperties([
         longText: true
       }
     ],
-    title: 'توضیحات کلید‌های Body'
+    title: 'توضیحات کلید‌های Body',
+    hideInTable: true
   },
   {
     key: 'responses',
@@ -165,7 +172,8 @@ maker.addProperties([
         title: 'توضیحات کلیدهای جواب'
       }
     ],
-    title: 'اسکیمای Body'
+    title: 'اسکیمای Body',
+    hideInTable: true
   },
 ]);
 

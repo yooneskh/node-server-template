@@ -40,7 +40,8 @@ maker.addProperties([
     type: 'string',
     required: true,
     title: 'توضیحات',
-    longText: true
+    longText: true,
+    hideInTable: true
   }
 ]);
 

@@ -33,13 +33,15 @@ maker.addProperties([
     type: 'string',
     required: true,
     title: 'توضیحات',
-    longText: true
+    longText: true,
+    hideInTable: true
   },
   {
     key: 'specialties',
     type: 'string',
     isArray: true,
-    title: 'ویژگی‌ها'
+    title: 'ویژگی‌ها',
+    hideInTable: true
   },
 ]);
 
