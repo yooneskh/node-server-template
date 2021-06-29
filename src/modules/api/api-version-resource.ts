@@ -1,7 +1,7 @@
 import { IApiVersion, IApiVersionBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceModelProperty } from '../../plugins/resource-maker/resource-model-types';
-
+import YNetwork from 'ynetwork';
 
 const maker = new ResourceMaker<IApiVersionBase, IApiVersion>('ApiVersion');
 
@@ -209,7 +209,24 @@ maker.addActions([
   { template: 'RETRIEVE', permissions: ['admin.api-version.retrieve'] },
   { template: 'CREATE', permissions: ['admin.api-version.create'] },
   { template: 'UPDATE', permissions: ['admin.api-version.update'] },
-  { template: 'DELETE', permissions: ['admin.api-version.delete'] }
+  { template: 'DELETE', permissions: ['admin.api-version.delete'] },
+  {
+    method: 'POST',
+    path: '/:resourceId/run',
+    signal: ['Route', 'ApiVersion', 'Run'],
+    permissions: ['admin.api-version.run'],
+    dataProvider: async ({ resourceId }) => {
+
+      const apiVersion = await ApiVersionController.retrieve({ resourceId });
+
+      const { method, url } = apiVersion;
+
+      const { status, result, headers } = await YNetwork[method!.toLowerCase()](url);
+
+      return { status, result, headers };
+
+    }
+  }
 ]);
 
 
