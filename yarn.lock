@@ -1228,10 +1228,10 @@ mongoose-legacy-pluralize@1.0.2:
   resolved "https://registry.yarnpkg.com/mongoose-legacy-pluralize/-/mongoose-legacy-pluralize-1.0.2.tgz#3ba9f91fa507b5186d399fb40854bff18fb563e4"
   integrity sha512-Yo/7qQU4/EyIS8YDFSeenIvXxZN+ld7YdV9LqFVQJzTLye8unujAWPZ4NWKfFA+RNjh+wvTWKY9Z3E5XM6ZZiQ==
 
-mongoose@5.12.14:
-  version "5.12.14"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.12.14.tgz#610460f0725acf67b3eefcd92f0a48a08919d51b"
-  integrity sha512-1lMRY8cfGYFWHqe5DLnVgNQDyD0fEbSoWIQe9Mllt/ZtayZ5XUFQt+o5VKrB44vsT5cLNzgwEFO0NvwTwqLluQ==
+mongoose@5.12.15:
+  version "5.12.15"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-5.12.15.tgz#a023afa570c15a00d39315e7c7562c77ceed2857"
+  integrity sha512-GVvxE2/mbUsxAbTtleFlehCNMFlzcgKue/olukIpoN6iw1MYXKodf+ZIRndO+2jzlgbZgiHkAZZJbcFNt1DgHA==
   dependencies:
     "@types/mongodb" "^3.5.27"
     bson "^1.1.4"
@@ -2068,10 +2068,10 @@ yargs-parser@^18.1.3:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
-ynetwork@2.7.0:
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/ynetwork/-/ynetwork-2.7.0.tgz#aa36d8b61e079a15eb81a203c6e2bdb6c8571102"
-  integrity sha512-n50FxtmhLv49Aqi/M12Vd6t/dRAcDAl8WYz82rX4qDVn0bYCE9zyRVkjZnTxUAJ9dSkPM1B3/DItpop657o/MA==
+ynetwork@2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/ynetwork/-/ynetwork-2.8.1.tgz#5684af4da820eb08bd4dc2491769f0ab1ff54016"
+  integrity sha512-4W1Yese+hr5BhbbxzHczlLcMf04t0h2RYm1gfMr4b2TMqxLwcjdi6mcD8A+yuz/XcXiOxH71qn5vzROGRcKwQA==
   dependencies:
     axios "0.21.1"
 

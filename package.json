@@ -19,7 +19,7 @@
     "express": "4.17.1",
     "lodash": "4.17.21",
     "mingo": "4.1.2",
-    "mongoose": "5.12.14",
+    "mongoose": "5.12.15",
     "morgan": "1.10.0",
     "pdf-parse": "1.1.1",
     "pluralize": "8.0.0",
@@ -29,7 +29,7 @@
     "sharp": "0.28.3",
     "socket.io": "4.1.2",
     "svg-captcha": "1.4.0",
-    "ynetwork": "2.7.0",
+    "ynetwork": "2.8.1",
     "zarinpal-checkout": "0.2.7"
   },
   "devDependencies": {
