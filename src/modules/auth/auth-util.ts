@@ -28,7 +28,7 @@ export const PERMISSIONS = [
         ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-endpoint', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run']
       ],
       ...[ // others
 
@@ -78,7 +78,7 @@ export const PERMISSIONS_LOCALES = {
       'api-version': 'نسخه Api'
     },
     ...{ // actions
-
+      'run': 'اجرا'
     },
     ...{ // others
 
