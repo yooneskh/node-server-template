@@ -1,7 +1,6 @@
 import { IApiVersion, IApiVersionBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { ResourceModelProperty } from '../../plugins/resource-maker/resource-model-types';
-import YNetwork from 'ynetwork';
 import { runApi } from './tools/api-runner';
 
 const maker = new ResourceMaker<IApiVersionBase, IApiVersion>('ApiVersion');
