@@ -1,13 +1,14 @@
 import { InvalidRequestError } from '../../../global/errors';
 import { IApiVersion } from '../api-interfaces';
-import { runHttpApi } from './api-http-runner';
+import { IApiHttpRunPayload, runHttpApi } from './api-http-runner';
 
-export async function runApi(api: IApiVersion) {
+
+export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload) {
 
   if (api.type === 'http') {
 
     // const timeBegin = Date.now();
-    const result = await runHttpApi(api);
+    const result = await runHttpApi(api, payload as IApiHttpRunPayload);
     // const timeEnd = Date.now();
 
     if (result.type === 'error') {

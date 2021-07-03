@@ -215,10 +215,10 @@ maker.addActions([
     path: '/:resourceId/run',
     signal: ['Route', 'ApiVersion', 'Run'],
     permissions: ['admin.api-version.run'],
-    dataProvider: async ({ resourceId }) => {
+    dataProvider: async ({ resourceId, payload }) => {
 
       const apiVersion = await ApiVersionController.retrieve({ resourceId });
-      const { status, data, headers } = await runApi(apiVersion);
+      const { status, data, headers } = await runApi(apiVersion, payload);
 
       return { status, result: data, headers };
 
