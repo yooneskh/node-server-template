@@ -34,7 +34,7 @@ export const Config = {
     }
   },
   zarinpal: {
-    merchantId: 'c40c2e72-f604-11e7-95af-000c295eb8fc',
+    merchantId: '',
     isSandboxed: true
   },
   languages: {
@@ -42,11 +42,11 @@ export const Config = {
     fa: { default: '' }
   },
   kavenegar: {
-    apiKey: '31315054767A313565645A53616B766B7171544F505055394E415155386F4D76'
+    apiKey: ''
   },
   ifttt: {
     telegram: {
-      key: 'bd9xshBbi7rURLfoTaN8d6'
+      key: ''
     }
   },
   captcha: {
