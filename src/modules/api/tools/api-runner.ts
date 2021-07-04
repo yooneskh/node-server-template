@@ -21,7 +21,8 @@ export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload) {
     return {
       headers: result.headers,
       status: result.status,
-      data: result.data
+      data: result.data,
+      latency: result.latency
     };
 
   }

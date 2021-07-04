@@ -218,9 +218,9 @@ maker.addActions([
     dataProvider: async ({ resourceId, payload }) => {
 
       const apiVersion = await ApiVersionController.retrieve({ resourceId });
-      const { status, data, headers } = await runApi(apiVersion, payload);
+      const { status, data, headers, latency } = await runApi(apiVersion, payload);
 
-      return { status, result: data, headers };
+      return { status, result: data, headers, latency };
 
     }
   }

@@ -19,6 +19,7 @@ export interface IApiHttpRunSuccess extends IApiHttpRunResult {
   status: number;
   data: unknown;
   headers: Record<string, string>;
+  latency: number;
 }
 
 export interface IApiHttpRunError extends IApiHttpRunResult {
@@ -77,11 +78,15 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
     validateHttpApiPayload(api, payload);
   }
   catch (error) {
+
+    // todo: log execution error
+
     return {
       type: 'error',
       reason: error.responseMessage || error.message,
       error
-    }
+    };
+
   }
 
   let url = api.url!;
@@ -100,7 +105,9 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
 
   }
 
+  const timeBegin = Date.now();
   const { headers, status, result } = await YNetwork[api.method!.toLowerCase()](url, payload?.body, payload?.headers);
+  const timeEnd = Date.now();
 
   if (!( status > 0 )) {
     return {
@@ -114,7 +121,8 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
     type: 'success',
     headers,
     status,
-    data: result
+    data: result,
+    latency: timeEnd - timeBegin
   };
 
 }
