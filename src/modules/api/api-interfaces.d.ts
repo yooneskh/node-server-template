@@ -58,3 +58,25 @@ export interface IApiVersionBase extends IResource {
   bodyKeyDescriptions?: IApiHttpKeyDescription[];
   responses?: IApiHttpResponse[];
 } export interface IApiVersion extends IApiVersionBase, Document {}
+
+export interface IApiLogBase extends IResource {
+  api: string;
+  apiType: 'http' /* | 'soap' */;
+  success: boolean;
+  startAt: number;
+  endAt: number;
+  latency: number;
+  callerIP: string;
+  requestMethod?: string;
+  requestUrl?: string;
+  requestHeaders?: IApiHttpParam[];
+  requestQueryParams?: IApiHttpParam[];
+  requestPathParams?: IApiHttpParam[];
+  requestBody?: any;
+  requestBodySize?: number;
+  responseHeaders?: IApiHttpParam[];
+  responseStatus?: number;
+  responseData?: any;
+  responseSize?: number;
+  errorMessage?: string;
+} export interface IApiLog extends IApiLogBase, Document {}

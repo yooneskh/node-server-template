@@ -28,7 +28,8 @@ export const PERMISSIONS = [
         ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-endpoint', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run']
+        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run'],
+        ['api-log', 'list', 'list-count', 'retrieve']
       ],
       ...[ // others
 
