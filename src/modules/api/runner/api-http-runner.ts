@@ -78,7 +78,7 @@ function validatePayloadBody(payload: unknown, schema: IApiHttpBodySchema) {
 
 export function validateHttpApiPayload(api: IApiVersion, payload?: IApiHttpRunPayload): void {
 
-  if (api.headers) {
+  if (api.headers && api.headers.length > 0) {
     if (!payload?.headers) throw new InvalidRequestError('headers not given.', 'مقداری برای Header ارسال نشده است.');
 
     for (const header of api.headers) {
@@ -89,7 +89,7 @@ export function validateHttpApiPayload(api: IApiVersion, payload?: IApiHttpRunPa
 
   }
 
-  if (api.queryParams) {
+  if (api.queryParams && api.queryParams.length > 0) {
     if (!payload?.queryParams) throw new InvalidRequestError('queryParams not given.', 'مقداری برای Query Param ارسال نشده است.');
 
     for (const param of api.queryParams) {
@@ -100,7 +100,7 @@ export function validateHttpApiPayload(api: IApiVersion, payload?: IApiHttpRunPa
 
   }
 
-  if (api.pathParams) {
+  if (api.pathParams && api.pathParams.length > 0) {
     if (!payload?.pathParams) throw new InvalidRequestError('pathParams not given.', 'مقداری برای Path Param ارسال نشده است.');
 
     for (const param of api.pathParams) {
