@@ -74,6 +74,13 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    key: 'hasBody',
+    type: 'boolean',
+    title: 'داده Body دارد؟',
+    hideInTable: true
+  },
+  {
+    vIf: { 'hasBody': true },
     key: 'bodySchema',
     type: 'any',
     title: 'اسکیمای Body',
@@ -81,6 +88,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    vIf: { 'hasBody': true },
     key: 'bodyKeyDescriptions',
     type: 'series',
     serieBase: {},
