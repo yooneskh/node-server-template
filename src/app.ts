@@ -73,9 +73,11 @@ app.use('/api/publishers', PublisherRouter);
 import { ApiServiceRouter } from './modules/api/api-service-resource';
 import { ApiEndpointRouter } from './modules/api/api-endpoint-resource';
 import { ApiVersionRouter } from './modules/api/api-version-resource';
+import { ApiLogRouter } from './modules/api/api-log-resource';
 app.use('/api/apiservices', ApiServiceRouter);
 app.use('/api/apiendpoints', ApiEndpointRouter);
 app.use('/api/apiversions', ApiVersionRouter);
+app.use('/api/apilogs', ApiLogRouter);
 
 
 import { errorHandler } from './global/errors';
