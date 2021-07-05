@@ -111,7 +111,9 @@ export function validateHttpApiPayload(api: IApiVersion, payload?: IApiHttpRunPa
 
   }
 
-  validatePayloadBody(payload?.body, api.bodySchema!);
+  if (api.hasBody) {
+    validatePayloadBody(payload?.body, api.bodySchema!);
+  }
 
 }
 
