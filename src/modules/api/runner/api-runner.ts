@@ -1,22 +1,44 @@
 import { InvalidRequestError } from '../../../global/errors';
 import { IApiVersion } from '../api-interfaces';
-import { IApiHttpRunPayload, runHttpApi } from './api-http-runner';
+import { ApiLogController } from '../api-log-resource';
+import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi } from './api-http-runner';
 
 
 export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload) {
 
   if (api.type === 'http') {
 
-    // const timeBegin = Date.now();
+    const timeBegin = Date.now();
     const result = await runHttpApi(api, payload as IApiHttpRunPayload);
-    // const timeEnd = Date.now();
+    const timeEnd = Date.now();
+
+    await ApiLogController.create({
+      payload: {
+        api: api._id,
+        apiType: api.type,
+        success: result.type === 'success',
+        startAt: timeBegin,
+        endAt: timeEnd,
+        totalTime: timeEnd - timeBegin,
+        requestMethod: api.method,
+        requestUrl: api.url,
+        requestHeaders: payload?.headers,
+        requestQueryParams: payload?.queryParams,
+        requestPathParams: payload?.pathParams,
+        requestBody: payload?.body,
+        requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
+        responseHeaders: (result as IApiHttpRunSuccess).headers,
+        responseStatus: (result as IApiHttpRunSuccess).status,
+        responseData: (result as IApiHttpRunSuccess).data,
+        responseSize: (result as IApiHttpRunSuccess).data ? JSON.stringify((result as IApiHttpRunSuccess).data).length : undefined,
+        responseLatency: (result as IApiHttpRunSuccess).latency,
+        errorMessage: (result as IApiHttpRunError).reason
+      }
+    });
 
     if (result.type === 'error') {
-      // todo: register api run error info
       throw result.error;
     }
-
-    // todo: register api run success info
 
     return {
       headers: result.headers,

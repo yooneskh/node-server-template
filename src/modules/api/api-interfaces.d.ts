@@ -65,18 +65,19 @@ export interface IApiLogBase extends IResource {
   success: boolean;
   startAt: number;
   endAt: number;
-  latency: number;
+  totalTime: number;
   callerIP: string;
   requestMethod?: string;
   requestUrl?: string;
-  requestHeaders?: IApiHttpParam[];
-  requestQueryParams?: IApiHttpParam[];
-  requestPathParams?: IApiHttpParam[];
+  requestHeaders?: Record<string, string>;
+  requestQueryParams?: Record<string, string>;
+  requestPathParams?: Record<string, string>;
   requestBody?: any;
   requestBodySize?: number;
-  responseHeaders?: IApiHttpParam[];
+  responseHeaders?: Record<string, string>;
   responseStatus?: number;
   responseData?: any;
   responseSize?: number;
+  responseLatency?: number;
   errorMessage?: string;
 } export interface IApiLog extends IApiLogBase, Document {}

@@ -1,6 +1,5 @@
 import { IApiLog, IApiLogBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { makeHttpParamProperty } from './api-util';
 
 
 const maker = new ResourceMaker<IApiLogBase, IApiLog>('ApiLog');
@@ -46,10 +45,10 @@ maker.addProperties([
     labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
   },
   {
-    key: 'latency',
+    key: 'totalTime',
     type: 'number',
     required: true,
-    title: 'تاخیر اجرا'
+    title: 'مجموع زمان'
   },
   {
     key: 'callerIP',
@@ -67,13 +66,19 @@ maker.addProperties([
     title: 'Url درخواست'
   },
   {
-    ...makeHttpParamProperty('requestHeaders', 'Headerهای درخواست')
+    key: 'requestHeaders',
+    type: 'object',
+    title: 'Headerهای درخواست',
   },
   {
-    ...makeHttpParamProperty('requestQueryParams', 'Query Param های درخواست')
+    key: 'requestQueryParams',
+    type: 'object',
+    title: 'Query Param های درخواست',
   },
   {
-    ...makeHttpParamProperty('requestPathParams', 'Path Param های درحواست')
+    key: 'requestPathParams',
+    type: 'object',
+    title: 'Path Param های درحواست',
   },
   {
     key: 'requestBody',
@@ -86,7 +91,9 @@ maker.addProperties([
     title: 'حجم داده درخواست'
   },
   {
-    ...makeHttpParamProperty('responseHeaders', 'Headerهای جواب')
+    key: 'responseHeaders',
+    type: 'object',
+    title: 'Headerهای جواب',
   },
   {
     key: 'responseStatus',
@@ -102,6 +109,11 @@ maker.addProperties([
     key: 'responseSize',
     type: 'number',
     title: 'حجم جواب'
+  },
+  {
+    key: 'responseLatency',
+    type: 'number',
+    title: 'تاخیر اجرای سرویس'
   },
   {
     key: 'errorMessage',
