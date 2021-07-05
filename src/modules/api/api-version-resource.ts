@@ -14,6 +14,7 @@ maker.addProperties([
     ref: 'ApiEndpoint',
     required: true,
     title: 'واحد Api',
+    titleable: true,
     width: 4
   },
   {
@@ -21,6 +22,7 @@ maker.addProperties([
     type: 'number',
     required: true,
     title: 'شماره نسخه',
+    titleable: true,
     width: 4
   },
   {
@@ -29,7 +31,6 @@ maker.addProperties([
     enum: ['http'/* , 'soap' */],
     required: true,
     title: 'نوع',
-    titleable: true,
     items: [
       { value: 'http', text: 'HTTP' },
       // { value: 'soap', text: 'SOAP' }
