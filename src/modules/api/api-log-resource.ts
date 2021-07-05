@@ -35,14 +35,16 @@ maker.addProperties([
     type: 'number',
     required: true,
     title: 'زمان شروع',
-    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss',
+    hideInTable: true
   },
   {
     key: 'endAt',
     type: 'number',
     required: true,
     title: 'زمان پایان',
-    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss',
+    hideInTable: true
   },
   {
     key: 'totalTime',
@@ -69,21 +71,25 @@ maker.addProperties([
     key: 'requestHeaders',
     type: 'object',
     title: 'Headerهای درخواست',
+    hideInTable: true
   },
   {
     key: 'requestQueryParams',
     type: 'object',
     title: 'Query Param های درخواست',
+    hideInTable: true
   },
   {
     key: 'requestPathParams',
     type: 'object',
     title: 'Path Param های درحواست',
+    hideInTable: true
   },
   {
     key: 'requestBody',
     type: 'any',
-    title: 'داده درخواست'
+    title: 'داده درخواست',
+    hideInTable: true
   },
   {
     key: 'requestBodySize',
@@ -94,6 +100,7 @@ maker.addProperties([
     key: 'responseHeaders',
     type: 'object',
     title: 'Headerهای جواب',
+    hideInTable: true
   },
   {
     key: 'responseStatus',
@@ -103,7 +110,8 @@ maker.addProperties([
   {
     key: 'responseData',
     type: 'any',
-    title: 'داده جواب'
+    title: 'داده جواب',
+    hideInTable: true
   },
   {
     key: 'responseSize',
@@ -118,7 +126,8 @@ maker.addProperties([
   {
     key: 'errorMessage',
     type: 'string',
-    title: 'پیام خطا'
+    title: 'پیام خطا',
+    hideInTable: true
   }
 ]);
 
