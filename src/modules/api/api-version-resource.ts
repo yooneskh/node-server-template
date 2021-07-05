@@ -197,10 +197,16 @@ maker.addActions([
     path: '/:resourceId/run',
     signal: ['Route', 'ApiVersion', 'Run'],
     permissions: ['admin.api-version.run'],
-    dataProvider: async ({ resourceId, payload }) => {
+    dataProvider: async ({ resourceId, payload, request }) => {
 
       const apiVersion = await ApiVersionController.retrieve({ resourceId });
-      const { status, data, headers, latency } = await runApi(apiVersion, payload);
+      const { status, data, headers, latency } = await runApi(
+        apiVersion,
+        payload,
+        {
+          ip: request.ip
+        }
+      );
 
       return { status, result: data, headers, latency };
 

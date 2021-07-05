@@ -8,6 +8,7 @@ import './global/database';
 
 const app = Express();
 
+app.set('trust proxy', true);
 app.use(Logger(':date[clf] :method :url :status :res[content-length] :response-time ms'));
 app.use(Express.json({ limit: '10mb' }));
 app.use(Express.urlencoded({ limit: '10mb', parameterLimit: 100000, extended: false }));

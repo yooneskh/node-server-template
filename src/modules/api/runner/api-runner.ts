@@ -1,10 +1,10 @@
 import { InvalidRequestError } from '../../../global/errors';
-import { IApiVersion } from '../api-interfaces';
+import { IApiRunAdditionalInfo, IApiVersion } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
 import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi } from './api-http-runner';
 
 
-export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload) {
+export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload, info?: IApiRunAdditionalInfo) {
 
   if (api.type === 'http') {
 
@@ -20,6 +20,7 @@ export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload) {
         startAt: timeBegin,
         endAt: timeEnd,
         totalTime: timeEnd - timeBegin,
+        callerIP: info?.ip,
         requestMethod: api.method,
         requestUrl: api.url,
         requestHeaders: payload?.headers,

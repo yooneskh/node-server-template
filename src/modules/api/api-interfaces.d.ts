@@ -60,6 +60,7 @@ export interface IApiVersionBase extends IResource {
   responses?: IApiHttpResponse[];
 } export interface IApiVersion extends IApiVersionBase, Document {}
 
+
 export interface IApiLogBase extends IResource {
   api: string;
   apiType: 'http' /* | 'soap' */;
@@ -82,3 +83,8 @@ export interface IApiLogBase extends IResource {
   responseLatency?: number;
   errorMessage?: string;
 } export interface IApiLog extends IApiLogBase, Document {}
+
+
+export interface IApiRunAdditionalInfo {
+  ip?: string;
+}
