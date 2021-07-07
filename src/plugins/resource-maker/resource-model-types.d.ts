@@ -47,6 +47,7 @@ export interface ResourceModelProperty {
   valueFormat?: string;
   items?: { value: string, text: string }[];
   handlerElement?: string;
+  json?: boolean;
 }
 
 export interface IResource {
