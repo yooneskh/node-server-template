@@ -73,29 +73,25 @@ maker.addProperties([
     key: 'requestHeaders',
     type: 'object',
     title: 'Headerهای درخواست',
-    hideInTable: true,
-    json: true
+    hideInTable: true
   },
   {
     key: 'requestQueryParams',
     type: 'object',
     title: 'Query Param های درخواست',
-    hideInTable: true,
-    json: true
+    hideInTable: true
   },
   {
     key: 'requestPathParams',
     type: 'object',
     title: 'Path Param های درحواست',
-    hideInTable: true,
-    json: true
+    hideInTable: true
   },
   {
     key: 'requestBody',
     type: 'any',
     title: 'داده درخواست',
-    hideInTable: true,
-    json: true
+    hideInTable: true
   },
   {
     key: 'requestBodySize',
@@ -106,8 +102,7 @@ maker.addProperties([
     key: 'responseHeaders',
     type: 'object',
     title: 'Headerهای جواب',
-    hideInTable: true,
-    json: true
+    hideInTable: true
   },
   {
     key: 'responseStatus',
@@ -118,8 +113,7 @@ maker.addProperties([
     key: 'responseData',
     type: 'any',
     title: 'داده جواب',
-    hideInTable: true,
-    json: true
+    hideInTable: true
   },
   {
     key: 'responseSize',
