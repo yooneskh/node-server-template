@@ -62,12 +62,14 @@ maker.addProperties([
   {
     key: 'requestMethod',
     type: 'string',
-    title: 'متود درخواست'
+    title: 'متود درخواست',
+    hideInTable: true
   },
   {
     key: 'requestUrl',
     type: 'string',
-    title: 'Url درخواست'
+    title: 'Url درخواست',
+    hideInTable: true
   },
   {
     key: 'requestHeaders',
