@@ -87,3 +87,16 @@ export interface IApiLogBase extends IResource {
 export interface IApiRunAdditionalInfo {
   ip?: string;
 }
+
+
+export interface IApiPermitBase extends IResource {
+  user: string;
+  api: string;
+  enabled: boolean;
+  blocked?: boolean;
+  blockedAt?: number;
+  blockageReason?: string;
+  apiKey: string;
+  identifier: string;
+  policy: string;
+} export interface IApiPermit extends IApiPermitBase, Document {}
