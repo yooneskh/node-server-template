@@ -30,7 +30,6 @@ export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload, inf
         requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
         responseHeaders: (result as IApiHttpRunSuccess).headers,
         responseStatus: (result as IApiHttpRunSuccess).status,
-        responseData: (result as IApiHttpRunSuccess).data,
         responseSize: (result as IApiHttpRunSuccess).data ? ( typeof (result as IApiHttpRunSuccess).data === 'string' ? (result as IApiHttpRunSuccess).data as string : JSON.stringify((result as IApiHttpRunSuccess).data) ).length : undefined,
         responseLatency: (result as IApiHttpRunSuccess).latency,
         errorMessage: (result as IApiHttpRunError).reason

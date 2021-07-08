@@ -112,12 +112,6 @@ maker.addProperties([
     title: 'Status جواب'
   },
   {
-    key: 'responseData',
-    type: 'any',
-    title: 'داده جواب',
-    hideInTable: true
-  },
-  {
     key: 'responseSize',
     type: 'number',
     title: 'حجم جواب'

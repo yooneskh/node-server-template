@@ -78,7 +78,6 @@ export interface IApiLogBase extends IResource {
   requestBodySize?: number;
   responseHeaders?: Record<string, string>;
   responseStatus?: number;
-  responseData?: any;
   responseSize?: number;
   responseLatency?: number;
   errorMessage?: string;
