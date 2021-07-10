@@ -12,7 +12,7 @@ export function setGlobalRateLimitOption(option: RateLimiterOption) {
 
 ResourceRouter.addPreProcessor(async ({ action, request, response }) => {
 
-  const rateLimit = action.rateLimitOptions ?? globalRateLimitOption;
+  const rateLimit = 'rateLimitOptions' in action ? action.rateLimitOptions : globalRateLimitOption;
   if (!rateLimit) return;
 
   const actionSignal = action.signal?.join('-')!;

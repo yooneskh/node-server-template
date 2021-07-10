@@ -14,6 +14,7 @@ maker.addAction({
   method: 'POST',
   path: '/:identifier',
   signal: ['Route', 'ApiGateway', 'Execute'],
+  rateLimitOptions: undefined,
   stateValidator: async ({ params: { identifier }, request, bag }) => {
 
     const permit = await ApiPermitController.findOne({
@@ -42,7 +43,6 @@ maker.addAction({
   dataProvider: async ({ bag, payload, request, response }) => {
 
     const permit = bag.permit as IApiPermit;
-
     const apiVersion = await ApiVersionController.retrieve({ resourceId: permit.api });
 
     const { status, data, headers, latency } = await runApi(
@@ -53,11 +53,11 @@ maker.addAction({
       }
     );
 
-    for (const header in Object.keys(headers)) {
+    for (const header of Object.keys(headers)) {
       response.setHeader(header, headers[header]);
     }
 
-    response.setHeader('X-OPENDATA-LATENCY', String(latency));
+    response.setHeader('x-opendata-latency', String(latency));
 
     response.status(status).send(data);
     return DISMISS_DATA_PROVIDER;
