@@ -76,11 +76,13 @@ import { ApiEndpointRouter } from './modules/api/api-endpoint-resource';
 import { ApiVersionRouter } from './modules/api/api-version-resource';
 import { ApiLogRouter } from './modules/api/api-log-resource';
 import { ApiPermitRouter } from './modules/api/api-permit-resource';
+import { ApiGatewayRouter } from './modules/api/api-gateway';
 app.use('/api/apiservices', ApiServiceRouter);
 app.use('/api/apiendpoints', ApiEndpointRouter);
 app.use('/api/apiversions', ApiVersionRouter);
 app.use('/api/apilogs', ApiLogRouter);
 app.use('/api/apipermits', ApiPermitRouter);
+app.use('/api/gateway', ApiGatewayRouter);
 
 
 import { errorHandler } from './global/errors';
