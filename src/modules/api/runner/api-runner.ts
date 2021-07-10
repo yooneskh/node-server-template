@@ -4,6 +4,15 @@ import { ApiLogController } from '../api-log-resource';
 import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi } from './api-http-runner';
 
 
+function calculateDataSize(data: unknown | undefined): number | undefined {
+  if (data === undefined) return undefined;
+
+  if (typeof data === 'string') return data.length;
+  return JSON.stringify(data).length;
+
+}
+
+
 export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload, info?: IApiRunAdditionalInfo) {
 
   if (api.type === 'http') {
@@ -30,7 +39,7 @@ export async function runApi(api: IApiVersion, payload?: IApiHttpRunPayload, inf
         requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
         responseHeaders: (result as IApiHttpRunSuccess).headers,
         responseStatus: (result as IApiHttpRunSuccess).status,
-        responseSize: (result as IApiHttpRunSuccess).data ? ( typeof (result as IApiHttpRunSuccess).data === 'string' ? (result as IApiHttpRunSuccess).data as string : JSON.stringify((result as IApiHttpRunSuccess).data) ).length : undefined,
+        responseSize: calculateDataSize((result as IApiHttpRunSuccess).data),
         responseLatency: (result as IApiHttpRunSuccess).latency,
         errorMessage: (result as IApiHttpRunError).reason
       }
