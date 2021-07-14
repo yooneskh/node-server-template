@@ -2,7 +2,8 @@ export const PERMISSIONS = [
   ['user',
     ...[ // general
       ['profile', 'retrieve', 'update'],
-      ['media', 'init-upload', 'upload']
+      ['media', 'init-upload', 'upload'],
+      ['ticket', 'list', 'create', 'update']
     ],
     ...[ // app specific
 
@@ -19,7 +20,9 @@ export const PERMISSIONS = [
         ['factor', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['payticket', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['update', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+        ['user', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['ticket-category', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['ticket', 'list', 'manage', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
         ['setting',
@@ -43,6 +46,7 @@ export const PERMISSIONS = [
 export const PERMISSIONS_LOCALES = {
   'user': 'کاربر',
   'admin': 'مدیر',
+  'setting': 'تنظیمات',
   ...{ // general
     ...{ // resources
       'media': 'مدیا',
@@ -52,6 +56,8 @@ export const PERMISSIONS_LOCALES = {
       'factor': 'فاکتور',
       'payticket': 'تیکت پرداخت',
       'permissions': 'تنظیمات',
+      'ticket-category': 'دسته‌بندی تیکت',
+      'ticket': 'تیکت'
     },
     ...{ // actions
       'list': 'لیست',
@@ -63,10 +69,10 @@ export const PERMISSIONS_LOCALES = {
       'profile': 'پروفایل',
       'init-upload': 'شروع بارگذاری',
       'upload': 'بارگذاری',
+      'manage': 'مدیریت'
     },
     ...{ // others
-      'setting': 'تنظیمات',
-      'application': 'برنامه',
+      'application': 'برنامه'
     }
   },
   ...{ // app specific

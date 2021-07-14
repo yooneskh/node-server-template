@@ -59,6 +59,13 @@ app.use('/api/accounts', AccountRouter);
 app.use('/api/transactions', TransactionRouter);
 app.use('/api/transfers', TransferRouter);
 
+import { TicketCategoryRouter } from './modules/ticket/ticket-category-resource';
+import { TicketRouter } from './modules/ticket/ticket-resource';
+import { TicketMessageRouter } from './modules/ticket/ticket-message-resource';
+app.use('/api/ticketcategories', TicketCategoryRouter);
+app.use('/api/tickets', TicketRouter);
+app.use('/api/ticketmessages', TicketMessageRouter);
+
 import './modules/sms-notification/sms-manager';
 import './modules/telegram-notification/telegram-manager';
 
