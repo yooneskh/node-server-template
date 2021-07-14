@@ -38,7 +38,7 @@
     "@types/cookie-parser": "1.4.2",
     "@types/cors": "2.8.12",
     "@types/express": "^4.17.13",
-    "@types/lodash": "4.14.170",
+    "@types/lodash": "4.14.171",
     "@types/morgan": "1.9.2",
     "@types/pdf-parse": "1.1.0",
     "@types/pluralize": "0.0.29",
