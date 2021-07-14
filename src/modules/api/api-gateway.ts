@@ -12,10 +12,10 @@ const maker = new ResourceMaker('ApiGateway');
 
 maker.addAction({
   method: 'POST',
-  path: '/:identifier',
+  path: '/:identifier/:apiVersion',
   signal: ['Route', 'ApiGateway', 'Execute'],
   rateLimitOptions: undefined,
-  stateValidator: async ({ params: { identifier }, request, bag }) => {
+  permissionFunction: async ({ params: { identifier }, request, bag }) => {
 
     const permit = await ApiPermitController.findOne({
       filters: { identifier }
@@ -29,6 +29,14 @@ maker.addAction({
       throw new ForbiddenAccessError('Invalid Api Key', 'مقدار Api Key صحیح نیست.');
     }
 
+    bag.permit = permit;
+    return true;
+
+  },
+  stateValidator: async ({ bag }) => {
+
+    const permit = bag.permit as IApiPermit;
+
     if (!permit.enabled) {
       throw new InvalidStateError('Api Permit not enabled.', 'مجوز شما فعال نیست.');
     }
@@ -37,13 +45,17 @@ maker.addAction({
       throw new InvalidStateError(`Api Permit blocked: "${permit.blockageReason}" at ${new Date(permit.blockedAt!)}`, `${permit.blockageReason}`);
     }
 
-    bag.permit = permit;
-
   },
-  dataProvider: async ({ bag, payload, request, response }) => {
+  dataProvider: async ({ params: { apiVersion: version }, bag, payload, request, response }) => {
 
     const permit = bag.permit as IApiPermit;
-    const apiVersion = await ApiVersionController.retrieve({ resourceId: permit.api });
+
+    const apiVersion = await ApiVersionController.retrieve({
+      filters: {
+        endpoint: permit.apiEndpoint,
+        version: parseInt(version, 10)
+      }
+    });
 
     const { status, data, headers, latency } = await runApi(
       apiVersion,

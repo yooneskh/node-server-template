@@ -91,8 +91,8 @@ export interface IApiRunAdditionalInfo {
 
 export interface IApiPermitBase extends IResource {
   user: string;
-  api: string;
-  enabled: boolean;
+  apiEndpoint: string;
+  enabled?: boolean;
   blocked?: boolean;
   blockedAt?: number;
   blockageReason?: string;

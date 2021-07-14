@@ -15,17 +15,16 @@ maker.addProperties([
     titleable: true
   },
   {
-    key: 'api',
+    key: 'apiEndpoint',
     type: 'string',
-    ref: 'ApiVersion',
+    ref: 'ApiEndpoint',
     required: true,
-    title: 'نسخه Api',
+    title: 'واحد Api',
     titleable: true
   },
   {
     key: 'enabled',
     type: 'boolean',
-    required: true,
     title: 'فعال'
   },
   {
