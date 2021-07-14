@@ -36,7 +36,7 @@ maker.addProperties([
     key: 'blockedAt',
     type: 'number',
     title: 'زمان بلاک شدن',
-    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss',
+    labelFormat: 'jYYYY/jMM/jDD',
     dir: 'ltr'
   },
   {
