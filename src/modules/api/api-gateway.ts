@@ -18,7 +18,9 @@ maker.addAction({
   permissionFunction: async ({ params: { identifier }, request, bag }) => {
 
     const permit = await ApiPermitController.findOne({
-      filters: { identifier }
+      filters: {
+        identifier
+      }
     });
 
     if (!request.headers['api-key']) {
@@ -50,7 +52,7 @@ maker.addAction({
 
     const permit = bag.permit as IApiPermit;
 
-    const apiVersion = await ApiVersionController.retrieve({
+    const apiVersion = await ApiVersionController.findOne({
       filters: {
         endpoint: permit.apiEndpoint,
         version: parseInt(version, 10)
