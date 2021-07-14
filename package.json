@@ -33,7 +33,7 @@
     "zarinpal-checkout": "0.2.7"
   },
   "devDependencies": {
-    "@types/convict": "6.0.2",
+    "@types/convict": "6.1.1",
     "@types/convict-format-with-validator": "6.0.2",
     "@types/cookie-parser": "1.4.2",
     "@types/cors": "2.8.10",
