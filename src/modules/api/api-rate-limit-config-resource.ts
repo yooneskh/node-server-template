@@ -18,7 +18,7 @@ maker.addProperties([
     type: 'string',
     enum: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
     required: true,
-    title: 'دوزه',
+    title: 'دوره',
     items: [
       { value: 'second', text: 'ثانیه' },
       { value: 'minute', text: 'دقیقه' },
