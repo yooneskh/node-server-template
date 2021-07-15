@@ -60,6 +60,7 @@ maker.addProperties([
   {
     key: 'policy',
     type: 'string',
+    ref: 'ApiPermit',
     required: true,
     title: 'سیاست‌ها'
   }
