@@ -100,3 +100,17 @@ export interface IApiPermitBase extends IResource {
   identifier: string;
   policy: string;
 } export interface IApiPermit extends IApiPermitBase, Document {}
+
+
+export interface IApiPolicyBase extends IResource {
+  title: string;
+  description?: string;
+  rateLimitConfig?: string;
+} export interface IApiPolicy extends IApiPolicyBase, Document {}
+
+
+export interface IApiRateLimitConfigBase extends IResource {
+  title: string;
+  duration: string;
+  points: string;
+} export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}

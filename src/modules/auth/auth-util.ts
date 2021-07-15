@@ -29,7 +29,9 @@ export const PERMISSIONS = [
         ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-endpoint', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run'],
-        ['api-log', 'list', 'list-count', 'retrieve']
+        ['api-log', 'list', 'list-count', 'retrieve'],
+        ['api-policy', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['api-rate-limit-config', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
 
@@ -76,7 +78,10 @@ export const PERMISSIONS_LOCALES = {
       'publisher': 'انتشار دهنده',
       'api-service': 'سرویس Api',
       'api-endpoint': 'واحد Api',
-      'api-version': 'نسخه Api'
+      'api-version': 'نسخه Api',
+      'api-log': 'لاگ Api',
+      'api-policy': 'سیاست Api',
+      'api-rate-limit-config': 'تنظیمات میزان فراخوانی Api'
     },
     ...{ // actions
       'run': 'اجرا'
