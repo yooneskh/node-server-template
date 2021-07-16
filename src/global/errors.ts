@@ -5,6 +5,7 @@ export class HandleableError extends Error {
   public code = 1000;
   public statusCode = 400;
 
+  // tslint:disable-next-line: no-any
   constructor(message?: string | undefined, public responseMessage?: string | undefined, public extra?: Record<string, any> | undefined) {
     super(message);
   }
@@ -48,11 +49,11 @@ export function errorHandler(error: Error, _request: Request, response: Response
     response.status(error.statusCode).json({ code: error.code, message: error.responseMessage ?? error.message, ...(error.extra || {}) });
   }
   else {
-    response.status(400).json({ code: -1, message: error.message });
+    response.status(400).json({ message: error.message });
   }
 
 }
 
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', error => {
   console.error('socket/events error ::', error.message);
 });
