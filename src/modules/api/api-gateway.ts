@@ -70,7 +70,7 @@ maker.addAction({
     );
 
     for (const header of Object.keys(headers)) {
-      response.setHeader(header, headers[header]);
+      response.setHeader(header, String(headers[header]));
     }
 
     response.setHeader('x-opendata-latency', String(latency));
