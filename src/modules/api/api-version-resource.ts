@@ -1,7 +1,8 @@
 import { IApiVersion, IApiVersionBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { runApi } from './runner/api-runner';
 import { makeHttpParamProperty } from './api-util';
+import { runHttpApi } from './runner/api-http-runner';
+import { ServerError } from '../../global/errors';
 
 
 const maker = new ResourceMaker<IApiVersionBase, IApiVersion>('ApiVersion');
@@ -197,19 +198,27 @@ maker.addActions([
     path: '/:resourceId/run',
     signal: ['Route', 'ApiVersion', 'Run'],
     permissions: ['admin.api-version.run'],
-    dataProvider: async ({ resourceId, payload, request }) => {
+    dataProvider: async ({ resourceId, payload }) => {
 
       const apiVersion = await ApiVersionController.retrieve({ resourceId });
 
-      const { status, data, headers, latency } = await runApi(
-        apiVersion,
-        payload,
-        {
-          ip: request.ip
-        }
-      );
+      if (apiVersion.type === 'http') {
 
-      return { status, result: data, headers, latency };
+        const runResult = await runHttpApi(apiVersion, payload);
+        if (runResult.type === 'error') throw runResult.error;
+
+        const { status, data, headers, latency } = runResult;
+
+        return {
+          status,
+          result: data,
+          headers,
+          latency
+        };
+
+      }
+
+      throw new ServerError('only http type is implemented.', 'فقط نوع http پیاده سازی شده است.');
 
     }
   }

@@ -7,12 +7,19 @@ const maker = new ResourceMaker<IApiLogBase, IApiLog>('ApiLog');
 
 maker.addProperties([
   {
+    key: 'permit',
+    type: 'string',
+    ref: 'ApiPermit',
+    required: true,
+    title: 'مجوز Api',
+    titleable: true
+  },
+  {
     key: 'api',
     type: 'string',
     ref: 'ApiVersion',
     required: true,
-    title: 'نسخه Api',
-    titleable: true
+    title: 'نسخه Api'
   },
   {
     key: 'apiType',
@@ -125,6 +132,12 @@ maker.addProperties([
     key: 'errorMessage',
     type: 'string',
     title: 'پیام خطا',
+    hideInTable: true
+  },
+  {
+    key: 'rateLimitRemainingPoints',
+    type: 'number',
+    title: 'تعداد فراخوانی باقی‌مانده',
     hideInTable: true
   }
 ]);

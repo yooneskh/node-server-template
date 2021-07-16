@@ -60,11 +60,13 @@ maker.addAction({
     });
 
     const { status, data, headers, latency } = await runApi(
+      permit,
       apiVersion,
       payload,
       {
         ip: request.ip
-      }
+      },
+      permit.policy
     );
 
     for (const header of Object.keys(headers)) {

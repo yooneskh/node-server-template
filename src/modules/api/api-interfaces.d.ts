@@ -62,6 +62,7 @@ export interface IApiVersionBase extends IResource {
 
 
 export interface IApiLogBase extends IResource {
+  permit: string;
   api: string;
   apiType: 'http' /* | 'soap' */;
   success: boolean;
@@ -81,6 +82,7 @@ export interface IApiLogBase extends IResource {
   responseSize?: number;
   responseLatency?: number;
   errorMessage?: string;
+  rateLimitRemainingPoints?: number;
 } export interface IApiLog extends IApiLogBase, Document {}
 
 
@@ -111,6 +113,6 @@ export interface IApiPolicyBase extends IResource {
 
 export interface IApiRateLimitConfigBase extends IResource {
   title: string;
-  duration: string;
-  points: string;
+  duration: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+  points: number;
 } export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}
