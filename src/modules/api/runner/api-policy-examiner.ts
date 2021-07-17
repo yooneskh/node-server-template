@@ -48,6 +48,8 @@ async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): 
 
   const passed = callCount <= rateLimitConfig.points;
 
+  console.log({ passed, callCount, rateLimitConfig, durationMillis, durationWindowStart });
+
   return {
     passed,
     error: passed ? undefined : new RateLimitExceededError('rate limit exceeded.', 'میزان فراخوانی شما بیش از اندازه است.'),
