@@ -34,7 +34,6 @@ maker.addProperties([
   {
     key: 'success',
     type: 'boolean',
-    required: true,
     title: 'موفق'
   },
   {
