@@ -47,6 +47,8 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
         }
       });
 
+      console.log({ f: JSON.stringify(policyResult, undefined, '  ') });
+
       policyResult.error!.responseHeaders = policyResult.headers;
       throw policyResult.error;
 
