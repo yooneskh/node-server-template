@@ -46,7 +46,7 @@ async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): 
     }
   });
 
-  const passed = callCount > rateLimitConfig.points;
+  const passed = callCount <= rateLimitConfig.points;
 
   return {
     passed,
