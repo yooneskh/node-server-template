@@ -36,7 +36,7 @@ async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): 
 
   const rateLimitConfig = await ApiRateLimitConfigController.retrieve({ resourceId: rateLimitConfigId });
 
-  const durationMillis = mapDurationLabelToMillis(rateLimitConfig.duration);
+  const durationMillis = mapDurationLabelToMillis(rateLimitConfig.duration) * rateLimitConfig.durationMultiplier;
   const durationWindowStart = Date.now() - durationMillis;
 
   const callCount = await ApiLogController.count({

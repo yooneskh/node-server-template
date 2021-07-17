@@ -114,5 +114,6 @@ export interface IApiPolicyBase extends IResource {
 export interface IApiRateLimitConfigBase extends IResource {
   title: string;
   duration: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+  durationMultiplier: number;
   points: number;
 } export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}

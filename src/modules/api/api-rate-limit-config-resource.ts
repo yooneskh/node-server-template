@@ -30,6 +30,12 @@ maker.addProperties([
     ]
   },
   {
+    key: 'durationMultiplier',
+    type: 'number',
+    required: true,
+    title: 'تعداد دوره'
+  },
+  {
     key: 'points',
     type: 'number',
     required: true,
@@ -42,7 +48,11 @@ export const ApiRateLimitConfigModel      = maker.getModel();
 export const ApiRateLimitConfigController = maker.getController();
 
 
-maker.setValidations({ });
+maker.setValidations({
+  'durationMultiplier': [
+    async (it, e) => it.durationMultiplier > 0 || e('تعداد دوره باید بیشتر از 0 باشد.')
+  ]
+});
 
 
 maker.addActions([
