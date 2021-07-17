@@ -48,8 +48,6 @@ async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): 
 
   const passed = callCount <= rateLimitConfig.points;
 
-  console.log({ passed, callCount, rateLimitConfig, durationMillis, durationWindowStart });
-
   return {
     passed,
     error: passed ? undefined : new RateLimitExceededError('rate limit exceeded.', 'میزان فراخوانی شما بیش از اندازه است.'),
@@ -70,7 +68,7 @@ async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): 
 export async function examineApiPolicy(permit: IApiPermit, /* api: IApiVersion,  */ policyId: string): Promise<IPolicyExaminationResult> {
 
   const policy = await ApiPolicyController.retrieve({ resourceId: policyId });
-  const result: IPolicyExaminationResult = { passed: false, logs: {}, headers: {} };
+  const result: IPolicyExaminationResult = { passed: true, logs: {}, headers: {} };
   const resultsBag: IPolicyExaminationResult[] = [];
 
   if (policy.rateLimitConfig) {
