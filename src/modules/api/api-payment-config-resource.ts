@@ -26,7 +26,7 @@ maker.addProperties([
     ]
   },
   {
-    vIf: { freeSessionType: 'oneTime' },
+    vIf: { freeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'freeSessionInterval',
     type: 'string',
     enum: ['day', 'week', 'month', 'year'],
@@ -39,13 +39,13 @@ maker.addProperties([
     ]
   },
   {
-    vIf: { freeSessionType: 'oneTime' },
+    vIf: { freeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'freeSessionIntervalCount',
     type: 'number',
     title: 'عدد زمان‌بندی دوره رایگان'
   },
   {
-    vIf: { freeSessionType: 'oneTime' },
+    vIf: { freeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'freeSessionRequests',
     type: 'number',
     title: 'تعداد درخواست دوره رایگان'
