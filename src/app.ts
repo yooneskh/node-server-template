@@ -79,6 +79,7 @@ import { ApiPermitRouter } from './modules/api/api-permit-resource';
 import { ApiGatewayRouter } from './modules/api/api-gateway';
 import { ApiPolicyRouter } from './modules/api/api-policy-resource';
 import { ApiRateLimitConfigRouter } from './modules/api/api-rate-limit-config-resource';
+import { ApiPaymentConfigRouter } from './modules/api/api-payment-config-resource';
 app.use('/api/apiservices', ApiServiceRouter);
 app.use('/api/apiendpoints', ApiEndpointRouter);
 app.use('/api/apiversions', ApiVersionRouter);
@@ -87,6 +88,7 @@ app.use('/api/apipermits', ApiPermitRouter);
 app.use('/api/gateway', ApiGatewayRouter);
 app.use('/api/apipolicies', ApiPolicyRouter);
 app.use('/api/apiratelimitconfigs', ApiRateLimitConfigRouter);
+app.use('/api/apipaymentconfigs', ApiPaymentConfigRouter);
 
 
 import { errorHandler } from './global/errors';
