@@ -67,15 +67,15 @@ export const TransactionRouter = maker.getRouter();
 
 
 export async function createTransaction(accountId: string, amount: number, description?: string): Promise<ITransaction> {
-  if (!amount || amount === 0) throw new InvalidRequestError('invalid amount');
+  if (!( amount > 0 || amount < 0 )) throw new InvalidRequestError('invalid amount', 'مقدار صحیح نیست.');
 
   const account = await AccountController.retrieve({ resourceId: accountId });
 
   if (amount > 0 && !account.acceptsInput) {
-    throw new InvalidRequestError('account does not accept input');
+    throw new InvalidRequestError('account does not accept input', 'حساب ورودی ندارد.');
   }
   else if (amount < 0 && !account.acceptsOutput) {
-    throw new InvalidRequestError('account does not accept output');
+    throw new InvalidRequestError('account does not accept output', 'حساب خروجی ندارد.');
   }
 
   const transaction = await TransactionController.create({

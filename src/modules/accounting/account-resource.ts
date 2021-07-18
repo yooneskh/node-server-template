@@ -86,7 +86,7 @@ maker.addActions([
       const account = await AccountController.retrieve({ resourceId });
 
       const usersCount = await UserController.count({ filters: { _id: account.user } });
-      if (usersCount !== 0) throw new InvalidStateError('there is a user for this account');
+      if (usersCount !== 0) throw new InvalidStateError('there is a user for this account', 'این اکانت کاربر دارد.');
 
     }
   }
@@ -137,7 +137,7 @@ export async function getAccountForUser(userId: string) {
   catch {
     await AccountController.create({
       payload: {
-        title: 'Global Source',
+        title: 'ورودی اصلی',
         user: undefined,
         balance: 0,
         acceptsInput: false,
@@ -156,7 +156,7 @@ export async function getAccountForUser(userId: string) {
   catch {
     await AccountController.create({
       payload: {
-        title: 'Global Drain',
+        title: 'خروجی اصلی',
         user: undefined,
         balance: 0,
         acceptsInput: true,
