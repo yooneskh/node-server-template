@@ -117,3 +117,13 @@ export interface IApiRateLimitConfigBase extends IResource {
   durationMultiplier: number;
   points: number;
 } export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}
+
+
+export interface IApiPaymentConfigBase extends IResource {
+  title: string;
+  freeSessionType: 'none' | 'oneTime' | 'interval';
+  freeSessionInterval?: 'day' | 'week' | 'month' | 'year';
+  freeSessionIntervalCount?: number;
+  freeSessionRequests?: number;
+  requestCost: number;
+} export interface IApiPaymentConfig extends IApiPaymentConfigBase, Document {}

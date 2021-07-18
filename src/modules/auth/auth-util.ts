@@ -31,7 +31,8 @@ export const PERMISSIONS = [
         ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run'],
         ['api-log', 'list', 'list-count', 'retrieve'],
         ['api-policy', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['api-rate-limit-config', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+        ['api-rate-limit-config', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['api-payment-config', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
 
@@ -81,7 +82,8 @@ export const PERMISSIONS_LOCALES = {
       'api-version': 'نسخه Api',
       'api-log': 'لاگ Api',
       'api-policy': 'سیاست Api',
-      'api-rate-limit-config': 'تنظیمات میزان فراخوانی Api'
+      'api-rate-limit-config': 'تنظیمات میزان فراخوانی Api',
+      'api-payment-config': 'تنظیمات هزینه Api'
     },
     ...{ // actions
       'run': 'اجرا'
