@@ -25,6 +25,12 @@ maker.addProperties([
     type: 'string',
     ref: 'ApiRateLimitConfig',
     title: 'تنظیمات میزان فراخوانی'
+  },
+  {
+    key: 'paymentConfig',
+    type: 'string',
+    ref: 'ApiPaymentConfig',
+    title: 'تنظیمات پرداخت'
   }
 ]);
 

@@ -1,5 +1,5 @@
 import { HandleableError, ServerError } from '../../../global/errors';
-import { IApiLogBase, IApiPermit } from '../api-interfaces';
+import { IApiDurations, IApiLogBase, IApiPermit } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
 import { ApiPolicyController } from '../api-policy-resource';
 import { ApiRateLimitConfigController } from '../api-rate-limit-config-resource';
@@ -19,7 +19,7 @@ class RateLimitExceededError extends HandleableError {
 }
 
 
-function mapDurationLabelToMillis(duration: string): number {
+function mapDurationLabelToMillis(duration: IApiDurations): number {
   switch (duration) {
     case 'second': return 1000;           // 1000;
     case 'minute': return 60_000;         // 1000 * 60;

@@ -108,21 +108,23 @@ export interface IApiPolicyBase extends IResource {
   title: string;
   description?: string;
   rateLimitConfig?: string;
+  paymentConfig?: string;
 } export interface IApiPolicy extends IApiPolicyBase, Document {}
 
 
+export type IApiDurations = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+
 export interface IApiRateLimitConfigBase extends IResource {
   title: string;
-  duration: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+  duration: IApiDurations;
   durationMultiplier: number;
   points: number;
 } export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}
 
-
 export interface IApiPaymentConfigBase extends IResource {
   title: string;
   freeSessionType: 'none' | 'oneTime' | 'interval';
-  freeSessionInterval?: 'day' | 'week' | 'month' | 'year';
+  freeSessionInterval?: IApiDurations;
   freeSessionIntervalCount?: number;
   freeSessionRequests?: number;
   requestCost: number;
