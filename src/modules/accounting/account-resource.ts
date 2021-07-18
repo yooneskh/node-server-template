@@ -121,6 +121,12 @@ export async function getGlobalDrainAccount() {
   });
 }
 
+export async function getApiConsumeAccount() {
+  return AccountController.findOne({
+    filters: { 'meta.apiConsume': true }
+  });
+}
+
 export async function getAccountForUser(userId: string) {
   return AccountController.findOne({
     filters: { user: userId }
@@ -137,7 +143,7 @@ export async function getAccountForUser(userId: string) {
   catch {
     await AccountController.create({
       payload: {
-        title: 'Global Source',
+        title: 'ورودی کلی',
         user: undefined,
         balance: 0,
         acceptsInput: false,
@@ -156,13 +162,31 @@ export async function getAccountForUser(userId: string) {
   catch {
     await AccountController.create({
       payload: {
-        title: 'Global Drain',
+        title: 'خروجی کلی',
         user: undefined,
         balance: 0,
         acceptsInput: true,
         acceptsOutput: false,
         meta: {
           globalDrain: true
+        }
+      }
+    });
+  }
+
+  try {
+    await getApiConsumeAccount();
+  }
+  catch {
+    await AccountController.create({
+      payload: {
+        title: 'مصرف Api',
+        user: undefined,
+        balance: 0,
+        acceptsInput: true,
+        acceptsOutput: true,
+        meta: {
+          apiConsume: true
         }
       }
     });

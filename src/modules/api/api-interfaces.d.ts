@@ -83,6 +83,8 @@ export interface IApiLogBase extends IResource {
   responseLatency?: number;
   errorMessage?: string;
   rateLimitRemainingPoints?: number;
+  cost?: number;
+  costTransfer?: string;
 } export interface IApiLog extends IApiLogBase, Document {}
 
 

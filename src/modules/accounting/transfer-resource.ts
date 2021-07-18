@@ -88,19 +88,19 @@ export const TransferRouter = maker.getRouter();
 
 
 export async function createTransfer(fromAccountId: string, toAccountId: string, amount: number, description?: string): Promise<ITransfer> {
-  if (!(amount > 0)) throw new InvalidRequestError('invalid transfer amount');
+  if (!( amount > 0 )) throw new InvalidRequestError(`invalid transfer amount "${amount}"`, 'مقدار انتقال غیر قابل قبول است.');
 
   const [fromAccount, toAccount] = await Promise.all([
     AccountController.retrieve({ resourceId: fromAccountId }),
     AccountController.retrieve({ resourceId: toAccountId })
   ]);
 
-  if (!fromAccount.acceptsOutput) throw new InvalidStateError('source account does not accept output');
-  if (!toAccount.acceptsInput) throw new InvalidStateError('destination account does not accept input');
+  if (!fromAccount.acceptsOutput) throw new InvalidStateError('source account does not accept output', 'حساب مبدا قابل انتقال نیست.');
+  if (!toAccount.acceptsInput) throw new InvalidStateError('destination account does not accept input', 'حساب مقصد قابل انتقال نیست.');
 
   // TODO: make code below happen in transaction
   if (fromAccount.balance < amount && !fromAccount.allowNegativeBalance) {
-    throw new InvalidStateError('source account does not have sufficient balance');
+    throw new InvalidStateError('source account does not have sufficient balance', 'موجود حساب کافی نیست.');
   }
 
   const transfer = await TransferController.create({
@@ -112,8 +112,8 @@ export async function createTransfer(fromAccountId: string, toAccountId: string,
     }
   });
 
-  const fromTransaction = await createTransaction(fromAccountId, -amount, `برداشت جهت ${description}`);
-  const toTransaction = await createTransaction(toAccountId, amount, `واریز جهت ${description}`);
+  const fromTransaction = await createTransaction(fromAccountId, -amount, description ? `برداشت جهت ${description}` : undefined);
+  const toTransaction = await createTransaction(toAccountId, amount, description ? `واریز جهت ${description}` : undefined);
 
   return TransferController.edit({
     resourceId: transfer._id,

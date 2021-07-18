@@ -138,6 +138,19 @@ maker.addProperties([
     type: 'number',
     title: 'تعداد فراخوانی باقی‌مانده',
     hideInTable: true
+  },
+  {
+    key: 'cost',
+    type: 'number',
+    title: 'هزینه',
+    hideInTable: true
+  },
+  {
+    key: 'costTransfer',
+    type: 'string',
+    ref: 'Transfer',
+    title: 'انتقال هزینه',
+    hideInTable: true
   }
 ]);
 
