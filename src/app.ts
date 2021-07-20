@@ -90,6 +90,13 @@ app.use('/api/apipolicies', ApiPolicyRouter);
 app.use('/api/apiratelimitconfigs', ApiRateLimitConfigRouter);
 app.use('/api/apipaymentconfigs', ApiPaymentConfigRouter);
 
+import { AccountRouter } from './modules/accounting/account-resource';
+import { TransactionRouter } from './modules/accounting/transaction-resource';
+import { TransferRouter } from './modules/accounting/transfer-resource';
+app.use('/api/accounts', AccountRouter);
+app.use('/api/transactions', TransactionRouter);
+app.use('/api/transfers', TransferRouter);
+
 
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
