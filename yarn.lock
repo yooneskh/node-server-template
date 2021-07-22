@@ -502,12 +502,12 @@ content-type@~1.0.4:
   resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
 
-convict-format-with-validator@6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/convict-format-with-validator/-/convict-format-with-validator-6.0.1.tgz#a0ff08b663c40beac480d1a0d39b40382b9e39a3"
-  integrity sha512-6/O0W9/0MESdL+0fY7glQlWHs+wnP9xXlB1tjY/Wb9ujCCEBqMP8VCjtLvRlBdfwgONrpb+DTPSHQRhUO5aTlQ==
+convict-format-with-validator@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/convict-format-with-validator/-/convict-format-with-validator-6.2.0.tgz#3cab7779e83a89351b9157685cbf20a941414192"
+  integrity sha512-2LIL3yEZY27M13UHLIP4mGivusP9h2M+X4mYsRBLexwUp8+0sgVk2MgB2b2bnQwkn293lkbkxgdevzn0nZdyzQ==
   dependencies:
-    validator "^11.1.0"
+    validator "^13.6.0"
 
 convict@6.2.0:
   version "6.2.0"
@@ -2013,10 +2013,10 @@ uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-validator@^11.1.0:
-  version "11.1.0"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-11.1.0.tgz#ac18cac42e0aa5902b603d7a5d9b7827e2346ac4"
-  integrity sha512-qiQ5ktdO7CD6C/5/mYV4jku/7qnqzjrxb3C/Q5wR3vGGinHTgJZN/TdFT3ZX4vXhX2R1PXx42fB1cn5W+uJ4lg==
+validator@^13.6.0:
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.6.0.tgz#1e71899c14cdc7b2068463cb24c1cc16f6ec7059"
+  integrity sha512-gVgKbdbHgtxpRyR8K0O6oFZPhhB5tT1jeEHZR0Znr9Svg03U0+r9DXWMrnRAB+HtCStDQKlaIZm42tVsVjqtjg==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
