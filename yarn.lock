@@ -2068,10 +2068,10 @@ yargs-parser@^20.2.7:
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-20.2.9.tgz#2eb7dc3b0289718fc295f362753845c41a0c94ee"
   integrity sha512-y11nGElTIV+CT3Zv9t7VKl+Q3hTQoT9a1Qzezhhl6Rp21gJ/IVTW7Z3y9EWXhuUBC2Shnf+DX0antecpAwSP8w==
 
-ynetwork@2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/ynetwork/-/ynetwork-2.8.1.tgz#5684af4da820eb08bd4dc2491769f0ab1ff54016"
-  integrity sha512-4W1Yese+hr5BhbbxzHczlLcMf04t0h2RYm1gfMr4b2TMqxLwcjdi6mcD8A+yuz/XcXiOxH71qn5vzROGRcKwQA==
+ynetwork@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ynetwork/-/ynetwork-3.0.0.tgz#646cef96a538dfbb33da492ce4c7782208dcb2fc"
+  integrity sha512-P77Ucb3WzvPc9wgmImHvnjz1JHfzv7dt73Axn5pfvyn52wBsKvcVAJlZ/LPM2eLbTRs6p/54NQaLyMZsUKS1Ag==
   dependencies:
     axios "0.21.1"
 
