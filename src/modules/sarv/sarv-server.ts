@@ -27,3 +27,12 @@ export async function getUserProfile(token: string): Promise<ISarvUser> {
   return result;
 
 }
+
+export async function logoutUser(token: string): Promise<Boolean> {
+
+  const { status, result } = await YNetwork.post(Config.sarv.userLogoutUrl, {}, { Authorization: token });
+  if (status !== 200) throw new InvalidRequestError(`could not logout user ${status} ${JSON.stringify(result)}`, 'مشکلی در خروج پیش آمده است.');
+
+  return result;
+
+}

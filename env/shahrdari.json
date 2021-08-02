@@ -12,6 +12,7 @@
   "corsHandle": "true",
   "sarv": {
     "ssoUserUrl": "https://sso-sarv.shiraz.ir/auth/realms/master/protocol/openid-connect/userinfo",
-    "profileUrl": "https://api-sarv.shiraz.ir/api/v1/citizen/profile"
+    "profileUrl": "https://api-sarv.shiraz.ir/api/v1/citizen/profile",
+    "logoutUrl": "https://api-sarv.shiraz.ir/api/v1/logout"
   }
 }

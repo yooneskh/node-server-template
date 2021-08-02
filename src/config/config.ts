@@ -24,7 +24,8 @@ export const Config = {
     userInfoUrl: getConfig('sarv.ssoUserUrl', 'https://sso-sarv.rojansoft.com/auth/realms/master/protocol/openid-connect/userinfo')
   },
   sarv: {
-    userProfileUrl: getConfig('sarv.profileUrl', 'https://api-sarv.rojansoft.com/api/v1/citizen/profile')
+    userProfileUrl: getConfig('sarv.profileUrl', 'https://api-sarv.rojansoft.com/api/v1/citizen/profile'),
+    userLogoutUrl: getConfig('sarv.logoutUrl', 'https://api-sarv.rojansoft.com/api/v1/logout')
   },
   localization: {
     defaultLocalization: 'fa'

@@ -4,10 +4,8 @@ import { UserController } from '../user/user-resource';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
 import { Request } from 'express';
 import { ResourceRouter } from '../../plugins/resource-maker/resource-router';
-import { YEventManager } from '../../plugins/event-manager/event-manager';
-import { AuthTokenController } from './auth-token-resource';
 import { getSSOUserByToken } from '../sarv/sarv-sso';
-import { getUserProfile } from '../sarv/sarv-server';
+import { getUserProfile, logoutUser } from '../sarv/sarv-server';
 import { hasPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 
@@ -18,22 +16,13 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Logout'],
   method: 'POST',
   path: '/logout',
-  async dataProvider({ token }) {
+  async dataProvider({ token, payload }) {
+    if (!token) throw new InvalidRequestError('token not given', 'شناسه کاربری داده نشده است.');
 
-    const authToken = await AuthTokenController.findOne({
-      filters: { token }
-    });
+    if (payload.sarvLogout) {
+      await logoutUser(token);
+    }
 
-    await AuthTokenController.edit({
-      resourceId: authToken._id,
-      payload: {
-        valid: false,
-        closed: true,
-        closedAt: Date.now()
-      }
-    });
-
-    YEventManager.emit(['Resource', 'User', 'LoggedOut'], authToken.user);
     return true;
 
   }
