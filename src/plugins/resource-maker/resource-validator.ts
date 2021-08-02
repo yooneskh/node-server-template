@@ -28,11 +28,20 @@ export class ResourceValidator<T extends IResource> {
       if (property.required) {
         if (!rules) rules = [];
         rules.unshift(async (it, e) => {
+
           const v = it[property.key as keyof T] as any; // tslint:disable-line: no-any
           if (property.vIf && !conforms(it, property.vIf)) return;
-          if (property.type === 'number' && (v !== undefined && v !== null && !isNaN(v))) return;
-          if ((property.isArray || property.type === 'series') && (!!v && v.length > 0)) return;
+
+          if (property.type === 'number') {
+            return (v !== undefined && v !== null && !isNaN(v)) || e(`${property.title || property.key} الزامی است.`);
+          }
+
+          if (property.isArray || property.type === 'series') { // todo: validate sub serie
+            return (!!v && v.length > 0) || e(`${property.title || property.key} الزامی است.`);
+          }
+
           return v !== undefined && v !== null && v !== '' || e(`${property.title || property.key} الزامی است.`);
+
         });
       }
 
