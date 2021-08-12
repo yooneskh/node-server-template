@@ -108,6 +108,12 @@ function hasPermission(allPermissions: string[], permission: string): boolean {
   return allPermissions.some(permit => matchPermission(permit, permission));
 }
 
-export function hasPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+export function hasAllPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+  if (!neededPermissions || neededPermissions.length === 0) return true;
   return neededPermissions.every(permission => hasPermission(allPermissions, permission));
+}
+
+export function hasAnyPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+  if (!neededPermissions || neededPermissions.length === 0) return true;
+  return neededPermissions.some(permission => hasPermission(allPermissions, permission));
 }

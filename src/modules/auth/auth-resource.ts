@@ -12,7 +12,7 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { AuthTokenController } from './auth-token-resource';
 import { RegisterTokenController } from './register-token-resource';
 import { IMedia } from '../media/media-interfaces';
-import { hasPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
+import { hasAllPermissions, hasAnyPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 
 const maker = new ResourceMaker('Auth');
@@ -333,6 +333,20 @@ function transmuteRequest(request: Request) {
   };
 }
 
+function makeUserAllPermissionsChecker(user: IUser | undefined) {
+  return function(neededPermissions: string[]): boolean {
+    if (!user || !user.permissions || user.permissions.length === 0) return false;
+    return hasAllPermissions(user.permissions, neededPermissions);
+  }
+}
+
+function makeUserAnyPermissionsChecker(user: IUser | undefined) {
+  return function(neededPermissions: string[]): boolean {
+    if (!user || !user.permissions || user.permissions.length === 0) return false;
+    return hasAnyPermissions(user.permissions, neededPermissions);
+  }
+}
+
 ResourceRouter.addPreProcessor(async context => {
 
   const { action, request } = context;
@@ -341,12 +355,18 @@ ResourceRouter.addPreProcessor(async context => {
   context.token = token;
 
   if (context.token) context.user = await getUserByToken(token);
+  context.userHasAllPermissions = makeUserAllPermissionsChecker(context.user);
+  context.userHasAnyPermissions = makeUserAnyPermissionsChecker(context.user);
 
-  if (action.permissions && (!context.user || !context.user.permissions || !hasPermissions(context.user.permissions ?? [], action.permissions)) ) {
+  if (action.permissions && !context.userHasAllPermissions(action.permissions)) {
     throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 
-  if (action.permissionFunction && !(await action.permissionFunction(context)) ) {
+  if (action.anyPermissions && !context.userHasAnyPermissions(action.anyPermissions)) {
+    throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
+  }
+
+  if ( action.permissionFunction && !(await action.permissionFunction(context)) ) {
     throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 

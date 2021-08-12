@@ -2,7 +2,6 @@ import { ITicket, ITicketBase, ITicketCategory } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
 import { TicketCategoryController, TicketCategoryUserRelationController } from './ticket-category-resource';
-import { hasPermissions } from '../auth/auth-util';
 import { extractFilterQueryObject, extractIncludeQueryObject, extractSortQueryObject } from '../../plugins/resource-maker/resource-router-util';
 import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from '../../plugins/resource-maker/config';
 
@@ -88,16 +87,9 @@ maker.setValidations({ });
 maker.addActions([
   { // list
     template: 'LIST',
-    permissionFunction: async ({ user }) => {
-      if (!user) return false;
-
-      return ['admin.ticket.list', 'admin.ticket.manage'].some(it =>
-        hasPermissions(user.permissions, [it])
-      );
-
-    },
-    dataProvider: async ({ user, query }) => {
-      if (hasPermissions(user!!.permissions, ['admin.ticket.list'])) {
+    anyPermissions: ['admin.ticket.list', 'admin.ticket.manage'],
+    dataProvider: async ({ user, userHasAllPermissions, query }) => {
+      if (userHasAllPermissions(['admin.ticket.list'])) {
         return TicketController.list({
           filters: extractFilterQueryObject(query.filters),
           sorts: extractSortQueryObject(query.sorts),
@@ -108,7 +100,7 @@ maker.addActions([
           lean: true
         })
       }
-      else if (hasPermissions(user!!.permissions, ['admin.ticket.manage'])) {
+      else if (userHasAllPermissions(['admin.ticket.manage'])) {
 
         const permittedCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user!!._id })).map(it => it.ticketcategory);
 
@@ -133,21 +125,14 @@ maker.addActions([
   },
   { // list
     template: 'LIST_COUNT',
-    permissionFunction: async ({ user }) => {
-      if (!user) return false;
-
-      return ['admin.ticket.list-count', 'admin.ticket.manage'].some(it =>
-        hasPermissions(user.permissions, [it])
-      );
-
-    },
-    dataProvider: async ({ user, query }) => {
-      if (hasPermissions(user!!.permissions, ['admin.ticket.list-count'])) {
+    anyPermissions: ['admin.ticket.list-count', 'admin.ticket.manage'],
+    dataProvider: async ({ user, userHasAllPermissions, query }) => {
+      if (userHasAllPermissions(['admin.ticket.list-count'])) {
         return TicketController.count({
           filters: extractFilterQueryObject(query.filters)
         })
       }
-      else if (hasPermissions(user!!.permissions, ['admin.ticket.manage'])) {
+      else if (userHasAllPermissions(['admin.ticket.manage'])) {
 
         const permittedCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user!!._id })).map(it => it.ticketcategory);
 

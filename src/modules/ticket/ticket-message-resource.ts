@@ -1,6 +1,5 @@
 import { ITicket, ITicketMessage, ITicketMessageBase } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { hasPermissions } from '../auth/auth-util';
 import { TicketController } from './ticket-resource';
 import { InvalidStateError } from '../../global/errors';
 import { TicketCategoryUserRelationController } from './ticket-category-resource';
@@ -58,12 +57,12 @@ maker.addActions([
   { template: 'RETRIEVE', permissions: ['admin.ticket-message.retrieve'] },
   { // create
     template: 'CREATE',
-    permissionFunction: async ({ user, payload }) => {
+    permissionFunction: async ({ user, userHasAllPermissions, payload }) => {
       if (!user) return false;
 
-      if (hasPermissions(user.permissions, ['admin.ticket-message.create'])) return true;
+      if (userHasAllPermissions(['admin.ticket-message.create'])) return true;
 
-      if (hasPermissions(user.permissions, ['admin.ticket.manage'])) {
+      if (userHasAllPermissions(['admin.ticket.manage'])) {
 
         const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
         const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
@@ -104,12 +103,12 @@ maker.addActions([
     method: 'GET',
     path: '/ticket/:ticketId',
     signal: ['Route', 'TicketMessage', 'ListForTicket'],
-    permissionFunction: async ({ user, params: { ticketId }, bag }) => {
+    permissionFunction: async ({ user, userHasAllPermissions, params: { ticketId }, bag }) => {
       if (!user) return false;
 
-      if (hasPermissions(user.permissions, ['admin.ticket-message.list'])) return true;
+      if (userHasAllPermissions(['admin.ticket-message.list'])) return true;
 
-      if (hasPermissions(user.permissions, ['admin.ticket.manage'])) {
+      if (userHasAllPermissions(['admin.ticket.manage'])) {
 
         const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
         const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
