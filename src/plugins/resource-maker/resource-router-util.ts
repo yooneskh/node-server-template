@@ -39,7 +39,6 @@ function applyOperatorOnFilter(filter: any, key: string, operator: string, value
 function extractQueryObject(queryString: string, nullableValues = false): Record<string, string> {
 
   const result: Record<string, string> = {};
-
   if (!queryString) return result;
 
   const parts = queryString.split(',');
@@ -47,7 +46,6 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
   for (const part of parts) {
 
     const [key, value] = part.split(':');
-
     if (!key) throw new InvalidRequestError(`query object invalid key '${key}'`);
     if (!nullableValues && !value) throw new InvalidRequestError(`query object invalid value '${key}':'${value}'`);
 
@@ -62,7 +60,6 @@ function extractQueryObject(queryString: string, nullableValues = false): Record
 export function extractSortQueryObject(queryString: string): Record<string, number> {
 
   const result: Record<string, number> = {};
-
   const records = extractQueryObject(queryString);
 
   for (const key in records) {
@@ -79,11 +76,17 @@ export function extractFilterQueryObject(queryString: string) {
   // tslint:disable-next-line: no-any
   const result: any = {};
   const filtersParts = queryString.split(',');
+  let oredQueries = false;
 
   for (const part of filtersParts) {
 
     // tslint:disable-next-line: no-any prefer-const
     let [key, operator, value]: any = part.split(':');
+
+    if (key === 'Xor' && operator === '=' && value === 'Xtrue') {
+      oredQueries = true;
+      continue;
+    }
 
     if (key === undefined) throw new InvalidRequestError(`filter invalid key '${key}'`);
     if (operator === undefined) throw new InvalidRequestError(`filter invalid operator '${operator}'`);
@@ -95,6 +98,14 @@ export function extractFilterQueryObject(queryString: string) {
 
     applyOperatorOnFilter(result, key, operator, value);
 
+  }
+
+  if (oredQueries) {
+    return {
+      $or: Object.entries(result).map(entry =>
+        ({ [entry[0]]: entry[1] })
+      )
+    }
   }
 
   return result;
