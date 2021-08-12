@@ -28,9 +28,9 @@ export class ResourceValidator<T extends IResource> {
       if (property.required) {
         if (!rules) rules = [];
         rules.unshift(async (it, e) => {
+          if (property.vIf && !conforms(it, property.vIf)) return;
 
           const v = it[property.key as keyof T] as any; // tslint:disable-line: no-any
-          if (property.vIf && !conforms(it, property.vIf)) return;
 
           if (property.type === 'number') {
             return (v !== undefined && v !== null && !isNaN(v)) || e(`${property.title || property.key} الزامی است.`);
@@ -40,7 +40,11 @@ export class ResourceValidator<T extends IResource> {
             return (!!v && v.length > 0) || e(`${property.title || property.key} الزامی است.`);
           }
 
-          return v !== undefined && v !== null && v !== '' || e(`${property.title || property.key} الزامی است.`);
+          if (property.type === 'boolean') {
+            return (v === true || v === false) || e(`${property.title || property.key} الزامی است.`);
+          }
+
+          return (v !== undefined && v !== null && v !== '') || e(`${property.title || property.key} الزامی است.`);
 
         });
       }
