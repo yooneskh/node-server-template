@@ -1,13 +1,9 @@
-import { Document } from "mongoose";
+import { Document, IndexDefinition } from "mongoose";
 
-export type SimpleCompoundIndex = { [key: string]: 1 | -1 };
-
-export type FullCompoundIndex = {
-  indexes: SimpleCompoundIndex;
-  options: Record<string, any>;
-};
-
-export type CompoundIndex = SimpleCompoundIndex | FullCompoundIndex
+export type CompoundIndex = {
+  indexes: IndexDefinition;
+  options?: Record<string, any>
+}
 
 export interface ResourceModelProperty {
   key: string;

@@ -23,10 +23,20 @@ maker.addProperties([
 
 
 maker.setCompoundIndexes([
-  { 'name': 1, 'book': -1 },
   {
-    indexes: { 'book': 1, 'name': -1 },
-    options: { unique: true }
+    indexes: {
+      'book': 1,
+      'name': -1
+    }
+  },
+  {
+    indexes: {
+      'book': 1,
+      'name': -1
+    },
+    options: {
+      unique: true
+    }
   }
 ]);
 
