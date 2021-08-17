@@ -24,6 +24,7 @@ export interface ResourceModelProperty {
   sparse?: boolean;
   // metas
   title?: string;
+  placeholder?: string;
   titleable?: boolean;
   hidden?: boolean;
   hideInTable?: boolean;
@@ -43,6 +44,9 @@ export interface ResourceModelProperty {
   valueFormat?: string;
   items?: { value: string, text: string }[];
   handlerElement?: string;
+  // validation
+  validator?: RegExp | Function | string;
+  conditionalRequired?: boolean;
 }
 
 export interface IResource {

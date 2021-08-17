@@ -2,18 +2,39 @@ import { HandleableError, ServerError } from '../../global/errors';
 import { IResource, ResourceModelProperty } from './resource-model-types';
 import { Query } from 'mingo';
 
+
 class ValidationError extends HandleableError {
   public code = 1100;
 };
+
+
+export type ResourceValidation<I> = {
+  [P in keyof I]?: ((it: I, e: (message: string) => never) => Promise<unknown>)[]
+}
 
 // tslint:disable-next-line: no-any
 function conforms(object: any, rule: any): boolean {
   return new Query(rule).test(object);
 }
 
-export type ResourceValidation<I> = {
-  [P in keyof I]?: ((it: I, e: (message: string) => never) => Promise<unknown>)[]
+function checkRequiredness(value: unknown, property: ResourceModelProperty): boolean {
+
+  if (property.type === 'number') {
+    return (value !== undefined && value !== null && !isNaN(value as number));
+  }
+
+  if (property.isArray || property.type === 'series') { // todo: validate sub series
+    return (!!value && Array.isArray(value) && value.length > 0);
+  }
+
+  if (property.type === 'boolean') {
+    return (value === true || value === false);
+  }
+
+  return (value !== undefined && value !== null && value !== '');
+
 }
+
 
 export class ResourceValidator<T extends IResource> {
 
@@ -24,29 +45,52 @@ export class ResourceValidator<T extends IResource> {
     for (const property of this.properties) {
 
       let rules = validations[property.key as keyof T];
+      if (!rules) rules = [];
 
-      if (property.required) {
-        if (!rules) rules = [];
+      if (property.required || property.conditionalRequired) {
         rules.unshift(async (it, e) => {
           if (property.vIf && !conforms(it, property.vIf)) return;
 
-          const v = it[property.key as keyof T] as any; // tslint:disable-line: no-any
-
-          if (property.type === 'number') {
-            return (v !== undefined && v !== null && !isNaN(v)) || e(`${property.title || property.key} الزامی است.`);
-          }
-
-          if (property.isArray || property.type === 'series') { // todo: validate sub serie
-            return (!!v && v.length > 0) || e(`${property.title || property.key} الزامی است.`);
-          }
-
-          if (property.type === 'boolean') {
-            return (v === true || v === false) || e(`${property.title || property.key} الزامی است.`);
-          }
-
-          return (v !== undefined && v !== null && v !== '') || e(`${property.title || property.key} الزامی است.`);
+          return checkRequiredness(it[property.key as keyof T], property) || e(`${property.title || property.key} الزامی است.`);
 
         });
+      }
+
+      if (property.validator) {
+        if (typeof property.validator === 'function') {
+          rules.push(async (it, e) => {
+            try {
+              await (property.validator as Function)(it[property.key as keyof T], it);
+            }
+            catch (error) {
+              e(error.message || `اشکالی در ${property.title || property.key} وجود دارد.`);
+            }
+          });
+        }
+        else if (typeof property.validator === 'string') {
+
+          const regex = new RegExp(property.validator);
+
+          rules.push(async (it, e) => {
+            try {
+              return regex.test(it[property.key as keyof T] as unknown as string) || e(`مقدار باید به این شکل باشد:‌ ${property.validator}`);
+            }
+            catch {
+              return e(`مقدار باید به این شکل باشد:‌ ${property.validator}`);
+            }
+          });
+
+        }
+        else if (property.validator instanceof RegExp) {
+          rules.push(async (it, e) => {
+            try {
+              return (property.validator as RegExp).test(it[property.key as keyof T] as unknown as string) || e(`شکل مقدار صحیح نیست.`);
+            }
+            catch {
+              return e(`شکل مقدار صحیح نیست.`);
+            }
+          })
+        }
       }
 
       this.validations[property.key as keyof T] = rules;
