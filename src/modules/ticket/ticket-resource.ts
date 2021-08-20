@@ -81,7 +81,11 @@ export const TicketModel      = maker.getModel();
 export const TicketController = maker.getController();
 
 
-maker.setValidations({ });
+maker.setValidations({
+  'title': [
+    async (it, e) => it.title.length < 100 || e('عنوان باید کمتر از ۱۰۰ حرف داشته باشد.')
+  ]
+});
 
 
 maker.addActions([

@@ -48,7 +48,11 @@ export const TicketMessageModel      = maker.getModel();
 export const TicketMessageController = maker.getController();
 
 
-maker.setValidations({ });
+maker.setValidations({
+  'body': [
+    async (it, e) => it.body.length < 300 || e('متن پیام باید کمتر از ۳۰۰ حرف داشته باشد.')
+  ]
+});
 
 
 maker.addActions([
