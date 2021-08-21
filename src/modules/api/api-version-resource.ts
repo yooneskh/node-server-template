@@ -84,6 +84,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    vIf: { disabled: true },
     key: 'disabledMessage',
     type: 'string',
     title: 'پیام غیر فعال بودن',
