@@ -28,7 +28,7 @@ export const PERMISSIONS = [
         ['publisher', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-service', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-endpoint', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run'],
+        ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run', 'list-users'],
         ['api-log', 'list', 'list-count', 'retrieve'],
         ['api-policy', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
         ['api-rate-limit-config', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
@@ -86,7 +86,8 @@ export const PERMISSIONS_LOCALES = {
       'api-payment-config': 'تنظیمات هزینه Api'
     },
     ...{ // actions
-      'run': 'اجرا'
+      'run': 'اجرا',
+      'list-users': 'لیست استفاده کننده ها'
     },
     ...{ // others
 

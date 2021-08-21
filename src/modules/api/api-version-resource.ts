@@ -3,6 +3,8 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { makeHttpParamProperty } from './api-util';
 import { runHttpApi } from './runner/api-http-runner';
 import { ServerError } from '../../global/errors';
+import { ApiEndpointController } from './api-endpoint-resource';
+import { ApiPermitController } from './api-permit-resource';
 
 
 const maker = new ResourceMaker<IApiVersionBase, IApiVersion>('ApiVersion');
@@ -232,6 +234,28 @@ maker.addActions([
       }
 
       throw new ServerError('only http type is implemented.', 'فقط نوع http پیاده سازی شده است.');
+
+    }
+  },
+  { // run api
+    method: 'GET',
+    path: '/:resourceId/users',
+    signal: ['Route', 'ApiVersion', 'ListUsers'],
+    permissions: ['admin.api-version.list-users'],
+    dataProvider: async ({ resourceId }) => {
+
+      const apiVersion = await ApiVersionController.retrieve({ resourceId });
+      const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: apiVersion.endpoint });
+
+      return ApiPermitController.list({
+        filters: {
+          apiEndpoint: apiEndpoint._id
+        },
+        selects: 'user enabled blocked',
+        includes: {
+          'user': 'name firstName lastName phoneNumber'
+        }
+      });
 
     }
   }
