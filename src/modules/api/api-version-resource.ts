@@ -76,6 +76,19 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    key: 'disabled',
+    type: 'boolean',
+    title: 'غیر فعال شده',
+    hideInTable: true
+  },
+  {
+    key: 'disabledMessage',
+    type: 'string',
+    title: 'پیام غیر فعال بودن',
+    hideInTable: true,
+    longText: true
+  },
+  {
     key: 'hasBody',
     type: 'boolean',
     title: 'داده Body دارد؟',

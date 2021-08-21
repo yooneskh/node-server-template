@@ -54,6 +54,8 @@ export interface IApiVersionBase extends IResource {
   queryParams?: IApiHttpParam[];
   pathParams?: IApiHttpParam[];
   headers?: IApiHttpParam[];
+  disabled?: boolean;
+  disabledMessage?: string;
   hasBody?: boolean;
   bodySchema?: IApiHttpBodySchema;
   bodyKeyDescriptions?: IApiHttpKeyDescription[];

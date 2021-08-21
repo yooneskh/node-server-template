@@ -59,6 +59,10 @@ maker.addAction({
       }
     });
 
+    if (apiVersion.disabled) {
+      return apiVersion.disabledMessage || 'این Api غیر فعال شده است.';
+    }
+
     const { status, data, headers, latency } = await runApi(
       permit,
       apiVersion,
