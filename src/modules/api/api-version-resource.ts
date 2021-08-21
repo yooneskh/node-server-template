@@ -181,7 +181,7 @@ export const ApiVersionController = maker.getController();
 
 maker.setValidations({
   'version': [
-    async ({ _id, version }, e) => (await ApiVersionController.count({ filters: { _id: { $ne: _id }, version } })) === 0 || e('این نسخه قبلا وارد شده است.')
+    async ({ _id, endpoint, version }, e) => (await ApiVersionController.count({ filters: { _id: { $ne: _id }, endpoint, version } })) === 0 || e('این نسخه قبلا وارد شده است.')
   ]
 });
 
@@ -193,7 +193,7 @@ maker.addActions([
   { template: 'CREATE', permissions: ['admin.api-version.create'] },
   { template: 'UPDATE', permissions: ['admin.api-version.update'] },
   { template: 'DELETE', permissions: ['admin.api-version.delete'] },
-  {
+  { // run api
     method: 'POST',
     path: '/:resourceId/run',
     signal: ['Route', 'ApiVersion', 'Run'],
