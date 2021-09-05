@@ -62,8 +62,8 @@ export class ResourceValidator<T extends IResource> {
             try {
               await (property.validator as Function)(it[property.key as keyof T], it);
             }
-            catch (error) {
-              e(error.message || `اشکالی در ${property.title || property.key} وجود دارد.`);
+            catch (error: any) {
+              e(error.responseMessage || error.message || `اشکالی در ${property.title || property.key} وجود دارد.`);
             }
           });
         }
@@ -140,7 +140,7 @@ export class ResourceValidator<T extends IResource> {
         })
     );
 
-    const errors: ValidationError[] = checkResults.filter(Boolean);
+    const errors: ValidationError[] = checkResults.filter(Boolean) as ValidationError[];
     if (errors.length === 0) return;
 
     const allKeys = errors.map(it => it.extra!.key);

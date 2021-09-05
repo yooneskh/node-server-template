@@ -32,8 +32,8 @@ const WEBP_ABLE_MIMES = ['image/bmp', 'image/gif', 'image/jpeg', 'image/png', 'i
       );
 
     }
-    catch (error) {
-      console.log('could not convert', media.relativePath, error?.message);
+    catch (error: any) {
+      console.log('could not convert', media.relativePath, error.responseMessage || error.message);
     }
 
   }

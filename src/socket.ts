@@ -47,8 +47,8 @@ export default async function(socket: Socket) {
         await handler.handler(socket, ...args)
         console.log(new Date(), 'socket', handler.room, socket.id);
       }
-      catch (error) {
-        console.error('socket handler error', handler.room, error.message);
+      catch (error: any) {
+        console.error('socket handler error', handler.room, error.responseMessage || error.message);
         socket.disconnect(true);
       }
     });
