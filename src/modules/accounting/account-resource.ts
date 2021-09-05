@@ -69,8 +69,8 @@ maker.addActions([
   { template: 'LIST_COUNT', permissions: ['admin.account.list-count'] },
   { // retrieve
     template: 'RETRIEVE',
-    permissionFunction: async ({ user, resourceId, userHasAllPermissions }) => {
-      if (userHasAllPermissions(['admin.account.retrieve'])) return true;
+    permissionFunction: async ({ user, resourceId, hasPermission }) => {
+      if (hasPermission('admin.account.retrieve')) return true;
       const account = await AccountController.retrieve({ resourceId });
       return account.user === String(user?._id);
     }

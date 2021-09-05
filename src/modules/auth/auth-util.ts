@@ -1,9 +1,8 @@
 export const PERMISSIONS = [
   ['user',
     ...[ // general
-      ['profile', 'retrieve', 'update'],
-      ['media', 'init-upload', 'upload'],
-      ['ticket', 'list', 'create', 'update']
+      ['profile', 'update'],
+      ['media', 'init-upload', 'upload']
     ],
     ...[ // app specific
 
@@ -106,6 +105,11 @@ function matchPermission(permit: string, permission: string): boolean {
 
 function hasPermission(allPermissions: string[], permission: string): boolean {
   return allPermissions.some(permit => matchPermission(permit, permission));
+}
+
+export function hasSinglePermission(allPermissions: string[], neededPermission: string): boolean {
+  if (!neededPermission) return true;
+  return hasPermission(allPermissions, neededPermission);
 }
 
 export function hasAllPermissions(allPermissions: string[], neededPermissions: string[]): boolean {

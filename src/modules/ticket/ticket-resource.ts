@@ -92,8 +92,8 @@ maker.addActions([
   { // list
     template: 'LIST',
     anyPermissions: ['admin.ticket.list', 'admin.ticket.manage'],
-    dataProvider: async ({ user, userHasAllPermissions, query }) => {
-      if (userHasAllPermissions(['admin.ticket.list'])) {
+    dataProvider: async ({ user, hasPermission, query }) => {
+      if (hasPermission('admin.ticket.list')) {
         return TicketController.list({
           filters: extractFilterQueryObject(query.filters),
           sorts: extractSortQueryObject(query.sorts),
@@ -104,7 +104,7 @@ maker.addActions([
           lean: true
         })
       }
-      else if (userHasAllPermissions(['admin.ticket.manage'])) {
+      else if (hasPermission('admin.ticket.manage')) {
 
         const permittedCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user!!._id })).map(it => it.ticketcategory);
 
@@ -127,16 +127,16 @@ maker.addActions([
       }
     }
   },
-  { // list
+  { // list count
     template: 'LIST_COUNT',
     anyPermissions: ['admin.ticket.list-count', 'admin.ticket.manage'],
-    dataProvider: async ({ user, userHasAllPermissions, query }) => {
-      if (userHasAllPermissions(['admin.ticket.list-count'])) {
+    dataProvider: async ({ user, hasPermission, query }) => {
+      if (hasPermission('admin.ticket.list-count')) {
         return TicketController.count({
           filters: extractFilterQueryObject(query.filters)
         })
       }
-      else if (userHasAllPermissions(['admin.ticket.manage'])) {
+      else if (hasPermission('admin.ticket.manage')) {
 
         const permittedCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user!!._id })).map(it => it.ticketcategory);
 
@@ -161,7 +161,9 @@ maker.addActions([
     method: 'GET',
     path: '/mine/list',
     signal: ['Route', 'Ticket', 'GetMine'],
-    permissions: ['user.ticket.list'],
+    permissionFunction: async ({ user }) => {
+      return !!user;
+    },
     dataProvider: async ({ user }) => {
       return TicketController.list({
         filters: {
@@ -178,7 +180,9 @@ maker.addActions([
     method: 'POST',
     path: '/mine',
     signal: ['Route', 'Ticket', 'CreateMine'],
-    permissions: ['user.ticket.create'],
+    permissionFunction: async ({ user }) => {
+      return !!user;
+    },
     payloadValidator: async ({ payload, bag }) => {
 
       if (['category', 'title', 'informations'].some(key => !payload[key])) {
@@ -214,10 +218,12 @@ maker.addActions([
     method: 'PATCH',
     path: '/mine/:resourceId',
     signal: ['Route', 'Ticket', 'UpdateMine'],
-    permissions: ['user.ticket.update'],
     permissionFunction: async ({ user, resourceId, bag }) => {
+      if (!user) return false;
+
       bag.ticket = await TicketController.retrieve({ resourceId });
       return String(user?._id) === bag.ticket.user;
+
     },
     stateValidator: async ({ bag }) => {
       if (['archived', 'deleted'].includes(bag.ticket.status)) {

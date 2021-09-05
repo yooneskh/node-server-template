@@ -12,7 +12,7 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { AuthTokenController } from './auth-token-resource';
 import { RegisterTokenController } from './register-token-resource';
 import { IMedia } from '../media/media-interfaces';
-import { hasAllPermissions, hasAnyPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
+import { hasAllPermissions, hasAnyPermissions, hasSinglePermission, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 
 const maker = new ResourceMaker('Auth');
@@ -31,7 +31,7 @@ maker.addAction({
   captchaOptions: {
     enabled: true
   },
-  async dataProvider({ payload }) {
+  dataProvider: async ({ payload }) => {
 
     const user = await UserController.findOne({
       filters: { phoneNumber: payload.phoneNumber }
@@ -70,7 +70,7 @@ maker.addAction({
   captchaOptions: {
     enabled: true
   },
-  async dataProvider({ payload }) {
+  dataProvider: async ({ payload }) => {
 
     const { name, phoneNumber } = payload;
 
@@ -138,7 +138,7 @@ maker.addAction({
     blockDuration: 60,
     consecutiveFailDurationMultiplier: 1.5
   },
-  async dataProvider({ payload }) {
+  dataProvider: async ({ payload }) => {
 
     const { phoneNumber, verificationCode } = payload;
     if (!verificationCode) throw new InvalidRequestError('invalid code');
@@ -218,7 +218,7 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Logout'],
   method: 'POST',
   path: '/logout',
-  async dataProvider({ token }) {
+  dataProvider: async ({ token }) => {
 
     const authToken = await AuthTokenController.findOne({
       filters: { token }
@@ -244,7 +244,7 @@ maker.addAction({
   path: '/permissions',
   signal: ['Route', 'Auth', 'ListPermissions'],
   permissions: ['admin.permissions.list'],
-  async dataProvider() {
+  dataProvider: async () => {
     return {
       permissions: PERMISSIONS,
       locales: PERMISSIONS_LOCALES
@@ -256,8 +256,10 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Identity'],
   method: 'GET',
   path: '/identity',
-  permissions: ['user.profile.retrieve'],
-  async dataProvider({ user }) {
+  permissionFunction: async ({ user }) => {
+    return !!user;
+  },
+  dataProvider: async ({ user }) => {
 
     if (user!.profile) {
       (user!.profile as unknown as IMedia) = await MediaController.retrieve({ resourceId: user!.profile });
@@ -273,7 +275,7 @@ maker.addAction({
   method: 'PATCH',
   path: '/identity',
   permissions: ['user.profile.update'],
-  async dataProvider({ payload, user }) {
+  dataProvider: async ({ payload, user }) => {
     return UserController.edit({
       resourceId: user!!._id,
       payload
@@ -312,9 +314,6 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
     }); return undefined;
   }
 
-  const user = authToken.user as unknown as IUser;
-  if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
-
   // intentionally not awaited
   AuthTokenController.edit({
     resourceId: authToken._id,
@@ -323,7 +322,7 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
     }
   });
 
-  return user;
+  return authToken.user as unknown as IUser;
 
 }
 
@@ -333,9 +332,18 @@ function transmuteRequest(request: Request) {
   };
 }
 
+function makeUserPermissionChecker(user: IUser | undefined) {
+  return function(neededPermission: string): boolean {
+    if (!user || !user.permissions || user.permissions.length === 0) return false;
+    if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    return hasSinglePermission(user.permissions, neededPermission);
+  }
+}
+
 function makeUserAllPermissionsChecker(user: IUser | undefined) {
   return function(neededPermissions: string[]): boolean {
     if (!user || !user.permissions || user.permissions.length === 0) return false;
+    if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
     return hasAllPermissions(user.permissions, neededPermissions);
   }
 }
@@ -343,6 +351,7 @@ function makeUserAllPermissionsChecker(user: IUser | undefined) {
 function makeUserAnyPermissionsChecker(user: IUser | undefined) {
   return function(neededPermissions: string[]): boolean {
     if (!user || !user.permissions || user.permissions.length === 0) return false;
+    if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
     return hasAnyPermissions(user.permissions, neededPermissions);
   }
 }
@@ -355,14 +364,19 @@ ResourceRouter.addPreProcessor(async context => {
   context.token = token;
 
   if (context.token) context.user = await getUserByToken(token);
-  context.userHasAllPermissions = makeUserAllPermissionsChecker(context.user);
-  context.userHasAnyPermissions = makeUserAnyPermissionsChecker(context.user);
+  context.hasPermission = makeUserPermissionChecker(context.user);
+  context.hasAllPermissions = makeUserAllPermissionsChecker(context.user);
+  context.hasAnyPermission = makeUserAnyPermissionsChecker(context.user);
 
-  if (action.permissions && !context.userHasAllPermissions(action.permissions)) {
+  if (action.permission && !context.hasPermission(action.permission)) {
     throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 
-  if (action.anyPermissions && !context.userHasAnyPermissions(action.anyPermissions)) {
+  if (action.permissions && !context.hasAllPermissions(action.permissions)) {
+    throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
+  }
+
+  if (action.anyPermissions && !context.hasAnyPermission(action.anyPermissions)) {
     throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 

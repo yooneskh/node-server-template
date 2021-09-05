@@ -61,12 +61,12 @@ maker.addActions([
   { template: 'RETRIEVE', permissions: ['admin.ticket-message.retrieve'] },
   { // create
     template: 'CREATE',
-    permissionFunction: async ({ user, userHasAllPermissions, payload }) => {
+    permissionFunction: async ({ user, hasPermission, payload }) => {
       if (!user) return false;
 
-      if (userHasAllPermissions(['admin.ticket-message.create'])) return true;
+      if (hasPermission('admin.ticket-message.create')) return true;
 
-      if (userHasAllPermissions(['admin.ticket.manage'])) {
+      if (hasPermission('admin.ticket.manage')) {
 
         const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
         const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
@@ -107,12 +107,12 @@ maker.addActions([
     method: 'GET',
     path: '/ticket/:ticketId',
     signal: ['Route', 'TicketMessage', 'ListForTicket'],
-    permissionFunction: async ({ user, userHasAllPermissions, params: { ticketId }, bag }) => {
+    permissionFunction: async ({ user, hasPermission, params: { ticketId }, bag }) => {
       if (!user) return false;
 
-      if (userHasAllPermissions(['admin.ticket-message.list'])) return true;
+      if (hasPermission('admin.ticket-message.list')) return true;
 
-      if (userHasAllPermissions(['admin.ticket.manage'])) {
+      if (hasPermission('admin.ticket.manage')) {
 
         const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
         const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
