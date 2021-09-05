@@ -54,7 +54,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) query.populate(include);
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const result = await query;
 
@@ -99,7 +99,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) query.populate(include);
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const result = await query;
 
@@ -140,7 +140,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) query.populate(include);
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const result = await query;
 
@@ -181,7 +181,7 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) query.populate(include);
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const result = await query;
 
@@ -214,8 +214,8 @@ export class ResourceRelationController<T extends IResource, TF extends IResourc
 
     const query = this.model.findById(context.relationId).select(context.selects);
 
-    for (const include of transformIncludes(context.includes || {})) query.populate(include);
     if (context.lean) query.lean();
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const relation = await query;
     if (!relation) throw new NotFoundError(`relation not found @${context.relationId}`, 'مورد خواسته شده یافت نشد.');

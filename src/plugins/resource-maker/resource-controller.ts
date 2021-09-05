@@ -33,9 +33,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
     if (context.limit) query.limit(context.limit);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) {
-      query.populate(include);
-    }
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const result = await query;
 
@@ -66,9 +64,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
     const query = this.model.findById(context.resourceId).select(context.selects);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) {
-      query.populate(include);
-    }
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const resource = await query;
     if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${context.resourceId}`, 'مورد خواسته شده یافت نشد.');
@@ -89,9 +85,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
     query.select(context.selects);
     if (context.lean) query.lean();
 
-    for (const include of transformIncludes(context.includes || {})) {
-      query.populate(include);
-    }
+    query.populate(transformIncludes(context.includes ?? {}));
 
     const resource = await query;
     if (!resource) throw new NotFoundError(`resource not found: ${this.name}@${JSON.stringify(context.filters)}`, 'مورد خواسته شده یافت نشد.');
