@@ -64,6 +64,9 @@ maker.addActions([
     permissionFunction: async ({ user, hasPermission, payload }) => {
       if (!user) return false;
 
+      const ticket = await TicketController.retrieve({ resourceId: payload.ticket });
+      if (ticket.user === String(user._id) && payload.user === String(user._id)) return true;
+
       if (hasPermission('admin.ticket-message.create')) return true;
 
       if (hasPermission('admin.ticket.manage')) {
@@ -75,8 +78,7 @@ maker.addActions([
 
       }
 
-      const ticket = await TicketController.retrieve({ resourceId: payload.ticket });
-      return ticket.user === String(user._id) && payload.user === String(user._id);
+      return false;
 
     },
     stateValidator: async ({ payload, bag }) => {
@@ -110,6 +112,15 @@ maker.addActions([
     permissionFunction: async ({ user, hasPermission, params: { ticketId }, bag }) => {
       if (!user) return false;
 
+      bag.ticket = await TicketController.retrieve({
+        resourceId: ticketId,
+        includes: {
+          'category': ''
+        }
+      });
+
+      if (String(user._id) === bag.ticket.user) return true;
+
       if (hasPermission('admin.ticket-message.list')) return true;
 
       if (hasPermission('admin.ticket.manage')) {
@@ -121,14 +132,7 @@ maker.addActions([
 
       }
 
-      bag.ticket = await TicketController.retrieve({
-        resourceId: ticketId,
-        includes: {
-          'category': ''
-        }
-      });
-
-      return String(user._id) === bag.ticket.user;
+      return false;
 
     },
     dataProvider: async ({ params: { ticketId }, bag }) => {
