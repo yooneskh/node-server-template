@@ -19,7 +19,7 @@
     "express": "4.17.1",
     "lodash": "4.17.21",
     "mingo": "^4.1.4",
-    "mongoose": "6.0.4",
+    "mongoose": "6.0.5",
     "morgan": "1.10.0",
     "pdf-parse": "1.1.1",
     "pluralize": "8.0.0",
