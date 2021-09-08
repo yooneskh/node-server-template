@@ -66,8 +66,8 @@ app.use('/api/ticketcategories', TicketCategoryRouter);
 app.use('/api/tickets', TicketRouter);
 app.use('/api/ticketmessages', TicketMessageRouter);
 
-import './modules/sms-notification/sms-manager';
-import './modules/telegram-notification/telegram-manager';
+// import './modules/sms-notification/sms-manager';
+// import './modules/telegram-notification/telegram-manager';
 
 
 // app specific routes
