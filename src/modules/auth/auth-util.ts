@@ -1,7 +1,7 @@
 export const PERMISSIONS = [
   ['user',
     ...[ // general
-      ['profile', 'retrieve', 'update'],
+      ['profile', 'update'],
       ['media', 'init-upload', 'upload']
     ],
     ...[ // app specific
@@ -44,6 +44,7 @@ export const PERMISSIONS = [
 export const PERMISSIONS_LOCALES = {
   'user': 'کاربر',
   'admin': 'مدیر',
+  'setting': 'تنظیمات',
   ...{ // general
     ...{ // resources
       'media': 'مدیا',
@@ -53,6 +54,8 @@ export const PERMISSIONS_LOCALES = {
       'factor': 'فاکتور',
       'payticket': 'تیکت پرداخت',
       'permissions': 'تنظیمات',
+      'ticket-category': 'دسته‌بندی تیکت',
+      'ticket': 'تیکت'
     },
     ...{ // actions
       'list': 'لیست',
@@ -64,10 +67,10 @@ export const PERMISSIONS_LOCALES = {
       'profile': 'پروفایل',
       'init-upload': 'شروع بارگذاری',
       'upload': 'بارگذاری',
+      'manage': 'مدیریت'
     },
     ...{ // others
-      'setting': 'تنظیمات',
-      'application': 'برنامه',
+      'application': 'برنامه'
     }
   },
   ...{ // app specific
@@ -113,6 +116,17 @@ function hasPermission(allPermissions: string[], permission: string): boolean {
   return allPermissions.some(permit => matchPermission(permit, permission));
 }
 
-export function hasPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+export function hasSinglePermission(allPermissions: string[], neededPermission: string): boolean {
+  if (!neededPermission) return true;
+  return hasPermission(allPermissions, neededPermission);
+}
+
+export function hasAllPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+  if (!neededPermissions || neededPermissions.length === 0) return true;
   return neededPermissions.every(permission => hasPermission(allPermissions, permission));
+}
+
+export function hasAnyPermissions(allPermissions: string[], neededPermissions: string[]): boolean {
+  if (!neededPermissions || neededPermissions.length === 0) return true;
+  return neededPermissions.some(permission => hasPermission(allPermissions, permission));
 }

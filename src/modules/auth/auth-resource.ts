@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { ResourceRouter } from '../../plugins/resource-maker/resource-router';
 import { getSSOUserByToken } from '../sarv/sarv-sso';
 import { getUserProfile, logoutUser } from '../sarv/sarv-server';
-import { hasPermissions, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
+import { hasAllPermissions, hasAnyPermissions, hasSinglePermission, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
 
 const maker = new ResourceMaker('Auth');
@@ -45,7 +45,6 @@ maker.addAction({
   signal: ['Route', 'Auth', 'Identity'],
   method: 'GET',
   path: '/identity',
-  permissions: ['user.profile.retrieve'],
   async dataProvider({ token }) {
 
     const [ssoUser, profile] = await Promise.all([getSSOUserByToken(token!), getUserProfile(token!)]);
@@ -153,6 +152,7 @@ maker.addAction({
   }
 });
 
+
 export const AuthRouter = maker.getRouter();
 
 
@@ -161,11 +161,13 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
 
   const ssoUser = await getSSOUserByToken(token);
 
-  return UserController.findOne({
+  const user = await UserController.findOne({
     filters: {
       ssoId: ssoUser.sub
     }
   });
+
+  return user;
 
 }
 
@@ -173,6 +175,30 @@ function transmuteRequest(request: Request) {
   return {
     token: request.headers.authorization || request.query['x-token'] as string || request.body.xToken as string || ''
   };
+}
+
+function makeUserPermissionChecker(user: IUser | undefined) {
+  return function(neededPermission: string): boolean {
+    if (!user || !user.permissions || user.permissions.length === 0) return false;
+    // if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    return hasSinglePermission(user.permissions, neededPermission);
+  }
+}
+
+function makeUserAllPermissionsChecker(user: IUser | undefined) {
+  return function(neededPermissions: string[]): boolean {
+    if (!user || !user.permissions || user.permissions.length === 0) return false;
+    // if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    return hasAllPermissions(user.permissions, neededPermissions);
+  }
+}
+
+function makeUserAnyPermissionsChecker(user: IUser | undefined) {
+  return function(neededPermissions: string[]): boolean {
+    if (!user || !user.permissions || user.permissions.length === 0) return false;
+    // if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    return hasAnyPermissions(user.permissions, neededPermissions);
+  }
 }
 
 ResourceRouter.addPreProcessor(async context => {
@@ -183,12 +209,23 @@ ResourceRouter.addPreProcessor(async context => {
   context.token = token;
 
   if (context.token) context.user = await getUserByToken(token);
+  context.hasPermission = makeUserPermissionChecker(context.user);
+  context.hasAllPermissions = makeUserAllPermissionsChecker(context.user);
+  context.hasAnyPermission = makeUserAnyPermissionsChecker(context.user);
 
-  if (action.permissions && (!context.user || !context.user.permissions || !hasPermissions(context.user.permissions ?? [], action.permissions)) ) {
+  if (action.permission && !context.hasPermission(action.permission)) {
     throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 
-  if (action.permissionFunction && !(await action.permissionFunction(context)) ) {
+  if (action.permissions && !context.hasAllPermissions(action.permissions)) {
+    throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
+  }
+
+  if (action.anyPermissions && !context.hasAnyPermission(action.anyPermissions)) {
+    throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
+  }
+
+  if ( action.permissionFunction && !(await action.permissionFunction(context)) ) {
     throw new ForbiddenAccessError('forbidden access', 'شما دسترسی لازم را ندارید.');
   }
 
@@ -199,25 +236,15 @@ ResourceRouter.addPreProcessor(async context => {
 });
 
 ResourceRouter.addPreResponseProcessor(async context => {
-
-  const { action, request } = context;
-  const { token } = transmuteRequest(request);
-
-  if (action.responsePreprocessor) {
-    if (!context.user && token) context.user = await getUserByToken(token);
-    await action.responsePreprocessor(context);
+  if (context.action.responsePreprocessor) {
+    if (!context.user && context.token) context.user = await getUserByToken(context.token);
+    await context.action.responsePreprocessor(context);
   }
-
 });
 
 ResourceRouter.addPostProcessor(async context => {
-
-  const { action, request } = context;
-  const { token } = transmuteRequest(request);
-
-  if (action.postprocessor) {
-    if (!context.user && token) context.user = await getUserByToken(token);
-    await action.postprocessor(context);
+  if (context.action.postprocessor) {
+    if (!context.user && context.token) context.user = await getUserByToken(context.token);
+    await context.action.postprocessor(context);
   }
-
 });

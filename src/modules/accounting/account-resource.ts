@@ -3,7 +3,6 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { InvalidStateError } from '../../global/errors';
 import { UserController } from '../user/user-resource';
-import { hasPermissions } from '../auth/auth-util';
 
 
 const maker = new ResourceMaker<IAccountBase, IAccount>('Account');
@@ -70,8 +69,8 @@ maker.addActions([
   { template: 'LIST_COUNT', permissions: ['admin.account.list-count'] },
   { // retrieve
     template: 'RETRIEVE',
-    permissionFunction: async ({ user, resourceId }) => {
-      if (hasPermissions(user?.permissions ?? [], ['admin.account.retrieve'])) return true;
+    permissionFunction: async ({ user, resourceId, hasPermission }) => {
+      if (hasPermission('admin.account.retrieve')) return true;
       const account = await AccountController.retrieve({ resourceId });
       return account.user === String(user?._id);
     }
@@ -86,7 +85,7 @@ maker.addActions([
       const account = await AccountController.retrieve({ resourceId });
 
       const usersCount = await UserController.count({ filters: { _id: account.user } });
-      if (usersCount !== 0) throw new InvalidStateError('there is a user for this account');
+      if (usersCount !== 0) throw new InvalidStateError('there is a user for this account', 'این اکانت کاربر دارد.');
 
     }
   }
@@ -143,7 +142,7 @@ export async function getAccountForUser(userId: string) {
   catch {
     await AccountController.create({
       payload: {
-        title: 'ورودی کلی',
+        title: 'ورودی اصلی',
         user: undefined,
         balance: 0,
         acceptsInput: false,
@@ -162,7 +161,7 @@ export async function getAccountForUser(userId: string) {
   catch {
     await AccountController.create({
       payload: {
-        title: 'خروجی کلی',
+        title: 'خروجی اصلی',
         user: undefined,
         balance: 0,
         acceptsInput: true,

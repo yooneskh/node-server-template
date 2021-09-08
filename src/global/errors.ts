@@ -61,5 +61,5 @@ export function errorHandler(error: Error, _request: Request, response: Response
 }
 
 process.on('uncaughtException', error => {
-  console.error('uncaught error ::', error.message);
+  console.error('socket/events error ::', error.message);
 });

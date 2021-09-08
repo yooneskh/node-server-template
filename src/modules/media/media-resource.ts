@@ -227,7 +227,7 @@ maker.addAction({
         try {
           await validateFile(uploadedMedia);
         }
-        catch (error) {
+        catch (error: any) {
           response.status(400).json({
             message: error.responseMessage || error.message
           }); return;

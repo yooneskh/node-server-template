@@ -1,13 +1,9 @@
-import { Document } from "mongoose";
+import { Document, IndexDefinition } from "mongoose";
 
-export type SimpleCompoundIndex = { [key: string]: 1 | -1 };
-
-export type FullCompoundIndex = {
-  indexes: SimpleCompoundIndex;
-  options: Record<string, any>;
-};
-
-export type CompoundIndex = SimpleCompoundIndex | FullCompoundIndex
+export type CompoundIndex = {
+  indexes: IndexDefinition;
+  options?: Record<string, any>
+}
 
 export interface ResourceModelProperty {
   key: string;
@@ -28,6 +24,7 @@ export interface ResourceModelProperty {
   sparse?: boolean;
   // metas
   title?: string;
+  placeholder?: string;
   titleable?: boolean;
   hidden?: boolean;
   hideInTable?: boolean;
@@ -47,6 +44,9 @@ export interface ResourceModelProperty {
   valueFormat?: string;
   items?: { value: string, text: string }[];
   handlerElement?: string;
+  // validation
+  validator?: RegExp | Function | string;
+  conditionalRequired?: boolean;
 }
 
 export interface IResource {

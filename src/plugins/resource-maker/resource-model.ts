@@ -38,13 +38,7 @@ export class ResourceModel<TF extends IResourceDocument> {
 
     if (this.compoundIndexes && this.compoundIndexes.length > 0) {
       for (const index of this.compoundIndexes) {
-        if (index.indexes) {
-          // tslint:disable-next-line: no-any
-          schema.index(index.indexes, index.options as Record<string, any>)
-        }
-        else {
-          schema.index(index)
-        }
+        schema.index(index.indexes, index.options)
       }
     }
 

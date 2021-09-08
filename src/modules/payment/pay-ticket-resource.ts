@@ -159,7 +159,7 @@ maker.addActions([
           try {
             await validator(payTicket, factor);
           }
-          catch (error) {
+          catch (error: any) {
 
             const newPayTicket = await PayTicketController.edit({
               resourceId,
@@ -168,7 +168,7 @@ maker.addActions([
                 resolvedAt: Date.now(),
                 rejected: true,
                 rejectedAt: Date.now(),
-                rejectedFor: error.message
+                rejectedFor: error.responseMessage || error.message
               }
             });
 
@@ -181,11 +181,11 @@ maker.addActions([
         bag.payTicket = payTicket;
 
       }
-      catch (error) {
+      catch (error: any) {
 
         response.send(createErrorResultPage({
           title: Config.payment.response.title,
-          reason: error.message,
+          reason: error.responseMessage || error.message,
           callback: Config.payment.response.callback,
           callbackSupport: Config.payment.response.callbackSupport
         }));
@@ -233,11 +233,11 @@ maker.addActions([
         return DISMISS_DATA_PROVIDER;
 
       }
-      catch (error) {
+      catch (error: any) {
 
         response.send(createErrorResultPage({
           title: Config.payment.response.title,
-          reason: error.message,
+          reason: error.responseMessage || error.message,
           callback: Config.payment.response.callback,
           callbackSupport: Config.payment.response.callbackSupport
         }));

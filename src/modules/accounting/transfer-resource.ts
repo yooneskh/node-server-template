@@ -88,19 +88,19 @@ export const TransferRouter = maker.getRouter();
 
 
 export async function createTransfer(fromAccountId: string, toAccountId: string, amount: number, description?: string): Promise<ITransfer> {
-  if (!( amount > 0 )) throw new InvalidRequestError(`invalid transfer amount "${amount}"`, 'مقدار انتقال غیر قابل قبول است.');
+  if (!( amount > 0 )) throw new InvalidRequestError('invalid transfer amount', 'میزان انتقال صحیح نیست.');
 
   const [fromAccount, toAccount] = await Promise.all([
     AccountController.retrieve({ resourceId: fromAccountId }),
     AccountController.retrieve({ resourceId: toAccountId })
   ]);
 
-  if (!fromAccount.acceptsOutput) throw new InvalidStateError('source account does not accept output', 'حساب مبدا قابل انتقال نیست.');
-  if (!toAccount.acceptsInput) throw new InvalidStateError('destination account does not accept input', 'حساب مقصد قابل انتقال نیست.');
+  if (!fromAccount.acceptsOutput) throw new InvalidStateError('source account does not accept output', 'حساب مبدا خروجی ندارد.');
+  if (!toAccount.acceptsInput) throw new InvalidStateError('destination account does not accept input', 'حساب مقصد ورودی ندارد.');
 
   // TODO: make code below happen in transaction
   if (fromAccount.balance < amount && !fromAccount.allowNegativeBalance) {
-    throw new InvalidStateError('source account does not have sufficient balance', 'موجود حساب کافی نیست.');
+    throw new InvalidStateError('source account does not have sufficient balance', 'حساب موجودی ندارد.');
   }
 
   const transfer = await TransferController.create({
