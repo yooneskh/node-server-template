@@ -170,15 +170,21 @@ maker.addAction({
         }
       });
 
-      await RegisterTokenController.edit({
-        resourceId: registerToken._id,
-        payload: {
-          closed: true,
-          closedAt: Date.now()
-        }
-      });
-
-      authToken.user = registerUser._id;
+      await Promise.all([
+        RegisterTokenController.edit({
+          resourceId: registerToken._id,
+          payload: {
+            closed: true,
+            closedAt: Date.now()
+          }
+        }),
+        AuthTokenController.edit({
+          resourceId: authToken._id,
+          payload: {
+            user: registerUser._id
+          }
+        })
+      ]);
 
     }
 

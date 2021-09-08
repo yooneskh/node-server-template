@@ -59,7 +59,7 @@ export class ResourceController<T extends IResource, TF extends IResourceDocumen
   }
 
   public async retrieve(context: ResourceControllerContext<T, TF>): Promise<TF> {
-    if (!context.resourceId) throw new InvalidRequestError('no resource id specified');
+    if (!context.resourceId) throw new InvalidRequestError(`no resource id specified for ${this.name}`);;
 
     const query = this.model.findById(context.resourceId).select(context.selects);
     if (context.lean) query.lean();
