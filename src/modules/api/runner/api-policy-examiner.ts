@@ -136,7 +136,7 @@ async function examinePayment(permit: IApiPermit, paymentConfigId: string): Prom
     }
 
   }
-  catch (error) {
+  catch (error: any) {
     return {
       passed: false,
       error,

@@ -110,7 +110,7 @@ maker.addActions([
               description: { $regex: new RegExp(query, 'i') }
             },
             {
-              tags: { $regex: new RegExp(query, 'i') }
+              tags: { $regex: new RegExp(query, 'i') } as any
             }
           ]
         },

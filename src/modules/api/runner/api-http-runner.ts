@@ -1,5 +1,5 @@
 import { IApiHttpBodySchema, IApiVersion } from '../api-interfaces';
-import YNetwork from 'ynetwork';
+import { YNetwork } from 'ynetwork';
 import { InvalidRequestError, ServerError } from '../../../global/errors';
 
 
@@ -123,7 +123,7 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
   try {
     validateHttpApiPayload(api, payload);
   }
-  catch (error) {
+  catch (error: any) {
     return {
       type: 'error',
       reason: error.responseMessage || error.message,
@@ -148,14 +148,14 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
   }
 
   const timeBegin = Date.now();
-  const { headers, status, result } = await YNetwork[api.method!.toLowerCase()](url, payload?.body, payload?.headers);
+  const { headers, status, data } = await YNetwork[api.method!.toLowerCase()](url, payload?.body, payload?.headers);
   const timeEnd = Date.now();
 
   if (!( status > 0 )) {
     return {
       type: 'error',
-      reason: result,
-      error: new Error(result)
+      reason: data,
+      error: new Error(data)
     };
   }
 
@@ -163,7 +163,7 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
     type: 'success',
     headers,
     status,
-    data: result,
+    data,
     latency: timeEnd - timeBegin
   };
 

@@ -1,4 +1,4 @@
-import YNetwork from 'ynetwork';
+import { YNetwork } from 'ynetwork';
 import { Config } from '../../config/config';
 import { InvalidRequestError } from '../../global/errors';
 
@@ -21,18 +21,18 @@ interface ISarvUser {
 
 export async function getUserProfile(token: string): Promise<ISarvUser> {
 
-  const { status, result } = await YNetwork.get(Config.sarv.userProfileUrl, undefined, { Authorization: token });
-  if (status !== 200) throw new InvalidRequestError(`could not get user profile ${status} ${JSON.stringify(result)}`, 'مشکلی در گرفتن پروفایل کاربری پیش آمده است');
+  const { status, data } = await YNetwork.get(Config.sarv.userProfileUrl, undefined, { Authorization: token });
+  if (status !== 200) throw new InvalidRequestError(`could not get user profile ${status} ${JSON.stringify(data)}`, 'مشکلی در گرفتن پروفایل کاربری پیش آمده است');
 
-  return result;
+  return data;
 
 }
 
 export async function logoutUser(token: string): Promise<Boolean> {
 
-  const { status, result } = await YNetwork.post(Config.sarv.userLogoutUrl, {}, { Authorization: token });
-  if (status !== 200) throw new InvalidRequestError(`could not logout user ${status} ${JSON.stringify(result)}`, 'مشکلی در خروج پیش آمده است.');
+  const { status, data } = await YNetwork.post(Config.sarv.userLogoutUrl, {}, { Authorization: token });
+  if (status !== 200) throw new InvalidRequestError(`could not logout user ${status} ${JSON.stringify(data)}`, 'مشکلی در خروج پیش آمده است.');
 
-  return result;
+  return data;
 
 }

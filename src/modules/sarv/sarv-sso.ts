@@ -1,4 +1,4 @@
-import YNetwork from 'ynetwork';
+import { YNetwork } from 'ynetwork';
 import { Config } from '../../config/config';
 import { InvalidRequestError } from '../../global/errors';
 
@@ -15,9 +15,9 @@ export async function getSSOUserByToken(token: string): Promise<SSOUser> {
 
   const url = Config.sso.userInfoUrl;
 
-  const { status, result } = await YNetwork.get(url, undefined, { 'Authorization': `Bearer ${token}` });
+  const { status, data } = await YNetwork.get(url, undefined, { 'Authorization': `Bearer ${token}` });
   if (status !== 200) throw new InvalidRequestError('could not get user information from sso', 'اطلاعات کاربر دریافت نشد.');
 
-  return result;
+  return data;
 
 }
