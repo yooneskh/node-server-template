@@ -22,7 +22,7 @@ interface ISarvUser {
 export async function getUserProfile(token: string): Promise<ISarvUser> {
 
   const { status, data } = await YNetwork.get(Config.sarv.userProfileUrl, undefined, { Authorization: token });
-  if (status !== 200) throw new InvalidRequestError(`could not get user profile ${status} ${JSON.stringify(data)}`, 'مشکلی در گرفتن پروفایل کاربری پیش آمده است');
+  if (status !== 200) throw new InvalidRequestError(`could not get user profile ${status} ${JSON.stringify(data)}`, 'مشکلی در گرفتن پروفایل کاربری پیش آمده است.');
 
   return data;
 

@@ -16,7 +16,7 @@ export async function getSSOUserByToken(token: string): Promise<SSOUser> {
   const url = Config.sso.userInfoUrl;
 
   const { status, data } = await YNetwork.get(url, undefined, { 'Authorization': `Bearer ${token}` });
-  if (status !== 200) throw new InvalidRequestError('could not get user information from sso', 'اطلاعات کاربر دریافت نشد.');
+  if (status !== 200) throw new InvalidRequestError(`could not get user information from sso ${status} ${JSON.stringify(data)}`, 'اطلاعات کاربر دریافت نشد.');
 
   return data;
 
