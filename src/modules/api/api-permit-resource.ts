@@ -63,6 +63,43 @@ maker.addProperties([
     ref: 'ApiPolicy',
     required: true,
     title: 'سیاست‌ها'
+  },
+  {
+    key: 'filterType',
+    type: 'string',
+    enum: ['whitelist', 'blacklist'],
+    title: 'نوع فیلتر خروجی‌ها',
+    items: [
+      { value: 'whitelist', text: 'لیست سفید' },
+      { value: 'blacklist', text: 'لیست سیاه' }
+    ]
+  },
+  {
+    key: 'filterProperties',
+    type: 'string',
+    isArray: true,
+    title: 'پراپرتی‌های فیلتر شده'
+  },
+  {
+    key: 'transforms',
+    type: 'series',
+    title: 'تبدیل‌ها',
+    serieBase: { code: '(input) => {\n\n};' },
+    serieSchema: [
+      {
+        key: 'property',
+        type: 'string',
+        required: true,
+        title: 'پراپرتی'
+      },
+      {
+        key: 'code',
+        type: 'string',
+        required: true,
+        title: 'کد تبدیل کننده',
+        longText: true
+      }
+    ]
   }
 ]);
 

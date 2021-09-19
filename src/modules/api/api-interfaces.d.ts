@@ -95,6 +95,11 @@ export interface IApiRunAdditionalInfo {
 }
 
 
+export interface IApiResultPropertyTransform {
+  property: string;
+  code: string;
+}
+
 export interface IApiPermitBase extends IResource {
   user: string;
   apiEndpoint: string;
@@ -105,6 +110,9 @@ export interface IApiPermitBase extends IResource {
   apiKey: string;
   identifier: string;
   policy: string;
+  filterType?: 'whitelist' | 'blacklist';
+  filterProperties?: string[];
+  transforms?: IApiResultPropertyTransform[];
 } export interface IApiPermit extends IApiPermitBase, Document {}
 
 
