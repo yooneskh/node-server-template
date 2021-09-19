@@ -93,14 +93,16 @@ maker.addProperties([
         key: 'property',
         type: 'string',
         required: true,
-        title: 'پراپرتی'
+        title: 'پراپرتی',
+        dir: 'ltr'
       },
       { // code
         key: 'code',
         type: 'string',
         required: true,
         title: 'کد تبدیل کننده',
-        longText: true
+        longText: true,
+        dir: 'ltr'
       }
     ]
   }
