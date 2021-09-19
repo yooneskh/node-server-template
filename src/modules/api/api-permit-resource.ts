@@ -6,7 +6,7 @@ const maker = new ResourceMaker<IApiPermitBase, IApiPermit>('ApiPermit');
 
 
 maker.addProperties([
-  {
+  { // user
     key: 'user',
     type: 'string',
     ref: 'User',
@@ -14,7 +14,7 @@ maker.addProperties([
     title: 'کاربر',
     titleable: true
   },
-  {
+  { // apiEndpoint
     key: 'apiEndpoint',
     type: 'string',
     ref: 'ApiEndpoint',
@@ -22,77 +22,80 @@ maker.addProperties([
     title: 'واحد Api',
     titleable: true
   },
-  {
+  { // enabled
     key: 'enabled',
     type: 'boolean',
     title: 'فعال'
   },
-  {
+  { // blocked
     key: 'blocked',
     type: 'boolean',
     title: 'بلاک شده'
   },
-  {
+  { // blockedAt
     key: 'blockedAt',
     type: 'number',
     title: 'زمان بلاک شدن',
     labelFormat: 'jYYYY/jMM/jDD',
     dir: 'ltr'
   },
-  {
+  { // blockageReason
     key: 'blockageReason',
     type: 'string',
     title: 'دلیل بلاک شدن',
     longText: true
   },
-  {
+  { // apiKey
     key: 'apiKey',
     type: 'string',
     required: true,
     title: 'کلید Api'
   },
-  {
+  { // identifier
     key: 'identifier',
     type: 'string',
     required: true,
     title: 'شناساگر'
   },
-  {
+  { // policy
     key: 'policy',
     type: 'string',
     ref: 'ApiPolicy',
     required: true,
     title: 'سیاست‌ها'
   },
-  {
+  { // filterType
     key: 'filterType',
     type: 'string',
-    enum: ['whitelist', 'blacklist'],
+    enum: ['none', 'whitelist', 'blacklist'],
     title: 'نوع فیلتر خروجی‌ها',
     items: [
+      { value: 'none', text: 'هیچ کدام' },
       { value: 'whitelist', text: 'لیست سفید' },
       { value: 'blacklist', text: 'لیست سیاه' }
     ]
   },
-  {
+  { // filterProperties
+    vIf: { filterType: { $in: ['whitelist', 'blacklist'] } },
     key: 'filterProperties',
     type: 'string',
     isArray: true,
-    title: 'پراپرتی‌های فیلتر شده'
+    title: 'پراپرتی‌های فیلتر شده',
+    dir: 'ltr'
   },
-  {
+  { // transforms
     key: 'transforms',
     type: 'series',
     title: 'تبدیل‌ها',
     serieBase: { code: '(input) => {\n\n};' },
     serieSchema: [
-      {
+      { // property
         key: 'property',
         type: 'string',
         required: true,
         title: 'پراپرتی'
       },
-      {
+      { // code
         key: 'code',
         type: 'string',
         required: true,

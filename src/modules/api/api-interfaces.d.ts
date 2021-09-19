@@ -110,7 +110,7 @@ export interface IApiPermitBase extends IResource {
   apiKey: string;
   identifier: string;
   policy: string;
-  filterType?: 'whitelist' | 'blacklist';
+  filterType?: 'none' | 'whitelist' | 'blacklist';
   filterProperties?: string[];
   transforms?: IApiResultPropertyTransform[];
 } export interface IApiPermit extends IApiPermitBase, Document {}
