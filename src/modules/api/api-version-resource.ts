@@ -31,12 +31,12 @@ maker.addProperties([
   {
     key: 'type',
     type: 'string',
-    enum: ['http'/* , 'soap' */],
+    enum: ['http' , 'soap' ],
     required: true,
     title: 'نوع',
     items: [
       { value: 'http', text: 'HTTP' },
-      // { value: 'soap', text: 'SOAP' }
+      { value: 'soap', text: 'SOAP' }
     ],
     width: 4
   },
