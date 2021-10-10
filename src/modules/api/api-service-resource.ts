@@ -18,7 +18,6 @@ maker.addProperties([
     key: 'publisher',
     type: 'string',
     ref: 'Publisher',
-    required: true,
     title: 'انتشار دهنده'
   },
   {
@@ -32,7 +31,6 @@ maker.addProperties([
     key: 'picture',
     type: 'string',
     ref: 'Media',
-    required: true,
     title: 'تصویر'
   },
   {

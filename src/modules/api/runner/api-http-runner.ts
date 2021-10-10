@@ -1,6 +1,7 @@
 import { IApiHttpBodySchema, IApiVersion } from '../api-interfaces';
 import { YNetwork } from 'ynetwork';
 import { InvalidRequestError, ServerError } from '../../../global/errors';
+import Handlebars = require('handlebars');
 
 
 export interface IApiHttpRunPayload {
@@ -9,6 +10,15 @@ export interface IApiHttpRunPayload {
   queryParams?: Record<string, string>;
   body?: unknown;
 }
+
+export interface IApiSoapRunPayload {
+  // headers?: Record<string, string>;
+  // pathParams?: Record<string, string>;
+  // queryParams?: Record<string, string>;
+   typeOfAction?:  Record<string, string>;
+   input? : Record<string, string>;
+}
+
 
 export interface IApiHttpRunResult {
   type: 'success' | 'error';
@@ -167,4 +177,47 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
     latency: timeEnd - timeBegin
   };
 
+}
+
+ 
+const myunescape = (alteredString:any) => alteredString.replace(/&amp;/g , '&').replace(/&lt;/g  , '<').replace(/&gt;/g  , '>');
+
+export async function runSoapApi(api: IApiVersion, payload?: IApiHttpRunPayload): Promise<IApiHttpRunSuccess | IApiHttpRunError> {
+
+  try {
+    validateHttpApiPayload(api, payload);
+  }
+  catch (error: any) {
+    return {
+      type: 'error',
+      reason: error.responseMessage || error.message,
+      error
+    };
+  }
+
+  let url = api.url!;
+  let template = api.soapBody;
+  var templateScript = Handlebars.compile(myunescape(template));
+  var body = templateScript(payload?.body);
+
+  const timeBegin = Date.now();
+  const { headers, status, data } = await YNetwork["post"](url, body, {"Content-Type":"text/xml"});
+  const timeEnd = Date.now();
+
+  if (!( status > 0 )) {
+    return {
+      type: 'error',
+      reason: data,
+      error: new Error(data)
+    };
+  }
+
+  return {
+    type: 'success',
+      headers,
+      status,
+      data,
+      latency: timeEnd - timeBegin
+  };
+  
 }

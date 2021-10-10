@@ -1,7 +1,7 @@
 import { getConfig } from './config-loader';
 
 export const Config = {
-  env: getConfig('env', ''),
+  env: getConfig('env', 'development'),
   port: getConfig('port', 48501),
   database: {
     host: getConfig('db.host', 'localhost'),
@@ -13,8 +13,8 @@ export const Config = {
     directory: getConfig('media.directory', 'download')
   },
   cors: {
-    handleCors: getConfig('corsHandle', '' as string) === 'true',
-    whitelistOrigins: ['https://panel-aaa-opendata.shiraz.ir', 'https://api-opendata.shiraz.ir', '']
+    handleCors: getConfig('corsHandle', 'true' as string) === 'true',
+    whitelistOrigins: ['http://localhost:8080', 'https://api-opendata.shiraz.ir', '']
   },
   authentication: {
     staticVerificationCode: '111111',

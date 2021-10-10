@@ -1,7 +1,7 @@
 import { InvalidRequestError } from '../../../global/errors';
 import { IApiLogBase, IApiPermit, IApiRunAdditionalInfo, IApiVersion } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
-import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi } from './api-http-runner';
+import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi , runSoapApi } from './api-http-runner';
 import { examineApiPolicy } from './api-policy-examiner';
 
 
@@ -14,7 +14,7 @@ function calculateDataSize(data: unknown | undefined): number | undefined {
 }
 
 
-export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IApiHttpRunPayload, info?: IApiRunAdditionalInfo, policyId?: string) {
+export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IApiHttpRunPayload , info?: IApiRunAdditionalInfo, policyId?: string) {
 
   const policyLogs: Partial<IApiLogBase> = {};
   const policyHeaders: Record<string, unknown> = {};
@@ -101,6 +101,22 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
       latency: result.latency
     };
 
+  }
+  else if(api.type === 'soap'){
+    // const timeBegin = Date.now();
+    const result = await runSoapApi(api, payload as IApiHttpRunPayload);
+    // const timeEnd = Date.now();
+
+      if (result.type === 'error') {
+      throw result.error;
+    }
+
+      return {
+      headers: { ...policyHeaders, ...result.headers },
+      status: result.status,
+      data: result.data,
+      latency: result.latency
+    };
   }
   else {
     throw new InvalidRequestError('api type cannot be processed.');

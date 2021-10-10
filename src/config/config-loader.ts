@@ -11,8 +11,7 @@ Convict.addFormat(Formats.email);
 export const ConfigLoader = Convict({
   env: {
     format: ['production', 'development'],
-    nullable: false,
-    default: null,
+    default: 'development',
     env: 'NODE_ENV',
     arg: 'NODE_ENV'
   },
