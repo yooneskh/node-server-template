@@ -17,6 +17,7 @@ export interface IUserBase extends IResource {
     rejectedAt?: number;
     rejectedFor?: string;
   }[];
+  verifiedStatuses?: string[];
   sarvInfo: Record<string, any>;
   firstName?: string;
   lastName?: string;
