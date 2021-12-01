@@ -107,6 +107,7 @@ maker.addProperties([
     key: 'verifiedStatuses',
     type: 'string',
     isArray: true,
+    title: 'هویت‌های تایید شده',
     items: [
       { value: 'university-student', text: 'دانشجو' },
       { value: 'government-office', text: 'اداره دولتی' }
