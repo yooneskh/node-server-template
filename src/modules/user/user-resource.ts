@@ -104,6 +104,15 @@ maker.addProperties([
     ]
   },
   {
+    key: 'verifiedStatuses',
+    type: 'string',
+    isArray: true,
+    items: [
+      { value: 'university-student', text: 'دانشجو' },
+      { value: 'government-office', text: 'اداره دولتی' }
+    ]
+  },
+  {
     key: 'sarvInfo',
     type: 'object',
     hidden: true
