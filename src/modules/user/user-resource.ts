@@ -46,6 +46,74 @@ maker.addProperties([
     handlerElement: 'permissions'
   },
   {
+    key: 'documents',
+    type: 'series',
+    title: 'مدارک',
+    hideInTable: true,
+    serieBase: {},
+    serieSchema: [
+      {
+        key: 'title',
+        type: 'string',
+        required: true,
+        title: 'عنوان',
+        width: 6
+      },
+      {
+        key: 'media',
+        type: 'string',
+        ref: 'Media',
+        required: true,
+        title: 'فایل',
+        width: 6
+      },
+      {
+        key: 'verified',
+        type: 'boolean',
+        title: 'تایید شده',
+        width: 6
+      },
+      {
+        key: 'rejected',
+        type: 'boolean',
+        title: 'رد شده',
+        width: 6
+      },
+      {
+        vIf: { verified: true },
+        key: 'verifiedAt',
+        type: 'number',
+        title: 'زمان تایید',
+        labelFormat: 'jYYYY/jMM/jDD'
+      },
+      {
+        vIf: { rejected: true },
+        key: 'rejectedAt',
+        type: 'number',
+        title: 'زمان رد',
+        labelFormat: 'jYYYY/jMM/jDD',
+        width: 6
+      },
+      {
+        vIf: { rejected: true },
+        key: 'rejectedFor',
+        type: 'string',
+        title: 'علت رد',
+        width: 6
+      }
+    ]
+  },
+  {
+    key: 'verifiedStatuses',
+    type: 'string',
+    isArray: true,
+    title: 'هویت‌های تایید شده',
+    items: [
+      { value: 'university-student', text: 'دانشجو' },
+      { value: 'government-office', text: 'اداره دولتی' }
+    ]
+  },
+  {
     key: 'sarvInfo',
     type: 'object',
     hidden: true

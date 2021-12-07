@@ -8,6 +8,16 @@ export interface IUserBase extends IResource {
   email?: string;
   profile?: string;
   permissions: string[];
+  documents: {
+    title: string;
+    media: string;
+    verified?: boolean;
+    verifiedAt?: boolean;
+    rejected?: boolean;
+    rejectedAt?: number;
+    rejectedFor?: string;
+  }[];
+  verifiedStatuses?: string[];
   sarvInfo: Record<string, any>;
   firstName?: string;
   lastName?: string;
