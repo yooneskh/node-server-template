@@ -102,16 +102,39 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
     };
 
   }
-  else if(api.type === 'soap'){
-    // const timeBegin = Date.now();
-    const result = await runSoapApi(api, payload as IApiHttpRunPayload);
-    // const timeEnd = Date.now();
+  else if(api.type === 'soap') {
 
-      if (result.type === 'error') {
+    const timeBegin = Date.now();
+    const result = await runSoapApi(api, payload as IApiHttpRunPayload);
+    const timeEnd = Date.now();
+
+    await ApiLogController.create({
+      payload: {
+        permit: permit._id,
+        api: api._id,
+        apiType: api.type,
+        success: result.type === 'success',
+        startAt: timeBegin,
+        endAt: timeEnd,
+        totalTime: timeEnd - timeBegin,
+        callerIP: info?.ip,
+        requestUrl: api.url,
+        requestBody: payload?.body,
+        requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
+        responseHeaders: (result as IApiHttpRunSuccess).headers,
+        responseStatus: (result as IApiHttpRunSuccess).status,
+        responseSize: calculateDataSize((result as IApiHttpRunSuccess).data),
+        responseLatency: (result as IApiHttpRunSuccess).latency,
+        errorMessage: (result as IApiHttpRunError).reason,
+        ...policyLogs
+      }
+    });
+
+    if (result.type === 'error') {
       throw result.error;
     }
 
-      return {
+    return {
       headers: { ...policyHeaders, ...result.headers },
       status: result.status,
       data: result.data,
