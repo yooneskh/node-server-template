@@ -29,6 +29,13 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
+    key: 'publisher',
+    type: 'string',
+    ref: 'Publisher',
+    required: true,
+    title: 'انتشار دهنده'
+  },
+  {
     key: 'description',
     type: 'string',
     required: true,

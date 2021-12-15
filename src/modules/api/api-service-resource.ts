@@ -15,18 +15,18 @@ maker.addProperties([
     titleable: true
   },
   {
-    key: 'publisher',
-    type: 'string',
-    ref: 'Publisher',
-    required: true,
-    title: 'انتشار دهنده'
-  },
-  {
     key: 'slug',
     type: 'string',
     required: true,
     title: 'شناسه',
     dir: 'ltr'
+  },
+  {
+    key: 'parent',
+    type: 'string',
+    ref: 'ApiService',
+    required: true,
+    title: 'دسته‌بندی بالایی'
   },
   {
     key: 'picture',
