@@ -5,7 +5,7 @@ import { IResource } from '../../plugins/resource-maker/resource-model-types';
 export interface IApiServiceBase extends IResource {
   title: string;
   slug: string;
-  parent: string;
+  parent?: string;
   picture: string;
   description: string;
 } export interface IApiService extends IApiServiceBase, Document {}

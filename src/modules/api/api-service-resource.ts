@@ -25,7 +25,6 @@ maker.addProperties([
     key: 'parent',
     type: 'string',
     ref: 'ApiService',
-    required: true,
     title: 'دسته‌بندی بالایی'
   },
   {
