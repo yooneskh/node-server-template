@@ -66,9 +66,9 @@ maker.setValidations({
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.api-endpoint.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.api-endpoint.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.api-endpoint.retrieve'] },
+  { template: 'LIST', /* permissions: ['admin.api-endpoint.list'] */ },
+  { template: 'LIST_COUNT', /* permissions: ['admin.api-endpoint.list-count'] */ },
+  { template: 'RETRIEVE', /* permissions: ['admin.api-endpoint.retrieve'] */ },
   { template: 'CREATE', permissions: ['admin.api-endpoint.create'] },
   { template: 'UPDATE', permissions: ['admin.api-endpoint.update'] },
   { template: 'DELETE', permissions: ['admin.api-endpoint.delete'] }

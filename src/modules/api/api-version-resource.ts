@@ -216,9 +216,9 @@ maker.setValidations({
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.api-version.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.api-version.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.api-version.retrieve'] },
+  { template: 'LIST', /* permissions: ['admin.api-version.list'] */ },
+  { template: 'LIST_COUNT', /* permissions: ['admin.api-version.list-count'] */ },
+  { template: 'RETRIEVE', /* permissions: ['admin.api-version.retrieve'] */ },
   { template: 'CREATE', permissions: ['admin.api-version.create'] },
   { template: 'UPDATE', permissions: ['admin.api-version.update'] },
   { template: 'DELETE', permissions: ['admin.api-version.delete'] },
@@ -247,7 +247,7 @@ maker.addActions([
 
       }
       else if(apiVersion.type === 'soap'){
-        
+
         const runResult = await runSoapApi(apiVersion, payload);
         if (runResult.type === 'error') throw runResult.error;
 

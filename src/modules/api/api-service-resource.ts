@@ -57,9 +57,9 @@ maker.setValidations({
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.api-service.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.api-service.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.api-service.retrieve'] },
+  { template: 'LIST', /* permissions: ['admin.api-service.list'] */ },
+  { template: 'LIST_COUNT', /* permissions: ['admin.api-service.list-count'] */ },
+  { template: 'RETRIEVE', /* permissions: ['admin.api-service.retrieve'] */ },
   { template: 'CREATE', permissions: ['admin.api-service.create'] },
   { template: 'UPDATE', permissions: ['admin.api-service.update'] },
   { template: 'DELETE', permissions: ['admin.api-service.delete'] }
