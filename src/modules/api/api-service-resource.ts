@@ -32,7 +32,6 @@ maker.addProperties([
     key: 'picture',
     type: 'string',
     ref: 'Media',
-    required: true,
     title: 'تصویر'
   },
   {

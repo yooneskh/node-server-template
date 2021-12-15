@@ -49,7 +49,7 @@ interface IApiHttpResponse {
 export interface IApiVersionBase extends IResource {
   endpoint: string;
   version: number;
-  type: 'http' /* | 'soap' */;
+  type: 'http'  | 'soap';
   url?: string;
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete';
   queryParams?: IApiHttpParam[];
@@ -61,13 +61,14 @@ export interface IApiVersionBase extends IResource {
   bodySchema?: IApiHttpBodySchema;
   bodyKeyDescriptions?: IApiHttpKeyDescription[];
   responses?: IApiHttpResponse[];
+  soapBody?: string;
 } export interface IApiVersion extends IApiVersionBase, Document {}
 
 
 export interface IApiLogBase extends IResource {
   permit: string;
   api: string;
-  apiType: 'http' /* | 'soap' */;
+  apiType: 'http'  | 'soap' ;
   success: boolean;
   startAt: number;
   endAt: number;

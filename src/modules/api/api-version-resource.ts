@@ -1,7 +1,7 @@
 import { IApiVersion, IApiVersionBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { makeHttpParamProperty } from './api-util';
-import { runHttpApi } from './runner/api-http-runner';
+import { runHttpApi , runSoapApi } from './runner/api-http-runner';
 import { ServerError } from '../../global/errors';
 import { ApiEndpointController } from './api-endpoint-resource';
 import { ApiPermitController } from './api-permit-resource';
@@ -48,6 +48,7 @@ maker.addProperties([
     width: 8
   },
   {
+    vIf: { 'type': 'http' },
     key: 'method',
     type: 'string',
     enum: ['get', 'post', 'put', 'patch', 'delete'],
@@ -63,16 +64,19 @@ maker.addProperties([
     width: 4
   },
   {
+    vIf: { 'type': 'http' },
     ...makeHttpParamProperty('queryParams', 'پارامتر کوئری'),
     width: 4,
     hideInTable: true
   },
   {
+    vIf: { 'type': 'http' },
     ...makeHttpParamProperty('pathParams', 'پارامتر مسیر'),
     width: 4,
     hideInTable: true
   },
   {
+    vIf: { 'type': 'http' },
     ...makeHttpParamProperty('headers', 'Headerها'),
     width: 4,
     hideInTable: true
@@ -129,6 +133,15 @@ maker.addProperties([
     title: 'توضیحات کلید‌های Body',
     itemWidth: 4,
     hideInTable: true
+  },
+    {
+    vIf: { 'type': 'soap' },
+    key: 'soapBody',
+    type: 'string',
+    title: 'قالب xml',
+    hideInTable: true,
+    dir: 'ltr',
+    longText: true
   },
   {
     key: 'responses',
@@ -187,7 +200,7 @@ maker.addProperties([
     title: 'جواب‌ها',
     itemWidth: 6,
     hideInTable: true
-  },
+  }
 ]);
 
 
@@ -233,8 +246,23 @@ maker.addActions([
         };
 
       }
+      else if(apiVersion.type === 'soap'){
+        
+        const runResult = await runSoapApi(apiVersion, payload);
+        if (runResult.type === 'error') throw runResult.error;
 
-      throw new ServerError('only http type is implemented.', 'فقط نوع http پیاده سازی شده است.');
+        const { status, data, headers, latency } = runResult;
+
+        return {
+          status,
+          result: data,
+          headers,
+          latency
+        };
+
+      }
+
+      throw new ServerError('only http and soap types are implemented.', 'فقط نوع http و soap پیاده سازی شده است.');
 
     }
   },
