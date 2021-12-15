@@ -50,6 +50,14 @@ maker.addProperties([
     title: 'ویژگی‌ها',
     hideInTable: true
   },
+  {
+    key: 'body',
+    type: 'string',
+    required: true,
+    title: 'متن توصیف',
+    richText: true,
+    hideInTable: true
+  }
 ]);
 
 

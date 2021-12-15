@@ -18,6 +18,7 @@ export interface IApiEndpointBase extends IResource {
   publisher: string;
   description: string;
   specialties?: string[];
+  body: string;
 } export interface IApiEndpoint extends IApiEndpointBase, Document {}
 
 
