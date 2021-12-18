@@ -71,7 +71,6 @@ app.use('/api/timetags', TimeTagRouter);
 app.use('/api/datatypes', DataTypeRouter);
 app.use('/api/publishers', PublisherRouter);
 
-
 import { ApiEndpointRouter } from './modules/api/api-endpoint-resource';
 import { ApiVersionRouter } from './modules/api/api-version-resource';
 import { ApiLogRouter } from './modules/api/api-log-resource';
