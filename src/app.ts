@@ -71,7 +71,7 @@ app.use('/api/timetags', TimeTagRouter);
 app.use('/api/datatypes', DataTypeRouter);
 app.use('/api/publishers', PublisherRouter);
 
-import { ApiServiceRouter } from './modules/api/api-service-resource';
+
 import { ApiEndpointRouter } from './modules/api/api-endpoint-resource';
 import { ApiVersionRouter } from './modules/api/api-version-resource';
 import { ApiLogRouter } from './modules/api/api-log-resource';
@@ -80,7 +80,6 @@ import { ApiGatewayRouter } from './modules/api/api-gateway';
 import { ApiPolicyRouter } from './modules/api/api-policy-resource';
 import { ApiRateLimitConfigRouter } from './modules/api/api-rate-limit-config-resource';
 import { ApiPaymentConfigRouter } from './modules/api/api-payment-config-resource';
-app.use('/api/apiservices', ApiServiceRouter);
 app.use('/api/apiendpoints', ApiEndpointRouter);
 app.use('/api/apiversions', ApiVersionRouter);
 app.use('/api/apilogs', ApiLogRouter);
