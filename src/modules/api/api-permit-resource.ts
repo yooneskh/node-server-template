@@ -105,6 +105,62 @@ maker.addProperties([
         dir: 'ltr'
       }
     ]
+  },
+    { // validFrom
+    key: 'validFrom',
+    type: 'series',
+    title: 'از زمان',
+    serieSchema: [
+      { // validFromEnable
+        key: 'validFromEnable',
+        type: 'boolean',
+        required: true,
+        title: 'بازه زمانی معتبر است؟',
+        dir: 'ltr'
+      },
+      { // validFromDay
+        key: 'validFromDay',
+        type: 'any',
+        required: true,
+        title: 'معنبر از روز',
+        dir: 'ltr'
+      },
+      { // validFromTime
+        key: 'validFromTime',
+        type: 'any',
+        required: true,
+        title: 'معنبر از زمان',
+        dir: 'ltr'
+      }
+    ]
+  },
+      { // validTo
+    key: 'validTo',
+    type: 'series',
+    title: 'تا زمان',
+    serieSchema: [
+      { // validToEnable
+        key: 'validToEnable',
+        type: 'boolean',
+        required: true,
+        title: 'بازه زمانی معتبر است؟',
+        dir: 'ltr'
+      },
+      { // validToDay
+        key: 'validToDay',
+        type: 'any',
+        required: true,
+        title: 'معنبر تا روز',
+        dir: 'ltr'
+      },
+      { // validToTime
+        key: 'validToTime',
+        type: 'any',
+        required: true,
+        title: 'معنبر تا زمان',
+        dir: 'ltr'
+      }
+    ]
   }
 ]);
 
