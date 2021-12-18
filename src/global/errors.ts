@@ -38,6 +38,9 @@ export class InvalidStateError extends HandleableError {
 export class RouteBypassedError extends HandleableError {
   public code = 1006;
 }
+export class InvalidRequestTimeRange extends HandleableError {
+  public code = 1007;
+}
 
 export function errorHandler(error: Error, _request: Request, response: Response, _next: Function) {
   if (error instanceof RouteBypassedError) return;

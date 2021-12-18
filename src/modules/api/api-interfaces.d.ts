@@ -116,6 +116,12 @@ export interface IApiPermitBase extends IResource {
   filterType?: 'none' | 'whitelist' | 'blacklist';
   filterProperties?: string[];
   transforms?: IApiResultPropertyTransform[];
+  validFromEnabled?:boolean;
+  validFromDay?:string;
+  validFromTime?:string;
+  validToEnabled?:boolean;
+  validToDay?:string;
+  validToTime?:string;
 } export interface IApiPermit extends IApiPermitBase, Document {}
 
 

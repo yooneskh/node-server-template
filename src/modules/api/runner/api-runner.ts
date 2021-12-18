@@ -1,4 +1,4 @@
-import { InvalidRequestError } from '../../../global/errors';
+import { InvalidRequestError , InvalidRequestTimeRange } from '../../../global/errors';
 import { IApiLogBase, IApiPermit, IApiRunAdditionalInfo, IApiVersion } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
 import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi , runSoapApi } from './api-http-runner';
@@ -18,6 +18,26 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
 
   const policyLogs: Partial<IApiLogBase> = {};
   const policyHeaders: Record<string, unknown> = {};
+
+  if(permit.validFromEnabled === true){
+    const now = Date.now();
+      const dateString = permit!.validFromDay + " " + permit!.validFromTime;
+      const epoch = new Date(dateString).getTime();
+      if(epoch < now){
+        throw new InvalidRequestTimeRange('Timerange is not valid.');
+      }
+    
+  }
+  
+  if(permit.validToEnabled === true){
+    const now = Date.now();
+    const dateString = permit!.validToDay + " " + permit!.validToTime;
+    const epoch = new Date(dateString).getTime();
+      if(epoch < now){
+        throw new InvalidRequestTimeRange('Timerange is not valid.');
+      }
+       
+ }
 
   if (policyId) {
 
