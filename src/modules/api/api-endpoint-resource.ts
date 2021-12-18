@@ -8,11 +8,11 @@ const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
 
 maker.addProperties([
   {
-    key: 'service',
+    key: 'category',
     type: 'string',
-    ref: 'ApiService',
+    ref: 'DataCategory',
     required: true,
-    title: 'سرویس Api'
+    title: 'دسته‌بندی'
   },
   {
     key: 'title',
