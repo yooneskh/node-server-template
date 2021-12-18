@@ -12,7 +12,7 @@ maker.addProperties([
     type: 'string',
     ref: 'DataCategory',
     required: true,
-    title: 'سرویس Api'
+    title: 'دسته‌بندی'
   },
   {
     key: 'title',
