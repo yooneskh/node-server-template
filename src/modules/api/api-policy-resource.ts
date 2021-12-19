@@ -21,16 +21,88 @@ maker.addProperties([
     longText: true
   },
   {
-    key: 'rateLimitConfig',
-    type: 'string',
-    ref: 'ApiRateLimitConfig',
-    title: 'تنظیمات میزان فراخوانی'
+    key: 'hasRateLimit',
+    type: 'boolean',
+    title: 'محدودیت درخواست دارد؟'
   },
   {
-    key: 'paymentConfig',
+    key: 'hasPaymentConfig',
+    type: 'boolean',
+    title: 'تنطیمات پرداخت دارد؟'
+  },
+  {
+    key: 'paymentFreeSessionType',
     type: 'string',
-    ref: 'ApiPaymentConfig',
-    title: 'تنظیمات پرداخت'
+    enum: ['none', 'oneTime', 'interval'],
+    required: true,
+    title: 'نوع دوره رایگان',
+    items: [
+      { value: 'none', text: 'ندارد' },
+      { value: 'oneTime', text: 'یک بار' },
+      { value: 'interval', text: 'دوره‌ای' }
+    ]
+  },
+  {
+    vIf: { paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
+    key: 'paymentFreeSessionInterval',
+    type: 'string',
+    enum: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
+    title: 'نوع زمان‌بندی دوره رایگان',
+    items: [
+      { value: 'second', text: 'ثانیه' },
+      { value: 'minute', text: 'دقیقه' },
+      { value: 'hour', text: 'ساعت' },
+      { value: 'day', text: 'روز' },
+      { value: 'week', text: 'هفته' },
+      { value: 'month', text: 'ماه' },
+      { value: 'year', text: 'سال' }
+    ]
+  },
+  {
+    vIf: { paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
+    key: 'paymentFreeSessionIntervalCount',
+    type: 'number',
+    title: 'عدد زمان‌بندی دوره رایگان'
+  },
+  {
+    vIf: { paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
+    key: 'paymentFreeSessionRequests',
+    type: 'number',
+    title: 'تعداد درخواست دوره رایگان'
+  },
+  {
+    key: 'paymentRequestCost',
+    type: 'number',
+    required: true,
+    title: 'هزینه یک درخواست غیر رایگان (تومان)'
+  },
+  {
+    key: 'rateLimitDuration',
+    type: 'string',
+    enum: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
+    required: true,
+    title: 'دوره',
+    items: [
+      { value: 'second', text: 'ثانیه' },
+      { value: 'minute', text: 'دقیقه' },
+      { value: 'hour', text: 'ساعت' },
+      { value: 'day', text: 'روز' },
+      { value: 'week', text: 'هفته' },
+      { value: 'month', text: 'ماه' },
+      { value: 'year', text: 'سال' }
+    ]
+  },
+  {
+    key: 'rateLimitDurationMultiplier',
+    type: 'number',
+    required: true,
+    title: 'تعداد دوره'
+  },
+  {
+    key: 'rateLimitPoints',
+    type: 'number',
+    required: true,
+    title: 'تعداد'
   }
 ]);
 
@@ -39,7 +111,11 @@ export const ApiPolicyModel      = maker.getModel();
 export const ApiPolicyController = maker.getController();
 
 
-maker.setValidations({ });
+maker.setValidations({
+  'rateLimitDurationMultiplier': [
+    async (it, e) => it.rateLimitDurationMultiplier > 0 || e('تعداد دوره باید بیشتر از 0 باشد.')
+  ]
+});
 
 
 maker.addActions([

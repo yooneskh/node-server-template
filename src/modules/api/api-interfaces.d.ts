@@ -124,29 +124,40 @@ export interface IApiPermitBase extends IResource {
   validToTime?:string;
 } export interface IApiPermit extends IApiPermitBase, Document {}
 
+export type IApiDurations = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 
 export interface IApiPolicyBase extends IResource {
   title: string;
   description?: string;
-  rateLimitConfig?: string;
-  paymentConfig?: string;
+  // rateLimitConfig?: string;
+  // paymentConfig?: string;
+  paymentFreeSessionType: 'none' | 'oneTime' | 'interval';
+  paymentFreeSessionInterval?: IApiDurations;
+  paymentFreeSessionIntervalCount?: number;
+  paymentFreeSessionRequests?: number;
+  paymentRequestCost: number;
+  rateLimitDuration: IApiDurations;
+  rateLimitDurationMultiplier: number;
+  rateLimitPoints: number;
+  hasRateLimit?: boolean;
+  hasPaymentConfig?: boolean;
 } export interface IApiPolicy extends IApiPolicyBase, Document {}
 
 
-export type IApiDurations = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+// export type IApiDurations = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 
-export interface IApiRateLimitConfigBase extends IResource {
-  title: string;
-  duration: IApiDurations;
-  durationMultiplier: number;
-  points: number;
-} export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}
+// export interface IApiRateLimitConfigBase extends IResource {
+//   title: string;
+//   duration: IApiDurations;
+//   durationMultiplier: number;
+//   points: number;
+// } export interface IApiRateLimitConfig extends IApiRateLimitConfigBase, Document {}
 
-export interface IApiPaymentConfigBase extends IResource {
-  title: string;
-  freeSessionType: 'none' | 'oneTime' | 'interval';
-  freeSessionInterval?: IApiDurations;
-  freeSessionIntervalCount?: number;
-  freeSessionRequests?: number;
-  requestCost: number;
-} export interface IApiPaymentConfig extends IApiPaymentConfigBase, Document {}
+// export interface IApiPaymentConfigBase extends IResource {
+//   title: string;
+//   freeSessionType: 'none' | 'oneTime' | 'interval';
+//   freeSessionInterval?: IApiDurations;
+//   freeSessionIntervalCount?: number;
+//   freeSessionRequests?: number;
+//   requestCost: number;
+// } export interface IApiPaymentConfig extends IApiPaymentConfigBase, Document {}
