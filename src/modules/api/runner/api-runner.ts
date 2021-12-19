@@ -19,25 +19,25 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
   const policyLogs: Partial<IApiLogBase> = {};
   const policyHeaders: Record<string, unknown> = {};
 
-  if(permit.validFromEnabled === true){
-    const now = Date.now();
-      const dateString = permit!.validFromDay + " " + permit!.validFromTime;
-      const epoch = new Date(dateString).getTime();
-      if(epoch < now){
-        throw new InvalidRequestTimeRange('Timerange is not valid.');
-      }
-    
+  if (permit.validFromEnabled) {
+
+    const epoch = new Date(`${permit!.validFromDay} ${permit!.validFromTime}`).getTime();
+
+    if (epoch < Date.now()) {
+      throw new InvalidRequestTimeRange('time range is not valid');
+    }
+
   }
-  
-  if(permit.validToEnabled === true){
-    const now = Date.now();
-    const dateString = permit!.validToDay + " " + permit!.validToTime;
-    const epoch = new Date(dateString).getTime();
-      if(epoch < now){
-        throw new InvalidRequestTimeRange('Timerange is not valid.');
-      }
-       
- }
+
+  if (permit.validToEnabled) {
+
+    const epoch = new Date(`${permit!.validToDay} ${permit!.validToTime}`).getTime();
+
+    if (epoch < Date.now()) {
+      throw new InvalidRequestTimeRange('Timerange is not valid.');
+    }
+
+  }
 
   if (policyId) {
 

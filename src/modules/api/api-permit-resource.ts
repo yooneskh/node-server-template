@@ -106,50 +106,48 @@ maker.addProperties([
       }
     ]
   },
-    { // validFromEnable
-      key: 'validFromEnabled',
-      type: 'boolean',
-      required: true,
-      title: 'بازه زمانی معتبر است؟',
-    },
-    { // validFromDay
-      vIf : {validFromEnabled : true},
-      key: 'validFromDay',
-      type: 'string',
-      title: 'معتبر از روز',
-      labelFormat: 'jYYYY/jMM/jDD',
-      valueFormat : 'YYYY/MM/DD'
-    },
-    { // validFromTime
-      vIf : {validFromEnabled : true},
-      key: 'validFromTime',
-      type: 'string',
-      title: 'معتبر از زمان',
-      dir: 'ltr',
-      labelFormat: 'HH:MM'
-    },
-    { // validToEnable
-      key: 'validToEnabled',
-      type: 'boolean',
-      required: true,
-      title: 'بازه زمانی معتبر است؟',
-    },
-    { // validToDay
-      vIf : {validToEnabled : true},
-      key: 'validToDay',
-      type: 'string',
-      title: 'معتبر تا روز',
-      labelFormat: 'jYYYY/jMM/jDD',
-      valueFormat : 'YYYY/MM/DD'
-    },
-    { // validToTime
-      vIf : {validToEnabled : true},
-      key: 'validToTime',
-      type: 'string',
-      title: 'معتبر تا زمان',
-      dir: 'ltr',
-      labelFormat: 'HH/MM'
-    }
+  { // validFromEnable
+    key: 'validFromEnabled',
+    type: 'boolean',
+    required: true,
+    title: 'اعتبار ابتدا دارد؟',
+  },
+  { // validFromDay
+    vIf : { validFromEnabled: true },
+    key: 'validFromDay',
+    type: 'string',
+    title: 'معتبر از روز',
+    labelFormat: 'jYYYY/jMM/jDD',
+    valueFormat : 'YYYY/MM/DD'
+  },
+  { // validFromTime
+    vIf : { validFromEnabled: true },
+    key: 'validFromTime',
+    type: 'string',
+    title: 'معتبر از زمان',
+    dir: 'ltr'
+  },
+  { // validToEnable
+    key: 'validToEnabled',
+    type: 'boolean',
+    required: true,
+    title: 'اعتبار انتها دارد؟',
+  },
+  { // validToDay
+    vIf : { validToEnabled: true },
+    key: 'validToDay',
+    type: 'string',
+    title: 'معتبر تا روز',
+    labelFormat: 'jYYYY/jMM/jDD',
+    valueFormat : 'YYYY/MM/DD'
+  },
+  { // validToTime
+    vIf : { validToEnabled: true },
+    key: 'validToTime',
+    type: 'string',
+    title: 'معتبر تا زمان',
+    dir: 'ltr'
+  }
 ]);
 
 
