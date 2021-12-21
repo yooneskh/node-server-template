@@ -41,7 +41,7 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
 
   if (policyId) {
 
-    const policyResult = await examineApiPolicy(permit, /* api, */ policyId);
+    const policyResult = await examineApiPolicy(permit, policyId);
 
     if (!policyResult.passed) {
 

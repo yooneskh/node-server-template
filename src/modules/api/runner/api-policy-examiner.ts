@@ -1,11 +1,9 @@
 import { HandleableError, ServerError } from '../../../global/errors';
 import { getAccountForUser, getApiConsumeAccount } from '../../accounting/account-resource';
 import { createTransfer } from '../../accounting/transfer-resource';
-import { IApiDurations, IApiLogBase, IApiPermit } from '../api-interfaces';
+import { IApiDurations, IApiLogBase, IApiPermit, IApiPolicy } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
-import { ApiPaymentConfigController } from '../api-payment-config-resource';
 import { ApiPolicyController } from '../api-policy-resource';
-import { ApiRateLimitConfigController } from '../api-rate-limit-config-resource';
 
 
 interface IPolicyExaminationResult {
@@ -35,11 +33,9 @@ function mapDurationLabelToMillis(duration: IApiDurations): number {
   }
 }
 
-async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): Promise<IPolicyExaminationResult> {
+async function examineRateLimit(permit: IApiPermit, policy: IApiPolicy): Promise<IPolicyExaminationResult> {
 
-  const rateLimitConfig = await ApiRateLimitConfigController.retrieve({ resourceId: rateLimitConfigId });
-
-  const durationMillis = mapDurationLabelToMillis(rateLimitConfig.duration) * rateLimitConfig.durationMultiplier;
+  const durationMillis = mapDurationLabelToMillis(policy.rateLimitDuration) * policy.rateLimitDurationMultiplier;
   const durationWindowStart = Date.now() - durationMillis;
 
   const callCount = await ApiLogController.count({
@@ -49,41 +45,38 @@ async function examineRateLimit(permit: IApiPermit, rateLimitConfigId: string): 
     }
   });
 
-  const passed = callCount < rateLimitConfig.points;
+  const passed = callCount < policy.rateLimitPoints;
 
   return {
     passed,
     error: passed ? undefined : new RateLimitExceededError('rate limit exceeded.', 'میزان فراخوانی شما بیش از اندازه است.'),
     logs: {
-      rateLimitRemainingPoints: rateLimitConfig.points - callCount
+      rateLimitRemainingPoints: policy.rateLimitPoints - callCount
     },
     headers: {
       'Retry-After': Math.ceil(durationMillis / 1000),
-      'X-RateLimit-Limit': rateLimitConfig.points,
-      'X-RateLimit-Remaining': rateLimitConfig.points - callCount,
+      'X-RateLimit-Limit': policy.rateLimitPoints,
+      'X-RateLimit-Remaining': policy.rateLimitPoints - callCount,
       'X-RateLimit-Reset': String(new Date( Date.now() + durationMillis ))
     }
   };
 
 }
 
-async function examinePayment(permit: IApiPermit, paymentConfigId: string): Promise<IPolicyExaminationResult> {
+async function examinePayment(permit: IApiPermit, policy: IApiPolicy): Promise<IPolicyExaminationResult> {
 
-  const paymentConfig = await ApiPaymentConfigController.retrieve({ resourceId: paymentConfigId });
-  const { freeSessionType, freeSessionInterval, freeSessionIntervalCount, freeSessionRequests , requestCost } = paymentConfig;
-
-  if (freeSessionType !== 'none') {
+  if (policy.paymentFreeSessionType !== 'none') {
 
     let windowStart = 0;
     let windowEnd = 0;
 
-    const intervalDuration = mapDurationLabelToMillis(freeSessionInterval!) * freeSessionIntervalCount!;
+    const intervalDuration = mapDurationLabelToMillis(policy.paymentFreeSessionInterval!) * policy.paymentFreeSessionIntervalCount!;
 
-    if (freeSessionType === 'oneTime') {
+    if (policy.paymentFreeSessionType === 'oneTime') {
       windowStart = permit.createdAt;
       windowEnd = permit.createdAt + intervalDuration;
     }
-    else if (freeSessionType === 'interval') {
+    else if (policy.paymentFreeSessionType === 'interval') {
       windowStart = Date.now() - intervalDuration;
       windowEnd = Date.now();
     }
@@ -98,7 +91,7 @@ async function examinePayment(permit: IApiPermit, paymentConfigId: string): Prom
       }
     });
 
-    if (callCount <= freeSessionRequests!) {
+    if (callCount <= policy.paymentFreeSessionRequests!) {
       return {
         passed: true,
         logs: {
@@ -106,9 +99,9 @@ async function examinePayment(permit: IApiPermit, paymentConfigId: string): Prom
         },
         headers: {
           'x-opendata-cost': 0,
-          'x-opendata-free-remaining': callCount - freeSessionRequests!,
-          'x-opendata-free-reset': freeSessionType === 'interval' ? String(new Date( Date.now() + intervalDuration )) : undefined,
-          'x-opendata-free-until': freeSessionType === 'oneTime' ? String(new Date( windowEnd )) : undefined
+          'x-opendata-free-remaining': callCount - policy.paymentFreeSessionRequests!,
+          'x-opendata-free-reset': policy.paymentFreeSessionType === 'interval' ? String(new Date( Date.now() + intervalDuration )) : undefined,
+          'x-opendata-free-until': policy.paymentFreeSessionType === 'oneTime' ? String(new Date( windowEnd )) : undefined
         }
       };
     }
@@ -122,16 +115,16 @@ async function examinePayment(permit: IApiPermit, paymentConfigId: string): Prom
 
   try {
 
-    const transfer = await createTransfer(userAccount._id, apiConsumeAccount._id, requestCost);
+    const transfer = await createTransfer(userAccount._id, apiConsumeAccount._id, policy.paymentRequestCost);
 
     return {
       passed: true,
       logs: {
-        cost: requestCost,
+        cost: policy.paymentRequestCost,
         costTransfer: transfer._id
       },
       headers: {
-        'x-opendata-cost': requestCost
+        'x-opendata-cost': policy.paymentRequestCost
       }
     }
 
@@ -152,20 +145,20 @@ async function examinePayment(permit: IApiPermit, paymentConfigId: string): Prom
 }
 
 
-export async function examineApiPolicy(permit: IApiPermit, /* api: IApiVersion,  */ policyId: string): Promise<IPolicyExaminationResult> {
+export async function examineApiPolicy(permit: IApiPermit, policyId: string): Promise<IPolicyExaminationResult> {
 
   const policy = await ApiPolicyController.retrieve({ resourceId: policyId });
   const result: IPolicyExaminationResult = { passed: true, logs: {}, headers: {} };
   const resultsBag: IPolicyExaminationResult[] = [];
 
-  if (policy.rateLimitConfig) {
-    const rateLimitResult = await examineRateLimit(permit, policy.rateLimitConfig);
+  if (policy.hasRateLimit) {
+    const rateLimitResult = await examineRateLimit(permit, policy);
     if (!rateLimitResult.passed) return rateLimitResult;
     resultsBag.push(rateLimitResult);
   }
 
-  if (policy.paymentConfig) {
-    const paymentResult = await examinePayment(permit, policy.paymentConfig);
+  if (policy.hasPaymentConfig) {
+    const paymentResult = await examinePayment(permit, policy);
     if (!paymentResult.passed) return paymentResult;
     resultsBag.push(paymentResult);
   }
