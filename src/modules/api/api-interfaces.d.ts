@@ -147,3 +147,9 @@ export interface IApiPolicyBase extends IResource {
   rateLimitDurationMultiplier: number;
   rateLimitPoints: number;
 } export interface IApiPolicy extends IApiPolicyBase, Document {}
+
+
+export interface IApiReceiverBase extends IResource {
+  title: string;
+  parent?: string;
+} export interface IApiReceiver extends IApiReceiverBase, Document {}

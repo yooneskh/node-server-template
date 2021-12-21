@@ -10,8 +10,14 @@ maker.addProperties([
     key: 'user',
     type: 'string',
     ref: 'User',
-    required: true,
     title: 'کاربر',
+    titleable: true
+  },
+  { // receiver
+    key: 'receiver',
+    type: 'string',
+    ref: 'ApiReceiver',
+    title: 'تحویل‌گیرنده',
     titleable: true
   },
   { // apiEndpoint
@@ -33,6 +39,7 @@ maker.addProperties([
     title: 'بلاک شده'
   },
   { // blockedAt
+    vIf: { blocked: true },
     key: 'blockedAt',
     type: 'number',
     title: 'زمان بلاک شدن',
@@ -40,6 +47,7 @@ maker.addProperties([
     dir: 'ltr'
   },
   { // blockageReason
+    vIf: { blocked: true },
     key: 'blockageReason',
     type: 'string',
     title: 'دلیل بلاک شدن',
