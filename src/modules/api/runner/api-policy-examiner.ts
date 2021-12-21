@@ -3,9 +3,7 @@ import { getAccountForUser, getApiConsumeAccount } from '../../accounting/accoun
 import { createTransfer } from '../../accounting/transfer-resource';
 import { IApiDurations, IApiLogBase, IApiPermit, IApiPolicy } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
-// import { ApiPaymentConfigController } from '../api-payment-config-resource';
 import { ApiPolicyController } from '../api-policy-resource';
-// import { ApiRateLimitConfigController } from '../api-rate-limit-config-resource';
 
 
 interface IPolicyExaminationResult {
@@ -147,7 +145,7 @@ async function examinePayment(permit: IApiPermit, policy: IApiPolicy): Promise<I
 }
 
 
-export async function examineApiPolicy(permit: IApiPermit, /* api: IApiVersion,  */ policyId: string): Promise<IPolicyExaminationResult> {
+export async function examineApiPolicy(permit: IApiPermit, policyId: string): Promise<IPolicyExaminationResult> {
 
   const policy = await ApiPolicyController.retrieve({ resourceId: policyId });
   const result: IPolicyExaminationResult = { passed: true, logs: {}, headers: {} };
