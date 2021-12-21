@@ -21,16 +21,18 @@ maker.addProperties([
     longText: true
   },
   {
-    key: 'hasRateLimit',
-    type: 'boolean',
-    title: 'محدودیت درخواست دارد؟'
-  },
-  {
     key: 'hasPaymentConfig',
     type: 'boolean',
     title: 'تنطیمات پرداخت دارد؟'
   },
   {
+    vIf: { hasPaymentConfig: true },
+    key: 'paymentStaticCost',
+    type: 'number',
+    title: 'هزینه ثابت اولیه'
+  },
+  {
+    vIf: { hasPaymentConfig: true },
     key: 'paymentFreeSessionType',
     type: 'string',
     enum: ['none', 'oneTime', 'interval'],
@@ -43,7 +45,7 @@ maker.addProperties([
     ]
   },
   {
-    vIf: { paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
+    vIf: { hasPaymentConfig: true, paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'paymentFreeSessionInterval',
     type: 'string',
     enum: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
@@ -59,24 +61,31 @@ maker.addProperties([
     ]
   },
   {
-    vIf: { paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
+    vIf: { hasPaymentConfig: true, paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'paymentFreeSessionIntervalCount',
     type: 'number',
     title: 'عدد زمان‌بندی دوره رایگان'
   },
   {
-    vIf: { paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
+    vIf: { hasPaymentConfig: true, paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'paymentFreeSessionRequests',
     type: 'number',
     title: 'تعداد درخواست دوره رایگان'
   },
   {
+    vIf: { hasPaymentConfig: true },
     key: 'paymentRequestCost',
     type: 'number',
     required: true,
     title: 'هزینه یک درخواست غیر رایگان (تومان)'
   },
   {
+    key: 'hasRateLimit',
+    type: 'boolean',
+    title: 'محدودیت درخواست دارد؟'
+  },
+  {
+    vIf: { hasRateLimit: true },
     key: 'rateLimitDuration',
     type: 'string',
     enum: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
@@ -93,12 +102,14 @@ maker.addProperties([
     ]
   },
   {
+    vIf: { hasRateLimit: true },
     key: 'rateLimitDurationMultiplier',
     type: 'number',
     required: true,
     title: 'تعداد دوره'
   },
   {
+    vIf: { hasRateLimit: true },
     key: 'rateLimitPoints',
     type: 'number',
     required: true,

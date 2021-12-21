@@ -19,6 +19,11 @@ export interface IApiEndpointBase extends IResource {
   description: string;
   specialties?: string[];
   body: string;
+  offers?: {
+    title: string;
+    policy: string;
+    description: string;
+  }[];
 } export interface IApiEndpoint extends IApiEndpointBase, Document {}
 
 
@@ -130,14 +135,15 @@ export type IApiDurations = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'mon
 export interface IApiPolicyBase extends IResource {
   title: string;
   description?: string;
+  hasPaymentConfig?: boolean;
+  paymentStaticCost?: number;
   paymentFreeSessionType: 'none' | 'oneTime' | 'interval';
   paymentFreeSessionInterval?: IApiDurations;
   paymentFreeSessionIntervalCount?: number;
   paymentFreeSessionRequests?: number;
   paymentRequestCost: number;
+  hasRateLimit?: boolean;
   rateLimitDuration: IApiDurations;
   rateLimitDurationMultiplier: number;
   rateLimitPoints: number;
-  hasRateLimit?: boolean;
-  hasPaymentConfig?: boolean;
 } export interface IApiPolicy extends IApiPolicyBase, Document {}

@@ -57,6 +57,35 @@ maker.addProperties([
     title: 'متن توصیف',
     richText: true,
     hideInTable: true
+  },
+  {
+    key: 'offers',
+    type: 'series',
+    title: 'سیاست‌های درخواست',
+    serieBase: {},
+    serieSchema: [
+      {
+        key: 'title',
+        type: 'string',
+        required: true,
+        title: 'عنوان',
+        width: 6
+      },
+      {
+        key: 'policy',
+        type: 'string',
+        required: true,
+        title: 'سیاست',
+        width: 6
+      },
+      {
+        key: 'description',
+        type: 'string',
+        required: true,
+        title: 'توضیح',
+        longText: true
+      }
+    ]
   }
 ]);
 
