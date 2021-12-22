@@ -23,7 +23,7 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
 
     const epoch = new Date(`${permit!.validFromDay} ${permit!.validFromTime}`).getTime();
 
-    if (epoch < Date.now()) {
+    if (epoch > Date.now()) {
       throw new InvalidRequestTimeRange('time range is not valid');
     }
 

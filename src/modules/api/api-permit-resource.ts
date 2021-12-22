@@ -117,7 +117,6 @@ maker.addProperties([
   { // validFromEnable
     key: 'validFromEnabled',
     type: 'boolean',
-    required: true,
     title: 'اعتبار ابتدا دارد؟',
   },
   { // validFromDay
@@ -138,7 +137,6 @@ maker.addProperties([
   { // validToEnable
     key: 'validToEnabled',
     type: 'boolean',
-    required: true,
     title: 'اعتبار انتها دارد؟',
   },
   { // validToDay
