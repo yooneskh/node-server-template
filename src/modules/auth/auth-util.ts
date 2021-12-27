@@ -31,7 +31,8 @@ export const PERMISSIONS = [
         ['api-version', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete', 'run', 'list-users'],
         ['api-log', 'list', 'list-count', 'retrieve'],
         ['api-policy', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
-        ['api-receiver', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
+        ['api-receiver', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete'],
+        ['log', 'list', 'list-count', 'retrieve', 'create', 'update', 'delete']
       ],
       ...[ // others
 
@@ -84,7 +85,8 @@ export const PERMISSIONS_LOCALES = {
       'api-version': 'نسخه Api',
       'api-log': 'لاگ Api',
       'api-policy': 'سیاست Api',
-      'api-receiver': 'تحویل‌گیرنده Api'
+      'api-receiver': 'تحویل‌گیرنده Api',
+      'log':'لاگ'
     },
     ...{ // actions
       'run': 'اجرا',

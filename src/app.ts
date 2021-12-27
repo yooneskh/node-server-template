@@ -35,6 +35,7 @@ app.get('/ping', (_request, response) => response.send('pong'));
 import './plugins/html-sanitizer/html-sanitizer-processor';
 import { setGlobalRateLimitOption } from './plugins/rate-limiter/rate-limiter';
 import './plugins/captcha/captcha-processor';
+import './plugins/log-requests/log-request-processor';
 
 setGlobalRateLimitOption({
   pointsAmount: 40,
@@ -53,6 +54,9 @@ app.use('/api/users', UserRouter);
 
 import { MediaRouter } from './modules/media/media-resource';
 app.use('/api/media', MediaRouter);
+
+import {LogRouter} from './plugins/log-requests/log-resource';
+app.use('/api/logs' , LogRouter);
 
 // import './modules/sms-notification/sms-manager';
 // import './modules/telegram-notification/telegram-manager';
