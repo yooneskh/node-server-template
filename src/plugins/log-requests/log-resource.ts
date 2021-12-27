@@ -14,16 +14,10 @@ maker.addProperties([
     hideInTable: true
   },
    {
-    key: 'time',
-    type: 'string',
-    title: 'زمان',
-    hideInTable: true
-  },
-   {
     key: 'document',
     type: 'string',
+    required: true,
     title: 'سند',
-    hideInTable: true
   },
    {
     key: 'data',
@@ -34,16 +28,15 @@ maker.addProperties([
     key: 'action',
     type: 'string',
     title: 'عملیات ',
-    hideInTable: true
   }
 ]);
 
 
-export const ApiLogModel      = maker.getModel();
-export const ApiLogController = maker.getController();
+export const LogModel      = maker.getModel();
+export const LogController = maker.getController();
 
 
-maker.setValidations({ });
+maker.setValidations({});
 
 
 maker.addActions([
@@ -56,4 +49,4 @@ maker.addActions([
 ]);
 
 
-export const ApiLogRouter = maker.getRouter();
+export const LogRouter = maker.getRouter();

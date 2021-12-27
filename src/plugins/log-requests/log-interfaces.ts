@@ -1,15 +1,14 @@
 import { Document } from 'mongoose';
 import { IResource } from '../../plugins/resource-maker/resource-model-types';
 
-interface IApiLog {
-//   key: string;
-//   description: string;
-}
+// interface IApiLog {
+// //   key: string;
+// //   description: string;
+// }
 
 export interface ILogServiceBase extends IResource {
   user: string;
-  time: string;
-  document?: IApiLog;
+  document: string;
   data?: string;
-  action: 'create' | 'delete' | 'update';
+  action: string;
 } export interface ILogService extends ILogServiceBase, Document {}
