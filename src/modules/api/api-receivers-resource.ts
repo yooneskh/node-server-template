@@ -10,7 +10,8 @@ maker.addProperties([
     key: 'title',
     type: 'string',
     required: true,
-    title: 'عنوان'
+    title: 'عنوان',
+    titleable: true
   },
   {
     key: 'parent',

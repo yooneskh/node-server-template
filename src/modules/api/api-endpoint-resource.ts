@@ -74,6 +74,7 @@ maker.addProperties([
       {
         key: 'policy',
         type: 'string',
+        ref: 'ApiPolicy',
         required: true,
         title: 'سیاست',
         width: 6
