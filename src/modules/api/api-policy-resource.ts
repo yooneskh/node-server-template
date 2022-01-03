@@ -29,7 +29,7 @@ maker.addProperties([
     vIf: { hasPaymentConfig: true },
     key: 'paymentStaticCost',
     type: 'number',
-    title: 'هزینه ثابت اولیه'
+    title: 'هزینه ثابت اولیه (ریال)'
   },
   {
     vIf: { hasPaymentConfig: true },
@@ -77,7 +77,7 @@ maker.addProperties([
     key: 'paymentRequestCost',
     type: 'number',
     required: true,
-    title: 'هزینه یک درخواست غیر رایگان (تومان)'
+    title: 'هزینه یک درخواست غیر رایگان (ریال)'
   },
   {
     key: 'hasRateLimit',
