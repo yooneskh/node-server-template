@@ -69,7 +69,7 @@ maker.addProperties([
         type: 'string',
         required: true,
         title: 'عنوان',
-        width: 6
+        width: 4
       },
       {
         key: 'policy',
@@ -77,7 +77,20 @@ maker.addProperties([
         ref: 'ApiPolicy',
         required: true,
         title: 'سیاست',
-        width: 6
+        width: 4
+      },
+      {
+        key: 'userTypes',
+        type: 'string',
+        enum: ['person', 'legal'],
+        isArray: true,
+        required: true,
+        title: 'انواع کاربر متناسب',
+        width: 4,
+        items: [
+          { value: 'person', text: 'حقیقی' },
+          { value: 'legal', text: 'حقوقی' }
+        ]
       },
       {
         key: 'description',
