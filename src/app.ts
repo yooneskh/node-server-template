@@ -47,7 +47,7 @@ app.post('/test', (request, response) => {
     return response.status(400).json({ message: '"name" property is not equal to "Shiraz OpenData"' });
   }
 
-  response.json({ success: true });
+  return response.json({ success: true });
 
 });
 
