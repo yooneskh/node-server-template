@@ -1,4 +1,4 @@
-import Express from 'express';
+import Express, { request } from 'express';
 import Logger from 'morgan';
 import CookieParser from 'cookie-parser';
 import Cors from 'cors';
@@ -28,6 +28,28 @@ if (Config.cors.handleCors) {
 }
 
 app.get('/ping', (_request, response) => response.send('pong'));
+
+app.post('/test', (request, response) => {
+
+  if (!request.body) {
+    return response.status(400).json({ message: 'no body specified' });
+  }
+
+  if (typeof request.body !== 'object') {
+    return response.status(400).json({ message: 'body is not an object' });
+  }
+
+  if (!request.body.name) {
+    return response.status(400).json({ message: '"name" property does not exist in the body' });
+  }
+
+  if (request.body.name !== 'Shiraz OpenData') {
+    return response.status(400).json({ message: '"name" property is not equal to "Shiraz OpenData"' });
+  }
+
+  response.json({ success: true });
+
+});
 
 
 // general routes
