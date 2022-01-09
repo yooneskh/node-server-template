@@ -7,13 +7,14 @@ import { YNetwork } from 'ynetwork';
 ResourceRouter.addPreProcessor(async context => {
 
   if (!context.action.signal?.[2] || !['create', 'update', 'delete'].includes(context.action.signal?.[2]?.toLowerCase())) return;
-  
+
+  // tslint:disable-next-line: no-any
   let requestData: any;
 
   const isSignalTypeDelete = context.action.signal?.[2]!.toLowerCase() === 'delete';
 
   if (isSignalTypeDelete) {
-    const { data } = await YNetwork.get(context.request.url , {"Content-Type":"application/json" , "authorization": context.request.headers.authorization});
+    const { data } = await YNetwork.get(context.request.url , { 'Content-Type': 'application/json', 'Authorization': context.request.headers.authorization });
     requestData = data;
   }
 
