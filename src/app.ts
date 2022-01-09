@@ -1,4 +1,4 @@
-import Express, { request } from 'express';
+import Express from 'express';
 import Logger from 'morgan';
 import CookieParser from 'cookie-parser';
 import Cors from 'cors';
@@ -77,7 +77,7 @@ app.use('/api/users', UserRouter);
 import { MediaRouter } from './modules/media/media-resource';
 app.use('/api/media', MediaRouter);
 
-import {LogRouter} from './plugins/log-requests/log-resource';
+import { LogRouter } from './plugins/log-requests/log-resource';
 app.use('/api/logs' , LogRouter);
 
 // import './modules/sms-notification/sms-manager';
