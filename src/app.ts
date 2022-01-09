@@ -113,6 +113,12 @@ app.use('/api/apipolicies', ApiPolicyRouter);
 app.use('/api/apireceivers', ApiReceiverRouter);
 
 
+import { ConditionRouter } from './modules/condition/condition-resource';
+import { ConditionDocumentRouter } from './modules/condition/condition-document-resource';
+app.use('/api/conditions', ConditionRouter);
+app.use('/api/conditiondocuments', ConditionDocumentRouter);
+
+
 import { AccountRouter } from './modules/accounting/account-resource';
 import { TransactionRouter } from './modules/accounting/transaction-resource';
 import { TransferRouter } from './modules/accounting/transfer-resource';
