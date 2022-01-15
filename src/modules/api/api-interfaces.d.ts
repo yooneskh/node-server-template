@@ -153,3 +153,13 @@ export interface IApiReceiverBase extends IResource {
   title: string;
   parent?: string;
 } export interface IApiReceiver extends IApiReceiverBase, Document {}
+
+
+export interface IApiNewRequestBase extends IResource {
+  user: string;
+  company: string;
+  reason: string;
+  ip: string;
+  usageDuration: string;
+  address: string;
+} export interface IApiNewRequest extends IApiNewRequestBase, Document {}
