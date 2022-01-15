@@ -12,7 +12,7 @@ export const ConfigLoader = Convict({
   env: {
     format: ['production', 'development'],
     nullable: false,
-    default: null,
+    default: 'production',
     env: 'NODE_ENV',
     arg: 'NODE_ENV'
   },
