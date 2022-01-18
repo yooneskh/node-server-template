@@ -14,7 +14,8 @@ ResourceRouter.addPreProcessor(async context => {
   const isSignalTypeDelete = context.action.signal?.[2]!.toLowerCase() === 'delete';
 
   if (isSignalTypeDelete) {
-    const { data } = await YNetwork.get(context.request.url , { 'Content-Type': 'application/json', 'Authorization': context.request.headers.authorization });
+    const url = context.request.protocol + '://' + context.request.get('Host') + context.request.originalUrl;
+    const { data } = await YNetwork.get(url , {"Content-Type":"application/json" , "authorization": context.request.headers.authorization});
     requestData = data;
   }
 

@@ -1,7 +1,7 @@
 import { getConfig } from './config-loader';
 
 export const Config = {
-  env: getConfig('env', ''),
+  env: getConfig('env', 'production'),
   port: getConfig('port', 48501),
   database: {
     host: getConfig('db.host', 'localhost'),
