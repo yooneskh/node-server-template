@@ -166,6 +166,7 @@ export interface IApiNewRequestBase extends IResource {
 
 export interface IApiRequestBase extends IResource {
   user: string;
-  reason: string;
-  conditions: string[];
+  apiEndpoint: string;
+  reason?: string;
+  completed?: boolean;
 } export interface IApiRequest extends IApiRequestBase, Document {}
