@@ -163,3 +163,9 @@ export interface IApiNewRequestBase extends IResource {
   usageDuration: string;
   address: string;
 } export interface IApiNewRequest extends IApiNewRequestBase, Document {}
+
+export interface IApiRequestBase extends IResource {
+  user: string;
+  reason: string;
+  conditions: string[];
+} export interface IApiRequest extends IApiRequestBase, Document {}

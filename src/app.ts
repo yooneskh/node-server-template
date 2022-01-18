@@ -105,6 +105,7 @@ import { ApiGatewayRouter } from './modules/api/api-gateway';
 import { ApiPolicyRouter } from './modules/api/api-policy-resource';
 import { ApiReceiverRouter } from './modules/api/api-receivers-resource';
 import { ApiNewRequestRouter } from './modules/api/api-new-request-resource';
+import { ApiRequestRouter } from './modules/api/api-request-resource';
 app.use('/api/apiendpoints', ApiEndpointRouter);
 app.use('/api/apiversions', ApiVersionRouter);
 app.use('/api/apilogs', ApiLogRouter);
@@ -113,6 +114,7 @@ app.use('/api/gateway', ApiGatewayRouter);
 app.use('/api/apipolicies', ApiPolicyRouter);
 app.use('/api/apireceivers', ApiReceiverRouter);
 app.use('/api/apinewrequests', ApiNewRequestRouter);
+app.use('/api/apirequests', ApiRequestRouter);
 
 
 import { ConditionRouter } from './modules/condition/condition-resource';
