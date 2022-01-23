@@ -15,18 +15,17 @@ maker.addProperties([
     titleable: true
   },
   {
-    key: 'company',
+    key: 'productTitle',
     type: 'string',
     required: true,
-    title: 'نام سازمان'
+    title: 'عنوان محصول'
   },
   {
-    key: 'reason',
+    key: 'productType',
     type: 'string',
     required: true,
-    title: 'دلیل استفاده',
-    hideInTable: true,
-    longText: true
+    title: 'نوع محصول',
+    hideInTable: true
   },
   {
     key: 'ip',
@@ -36,18 +35,33 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    key: 'usageDuration',
+    key: 'callType',
     type: 'string',
     required: true,
-    title: 'مدت استفاده',
+    title: 'نوع فراخوانی',
     hideInTable: true
   },
   {
-    key: 'address',
+    key: 'callAmount',
     type: 'string',
     required: true,
-    title: 'آدرس',
+    title: 'تعداد فراخوانی',
     hideInTable: true
+  },
+  {
+    key: 'validityDuration',
+    type: 'string',
+    required: true,
+    title: 'مدت زمان اعتبار',
+    hideInTable: true
+  },
+  {
+    key: 'description',
+    type: 'string',
+    required: true,
+    title: 'توضیحات',
+    hideInTable: true,
+    longText: true
   }
 ]);
 
@@ -60,10 +74,10 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.api-new-request.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.api-new-request.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.api-new-request.retrieve'] },
-  { template: 'CREATE', permissions: ['admin.api-new-request.create'] },
+  { template: 'LIST', /* permissions: ['admin.api-new-request.list']  */},
+  { template: 'LIST_COUNT', /* permissions: ['admin.api-new-request.list-count']  */},
+  { template: 'RETRIEVE', /* permissions: ['admin.api-new-request.retrieve']  */},
+  { template: 'CREATE', /* permissions: ['admin.api-new-request.create']  */},
   { template: 'UPDATE', permissions: ['admin.api-new-request.update'] },
   { template: 'DELETE', permissions: ['admin.api-new-request.delete'] }
 ]);

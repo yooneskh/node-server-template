@@ -23,9 +23,51 @@ maker.addProperties([
     titleable: true
   },
   {
-    key: 'reason',
+    key: 'formProductTitle',
     type: 'string',
-    title: 'دلیل استفاده',
+    required: true,
+    title: 'عنوان محصول'
+  },
+  {
+    key: 'formProductType',
+    type: 'string',
+    required: true,
+    title: 'نوع محصول',
+    hideInTable: true
+  },
+  {
+    key: 'formIp',
+    type: 'string',
+    required: true,
+    title: 'آی‌پی سرور استفاده کننده',
+    hideInTable: true
+  },
+  {
+    key: 'formCallType',
+    type: 'string',
+    required: true,
+    title: 'نوع فراخوانی',
+    hideInTable: true
+  },
+  {
+    key: 'formCallAmount',
+    type: 'string',
+    required: true,
+    title: 'تعداد فراخوانی',
+    hideInTable: true
+  },
+  {
+    key: 'formValidityDuration',
+    type: 'string',
+    required: true,
+    title: 'مدت زمان اعتبار',
+    hideInTable: true
+  },
+  {
+    key: 'formDescription',
+    type: 'string',
+    required: true,
+    title: 'توضیحات',
     hideInTable: true,
     longText: true
   },
