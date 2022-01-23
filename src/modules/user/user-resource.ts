@@ -211,12 +211,12 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.user.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.user.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.user.retrieve'] },
-  { template: 'CREATE', permissions: ['admin.user.create'] },
-  { template: 'UPDATE', permissions: ['admin.user.update'] },
-  { template: 'DELETE', permissions: ['admin.user.delete'] }
+  { template: 'LIST', /* permissions: ['admin.user.list']  */},
+  { template: 'LIST_COUNT', /* permissions: ['admin.user.list-count']  */},
+  { template: 'RETRIEVE', /* permissions: ['admin.user.retrieve']  */},
+  { template: 'CREATE', /* permissions: ['admin.user.create']  */},
+  { template: 'UPDATE', /* permissions: ['admin.user.update']  */},
+  { template: 'DELETE', /* permissions: ['admin.user.delete']  */}
 ]);
 
 
