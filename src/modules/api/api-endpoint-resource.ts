@@ -100,6 +100,14 @@ maker.addProperties([
         longText: true
       }
     ]
+  },
+  {
+    key: 'conditions',
+    type: 'string',
+    ref: 'Condition',
+    isArray: true,
+    title: 'شرایط دسترسی',
+    hideInTable: true
   }
 ]);
 
