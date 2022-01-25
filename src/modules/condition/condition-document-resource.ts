@@ -52,10 +52,10 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.condition-document.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.condition-document.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.condition-document.retrieve'] },
-  { template: 'CREATE', permissions: ['admin.condition-document.create'] },
+  { template: 'LIST',/*  permissions: ['admin.condition-document.list']  */},
+  { template: 'LIST_COUNT',/*  permissions: ['admin.condition-document.list-count']  */},
+  { template: 'RETRIEVE',/*  permissions: ['admin.condition-document.retrieve']  */},
+  { template: 'CREATE',/*  permissions: ['admin.condition-document.create']  */},
   { template: 'UPDATE', permissions: ['admin.condition-document.update'] },
   { template: 'DELETE', permissions: ['admin.condition-document.delete'] }
 ]);

@@ -21,3 +21,16 @@ export interface IConditionDocumentField {
   type: string;
   required?: boolean;
 }
+
+export interface IConditionDocumentEntryBase extends IResource {
+  conditionDocument: string;
+  user: string;
+  informations: {
+    title: string;
+    value: string;
+  }[];
+  files: {
+    title: string;
+    value: string;
+  }[];
+} export interface IConditionDocumentEntry extends IConditionDocumentEntryBase, Document {}

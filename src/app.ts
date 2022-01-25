@@ -119,8 +119,10 @@ app.use('/api/apirequests', ApiRequestRouter);
 
 import { ConditionRouter } from './modules/condition/condition-resource';
 import { ConditionDocumentRouter } from './modules/condition/condition-document-resource';
+import { ConditionDocumentEntryRouter } from './modules/condition/condition-document-entry-resource';
 app.use('/api/conditions', ConditionRouter);
 app.use('/api/conditiondocuments', ConditionDocumentRouter);
+app.use('/api/conditiondocumententries', ConditionDocumentEntryRouter);
 
 
 import { AccountRouter } from './modules/accounting/account-resource';
