@@ -85,7 +85,7 @@ maker.addProperties([
     key: 'completedAt',
     type: 'number',
     title: 'زمان تکمیل',
-    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+    labelFormat: 'jYYYY/jMM/jDD'
   },
   {
     key: 'isAccepted',
@@ -96,7 +96,7 @@ maker.addProperties([
     key: 'acceptedAt',
     type: 'number',
     title: 'زمان تایید',
-    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+    labelFormat: 'jYYYY/jMM/jDD'
   },
   {
     key: 'isRejected',
@@ -107,7 +107,7 @@ maker.addProperties([
     key: 'rejectedAt',
     type: 'number',
     title: 'زمان رد',
-    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+    labelFormat: 'jYYYY/jMM/jDD'
   },
   {
     key: 'rejectedFor',
