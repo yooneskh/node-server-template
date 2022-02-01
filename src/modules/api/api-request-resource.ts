@@ -83,7 +83,7 @@ maker.addProperties([
   },
   {
     key: 'completedAt',
-    type: 'boolean',
+    type: 'number',
     title: 'زمان تکمیل',
     labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
   },
