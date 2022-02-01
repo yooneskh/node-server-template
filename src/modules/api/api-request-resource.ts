@@ -72,6 +72,11 @@ maker.addProperties([
     longText: true
   },
   {
+    key: 'selectedOffer',
+    type: 'string',
+    hidden: true
+  },
+  {
     key: 'completed',
     type: 'boolean',
     title: 'تکمیل شده'
