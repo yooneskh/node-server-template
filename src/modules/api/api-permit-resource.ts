@@ -165,9 +165,9 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST', permissions: ['admin.api-permit.list'] },
-  { template: 'LIST_COUNT', permissions: ['admin.api-permit.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.api-permit.retrieve'] },
+  { template: 'LIST', /* permissions: ['admin.api-permit.list']  */},
+  { template: 'LIST_COUNT', /* permissions: ['admin.api-permit.list-count']  */},
+  { template: 'RETRIEVE', /* permissions: ['admin.api-permit.retrieve']  */},
   { template: 'CREATE', permissions: ['admin.api-permit.create'] },
   { template: 'UPDATE', permissions: ['admin.api-permit.update'] },
   { template: 'DELETE', permissions: ['admin.api-permit.delete'] }
