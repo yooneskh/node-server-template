@@ -77,9 +77,42 @@ maker.addProperties([
     hidden: true
   },
   {
-    key: 'completed',
+    key: 'isCompleted',
     type: 'boolean',
     title: 'تکمیل شده'
+  },
+  {
+    key: 'completedAt',
+    type: 'boolean',
+    title: 'زمان تکمیل',
+    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+  },
+  {
+    key: 'isAccepted',
+    type: 'boolean',
+    title: 'تایید شده'
+  },
+  {
+    key: 'acceptedAt',
+    type: 'number',
+    title: 'زمان تایید',
+    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+  },
+  {
+    key: 'isRejected',
+    type: 'boolean',
+    title: 'رد شده'
+  },
+  {
+    key: 'rejectedAt',
+    type: 'number',
+    title: 'زمان رد',
+    labelFormat: 'jYYYY/jMM/jDD HH:mm:ss'
+  },
+  {
+    key: 'rejectedFor',
+    type: 'string',
+    title: 'دلیل رد'
   }
 ]);
 

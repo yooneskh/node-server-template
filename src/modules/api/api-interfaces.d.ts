@@ -168,5 +168,11 @@ export interface IApiRequestBase extends IResource {
   user: string;
   apiEndpoint: string;
   reason?: string;
-  completed?: boolean;
+  isCompleted?: boolean;
+  completedAt?: number;
+  isAccepted?: boolean;
+  acceptedAt?: number;
+  isRejected?: boolean;
+  rejectedAt?: number;
+  rejectedFor?: string;
 } export interface IApiRequest extends IApiRequestBase, Document {}
