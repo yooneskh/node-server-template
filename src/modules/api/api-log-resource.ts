@@ -24,7 +24,7 @@ maker.addProperties([
   {
     key: 'apiType',
     type: 'string',
-    enum: ['http'/* , 'soap' */],
+    enum: ['http' , 'soap' ],
     required: true,
     title: 'نوع Api‍',
     items: [
