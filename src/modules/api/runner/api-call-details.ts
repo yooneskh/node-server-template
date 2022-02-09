@@ -13,21 +13,29 @@ maker.addAction({
   dataProvider: async ({payload}) => {
 
    const successfullCallCount = await ApiLogController.count({
-    filters: { 
+    filters: {
       success: true,
-      $and: [ 
-        {createdAt: { $gte: payload.startAt }} ,
-        {createdAt: { $lte: payload.endAt }}
-       ]
-    }
+      $and: [
+        {
+          createdAt: { $gte: payload.startAt }
+        },
+        {
+          createdAt: { $lte: payload.endAt }
+        }
+      ]
+    },
+    skipKeyCheck: true
   });
 
-  return [{
-      "icon": "mdi-check",
-      "width" : "4",
-      "value": successfullCallCount,
-      "description" : "تعداد بازخوانی‌های موفق api"
-  }]
+  return [
+    {
+      'icon': 'mdi-check-circle',
+      'title': 'تعداد فراخوانی‌های موفق Api',
+      'value': successfullCallCount,
+      'width': 4
+    }
+  ];
+
 }
 });
 
