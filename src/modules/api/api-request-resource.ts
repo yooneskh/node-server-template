@@ -25,48 +25,72 @@ maker.addProperties([
   {
     key: 'formProductTitle',
     type: 'string',
-    required: true,
     title: 'عنوان محصول'
   },
   {
     key: 'formProductType',
     type: 'string',
-    required: true,
     title: 'نوع محصول',
     hideInTable: true
   },
   {
     key: 'formIp',
     type: 'string',
-    required: true,
     title: 'آی‌پی سرور استفاده کننده',
     hideInTable: true
   },
   {
     key: 'formCallType',
     type: 'string',
-    required: true,
+    enum: ['automatic-transfer', 'repetitive-tranfer', 'daily-transfer' , 'weekly-transfer' , 'monthly-transfer' , 'specifiic-period-transfer'],
     title: 'نوع فراخوانی',
     hideInTable: true
   },
   {
-    key: 'formCallAmount',
-    type: 'string',
-    required: true,
-    title: 'تعداد فراخوانی',
-    hideInTable: true
+    vIf: {formCallType: 'specifiic-period-transfer'},
+    key: 'callTypeFromDate',
+    type: 'number',
+    title: 'از تاریخ',
+    hideInTable: true,
+    labelFormat: "jYYYY/jMM/jDD"
   },
   {
+    vIf: {formCallType: 'specifiic-period-transfer'},
+    key: 'callTypeUntilDate',
+    type: 'number',
+    title: 'تا تاریخ',
+    hideInTable: true,
+    labelFormat: "jYYYY/jMM/jDD"
+  },
+  {
+    key: 'formValidityDurationCount',
+    type: 'number',
+    title: 'تعداد دوره مدت زمان اعتبار',
+    hideInTable: true
+  },
+   {
     key: 'formValidityDuration',
     type: 'string',
-    required: true,
-    title: 'مدت زمان اعتبار',
+    enum:['day', 'month' , 'year'],
+    title: 'دوره مدت زمان اعتبار ',
+    hideInTable: true
+  },
+    {
+    key: 'formCallCount',
+    type: 'number',
+    title: 'تعداد فراخوانی در دوره',
+    hideInTable: true
+  },
+    {
+    key: 'formCallDuration',
+    type: 'string',
+    enum:['day', 'month' , 'year'],   
+    title: ' مدت زمان دوره',
     hideInTable: true
   },
   {
     key: 'formDescription',
     type: 'string',
-    required: true,
     title: 'توضیحات',
     hideInTable: true,
     longText: true
