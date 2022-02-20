@@ -43,6 +43,15 @@ maker.addProperties([
     key: 'formCallType',
     type: 'string',
     enum: ['automatic-transfer', 'repetitive-tranfer', 'daily-transfer' , 'weekly-transfer' , 'monthly-transfer' , 'specifiic-period-transfer'],
+    items: [
+        { value: 'automatic-transfer', text: 'انتقال اتوماتیک' },
+        { value: 'repetitive-tranfer', text: 'انتقال تکرار شونده' },
+        { value: 'daily-transfer', text: ' انتقال اطلاعات به صورت روزانه' },
+        { value: 'weekly-transfer', text: ' انتقال اطلاعات به صورت هفتگی' },
+        { value: 'monthly-transfer', text: ' انتقال اطلاعات به صورت ماهانه' },
+        { value: 'specifiic-period-transfer', text: 'انتقال اطلاعات از تاریخ تا تاریخ ' }
+
+    ],
     title: 'نوع فراخوانی',
     hideInTable: true
   },
@@ -72,6 +81,11 @@ maker.addProperties([
     key: 'formValidityDuration',
     type: 'string',
     enum:['day', 'month' , 'year'],
+    items: [
+        { value: 'day', text: 'روز' },
+        { value: 'month', text: 'ماه' },
+        { value: 'year', text: 'سال' }
+    ],
     title: 'دوره مدت زمان اعتبار ',
     hideInTable: true
   },
@@ -84,7 +98,12 @@ maker.addProperties([
     {
     key: 'formCallDuration',
     type: 'string',
-    enum:['day', 'month' , 'year'],   
+    enum:['day', 'month' , 'year'],
+    items: [
+        { value: 'day', text: 'روز' },
+        { value: 'month', text: 'ماه' },
+        { value: 'year', text: 'سال' }
+    ],   
     title: ' مدت زمان دوره',
     hideInTable: true
   },
