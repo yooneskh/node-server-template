@@ -31,50 +31,55 @@ maker.addProperties([
     key: 'formProductType',
     type: 'string',
     title: 'نوع محصول',
-    hideInTable: true
+    hideInTable: true,
+    width: 6
   },
   {
     key: 'formIp',
     type: 'string',
     title: 'آی‌پی سرور استفاده کننده',
-    hideInTable: true
+    hideInTable: true,
+    width: 6
   },
   {
     key: 'formCallType',
     type: 'string',
-    enum: ['automatic-transfer', 'repetitive-tranfer', 'daily-transfer' , 'weekly-transfer' , 'monthly-transfer' , 'specifiic-period-transfer'],
+    enum: ['automatic-transfer', 'repetitive-tranfer', 'daily-transfer' , 'weekly-transfer' , 'monthly-transfer' , 'specific-period-transfer'],
     items: [
       { value: 'automatic-transfer', text: 'انتقال اتوماتیک' },
       { value: 'repetitive-tranfer', text: 'انتقال تکرار شونده' },
       { value: 'daily-transfer', text: ' انتقال اطلاعات به صورت روزانه' },
       { value: 'weekly-transfer', text: ' انتقال اطلاعات به صورت هفتگی' },
       { value: 'monthly-transfer', text: ' انتقال اطلاعات به صورت ماهانه' },
-      { value: 'specifiic-period-transfer', text: 'انتقال اطلاعات از تاریخ تا تاریخ ' }
+      { value: 'specific-period-transfer', text: 'انتقال اطلاعات از تاریخ تا تاریخ ' }
     ],
     title: 'نوع فراخوانی',
     hideInTable: true
   },
   {
-    vIf: { formCallType: 'specifiic-period-transfer' },
+    vIf: { formCallType: 'specific-period-transfer' },
     key: 'callTypeFromDate',
     type: 'number',
     title: 'از تاریخ',
+    labelFormat: 'jYYYY/jMM/jDD',
     hideInTable: true,
-    labelFormat: 'jYYYY/jMM/jDD'
+    width: 6
   },
   {
-    vIf: { formCallType: 'specifiic-period-transfer' },
+    vIf: { formCallType: 'specific-period-transfer' },
     key: 'callTypeUntilDate',
     type: 'number',
     title: 'تا تاریخ',
+    labelFormat: 'jYYYY/jMM/jDD',
     hideInTable: true,
-    labelFormat: 'jYYYY/jMM/jDD'
+    width: 6
   },
   {
     key: 'formValidityDurationCount',
     type: 'number',
     title: 'تعداد دوره مدت زمان اعتبار',
-    hideInTable: true
+    hideInTable: true,
+    width: 6
   },
   {
     key: 'formValidityDuration',
@@ -86,13 +91,15 @@ maker.addProperties([
       { value: 'year', text: 'سال' }
     ],
     title: 'دوره مدت زمان اعتبار',
-    hideInTable: true
+    hideInTable: true,
+    width: 6
   },
   {
     key: 'formCallCount',
     type: 'number',
     title: 'تعداد فراخوانی در دوره',
-    hideInTable: true
+    hideInTable: true,
+    width: 6
   },
   {
     key: 'formCallDuration',
@@ -104,7 +111,8 @@ maker.addProperties([
       { value: 'year', text: 'سال' }
     ],
     title: ' مدت زمان دوره',
-    hideInTable: true
+    hideInTable: true,
+    width: 6
   },
   {
     key: 'formDescription',
@@ -129,8 +137,8 @@ maker.addProperties([
     key: 'completedAt',
     type: 'number',
     title: 'زمان تکمیل',
-    width: 6,
-    labelFormat: 'jYYYY/jMM/jDD'
+    labelFormat: 'jYYYY/jMM/jDD',
+    width: 6
   },
   {
     key: 'isAccepted',
@@ -143,8 +151,8 @@ maker.addProperties([
     key: 'acceptedAt',
     type: 'number',
     title: 'زمان تایید',
-    width: 6,
-    labelFormat: 'jYYYY/jMM/jDD'
+    labelFormat: 'jYYYY/jMM/jDD',
+    width: 6
   },
   {
     key: 'isRejected',
@@ -157,8 +165,8 @@ maker.addProperties([
     key: 'rejectedAt',
     type: 'number',
     title: 'زمان رد',
-    width: 6,
-    labelFormat: 'jYYYY/jMM/jDD'
+    labelFormat: 'jYYYY/jMM/jDD',
+    width: 6
   },
   {
     vIf: { isRejected: true },
