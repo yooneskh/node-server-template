@@ -102,7 +102,7 @@ maker.addProperties([
     width: 6
   },
   {
-    key: 'formCallDuration',
+    key: 'formCallCountDuration',
     type: 'string',
     enum: ['day', 'month' , 'year'],
     items: [

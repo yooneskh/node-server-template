@@ -97,7 +97,7 @@ maker.addProperties([
     width: 6
   },
   {
-    key: 'callDuration',
+    key: 'callCountDuration',
     type: 'string',
     enum: ['day', 'month', 'year'],
     items: [
