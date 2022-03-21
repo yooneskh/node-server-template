@@ -120,12 +120,14 @@ maker.addActions([
     dataProvider: async ({ user, payload }) => {
 
       const { amount, returnUrl } = payload;
+      console.log(111, { amount, returnUrl });
 
       const account = await AccountController.findOne({
         filters: {
           user: user!._id
         }
       });
+      console.log(2222, { account });
 
       const factor = await FactorController.create({
         payload: {
@@ -139,8 +141,10 @@ maker.addActions([
           }
         }
       });
+      console.log(3333, { factor });
 
       const payticket = await createPayTicket(String(factor._id), 'zarinpal', returnUrl);
+      console.log(4444, { payticket });
       return payticket.payUrl;
 
     }
