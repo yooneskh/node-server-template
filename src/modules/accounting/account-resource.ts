@@ -1,7 +1,7 @@
 import { IAccount, IAccountBase } from './accounting-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
-import { InvalidStateError } from '../../global/errors';
+import { InvalidStateError, NotFoundError } from '../../global/errors';
 import { UserController } from '../user/user-resource';
 
 
@@ -77,7 +77,7 @@ maker.addActions([
   },
   { template: 'CREATE', permissions: ['admin.account.create'] },
   { template: 'UPDATE', permissions: ['admin.account.update'] },
-  {
+  { // delete
     template: 'DELETE',
     permissions: ['admin.account.delete'],
     stateValidator: async ({ resourceId }) => {
@@ -88,7 +88,28 @@ maker.addActions([
       if (usersCount !== 0) throw new InvalidStateError('there is a user for this account', 'این اکانت کاربر دارد.');
 
     }
-  }
+  },
+  { // retrieve mine
+    method: 'GET',
+    path: '/retrieve/mine',
+    signal: ['Route', 'Account', 'Mine'],
+    permission: 'user.account.retrieve',
+    dataProvider: async ({ user }) => {
+
+      const account = await AccountController.findOne({
+        filters: {
+          user: user!._id
+        }
+      });
+
+      if (!account) {
+        throw new NotFoundError();
+      }
+
+      return account;
+
+    }
+  },
 ]);
 
 
