@@ -3,6 +3,8 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { InvalidStateError, NotFoundError } from '../../global/errors';
 import { UserController } from '../user/user-resource';
+import { FactorController } from '../payment/factor-resource';
+import { createPayTicket } from '../payment/pay-ticket-resource';
 
 
 const maker = new ResourceMaker<IAccountBase, IAccount>('Account');
@@ -107,6 +109,39 @@ maker.addActions([
       }
 
       return account;
+
+    }
+  },
+  { // charge balance
+    method: 'POST',
+    path: '/balance/charge',
+    signal: ['Route', 'Account', 'ChargeBalance'],
+    permission: 'user.account.charge-balance',
+    dataProvider: async ({ user, payload }) => {
+
+      const { amount, returnUrl } = payload;
+
+      const account = await AccountController.findOne({
+        filters: {
+          user: user!._id
+        }
+      });
+
+      const factor = await FactorController.create({
+        payload: {
+          user: user!._id,
+          name: `شارژ حساب ${user!.name} به میزان ${amount} زیال`,
+          amount,
+          meta: {
+            reason: 'account-charge',
+            account: String(account._id),
+            amount
+          }
+        }
+      });
+
+      const payticket = await createPayTicket(String(factor._id), 'zarinpal', returnUrl);
+      return payticket.payUrl;
 
     }
   },
