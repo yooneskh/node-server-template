@@ -58,7 +58,7 @@ maker.addProperties([
   },
   {
     vIf: { formCallType: 'specific-period-transfer' },
-    key: 'callTypeFromDate',
+    key: 'formCallTypeFromDate',
     type: 'number',
     title: 'از تاریخ',
     labelFormat: 'jYYYY/jMM/jDD',
@@ -67,7 +67,7 @@ maker.addProperties([
   },
   {
     vIf: { formCallType: 'specific-period-transfer' },
-    key: 'callTypeUntilDate',
+    key: 'formCallTypeUntilDate',
     type: 'number',
     title: 'تا تاریخ',
     labelFormat: 'jYYYY/jMM/jDD',
