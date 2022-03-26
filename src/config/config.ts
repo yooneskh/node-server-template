@@ -62,6 +62,11 @@ export const Config = {
   },
   captcha: {
     validDuration: 1000 * 60 * 2
+  },
+  parsian: {
+    loginAccount: 'Xr6I1ViYvNLK7NDgAJr2',
+    paymentRequestUrl: 'https://pec.shaparak.ir/NewIPGServices/Sale/SaleService.asmx',
+    paymentVerificationUrl: 'https://pec.shaparak.ir/NewIPGServices/Confirm/ConfirmService.asmx'
   }
 };
 

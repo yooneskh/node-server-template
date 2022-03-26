@@ -134,6 +134,8 @@ app.use('/api/accounts', AccountRouter);
 app.use('/api/transactions', TransactionRouter);
 app.use('/api/transfers', TransferRouter);
 
+import './modules/accounting/account-listeners';
+
 
 import { errorHandler } from './global/errors';
 app.use(errorHandler);

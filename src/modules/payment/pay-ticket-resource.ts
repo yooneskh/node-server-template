@@ -10,6 +10,7 @@ import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-rou
 import { createSuccessResultPage } from './payment-result-success';
 import { depositIntoUserAccount } from '../accounting/transfer-resource';
 import { UserController } from '../user/user-resource';
+import { makeParsianPaymentRequest, makeParsianPaymentVerify } from '../../plugins/parsian-agent/parsian-agent';
 
 
 const Zarinpal = ZarinpalCheckout.create(Config.zarinpal.merchantId, Config.zarinpal.isSandboxed);
@@ -360,6 +361,109 @@ gatewayHandlers.push({
     });
 
     return true;
+
+  }
+});
+
+gatewayHandlers.push({
+  gateway: 'parsian',
+  async initTicket(payTicket) {
+
+    const amount = payTicket.amount;
+    const callBackUrl = `${Config.payment.callbackUrlBase}/${payTicket._id}/verify`;
+
+    try {
+
+      const { token } = await makeParsianPaymentRequest({
+        loginAccount: Config.parsian.loginAccount,
+        orderId: String(payTicket._id),
+        callbackUrl: callBackUrl,
+        amount
+      });
+
+      if (!token || token === '0') throw new InvalidRequestError('parsian request error');
+
+
+      const url = `https://pec.shaparak.ir/NewIPG/?token=${token}`;
+
+      await PayTicketController.edit({
+        resourceId: payTicket._id,
+        payload: {
+          payUrl: url,
+          meta: {
+            token,
+            callBackUrl
+          }
+        }
+      });
+
+    }
+    catch (error) {
+
+      await PayTicketController.edit({
+        resourceId: payTicket._id,
+        payload: {
+          resolved: true,
+          payed: false,
+          resolvedAt: Date.now()
+        }
+      });
+
+      throw error;
+
+    }
+
+  },
+  async verifyTicket(payTicket) {
+
+    const { token } = payTicket.meta;
+    if (!token) throw new InvalidStateError('invalid pay ticket state');
+
+    try {
+
+      const { Status, RRN, CardNumberMasked } = await makeParsianPaymentVerify({
+        loginAccount: Config.parsian.loginAccount,
+        token
+      });
+
+      if (!Status || !RRN || !CardNumberMasked) {
+        console.error(`invalid parsian verification ${Status} :: ${RRN} :: ${CardNumberMasked}`);
+        throw new InvalidRequestError(`invalid parsian verification ${Status} :: ${RRN} :: ${CardNumberMasked}`);
+      }
+
+      await PayTicketController.edit({
+        resourceId: payTicket._id,
+        payload: {
+          meta: {
+            ...payTicket.meta,
+            verifyStatus: Status,
+            rrn: RRN,
+            cardNumberMasked: CardNumberMasked
+          },
+          resolved: true,
+          resolvedAt: Date.now(),
+          payed: true,
+          payedAt: Date.now()
+        }
+      });
+
+      return true;
+
+    }
+    catch {
+
+      await PayTicketController.edit({
+        resourceId: payTicket._id,
+        payload: {
+          resolved: true,
+          payed: false,
+          resolvedAt: Date.now()
+        }
+      });
+
+      return false;
+
+    }
 
   }
 });
