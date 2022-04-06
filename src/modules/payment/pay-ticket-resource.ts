@@ -300,7 +300,7 @@ gatewayHandlers.push({
       userMobile = user.phoneNumber;
       userEmail = user.email;
     }
-    console.log(3333, { userEmail, userMobile });
+
     const { status, url, authority } = await Zarinpal.PaymentRequest({
       Amount: String(amount),
       CallbackURL: callBackUrl,

@@ -28,7 +28,7 @@ export async function makeParsianPaymentRequest(config: IParsianPaymentRequestCo
     </soap:Envelope>
   `;
 
-
+  console.log(11111, Config.parsian.paymentRequestUrl, xmls);
   const { status, data } = await YNetwork.post(Config.parsian.paymentRequestUrl, xmls, { 'Content-Type': 'text/xml' });
 
   const regex = /^.*<Token>(\d+)<\/Token>.*$/;
