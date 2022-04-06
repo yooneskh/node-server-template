@@ -140,6 +140,8 @@ maker.addActions([
         }
       });
 
+      console.log(111, { account, factor });
+
       const payticket = await createPayTicket(String(factor._id), 'zarinpal', returnUrl);
       return payticket.payUrl;
 
