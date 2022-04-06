@@ -30,6 +30,7 @@ export async function makeParsianPaymentRequest(config: IParsianPaymentRequestCo
 
   console.log(11111, Config.parsian.paymentRequestUrl, xmls);
   const { status, data } = await YNetwork.post(Config.parsian.paymentRequestUrl, xmls, { 'Content-Type': 'text/xml' });
+  console.log(22222, { status, data });
 
   const regex = /^.*<Token>(\d+)<\/Token>.*$/;
   const matchResult = regex.exec(data);
