@@ -20,7 +20,7 @@ export async function makeParsianPaymentRequest(config: IParsianPaymentRequestCo
           <sal:requestData>
             <sal:LoginAccount>${config.loginAccount}</sal:LoginAccount>
             <sal:Amount>${config.amount}</sal:Amount>
-            <sal:OrderId>${config.orderId}</sal:OrderId>
+            <sal:OrderId>${parseInt(String(config.orderId).slice(0, 8), 16)}</sal:OrderId>
             <sal:CallBackUrl>${config.callbackUrl}</sal:CallBackUrl>
           </sal:requestData>
         </sal:SalePaymentRequest>
