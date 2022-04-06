@@ -66,7 +66,12 @@ export const Config = {
   parsian: {
     loginAccount: 'Xr6I1ViYvNLK7NDgAJr2',
     paymentRequestUrl: 'https://pec.shaparak.ir/NewIPGServices/Sale/SaleService.asmx',
-    paymentVerificationUrl: 'https://pec.shaparak.ir/NewIPGServices/Confirm/ConfirmService.asmx'
+    paymentVerificationUrl: 'https://pec.shaparak.ir/NewIPGServices/Confirm/ConfirmService.asmx',
+    proxy: {
+      enabled: false,
+      method: 'post',
+      url: 'https://api.test.ir'
+    }
   }
 };
 

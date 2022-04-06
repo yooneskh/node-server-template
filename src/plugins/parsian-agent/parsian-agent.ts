@@ -28,9 +28,33 @@ export async function makeParsianPaymentRequest(config: IParsianPaymentRequestCo
     </soap:Envelope>
   `;
 
-  console.log(11111, Config.parsian.paymentRequestUrl, xmls);
-  const { status, data } = await YNetwork.post(Config.parsian.paymentRequestUrl, xmls, { 'Content-Type': 'text/xml' });
-  console.log(22222, { status, data });
+  let data;
+  let status;
+
+  if (Config.parsian.proxy.enabled) {
+
+    const response = await YNetwork[Config.parsian.proxy.method](Config.parsian.proxy.url, {
+      method: 'post',
+      url: Config.parsian.paymentRequestUrl,
+      payload: xmls,
+      headers: {
+        'Content-Type': 'text/xml'
+      }
+    });
+
+    data = response.data;
+    status = response.status;
+
+  }
+  else {
+
+    const response = await YNetwork.post(Config.parsian.paymentRequestUrl, xmls, { 'Content-Type': 'text/xml' });
+
+    data = response.data;
+    status = response.status;
+
+  }
+
 
   const regex = /^.*<Token>(\d+)<\/Token>.*$/;
   const matchResult = regex.exec(data);
@@ -68,7 +92,32 @@ export async function makeParsianPaymentVerify(config: IParsianPaymentVerifyConf
     </soap:Envelope>
   `;
 
-  const { status, data } = await YNetwork.post(Config.parsian.paymentVerificationUrl, xmls, { 'Content-Type': 'text/xml' });
+  let data;
+  let status;
+
+  if (Config.parsian.proxy.enabled) {
+
+    const response = await YNetwork[Config.parsian.proxy.method](Config.parsian.proxy.url, {
+      method: 'post',
+      url: Config.parsian.paymentVerificationUrl,
+      payload: xmls,
+      headers: {
+        'Content-Type': 'text/xml'
+      }
+    });
+
+    data = response.data;
+    status = response.status;
+
+  }
+  else {
+
+    const response = await YNetwork.post(Config.parsian.paymentVerificationUrl, xmls, { 'Content-Type': 'text/xml' });
+
+    data = response.data;
+    status = response.status;
+
+  }
 
 
   const regex = /^.*<ConfirmPaymentResult>(\d+)<\/ConfirmPaymentResult>.*$/;
