@@ -270,6 +270,7 @@ export async function createPayTicket(factorId: string, gateway: string, returnU
       returnUrl
     }
   });
+  console.log(2222, { payTicket });
 
   await handler.initTicket(payTicket);
 
@@ -300,7 +301,7 @@ gatewayHandlers.push({
       userMobile = user.phoneNumber;
       userEmail = user.email;
     }
-
+    console.log(3333, { userEmail, userMobile });
     const { status, url, authority } = await Zarinpal.PaymentRequest({
       Amount: String(amount),
       CallbackURL: callBackUrl,
