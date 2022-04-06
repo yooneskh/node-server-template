@@ -140,9 +140,7 @@ maker.addActions([
         }
       });
 
-      console.log(111, { account, factor });
-
-      const payticket = await createPayTicket(String(factor._id), 'zarinpal', returnUrl);
+      const payticket = await createPayTicket(String(factor._id), 'parsian', returnUrl);
       return payticket.payUrl;
 
     }

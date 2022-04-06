@@ -270,7 +270,6 @@ export async function createPayTicket(factorId: string, gateway: string, returnU
       returnUrl
     }
   });
-  console.log(2222, { payTicket });
 
   await handler.initTicket(payTicket);
 
