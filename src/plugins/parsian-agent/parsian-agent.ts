@@ -120,7 +120,7 @@ export async function makeParsianPaymentVerify(config: IParsianPaymentVerifyConf
   }
 
 
-  const regex = /^.*<ConfirmPaymentResult>(\d+)<\/ConfirmPaymentResult>.*$/;
+  const regex = /^.*<ConfirmPaymentResult>(.+)<\/ConfirmPaymentResult>.*$/;
   const matchResult = regex.exec(data);
 
   if (!matchResult) {
@@ -137,7 +137,7 @@ export async function makeParsianPaymentVerify(config: IParsianPaymentVerifyConf
     CardNumberMasked: ''
   };
 
-  for (const key in contentKeys) {
+  for (const key of contentKeys) {
 
     const keyRegex = new RegExp(`^.*<ConfirmPaymentResult>.*<${key}>(.+)<\\/${key}>.*<\\/ConfirmPaymentResult>.*$`);
     const keyMatchResult = keyRegex.exec(data);

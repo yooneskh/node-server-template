@@ -14,5 +14,9 @@
     "ssoUserUrl": "https://sso-sarv.shiraz.ir/auth/realms/master/protocol/openid-connect/userinfo",
     "profileUrl": "https://api-sarv.shiraz.ir/api/v1/citizen/profile",
     "logoutUrl": "https://api-sarv.shiraz.ir/api/v1/logout"
+  },
+  "parsian": {
+    "paymentRequestUrl": "http://172.17.201.213/NewIPGServices/Sale/SaleService.asmx",
+    "paymentVerificationUrl": "http://172.17.201.213/NewIPGServices/Confirm/ConfirmService.asmx"
   }
 }

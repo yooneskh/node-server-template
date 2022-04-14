@@ -145,7 +145,7 @@ maker.addActions([
   { template: 'DELETE', permissions: ['admin.payticket.delete'] },
   { // verify
     signal: ['Route', 'PayTicket', 'Verify'],
-    method: 'GET',
+    method: 'POST',
     path: '/:resourceId/verify',
     stateValidator: async ({ response, resourceId, bag }) => {
       try {
@@ -226,7 +226,7 @@ maker.addActions([
 
         response.send(createSuccessResultPage({
           title: Config.payment.response.title,
-          heading: `${payTicket.amount.toLocaleString()} تومان`,
+          heading: `${payTicket.amount.toLocaleString()} ریال`,
           reason: factor.name,
           callback: payTicket.returnUrl || Config.payment.response.callback
         }));
