@@ -210,7 +210,7 @@ maker.addActions([
       const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: apiRequest.apiEndpoint });
 
       const policy = await ApiPolicyController.retrieve({
-        resourceId: apiEndpoint.offers!.find(it => it._id === apiRequest.selectedOffer)!.policy
+        resourceId: apiEndpoint.offers!.find(it => String(it._id) === apiRequest.selectedOffer)!.policy
       });
 
       if (!policy.paymentStaticCost || !( policy.paymentStaticCost > 0 )) {
