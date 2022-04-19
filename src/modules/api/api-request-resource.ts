@@ -1,5 +1,14 @@
 import { IApiRequest, IApiRequestBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { ApiPolicyController } from './api-policy-resource';
+import { ApiEndpointController } from './api-endpoint-resource';
+import { InvalidRequestError } from '../../global/errors';
+import { FactorController } from '../payment/factor-resource';
+import { createPayTicket } from '../payment/pay-ticket-resource';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
+import { IFactor } from '../payment/payment-interfaces';
+import { getAccountForUser, getApiRequestAccount, getGlobalSourceAccount } from '../accounting/account-resource';
+import { createTransfer } from '../accounting/transfer-resource';
 
 
 const maker = new ResourceMaker<IApiRequestBase, IApiRequest>('ApiRequest');
@@ -190,8 +199,67 @@ maker.addActions([
   { template: 'RETRIEVE', /* permissions: ['admin.api-request.retrieve']  */},
   { template: 'CREATE', /* permissions: ['admin.api-request.create']  */},
   { template: 'UPDATE', /* permissions: ['admin.api-request.update']  */},
-  { template: 'DELETE', /* permissions: ['admin.api-request.delete']  */}
+  { template: 'DELETE', /* permissions: ['admin.api-request.delete']  */},
+  {
+    method: 'POST',
+    path: '/:resourceId/pay',
+    signal: ['Route', 'ApiRequest', 'Pay'],
+    dataProvider: async ({ user, resourceId }) => {
+
+      const apiRequest  = await ApiRequestController.retrieve({ resourceId });
+      const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: apiRequest.apiEndpoint });
+
+      const policy = await ApiPolicyController.retrieve({
+        resourceId: apiEndpoint.offers!.find(it => it._id === apiRequest.selectedOffer)!.policy
+      });
+
+      if (!policy.paymentStaticCost || !( policy.paymentStaticCost > 0 )) {
+        throw new InvalidRequestError('this policy does not have static cost');
+      }
+
+      const factor = await FactorController.create({
+        payload: {
+          user: String(user!._id),
+          name: `پرداخت هزینه دسترسی برای ${user!.name}`,
+          amount: policy.paymentStaticCost!,
+          meta: {
+            reason: 'api-request',
+            apiRequest: resourceId,
+            amount: policy.paymentStaticCost!,
+            userId: String(user!._id)
+          }
+        }
+      });
+
+      const payticket = await createPayTicket(String(factor._id), 'parsian');
+      return payticket.payUrl;
+
+    }
+  }
 ]);
 
 
 export const ApiRequestRouter = maker.getRouter();
+
+
+YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, factor: IFactor) => {
+  if (factor.meta?.reason !== 'api-request') return;
+
+  const { apiRequest, amount, userId } = factor.meta;
+
+  const globalSourceAccount = await getGlobalSourceAccount();
+  const userAccount = await getAccountForUser(userId);
+  const apiRequestAccount = await getApiRequestAccount();
+
+  await createTransfer(globalSourceAccount._id, userAccount._id, amount, 'دسترسی به Api');
+  await createTransfer(userAccount._id, apiRequestAccount._id, amount, 'دسترسی به Api');
+
+  await ApiRequestController.edit({
+    resourceId: apiRequest,
+    payload: {
+      isCompleted: true,
+      completedAt: Date.now()
+    }
+  });
+
+});

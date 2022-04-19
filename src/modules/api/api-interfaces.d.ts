@@ -20,6 +20,7 @@ export interface IApiEndpointBase extends IResource {
   specialties?: string[];
   body: string;
   offers?: {
+    _id?: any;
     title: string;
     policy: string;
     description: string;
@@ -167,7 +168,18 @@ export interface IApiNewRequestBase extends IResource {
 export interface IApiRequestBase extends IResource {
   user: string;
   apiEndpoint: string;
-  reason?: string;
+  formProductTitle?: string;
+  formProductType?: string;
+  formIp?: string;
+  formCallType?: string;
+  formCallTypeFromDate?: string;
+  formCallTypeUntilDate?: string;
+  formValidityDurationCount?: string;
+  formValidityDuration?: string;
+  formCallCount?: string;
+  formCallCountDuration?: string;
+  formDescription?: string;
+  selectedOffer?: string;
   isCompleted?: boolean;
   completedAt?: number;
   isAccepted?: boolean;

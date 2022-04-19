@@ -183,6 +183,12 @@ export async function getApiConsumeAccount() {
   });
 }
 
+export async function getApiRequestAccount() {
+  return AccountController.findOne({
+    filters: { 'meta.apiRequest': true }
+  });
+}
+
 export async function getAccountForUser(userId: string) {
   return AccountController.findOne({
     filters: { user: userId }
@@ -243,6 +249,24 @@ export async function getAccountForUser(userId: string) {
         acceptsOutput: true,
         meta: {
           apiConsume: true
+        }
+      }
+    });
+  }
+
+  try {
+    await getApiRequestAccount();
+  }
+  catch {
+    await AccountController.create({
+      payload: {
+        title: 'درخواست Api',
+        user: undefined,
+        balance: 0,
+        acceptsInput: true,
+        acceptsOutput: true,
+        meta: {
+          apiRequest: true
         }
       }
     });
