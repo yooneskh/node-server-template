@@ -9,6 +9,7 @@ import { YEventManager } from '../../plugins/event-manager/event-manager';
 import { IFactor } from '../payment/payment-interfaces';
 import { getAccountForUser, getApiRequestAccount, getGlobalSourceAccount } from '../accounting/account-resource';
 import { createTransfer } from '../accounting/transfer-resource';
+import { ApiPermitController } from './api-permit-resource';
 
 
 const maker = new ResourceMaker<IApiRequestBase, IApiRequest>('ApiRequest');
@@ -242,6 +243,13 @@ maker.addActions([
 export const ApiRequestRouter = maker.getRouter();
 
 
+function makeUUID(sections: number) {
+  return new Array(sections).fill(undefined).map(() =>
+    Math.random().toString(16).slice(2)
+  ).join('-')
+}
+
+
 YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, factor: IFactor) => {
   if (factor.meta?.reason !== 'api-request') return;
 
@@ -261,5 +269,27 @@ YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, fact
       completedAt: Date.now()
     }
   });
+
+
+  const apiRequestDoc = await ApiRequestController.retrieve({
+    resourceId: apiRequest
+  });
+
+  const apiEndpoint = await ApiEndpointController.retrieve({
+    resourceId: apiRequestDoc.apiEndpoint
+  });
+
+  await ApiPermitController.create({
+    payload: {
+      user: userId,
+      apiEndpoint: apiRequestDoc.apiEndpoint,
+      enabled: true,
+      apiKey: makeUUID(3),
+      identifier: makeUUID(3),
+      policy: apiEndpoint.offers!.find(it =>
+        String(it._id) === apiRequestDoc.selectedOffer
+      )!.policy
+    }
+  })
 
 });
