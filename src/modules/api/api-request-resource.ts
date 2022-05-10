@@ -85,46 +85,6 @@ maker.addProperties([
     width: 6
   },
   {
-    key: 'formValidityDurationCount',
-    type: 'number',
-    title: 'تعداد دوره مدت زمان اعتبار',
-    hideInTable: true,
-    width: 6
-  },
-  {
-    key: 'formValidityDuration',
-    type: 'string',
-    enum: ['day', 'month' , 'year'],
-    items: [
-      { value: 'day', text: 'روز' },
-      { value: 'month', text: 'ماه' },
-      { value: 'year', text: 'سال' }
-    ],
-    title: 'دوره مدت زمان اعتبار',
-    hideInTable: true,
-    width: 6
-  },
-  {
-    key: 'formCallCount',
-    type: 'number',
-    title: 'تعداد فراخوانی در دوره',
-    hideInTable: true,
-    width: 6
-  },
-  {
-    key: 'formCallCountDuration',
-    type: 'string',
-    enum: ['day', 'month' , 'year'],
-    items: [
-      { value: 'day', text: 'روز' },
-      { value: 'month', text: 'ماه' },
-      { value: 'year', text: 'سال' }
-    ],
-    title: ' مدت زمان دوره',
-    hideInTable: true,
-    width: 6
-  },
-  {
     key: 'formDescription',
     type: 'string',
     title: 'توضیحات',
