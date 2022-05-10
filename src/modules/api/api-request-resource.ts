@@ -143,6 +143,26 @@ maker.addProperties([
     key: 'rejectedFor',
     type: 'string',
     title: 'دلیل رد'
+  },
+  {
+    key: 'isCanceled',
+    type: 'boolean',
+    title: 'لغو شده',
+    width: 6
+  },
+  {
+    vIf: { isCanceled: true },
+    key: 'canceledAt',
+    type: 'number',
+    title: 'زمان لغو',
+    labelFormat: 'jYYYY/jMM/jDD',
+    width: 6
+  },
+  {
+    vIf: { isCanceled: true },
+    key: 'canceledFor',
+    type: 'string',
+    title: 'دلیل لغو'
   }
 ]);
 
