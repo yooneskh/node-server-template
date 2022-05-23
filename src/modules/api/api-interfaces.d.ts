@@ -186,6 +186,8 @@ export interface IApiRequestBase extends IResource {
   completedAt?: number;
   isAccepted?: boolean;
   acceptedAt?: number;
+  isTesting?: boolean;
+  testingAt?: number;
   isRejected?: boolean;
   rejectedAt?: number;
   rejectedFor?: string;

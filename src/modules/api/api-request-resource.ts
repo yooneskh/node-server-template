@@ -132,6 +132,20 @@ maker.addProperties([
     width: 6
   },
   {
+    key: 'isTesting',
+    type: 'boolean',
+    title: 'در حال تست',
+    width: 6
+  },
+  {
+    vIf: { isTesting: true },
+    key: 'testingAt',
+    type: 'number',
+    title: 'در حال تست از',
+    labelFormat: 'jYYYY/jMM/jDD',
+    width: 6
+  },
+  {
     key: 'isRejected',
     type: 'boolean',
     title: 'رد شده',
@@ -241,7 +255,9 @@ maker.addActions([
         resourceId,
         payload: {
           isCompleted: true,
-          completedAt: Date.now()
+          completedAt: Date.now(),
+          isTesting: true,
+          testingAt: Date.now()
         }
       });
 
