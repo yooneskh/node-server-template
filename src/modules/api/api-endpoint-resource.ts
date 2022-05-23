@@ -108,6 +108,13 @@ maker.addProperties([
     isArray: true,
     title: 'شرایط دسترسی',
     hideInTable: true
+  },
+  {
+    key: 'testVersionPolicy',
+    type: 'string',
+    ref: 'ApiPolicy',
+    title: 'سیاست دسترسی تستی',
+    hideInTable: true
   }
 ]);
 

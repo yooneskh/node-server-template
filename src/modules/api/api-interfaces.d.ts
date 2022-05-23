@@ -25,6 +25,8 @@ export interface IApiEndpointBase extends IResource {
     policy: string;
     description: string;
   }[];
+  conditions?: string[];
+  testVersionPolicy?: string;
 } export interface IApiEndpoint extends IApiEndpointBase, Document {}
 
 

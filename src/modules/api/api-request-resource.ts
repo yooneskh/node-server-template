@@ -12,6 +12,13 @@ import { createTransfer } from '../accounting/transfer-resource';
 import { ApiPermitController } from './api-permit-resource';
 
 
+function makeUUID(sections: number) {
+  return new Array(sections).fill(undefined).map(() =>
+    Math.random().toString(16).slice(2)
+  ).join('-');
+}
+
+
 const maker = new ResourceMaker<IApiRequestBase, IApiRequest>('ApiRequest');
 
 
@@ -181,7 +188,7 @@ maker.addActions([
   { template: 'CREATE', /* permissions: ['admin.api-request.create']  */},
   { template: 'UPDATE', /* permissions: ['admin.api-request.update']  */},
   { template: 'DELETE', /* permissions: ['admin.api-request.delete']  */},
-  {
+  { // pay for request
     method: 'POST',
     path: '/:resourceId/pay',
     signal: ['Route', 'ApiRequest', 'Pay'],
@@ -216,18 +223,46 @@ maker.addActions([
       return payticket.payUrl;
 
     }
+  },
+  { // make test version
+    method: 'POST',
+    path: '/:resourceId/transform/test',
+    signal: ['Route', 'ApiRequest', 'TransformTest'],
+    dataProvider: async ({ user, resourceId }) => {
+
+      const apiRequest  = await ApiRequestController.retrieve({ resourceId });
+      const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: apiRequest.apiEndpoint });
+      if (!apiEndpoint.testVersionPolicy) {
+        throw new InvalidRequestError('this api does not have test version.', 'این Api نسخه تستی ندارد');
+      }
+
+
+      await ApiRequestController.edit({
+        resourceId,
+        payload: {
+          isCompleted: true,
+          completedAt: Date.now()
+        }
+      });
+
+
+      await ApiPermitController.create({
+        payload: {
+          user: user!._id,
+          apiEndpoint: apiRequest.apiEndpoint,
+          enabled: true,
+          apiKey: makeUUID(3),
+          identifier: makeUUID(3),
+          policy: apiEndpoint.testVersionPolicy
+        }
+      });
+
+    }
   }
 ]);
 
 
 export const ApiRequestRouter = maker.getRouter();
-
-
-function makeUUID(sections: number) {
-  return new Array(sections).fill(undefined).map(() =>
-    Math.random().toString(16).slice(2)
-  ).join('-')
-}
 
 
 YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, factor: IFactor) => {
@@ -270,6 +305,6 @@ YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, fact
         String(it._id) === apiRequestDoc.selectedOffer
       )!.policy
     }
-  })
+  });
 
 });
