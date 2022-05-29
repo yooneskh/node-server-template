@@ -24,20 +24,18 @@ maker.addProperties([
     key: 'apiUse',
     type: 'string',
     required: true,
-    title: 'کاربرد API',
+    title: 'کاربرد API و توضیحات تکمیلی',
     longText: true
   },
   {
-    key: 'apiCompleteDescription',
+    key: 'apiProposedInput',
     type: 'string',
-    title: 'توضیحات تکمیلی API',
-    longText: true
+    title: 'ورودی پیشنهادی API'
   },
   {
-    key: 'apiProposedInputOutput',
+    key: 'apiProposedOutput',
     type: 'string',
-    title: 'ورودی و خروجی پیشنهادی API',
-    longText: true
+    title: 'خروجی پیشنهادی API'
   },
   {
     key: 'productTitle',
