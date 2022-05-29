@@ -15,6 +15,31 @@ maker.addProperties([
     titleable: true
   },
   {
+    key: 'apiTitle',
+    type: 'string',
+    required: true,
+    title: 'عنوان API'
+  },
+  {
+    key: 'apiUse',
+    type: 'string',
+    required: true,
+    title: 'کاربرد API',
+    longText: true
+  },
+  {
+    key: 'apiCompleteDescription',
+    type: 'string',
+    title: 'توضیحات تکمیلی API',
+    longText: true
+  },
+  {
+    key: 'apiProposedInputOutput',
+    type: 'string',
+    title: 'ورودی و خروجی پیشنهادی API',
+    longText: true
+  },
+  {
     key: 'productTitle',
     type: 'string',
     required: true,
