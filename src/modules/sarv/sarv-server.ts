@@ -4,8 +4,10 @@ import { InvalidRequestError } from '../../global/errors';
 
 interface ISarvUser {
   _id: string;
+  SSOId: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
   email?: string;
   fatherName?: string;
   dateOfBirth?: string;

@@ -4,7 +4,6 @@ import { UserController } from '../user/user-resource';
 import { InvalidRequestError, ForbiddenAccessError } from '../../global/errors';
 import { Request } from 'express';
 import { ResourceRouter } from '../../plugins/resource-maker/resource-router';
-import { getSSOUserByToken } from '../sarv/sarv-sso';
 import { getUserProfile, logoutUser } from '../sarv/sarv-server';
 import { hasAllPermissions, hasAnyPermissions, hasSinglePermission, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 
@@ -47,25 +46,28 @@ maker.addAction({
   path: '/identity',
   async dataProvider({ token }) {
 
-    const [ssoUser, profile] = await Promise.all([getSSOUserByToken(token!), getUserProfile(token!)]);
+    const profile = await getUserProfile(token!);
 
     const user = await UserController.findOne({
       filters: {
-        ssoId: ssoUser.sub
-      }
+        $or: [
+          {
+            ssoId: profile.SSOId
+          },
+          {
+            'sarvInfo._id': profile._id
+          },
+        ]
+      },
+      skipKeyCheck: true
     });
 
-    const phone = (ssoUser.preferred_username.startsWith('+') ?
-      ssoUser.preferred_username : (ssoUser.preferred_username.startsWith('09') ?
-        `+98${ssoUser.preferred_username.slice(1)}` : (() => { throw new InvalidRequestError('phone from sso is unrecognizeable ' + ssoUser.preferred_username, 'مشاره تلفن در sso قابل شناسایی نبود') })()
-      )
-    );
 
     return UserController.edit({
       resourceId: user._id,
       payload: {
         name: `${profile.firstName || ''} ${profile.lastName || ''}`,
-        phoneNumber: phone,
+        phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
         email: profile.email,
         sarvInfo: profile,
         firstName: profile.firstName,
@@ -95,42 +97,44 @@ maker.addAction({
     const { token } = payload;
     if (!token) throw new InvalidRequestError('invalid token', 'توکن صحیح نیست');
 
-    const ssoUser = await getSSOUserByToken(token);
+    const profile = await getUserProfile(token);
     let user: IUser;
 
     try {
       user = await UserController.findOne({
         filters: {
-          ssoId: ssoUser.sub
-        }
+          $or: [
+            {
+              ssoId: profile.SSOId
+            },
+            {
+              'sarvInfo._id': profile._id
+            },
+          ]
+        },
+        skipKeyCheck: true
       });
     }
     catch {
 
-      const phone = (ssoUser.preferred_username.startsWith('+') ?
-        ssoUser.preferred_username : (ssoUser.preferred_username.startsWith('09') ?
-          `+98${ssoUser.preferred_username.slice(1)}` : (() => { throw new InvalidRequestError('phone from sso is unrecognizeable ' + ssoUser.preferred_username, 'مشاره تلفن در sso قابل شناسایی نبود') })()
-        )
-      );
-
       user = await UserController.create({
         payload: {
-          name: ssoUser.name ?? `${ssoUser.given_name || ''} ${ssoUser.family_name || ''}` ?? '',
-          phoneNumber: phone,
-          ssoId: ssoUser.sub,
+          name: `${profile.firstName || ''} ${profile.lastName || ''}`,
+          phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
+          ssoId: profile.SSOId,
           permissions: ['user.*']
         }
       });
 
     }
 
-    const profile = await getUserProfile(token);
 
     await UserController.edit({
       resourceId: user._id,
       payload: {
         name: `${profile.firstName || ''} ${profile.lastName || ''}`,
         email: profile.email,
+        phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
         sarvInfo: profile,
         firstName: profile.firstName,
         lastName: profile.lastName,
@@ -159,12 +163,20 @@ export const AuthRouter = maker.getRouter();
 export async function getUserByToken(token?: string): Promise<IUser | undefined> {
   if (!token) return undefined;
 
-  const ssoUser = await getSSOUserByToken(token);
+  const profile = await getUserProfile(token);
 
   const user = await UserController.findOne({
     filters: {
-      ssoId: ssoUser.sub
-    }
+      $or: [
+        {
+          ssoId: profile.SSOId
+        },
+        {
+          'sarvInfo._id': profile._id
+        },
+      ]
+    },
+    skipKeyCheck: true
   });
 
   return user;
