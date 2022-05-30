@@ -50,16 +50,8 @@ maker.addAction({
 
     const user = await UserController.findOne({
       filters: {
-        $or: [
-          {
-            ssoId: profile.SSOId
-          },
-          {
-            'sarvInfo._id': profile._id
-          },
-        ]
+        ssoId: profile.SSOId
       },
-      skipKeyCheck: true
     });
 
 
@@ -103,16 +95,8 @@ maker.addAction({
     try {
       user = await UserController.findOne({
         filters: {
-          $or: [
-            {
-              ssoId: profile.SSOId
-            },
-            {
-              'sarvInfo._id': profile._id
-            },
-          ]
+          ssoId: profile.SSOId
         },
-        skipKeyCheck: true
       });
     }
     catch {
@@ -167,16 +151,8 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
 
   const user = await UserController.findOne({
     filters: {
-      $or: [
-        {
-          ssoId: profile.SSOId
-        },
-        {
-          'sarvInfo._id': profile._id
-        },
-      ]
+      ssoId: profile.SSOId
     },
-    skipKeyCheck: true
   });
 
   return user;
