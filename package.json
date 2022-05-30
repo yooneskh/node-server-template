@@ -1,6 +1,6 @@
 {
   "name": "opendata-aaa-server",
-  "version": "3.10.3",
+  "version": "3.10.4",
   "description": "Server for Opendata AAA service",
   "main": "bin/www",
   "scripts": {
