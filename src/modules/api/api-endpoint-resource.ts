@@ -1,6 +1,7 @@
 import { IApiEndpoint, IApiEndpointBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { isSlug } from '../../util/validators';
+import { DataCategoryController } from '../data/data-category-resource';
 
 
 const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
@@ -137,7 +138,32 @@ maker.addActions([
   { template: 'RETRIEVE', /* permissions: ['admin.api-endpoint.retrieve'] */ },
   { template: 'CREATE', permissions: ['admin.api-endpoint.create'] },
   { template: 'UPDATE', permissions: ['admin.api-endpoint.update'] },
-  { template: 'DELETE', permissions: ['admin.api-endpoint.delete'] }
+  { template: 'DELETE', permissions: ['admin.api-endpoint.delete'] },
+  {
+    method: 'GET',
+    path: '/categories/filled',
+    signal: ['Route', 'ApiEndpoint', 'categoriesFilled'],
+    dataProvider: async () => {
+
+      const endpoints = await ApiEndpointController.list({});
+
+      const categoryIds = [... new Set( endpoints.map(it => it.category) )];
+
+      return DataCategoryController.list({
+        filters: {
+          _id: { $in: categoryIds }
+        },
+        includes: {
+          'thumbnail': 'path'
+        },
+        sorts: {
+          'order': 1
+        },
+        limit: 30,
+      });
+
+    }
+  }
 ]);
 
 

@@ -12,7 +12,7 @@ export interface IApiServiceBase extends IResource {
 
 
 export interface IApiEndpointBase extends IResource {
-  service: string;
+  category: string;
   title: string;
   slug: string;
   publisher: string;
