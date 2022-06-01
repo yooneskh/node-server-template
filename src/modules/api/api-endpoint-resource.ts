@@ -2,6 +2,7 @@ import { IApiEndpoint, IApiEndpointBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { isSlug } from '../../util/validators';
 import { DataCategoryController } from '../data/data-category-resource';
+import uniqBy from 'lodash/uniqBy';
 
 
 const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
@@ -176,7 +177,7 @@ maker.addActions([
 
       }
 
-      return categories;
+      return uniqBy(categories, '_id');
 
     }
   }
