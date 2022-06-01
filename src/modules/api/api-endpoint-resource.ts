@@ -177,7 +177,7 @@ maker.addActions([
 
       }
 
-      return uniqBy(categories, it => it._id);
+      return uniqBy(categories, it => String(it._id));
 
     }
   }
