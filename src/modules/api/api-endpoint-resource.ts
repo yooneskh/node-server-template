@@ -149,7 +149,7 @@ maker.addActions([
 
       const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
-      return DataCategoryController.list({
+      const categories = await DataCategoryController.list({
         filters: {
           _id: { $in: categoryIds }
         },
@@ -161,6 +161,22 @@ maker.addActions([
         },
         limit: 30,
       });
+
+      for (let i = 0; i < categories.length; i++) {
+        if (!categories[i].parent) continue;
+
+        categories[i] = await DataCategoryController.retrieve({
+          resourceId: categories[i].parent,
+          includes: {
+            'thumbnail': 'path'
+          },
+        });
+
+        i--;
+
+      }
+
+      return categories;
 
     }
   }
