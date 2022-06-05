@@ -133,6 +133,28 @@ maker.setValidations({
 });
 
 
+async function getSuccessorIds(parentId: string): Promise<string[]> {
+
+  const successors = await DataCategoryController.list({
+    filters: {
+      parent: parentId,
+    }
+  });
+
+  const successorsIds = await Promise.all(
+    successors.map(it =>
+      getSuccessorIds(String(it._id))
+    )
+  );
+
+  return [
+    parentId,
+    ...successorsIds.flat()
+  ];
+
+}
+
+
 maker.addActions([
   { template: 'LIST', /* permissions: ['admin.api-endpoint.list'] */ },
   { template: 'LIST_COUNT', /* permissions: ['admin.api-endpoint.list-count'] */ },
@@ -140,10 +162,10 @@ maker.addActions([
   { template: 'CREATE', permissions: ['admin.api-endpoint.create'] },
   { template: 'UPDATE', permissions: ['admin.api-endpoint.update'] },
   { template: 'DELETE', permissions: ['admin.api-endpoint.delete'] },
-  {
+  { // get filled categories
     method: 'GET',
     path: '/categories/filled',
-    signal: ['Route', 'ApiEndpoint', 'categoriesFilled'],
+    signal: ['Route', 'ApiEndpoint', 'CategoriesFilled'],
     dataProvider: async () => {
 
       const endpoints = await ApiEndpointController.list({});
@@ -180,7 +202,37 @@ maker.addActions([
       return uniqBy(categories, it => String(it._id));
 
     }
-  }
+  },
+  { // search
+    method: 'POST',
+    path: '/search',
+    signal: ['Route', 'ApiEndpoint', 'Search'],
+    dataProvider: async ({ payload }) => {
+
+      const { parentCategory, query } = payload;
+      const filters: any = {};
+
+
+      if (parentCategory) {
+        filters['category'] = { $in: await getSuccessorIds(parentCategory) };
+      }
+
+      if (query) {
+        filters['title'] = { $regex: query, $options: 'i' };
+      }
+
+
+      return ApiEndpointController.list({
+        filters,
+        includes: {
+          'category': '',
+          'category.thumbnail': 'path',
+          'publisher': '',
+        }
+      });
+
+    }
+  },
 ]);
 
 
