@@ -274,6 +274,42 @@ maker.addActions([
       });
 
     }
+  },
+  { // complete request
+    method: 'POST',
+    path: '/:resourceId/complete',
+    signal: ['Route', 'ApiRequest', 'Complete'],
+    dataProvider: async ({ user, resourceId }) => {
+
+      const apiRequest  = await ApiRequestController.retrieve({ resourceId });
+      const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: apiRequest.apiEndpoint });
+
+
+      await ApiRequestController.edit({
+        resourceId,
+        payload: {
+          isCompleted: true,
+          completedAt: Date.now(),
+          isAccepted: true,
+          acceptedAt: Date.now(),
+        }
+      });
+
+
+      await ApiPermitController.create({
+        payload: {
+          user: user!._id,
+          apiEndpoint: apiRequest.apiEndpoint,
+          enabled: true,
+          apiKey: makeUUID(3),
+          identifier: makeUUID(3),
+          policy: apiEndpoint.offers!.find(it =>
+            String(it._id) === apiRequest.selectedOffer
+          )!.policy
+        }
+      });
+
+    }
   }
 ]);
 
@@ -297,7 +333,9 @@ YEventManager.on(['Resource', 'Factor', 'Payed'], async (_factorId: string, fact
     resourceId: apiRequest,
     payload: {
       isCompleted: true,
-      completedAt: Date.now()
+      completedAt: Date.now(),
+      isAccepted: true,
+      acceptedAt: Date.now(),
     }
   });
 
