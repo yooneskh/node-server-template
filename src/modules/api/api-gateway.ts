@@ -63,7 +63,7 @@ maker.addAction({
     const apiVersion = await ApiVersionController.findOne({
       filters: {
         endpoint: permit.apiEndpoint,
-        version: parseInt(version, 10)
+        version,
       }
     });
 

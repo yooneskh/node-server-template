@@ -58,7 +58,7 @@ interface IApiHttpResponse {
 
 export interface IApiVersionBase extends IResource {
   endpoint: string;
-  version: number;
+  version: string;
   type: 'http'  | 'soap';
   url?: string;
   method?: 'get' | 'post' | 'put' | 'patch' | 'delete';

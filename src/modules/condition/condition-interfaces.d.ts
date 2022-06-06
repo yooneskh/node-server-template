@@ -14,6 +14,7 @@ export interface IConditionBase extends IResource {
 export interface IConditionDocumentBase extends IResource {
   title: string;
   fields: IConditionDocumentField[];
+  validityDays?: number;
 } export interface IConditionDocument extends IConditionDocumentBase, Document {}
 
 export interface IConditionDocumentField {
