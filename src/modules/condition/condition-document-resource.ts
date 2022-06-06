@@ -40,7 +40,13 @@ maker.addProperties([
         title: 'اجباری'
       }
     ]
-  }
+  },
+  {
+    key: 'validityDays',
+    type: 'number',
+    conditionalRequired: true,
+    title: 'تعداد روز اعتبار',
+  },
 ]);
 
 
