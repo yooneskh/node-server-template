@@ -43,7 +43,7 @@ maker.addAction({
     const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: permit.apiEndpoint });
 
     if (apiEndpoint.disabled) {
-      throw new InvalidStateError('این Api فعال نیست.');
+      throw new InvalidStateError('api is disabled', 'این Api فعال نیست.');
     }
 
 
