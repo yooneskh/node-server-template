@@ -53,6 +53,12 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    key: 'disabled',
+    type: 'boolean',
+    title: 'غیرفعال شده',
+    hideInTable: true
+  },
+  {
     key: 'body',
     type: 'string',
     required: true,

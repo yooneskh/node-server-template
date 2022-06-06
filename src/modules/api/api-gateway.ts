@@ -1,6 +1,7 @@
 import { ForbiddenAccessError, InvalidStateError } from '../../global/errors';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-router';
+import { ApiEndpointController } from './api-endpoint-resource';
 import { IApiPermit } from './api-interfaces';
 import { ApiPermitController } from './api-permit-resource';
 import { ApiVersionController } from './api-version-resource';
@@ -39,6 +40,13 @@ maker.addAction({
 
     const permit = bag.permit as IApiPermit;
 
+    const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: permit.apiEndpoint });
+
+    if (apiEndpoint.disabled) {
+      throw new InvalidStateError('این Api فعال نیست.');
+    }
+
+
     if (!permit.enabled) {
       throw new InvalidStateError('Api Permit not enabled.', 'مجوز شما فعال نیست.');
     }
@@ -58,8 +66,8 @@ maker.addAction({
         version: parseInt(version, 10)
       }
     });
-   
-  
+
+
     if (apiVersion.disabled) {
       return apiVersion.disabledMessage || 'این Api غیر فعال شده است.';
     }
