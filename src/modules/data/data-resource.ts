@@ -170,7 +170,7 @@ maker.addActions([
 
       if (category) {
 
-        const categoryIds = getSuccessorIds(category);
+        const categoryIds = await getSuccessorIds(category);
 
         filters['category'] = { $in: categoryIds };
 
