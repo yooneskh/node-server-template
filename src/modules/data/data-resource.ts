@@ -1,7 +1,6 @@
 import { IData, IDataBase } from './data-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { PublisherController } from './publisher-resource';
-import { TimeTagController } from './time-tag-resource';
 import { DataCategoryController, getSuccessorIds } from './data-category-resource';
 
 
