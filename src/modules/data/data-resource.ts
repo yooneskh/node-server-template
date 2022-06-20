@@ -2,6 +2,7 @@ import { IData, IDataBase } from './data-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { PublisherController } from './publisher-resource';
 import { TimeTagController } from './time-tag-resource';
+import { DataCategoryController } from './data-category-resource';
 
 
 const maker = new ResourceMaker<IDataBase, IData>('Data');
@@ -126,10 +127,28 @@ maker.addActions([
       });
     }
   },
+  {
+    method: 'GET',
+    path: '/custom/search/meta',
+    signal: ['Route', 'Data', 'SearchMeta'],
+    dataProvider: async () => {
+
+      const [categories, publishers] = await Promise.all([
+        DataCategoryController.list({}),
+        PublisherController.list({}),
+      ]);
+
+      return {
+        categories,
+        publishers,
+      };
+
+    }
+  },
   { // search
     method: 'GET',
     path: '/custom/search',
-    signal: ['Resource', 'Data', 'SearchCustom'],
+    signal: ['Route', 'Data', 'SearchCustom'],
     dataProvider: async ({ query }) => {
 
       const { title, description, timeTags, publisher, tags } = query;
