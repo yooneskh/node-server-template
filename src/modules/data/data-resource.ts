@@ -2,7 +2,7 @@ import { IData, IDataBase } from './data-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { PublisherController } from './publisher-resource';
 import { TimeTagController } from './time-tag-resource';
-import { DataCategoryController } from './data-category-resource';
+import { DataCategoryController, getSuccessorIds } from './data-category-resource';
 
 
 const maker = new ResourceMaker<IDataBase, IData>('Data');
@@ -151,7 +151,7 @@ maker.addActions([
     signal: ['Route', 'Data', 'SearchCustom'],
     dataProvider: async ({ query }) => {
 
-      const { title, description, timeTags, publisher, tags } = query;
+      const { category, title, description, timeFrom, timeTo, publisher, tags } = query;
 
       // tslint:disable-next-line: no-any
       const filters: any = {};
@@ -165,26 +165,30 @@ maker.addActions([
       }
 
       if (publisher) {
+        filters['publisher'] = publisher;
+      }
 
-        const filteredPublishers = await PublisherController.list({
-          filters: {
-            title: { $regex: new RegExp(publisher, 'i') }
-          }
-        });
+      if (category) {
 
-        filters['publisher'] = { $in: filteredPublishers.map(it => it._id) };
+        const categoryIds = getSuccessorIds(category);
+
+        filters['category'] = { $in: categoryIds };
 
       }
 
-      if (timeTags) {
+      if (timeFrom || timeTo) {
 
-        const filteredTimeTags = await TimeTagController.list({
-          filters: {
-            title: { $regex: new RegExp(timeTags, 'i') }
-          }
-        });
+        const criteria = {} as any;
 
-        filters['timeTags'] = { $elemMatch: { $in: filteredTimeTags.map(it => it._id) } };
+        if (timeFrom) {
+          criteria['$gte'] = Number(timeFrom); // todo: use time tags for this
+        }
+
+        if (timeTo) {
+          criteria['$lte'] = Number(timeTo); // todo: use time tags for this
+        }
+
+        filters['createdAt'] = criteria;
 
       }
 

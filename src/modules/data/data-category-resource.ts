@@ -65,6 +65,28 @@ maker.setValidations({
 });
 
 
+export async function getSuccessorIds(parentId: string): Promise<string[]> {
+
+  const successors = await DataCategoryController.list({
+    filters: {
+      parent: parentId,
+    }
+  });
+
+  const successorsIds = await Promise.all(
+    successors.map(it =>
+      getSuccessorIds(String(it._id))
+    )
+  );
+
+  return [
+    parentId,
+    ...successorsIds.flat()
+  ];
+
+}
+
+
 maker.addActions([
   { template: 'LIST' },
   { template: 'LIST_COUNT' },

@@ -1,7 +1,7 @@
 import { IApiEndpoint, IApiEndpointBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { isSlug } from '../../util/validators';
-import { DataCategoryController } from '../data/data-category-resource';
+import { DataCategoryController, getSuccessorIds } from '../data/data-category-resource';
 import uniqBy from 'lodash/uniqBy';
 
 
@@ -137,28 +137,6 @@ maker.setValidations({
     async ({ _id, slug }, e) => (await ApiEndpointController.count({ filters: { _id: { $ne: _id }, slug } })) === 0 || e('این شناسه قبلا وارد شده است.')
   ]
 });
-
-
-async function getSuccessorIds(parentId: string): Promise<string[]> {
-
-  const successors = await DataCategoryController.list({
-    filters: {
-      parent: parentId,
-    }
-  });
-
-  const successorsIds = await Promise.all(
-    successors.map(it =>
-      getSuccessorIds(String(it._id))
-    )
-  );
-
-  return [
-    parentId,
-    ...successorsIds.flat()
-  ];
-
-}
 
 
 maker.addActions([
