@@ -217,6 +217,70 @@ maker.addActions([
 
     }
   },
+  { // search custom
+    method: 'GET',
+    path: '/custom/search',
+    signal: ['Route', 'ApiEndpoint', 'SearchCustom'],
+    dataProvider: async ({ query }) => {
+
+      const { category, title, description, timeFrom, timeTo, publisher, tags } = query;
+
+      // tslint:disable-next-line: no-any
+      const filters: any = {};
+
+      if (title) {
+        filters['title'] = { $regex: new RegExp(title, 'i') };
+      }
+
+      if (description) {
+        filters['description'] = { $regex: new RegExp(description, 'i') };
+      }
+
+      if (publisher) {
+        filters['publisher'] = publisher;
+      }
+
+      if (category) {
+
+        const categoryIds = await getSuccessorIds(category);
+
+        filters['category'] = { $in: categoryIds };
+
+      }
+
+      if (timeFrom || timeTo) {
+
+        const criteria = {} as any;
+
+        if (timeFrom) {
+          criteria['$gte'] = Number(timeFrom); // todo: use time tags for this
+        }
+
+        if (timeTo) {
+          criteria['$lte'] = Number(timeTo); // todo: use time tags for this
+        }
+
+        filters['createdAt'] = criteria;
+
+      }
+
+      if (tags) {
+        filters['specialties'] = { $regex: new RegExp(tags, 'i') };
+      }
+
+      return ApiEndpointController.list({
+        filters,
+        includes: {
+          'category': '',
+          'category.thumbnail': 'path',
+          'publisher': ''
+        },
+        limit: 30,
+        skipKeyCheck: true
+      });
+
+    }
+  },
 ]);
 
 
