@@ -46,6 +46,11 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    key: 'region',
+    type: 'number',
+    title: 'منطقه شهرداری'
+  },
+  {
     key: 'specialties',
     type: 'string',
     isArray: true,
@@ -223,7 +228,7 @@ maker.addActions([
     signal: ['Route', 'ApiEndpoint', 'SearchCustom'],
     dataProvider: async ({ query }) => {
 
-      const { category, title, description, timeFrom, timeTo, publisher, tags } = query;
+      const { category, title, description, region, timeFrom, timeTo, publisher, tags } = query;
 
       // tslint:disable-next-line: no-any
       const filters: any = {};
@@ -234,6 +239,10 @@ maker.addActions([
 
       if (description) {
         filters['description'] = { $regex: new RegExp(description, 'i') };
+      }
+
+      if (region && Number(region)) {
+        filters['region'] = Number(region);
       }
 
       if (publisher) {

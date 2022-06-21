@@ -17,6 +17,7 @@ export interface IApiEndpointBase extends IResource {
   slug: string;
   publisher: string;
   description: string;
+  region?: number;
   disabled?: boolean;
   specialties?: string[];
   body: string;

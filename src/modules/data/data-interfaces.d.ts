@@ -19,6 +19,7 @@ export interface IDataBase extends IResource {
   type: string;
   file: string;
   publisher?: string;
+  region?: number;
   tags?: string[];
   hidden: boolean;
   hideMetas: boolean;
