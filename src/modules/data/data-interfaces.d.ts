@@ -38,3 +38,17 @@ export interface IDataTypeBase extends IResource {
 export interface IPublisherBase extends IResource {
   title: string;
 } export interface IPublisher extends IPublisherBase, Document {}
+
+
+export interface IGeoDataBase extends IResource {
+  title: string;
+  category: string;
+  timeTags: string[];
+  description: string;
+  file: string;
+  publisher?: string;
+  region?: number;
+  tags?: string[];
+  hidden: boolean;
+  hideMetas: boolean;
+} export interface IGeoData extends IGeoDataBase, Document {}

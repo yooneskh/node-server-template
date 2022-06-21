@@ -91,11 +91,13 @@ import { DataRouter } from './modules/data/data-resource';
 import { TimeTagRouter } from './modules/data/time-tag-resource';
 import { DataTypeRouter } from './modules/data/data-type-resource';
 import { PublisherRouter } from './modules/data/publisher-resource';
+import { GeoDataRouter } from './modules/data/geo-data-resource';
 app.use('/api/datacategories', DataCategoryRouter);
 app.use('/api/data', DataRouter);
 app.use('/api/timetags', TimeTagRouter);
 app.use('/api/datatypes', DataTypeRouter);
 app.use('/api/publishers', PublisherRouter);
+app.use('/api/geodata', GeoDataRouter);
 
 import { ApiEndpointRouter } from './modules/api/api-endpoint-resource';
 import { ApiVersionRouter } from './modules/api/api-version-resource';
