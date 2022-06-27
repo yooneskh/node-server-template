@@ -202,17 +202,17 @@ maker.addActions([
 
       const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
-      // const categories = await DataCategoryController.list({
-      //   filters: {
-      //     _id: { $in: categoryIds }
-      //   },
-      //   includes: {
-      //     'thumbnail': 'path'
-      //   },
-      //   sorts: {
-      //     'order': 1
-      //   },
-      // });
+      const categories = await DataCategoryController.list({
+        filters: {
+          _id: { $in: categoryIds }
+        },
+        includes: {
+          'thumbnail': 'path'
+        },
+        sorts: {
+          'order': 1
+        },
+      });
 
       // for (let i = 0; i < categories.length; i++) {
       //   if (!categories[i].parent) continue;
@@ -229,7 +229,7 @@ maker.addActions([
       // console.log({ endpoints, categoryIds, categories });
 
       // return uniqBy(categories, it => String(it._id));
-      return { categoryIds };
+      return { categories };
 
     }
   },
