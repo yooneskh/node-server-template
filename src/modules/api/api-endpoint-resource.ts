@@ -198,7 +198,7 @@ maker.addActions([
     signal: ['Route', 'ApiEndpoint', 'CategoriesTree'],
     dataProvider: async () => {
 
-      // const endpoints = await ApiEndpointController.list({});
+      const endpoints = await ApiEndpointController.list({});
 
       // const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
@@ -229,7 +229,7 @@ maker.addActions([
       // console.log({ endpoints, categoryIds, categories });
 
       // return uniqBy(categories, it => String(it._id));
-      return 'hello';
+      return { endpoints };
 
     }
   },
