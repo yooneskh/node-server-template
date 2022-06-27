@@ -198,38 +198,38 @@ maker.addActions([
     signal: ['Route', 'ApiEndpoint', 'CategoriesTree'],
     dataProvider: async () => {
 
-      const endpoints = await ApiEndpointController.list({});
+      // const endpoints = await ApiEndpointController.list({});
 
-      const categoryIds = [... new Set( endpoints.map(it => it.category) )];
+      // const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
-      const categories = await DataCategoryController.list({
-        filters: {
-          _id: { $in: categoryIds }
-        },
-        includes: {
-          'thumbnail': 'path'
-        },
-        sorts: {
-          'order': 1
-        },
-      });
+      // const categories = await DataCategoryController.list({
+      //   filters: {
+      //     _id: { $in: categoryIds }
+      //   },
+      //   includes: {
+      //     'thumbnail': 'path'
+      //   },
+      //   sorts: {
+      //     'order': 1
+      //   },
+      // });
 
-      for (let i = 0; i < categories.length; i++) {
-        if (!categories[i].parent) continue;
+      // for (let i = 0; i < categories.length; i++) {
+      //   if (!categories[i].parent) continue;
 
-        categories.push(await DataCategoryController.retrieve({
-          resourceId: categories[i].parent,
-          includes: {
-            'thumbnail': 'path'
-          },
-        }));
+      //   categories.push(await DataCategoryController.retrieve({
+      //     resourceId: categories[i].parent,
+      //     includes: {
+      //       'thumbnail': 'path'
+      //     },
+      //   }));
 
-      }
+      // }
 
       // console.log({ endpoints, categoryIds, categories });
 
       // return uniqBy(categories, it => String(it._id));
-      return categories;
+      return 'hello';
 
     }
   },
