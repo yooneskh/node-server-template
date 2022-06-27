@@ -200,7 +200,7 @@ maker.addActions([
 
       const endpoints = await ApiEndpointController.list({});
 
-      // const categoryIds = [... new Set( endpoints.map(it => it.category) )];
+      const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
       // const categories = await DataCategoryController.list({
       //   filters: {
@@ -229,7 +229,7 @@ maker.addActions([
       // console.log({ endpoints, categoryIds, categories });
 
       // return uniqBy(categories, it => String(it._id));
-      return { endpoints };
+      return { categoryIds };
 
     }
   },
