@@ -2,6 +2,7 @@ import { IGeoData, IGeoDataBase } from './data-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { PublisherController } from './publisher-resource';
 import { DataCategoryController, getSuccessorIds } from './data-category-resource';
+import uniqBy from 'lodash/uniqBy';
 
 
 const maker = new ResourceMaker<IGeoDataBase, IGeoData>('GeoData');
@@ -204,6 +205,45 @@ maker.addActions([
         limit: 30,
         skipKeyCheck: true
       });
+
+    }
+  },
+  { // get categories tree
+    method: 'GET',
+    path: '/categories/tree',
+    signal: ['Route', 'ApiEndpoint', 'CategoriesTree'],
+    dataProvider: async () => {
+
+      const endpoints = await GeoDataController.list({});
+
+      const categoryIds = [... new Set( endpoints.map(it => it.category) )];
+
+      const categories = await DataCategoryController.list({
+        filters: {
+          _id: { $in: categoryIds }
+        },
+        includes: {
+          'file': 'path'
+        },
+        sorts: {
+          'order': 1
+        },
+        limit: 30,
+      });
+
+      for (let i = 0; i < categories.length; i++) {
+        if (!categories[i].parent) continue;
+
+        categories.push(await DataCategoryController.retrieve({
+          resourceId: categories[i].parent,
+          includes: {
+            'file': 'path'
+          },
+        }));
+
+      }
+
+      return uniqBy(categories, it => String(it._id));
 
     }
   }
