@@ -203,20 +203,20 @@ maker.addActions([
 
       const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
-      const categories = await DataCategoryController.list({
-        filters: {
-          _id: { $in: categoryIds }
-        },
-        includes: {
-          'thumbnail': 'path'
-        },
-        sorts: {
-          'order': 1
-        },
-        limit: 30,
-      });
+      // const categories = await DataCategoryController.list({
+      //   filters: {
+      //     _id: { $in: categoryIds }
+      //   },
+      //   includes: {
+      //     'thumbnail': 'path'
+      //   },
+      //   sorts: {
+      //     'order': 1
+      //   },
+      //   limit: 30,
+      // });
 
-      return { categories };
+      return { categoryIds };
       // for (let i = 0; i < categories.length; i++) {
       //   if (!categories[i].parent) continue;
 
