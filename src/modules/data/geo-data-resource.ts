@@ -223,12 +223,11 @@ maker.addActions([
           _id: { $in: categoryIds }
         },
         includes: {
-          'file': 'path'
+          'thumbnail': 'path'
         },
         sorts: {
           'order': 1
         },
-        limit: 30,
       });
 
       for (let i = 0; i < categories.length; i++) {
@@ -237,7 +236,7 @@ maker.addActions([
         categories.push(await DataCategoryController.retrieve({
           resourceId: categories[i].parent,
           includes: {
-            'file': 'path'
+            'thumbnail': 'path'
           },
         }));
 

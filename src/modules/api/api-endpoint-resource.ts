@@ -212,7 +212,6 @@ maker.addActions([
         sorts: {
           'order': 1
         },
-        limit: 30,
       });
 
       for (let i = 0; i < categories.length; i++) {
@@ -226,6 +225,8 @@ maker.addActions([
         }));
 
       }
+
+      console.log({ endpoints, categoryIds, categories });
 
       return uniqBy(categories, it => String(it._id));
 
