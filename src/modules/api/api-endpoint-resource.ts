@@ -226,9 +226,10 @@ maker.addActions([
 
       }
 
-      console.log({ endpoints, categoryIds, categories });
+      // console.log({ endpoints, categoryIds, categories });
 
-      return uniqBy(categories, it => String(it._id));
+      // return uniqBy(categories, it => String(it._id));
+      return categories;
 
     }
   },
