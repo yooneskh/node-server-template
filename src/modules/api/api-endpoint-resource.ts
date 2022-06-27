@@ -2,7 +2,6 @@ import { IApiEndpoint, IApiEndpointBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { isSlug } from '../../util/validators';
 import { DataCategoryController, getSuccessorIds } from '../data/data-category-resource';
-import uniqBy from 'lodash/uniqBy';
 
 
 const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
@@ -203,20 +202,20 @@ maker.addActions([
 
       const categoryIds = [... new Set( endpoints.map(it => it.category) )];
 
-      // const categories = await DataCategoryController.list({
-      //   filters: {
-      //     _id: { $in: categoryIds }
-      //   },
-      //   includes: {
-      //     'thumbnail': 'path'
-      //   },
-      //   sorts: {
-      //     'order': 1
-      //   },
-      //   limit: 30,
-      // });
+      const categories = await DataCategoryController.list({
+        filters: {
+          _id: { $in: categoryIds }
+        },
+        includes: {
+          'thumbnail': 'path'
+        },
+        sorts: {
+          'order': 1
+        },
+        limit: 30,
+      });
 
-      return { categoryIds };
+      return { categories };
       // for (let i = 0; i < categories.length; i++) {
       //   if (!categories[i].parent) continue;
 
