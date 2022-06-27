@@ -2,6 +2,7 @@ import { IApiEndpoint, IApiEndpointBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { isSlug } from '../../util/validators';
 import { DataCategoryController, getSuccessorIds } from '../data/data-category-resource';
+import { uniqBy } from 'lodash';
 
 
 const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
@@ -173,22 +174,21 @@ maker.addActions([
         limit: 30,
       });
 
-      return { categories };
-      // for (let i = 0; i < categories.length; i++) {
-      //   if (!categories[i].parent) continue;
+      for (let i = 0; i < categories.length; i++) {
+        if (!categories[i].parent) continue;
 
-      //   categories[i] = await DataCategoryController.retrieve({
-      //     resourceId: categories[i].parent,
-      //     includes: {
-      //       'thumbnail': 'path'
-      //     },
-      //   });
+        categories[i] = await DataCategoryController.retrieve({
+          resourceId: categories[i].parent,
+          includes: {
+            'thumbnail': 'path'
+          },
+        });
 
-      //   i--;
+        i--;
 
-      // }
+      }
 
-      // return uniqBy(categories, it => String(it._id));
+      return uniqBy(categories, it => String(it._id));
 
     }
   },
@@ -215,20 +215,19 @@ maker.addActions([
         limit: 30,
       });
 
-      return { categories };
-      // for (let i = 0; i < categories.length; i++) {
-      //   if (!categories[i].parent) continue;
+      for (let i = 0; i < categories.length; i++) {
+        if (!categories[i].parent) continue;
 
-      //   categories.push(await DataCategoryController.retrieve({
-      //     resourceId: categories[i].parent,
-      //     includes: {
-      //       'thumbnail': 'path'
-      //     },
-      //   }));
+        categories.push(await DataCategoryController.retrieve({
+          resourceId: categories[i].parent,
+          includes: {
+            'thumbnail': 'path'
+          },
+        }));
 
-      // }
+      }
 
-      // return uniqBy(categories, it => String(it._id));
+      return uniqBy(categories, it => String(it._id));
 
     }
   },
