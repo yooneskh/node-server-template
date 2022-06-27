@@ -194,8 +194,8 @@ maker.addActions([
   },
   { // get categories tree
     method: 'GET',
-    path: '/categories/tree',
-    signal: ['Route', 'ApiEndpoint', 'CategoriesTree'],
+    path: '/categories/tree/2',
+    signal: ['Route', 'ApiEndpoint', 'CategoriesTree22'],
     dataProvider: async () => {
 
       const endpoints = await ApiEndpointController.list({});
