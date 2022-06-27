@@ -174,21 +174,22 @@ maker.addActions([
         limit: 30,
       });
 
-      for (let i = 0; i < categories.length; i++) {
-        if (!categories[i].parent) continue;
+      return { categories };
+      // for (let i = 0; i < categories.length; i++) {
+      //   if (!categories[i].parent) continue;
 
-        categories[i] = await DataCategoryController.retrieve({
-          resourceId: categories[i].parent,
-          includes: {
-            'thumbnail': 'path'
-          },
-        });
+      //   categories[i] = await DataCategoryController.retrieve({
+      //     resourceId: categories[i].parent,
+      //     includes: {
+      //       'thumbnail': 'path'
+      //     },
+      //   });
 
-        i--;
+      //   i--;
 
-      }
+      // }
 
-      return uniqBy(categories, it => String(it._id));
+      // return uniqBy(categories, it => String(it._id));
 
     }
   },
@@ -212,9 +213,10 @@ maker.addActions([
         sorts: {
           'order': 1
         },
-        limit: 30
+        limit: 30,
       });
 
+      return { categories };
       // for (let i = 0; i < categories.length; i++) {
       //   if (!categories[i].parent) continue;
 
@@ -227,10 +229,7 @@ maker.addActions([
 
       // }
 
-      // console.log({ endpoints, categoryIds, categories });
-
       // return uniqBy(categories, it => String(it._id));
-      return { categories };
 
     }
   },
