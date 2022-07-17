@@ -1,6 +1,6 @@
 import { IApiVersion, IApiVersionBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { makeHttpParamProperty } from './api-util';
+import { makeHttpParamProperty, makeHttpParamValueProperty } from './api-util';
 import { runHttpApi , runSoapApi } from './runner/api-http-runner';
 import { ServerError } from '../../global/errors';
 import { ApiEndpointController } from './api-endpoint-resource';
@@ -82,6 +82,10 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    ...makeHttpParamValueProperty('staticHeaders', 'Headerهای ثابت'),
+    hideInTable: true
+  },
+  {
     key: 'disabled',
     type: 'boolean',
     title: 'غیر فعال شده',
@@ -134,7 +138,7 @@ maker.addProperties([
     itemWidth: 4,
     hideInTable: true
   },
-    {
+  {
     vIf: { 'type': 'soap' },
     key: 'soapBody',
     type: 'string',

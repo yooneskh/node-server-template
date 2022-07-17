@@ -30,3 +30,28 @@ export function makeHttpParamProperty(key: string, title: string): ResourceModel
     title
   };
 }
+
+export function makeHttpParamValueProperty(key: string, title: string): ResourceModelProperty {
+  return {
+    key,
+    type: 'series',
+    serieBase: {},
+    serieSchema: [
+      {
+        key: 'key',
+        type: 'string',
+        required: true,
+        title: 'کلید',
+        width: 6
+      },
+      {
+        key: 'value',
+        type: 'string',
+        required: true,
+        title: 'مقار',
+        width: 6
+      }
+    ],
+    title
+  };
+}

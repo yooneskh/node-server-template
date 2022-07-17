@@ -154,8 +154,16 @@ export async function runHttpApi(api: IApiVersion, payload?: IApiHttpRunPayload)
 
   }
 
+  const requestHeaders = payload?.headers ?? {};
+
+  if (api.staticHeaders) {
+    for (const header of api.staticHeaders ?? []) {
+      requestHeaders[header.key] = header.value;
+    }
+  }
+
   const timeBegin = Date.now();
-  const { headers, status, data } = await YNetwork[api.method!.toLowerCase()](url, payload?.body, payload?.headers);
+  const { headers, status, data } = await YNetwork[api.method!.toLowerCase()](url, payload?.body, requestHeaders);
   const timeEnd = Date.now();
 
   if (!( status > 0 )) {
@@ -192,13 +200,22 @@ export async function runSoapApi(api: IApiVersion, payload?: IApiHttpRunPayload)
     };
   }
 
-  let url = api.url!;
-  let template = api.soapBody;
-  var templateScript = Handlebars.compile(myunescape(template));
+  var templateScript = Handlebars.compile(myunescape(api.soapBody));
   var body = templateScript(payload?.body);
 
+  const requestHeaders = {
+    "Content-Type": "text/xml",
+    ...(payload?.headers ?? {})
+  } as Record<string, string>;
+
+  if (api.staticHeaders) {
+    for (const header of api.staticHeaders ?? []) {
+      requestHeaders[header.key] = header.value;
+    }
+  }
+
   const timeBegin = Date.now();
-  const { headers, status, data } = await YNetwork["post"](url, body, {"Content-Type":"text/xml"});
+  const { headers, status, data } = await YNetwork["post"](api.url, body, requestHeaders);
   const timeEnd = Date.now();
 
   if (!( status > 0 )) {

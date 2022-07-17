@@ -37,6 +37,11 @@ interface IApiHttpParam {
   type: 'string' | 'number';
 }
 
+interface IApiHttpParamValue {
+  key: string;
+  value: string;
+}
+
 interface IApiHttpBodySchema {
   key: string;
   type: 'object' | 'array' | 'string' | 'number' | 'boolean';
@@ -66,6 +71,7 @@ export interface IApiVersionBase extends IResource {
   queryParams?: IApiHttpParam[];
   pathParams?: IApiHttpParam[];
   headers?: IApiHttpParam[];
+  staticHeaders?: IApiHttpParamValue[];
   disabled?: boolean;
   disabledMessage?: string;
   hasBody?: boolean;
