@@ -3,6 +3,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { isSlug } from '../../util/validators';
 import { DataCategoryController, getSuccessorIds } from '../data/data-category-resource';
 import { uniqBy } from 'lodash';
+import { TimeTagController } from '../data/time-tag-resource';
 
 
 const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
@@ -61,6 +62,15 @@ maker.addProperties([
     key: 'disabled',
     type: 'boolean',
     title: 'غیرفعال شده',
+    hideInTable: true
+  },
+  {
+    key: 'timeTags',
+    type: 'string',
+    ref: 'TimeTag',
+    isArray: true,
+    required: true,
+    title: 'تگ‌های زمانی',
     hideInTable: true
   },
   {
@@ -298,17 +308,42 @@ maker.addActions([
 
       if (timeFrom || timeTo) {
 
-        const criteria = {} as any;
+        const allTimeTags = await TimeTagController.list({
+          lean: true
+        });
 
-        if (timeFrom) {
-          criteria['$gte'] = Number(timeFrom); // todo: use time tags for this
-        }
+        const targetTimeTags = allTimeTags.filter(timeTag => {
 
-        if (timeTo) {
-          criteria['$lte'] = Number(timeTo); // todo: use time tags for this
-        }
+          const [tagStart, _tagEnd] = (
+            timeTag.title.split('-')
+              .map(Number)
+              .map(it => it > 1300 ? it : 1300 + it)
+          );
 
-        filters['createdAt'] = criteria;
+          const tagEnd = _tagEnd || tagStart;
+
+
+          const [filterStart, filterEnd] = (
+            [timeFrom, timeTo]
+              .map(Number)
+              .map(it => it > 1300 ? it : 1300 + it)
+          );
+
+
+          if (filterStart && filterEnd) {
+            return filterStart <= tagStart && tagEnd <= filterEnd;
+          }
+
+          if (filterStart) {
+            return filterStart <= tagStart;
+          }
+
+          return tagEnd <= filterEnd;
+
+        });
+
+
+        filters['timeTags'] = { $in: targetTimeTags.map(it => it._id) };
 
       }
 
