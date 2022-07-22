@@ -90,56 +90,56 @@ maker.addAction({
   method: 'POST',
   path: '/identity/initialize',
   signal: ['Route', 'Auth', 'InitializeIdentity'],
-  async dataProvider({ /* payload */ }) {
+  async dataProvider({ payload }) {
 
-    // const { token } = payload;
-    // if (!token) throw new InvalidRequestError('invalid token', 'توکن صحیح نیست');
+    const { token } = payload;
+    if (!token) throw new InvalidRequestError('invalid token', 'توکن صحیح نیست');
 
-    // const profile = await getUserProfile(token);
-    // let user: IUser;
+    const profile = await getUserProfile(token);
+    let user: IUser;
 
-    // try {
-    //   user = await UserController.findOne({
-    //     filters: {
-    //       ssoId: profile.SSOId
-    //     },
-    //   });
-    // }
-    // catch {
+    try {
+      user = await UserController.findOne({
+        filters: {
+          ssoId: profile.SSOId
+        },
+      });
+    }
+    catch {
 
-    //   user = await UserController.create({
-    //     payload: {
-    //       name: `${profile.firstName || ''} ${profile.lastName || ''}`,
-    //       phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
-    //       ssoId: profile.SSOId,
-    //       permissions: ['user.*']
-    //     }
-    //   });
+      user = await UserController.create({
+        payload: {
+          name: profile.type === 'personal' ? `${profile.firstName || ''} ${profile.lastName || ''}` : profile.companyName,
+          phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
+          ssoId: profile.SSOId,
+          permissions: ['user.*']
+        }
+      });
 
-    // }
+    }
 
 
-    // await UserController.edit({
-    //   resourceId: user._id,
-    //   payload: {
-    //     name: `${profile.firstName || ''} ${profile.lastName || ''}`,
-    //     email: profile.email,
-    //     phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
-    //     sarvInfo: profile,
-    //     firstName: profile.firstName,
-    //     lastName: profile.lastName,
-    //     fatherName: profile.fatherName,
-    //     dateOfBirth: profile.dateOfBirth,
-    //     address: profile.address,
-    //     type: profile.type,
-    //     nationalCode: profile.nationalCode,
-    //     companyName: profile.companyName,
-    //     companyRegistrationDate: profile.companyRegistrationDate,
-    //     companyType: profile.companyType,
-    //     economicalCode: profile.economicalCode,
-    //     registrationCode: profile.registrationCode
-    //   }
-    // });
+    await UserController.edit({
+      resourceId: user._id,
+      payload: {
+        name: profile.type === 'personal' ? `${profile.firstName || ''} ${profile.lastName || ''}` : profile.companyName,
+        email: profile.email,
+        phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
+        sarvInfo: profile,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        fatherName: profile.fatherName,
+        dateOfBirth: profile.dateOfBirth,
+        address: profile.address,
+        type: profile.type,
+        nationalCode: profile.nationalCode,
+        companyName: profile.companyName,
+        companyRegistrationDate: profile.companyRegistrationDate,
+        companyType: profile.companyType,
+        economicalCode: profile.economicalCode,
+        registrationCode: profile.registrationCode
+      }
+    });
 
     return true;
 
