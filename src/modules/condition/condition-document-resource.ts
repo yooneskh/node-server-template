@@ -42,6 +42,12 @@ maker.addProperties([
     ]
   },
   {
+    key: 'hasLimitedValidity',
+    type: 'boolean',
+    title: 'قابل انقضا',
+  },
+  {
+    vIf: { hasLimitedValidity: true },
     key: 'validityDays',
     type: 'number',
     conditionalRequired: true,
