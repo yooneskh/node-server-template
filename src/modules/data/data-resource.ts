@@ -51,7 +51,6 @@ maker.addProperties([
     key: 'file',
     type: 'string',
     ref: 'Media',
-    required: true,
     title: 'فایل'
   },
   {
