@@ -16,13 +16,14 @@ maker.addProperties([
   {
     key: 'viewType',
     type: 'string',
-    enum: ['card', 'containedImageCard', 'table'],
+    enum: ['card', 'containedImageCard', 'table', 'visualization'],
     required: true,
     title: 'نحوه نمایش',
     items: [
       { value: 'card', text: 'کارتی' },
       { value: 'containedImageCard', text: 'کارت با نمایش تصویر کامل' },
-      { value: 'table', text: 'جدولی' }
+      { value: 'table', text: 'جدولی' },
+      { value: 'visualization', text: 'گزارش' },
     ]
   },
   {
