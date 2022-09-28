@@ -54,6 +54,12 @@ maker.addProperties([
     title: 'فایل'
   },
   {
+    key: 'visualization',
+    type: 'string',
+    title: 'شناسه گزارش',
+    hidden: true,
+  },
+  {
     key: 'publisher',
     type: 'string',
     ref: 'Publisher',
