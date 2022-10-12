@@ -1,9 +1,10 @@
-import { ITicket, ITicketBase, ITicketCategory } from './ticket-interfaces';
+import { ITicket, ITicketBase, ITicketCategory, ITicketMessage } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
 import { TicketCategoryController, TicketCategoryUserRelationController } from './ticket-category-resource';
 import { extractFilterQueryObject, extractIncludeQueryObject, extractSortQueryObject } from '../../plugins/resource-maker/resource-router-util';
 import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from '../../plugins/resource-maker/config';
+import { YEventManager } from '../../plugins/event-manager/event-manager';
 
 
 const maker = new ResourceMaker<ITicketBase, ITicket>('Ticket');
@@ -254,3 +255,17 @@ maker.addActions([
 
 
 export const TicketRouter = maker.getRouter();
+
+
+YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_ticketMessageId: string, ticketMessage: ITicketMessage) => {
+
+  const ticket = await TicketController.retrieve({ resourceId: ticketMessage.ticket });
+
+  TicketController.edit({
+    resourceId: ticket._id,
+    payload: {
+      status: (ticketMessage.user === ticket.user) ? ('pending') : ('answered'),
+    },
+  });
+
+});
