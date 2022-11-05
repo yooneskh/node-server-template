@@ -25,8 +25,6 @@ maker.addProperties([
   {
     key: 'ssoId',
     type: 'string',
-    index: true,
-    unique: true,
     hidden: true
   },
   {
