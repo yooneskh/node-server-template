@@ -334,7 +334,7 @@ maker.addActions([
             return (filterStart <= tagStart && filterEnd >= tagEnd) || (filterStart >= tagStart && filterStart <= tagEnd) || (filterEnd >= tagStart && filterEnd <= tagEnd);
           }
           else if (filterStart) {
-            return tagStart <= filterStart || filterStart <= tagEnd;
+            return filterStart <= tagStart || filterStart <= tagEnd;
           }
           else {
             return tagStart <= filterEnd || tagEnd <= filterEnd;
