@@ -330,7 +330,7 @@ maker.addActions([
           );
 
 
-          return filterStart <= tagStart || tagEnd <= filterEnd;
+          return (filterStart >= tagStart && filterStart <= tagEnd) || (filterEnd >= tagStart && filterEnd <= tagEnd);
 
         });
 
