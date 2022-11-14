@@ -1,7 +1,7 @@
-import { IApiTicket, IApiTicketBase, ITicketCategory, ITicketMessage } from './ticket-interfaces';
+import { IApiTicket, IApiTicketBase, ITicketMessage } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidRequestError, InvalidStateError } from '../../global/errors';
-import { TicketCategoryController, TicketCategoryUserRelationController } from './ticket-category-resource';
+import { TicketCategoryUserRelationController } from './ticket-category-resource';
 import { extractFilterQueryObject, extractIncludeQueryObject, extractSortQueryObject } from '../../plugins/resource-maker/resource-router-util';
 import { RESOURCE_ROUTER_LIST_LIMIT_MAX } from '../../plugins/resource-maker/config';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
