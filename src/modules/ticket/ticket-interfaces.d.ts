@@ -28,3 +28,11 @@ export interface ITicketMessageBase extends IResource {
   body: string;
   files?: string[];
 } export interface ITicketMessage extends ITicketMessageBase, Document {}
+
+export interface IApiTicketBase extends IResource {
+  user: string;
+  category: string;
+  apiPermit: string;
+  title: string;
+  status: 'pending' | 'answered' | 'closed' | 'archived' | 'deleted';
+} export interface IApiTicket extends IApiTicketBase, Document {}

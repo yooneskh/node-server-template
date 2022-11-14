@@ -142,6 +142,12 @@ app.use('/api/paytickets', PayTicketRouter);
 import './modules/accounting/account-listeners';
 
 
+import { ApiTicketRouter } from './modules/ticket/api-ticket-resource';
+import { TicketMessageRouter } from './modules/ticket/ticket-message-resource';
+app.use('/api/apitickets', ApiTicketRouter);
+app.use('/api/ticketmessages', TicketMessageRouter);
+
+
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
 
