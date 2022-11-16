@@ -25,7 +25,7 @@ maker.addProperties([
   {
     key: 'ssoId',
     type: 'string',
-    hidden: true
+    hideInTable: true,
   },
   {
     key: 'email',
