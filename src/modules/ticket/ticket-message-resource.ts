@@ -1,6 +1,6 @@
 import { ITicket, ITicketMessage, ITicketMessageBase } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
-import { TicketController } from './ticket-resource';
+import { ApiTicketController } from './api-ticket-resource';
 import { InvalidStateError } from '../../global/errors';
 import { TicketCategoryUserRelationController } from './ticket-category-resource';
 
@@ -64,7 +64,7 @@ maker.addActions([
     permissionFunction: async ({ user, hasPermission, payload }) => {
       if (!user) return false;
 
-      const ticket = await TicketController.retrieve({ resourceId: payload.ticket });
+      const ticket = await ApiTicketController.retrieve({ resourceId: payload.ticket });
       if (ticket.user === String(user._id) && payload.user === String(user._id)) return true;
 
       if (hasPermission('admin.ticket-message.create')) return true;
@@ -72,7 +72,7 @@ maker.addActions([
       if (hasPermission('admin.ticket.manage')) {
 
         const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
-        const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
+        const permittedTicketIds = (await ApiTicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
 
         return permittedTicketIds.includes(payload.ticket) && payload.user === String(user._id);
 
@@ -83,7 +83,7 @@ maker.addActions([
     },
     stateValidator: async ({ payload, bag }) => {
 
-      bag.ticket = await TicketController.retrieve({ resourceId: payload.ticket });
+      bag.ticket = await ApiTicketController.retrieve({ resourceId: payload.ticket });
       if (['archived', 'deleted'].includes(bag.ticket.status)) {
         throw new InvalidStateError('invalid ticket state.', 'تیکت در وضعیت مناسب برای پیام گذاشتن نیست.');
       }
@@ -94,7 +94,7 @@ maker.addActions([
       const ticket = bag.ticket as ITicket;
       const isOwn = String(user!!._id) === ticket.user;
 
-      await TicketController.edit({
+      await ApiTicketController.edit({
         resourceId: ticket._id,
         payload: {
           status: isOwn ? 'pending' : 'answered'
@@ -112,7 +112,7 @@ maker.addActions([
     permissionFunction: async ({ user, hasPermission, params: { ticketId }, bag }) => {
       if (!user) return false;
 
-      bag.ticket = await TicketController.retrieve({
+      bag.ticket = await ApiTicketController.retrieve({
         resourceId: ticketId,
         includes: {
           'category': ''
@@ -126,7 +126,7 @@ maker.addActions([
       if (hasPermission('admin.ticket.manage')) {
 
         const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
-        const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
+        const permittedTicketIds = (await ApiTicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
 
         return permittedTicketIds.includes(ticketId);
 
@@ -137,7 +137,7 @@ maker.addActions([
     },
     dataProvider: async ({ params: { ticketId }, bag }) => {
       return {
-        ticket: bag.ticket || await TicketController.retrieve({
+        ticket: bag.ticket || await ApiTicketController.retrieve({
           resourceId: ticketId,
           includes: {
             'category': ''
