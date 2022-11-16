@@ -12,7 +12,13 @@ maker.addProperties([
     required: true,
     title: 'عنوان',
     titleable: true
-  }
+  },
+  {
+    key: 'logo',
+    type: 'string',
+    ref: 'Media',
+    title: 'لوگو',
+  },
 ]);
 
 
