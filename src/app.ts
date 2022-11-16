@@ -143,8 +143,10 @@ import './modules/accounting/account-listeners';
 
 
 import { ApiTicketRouter } from './modules/ticket/api-ticket-resource';
+import { TicketCategoryRouter } from './modules/ticket/ticket-category-resource';
 import { TicketMessageRouter } from './modules/ticket/ticket-message-resource';
 app.use('/api/apitickets', ApiTicketRouter);
+app.use('/api/ticketcategories', TicketCategoryRouter);
 app.use('/api/ticketmessages', TicketMessageRouter);
 
 
