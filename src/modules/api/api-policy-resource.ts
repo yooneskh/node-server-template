@@ -18,7 +18,8 @@ maker.addProperties([
     type: 'string',
     required: true,
     title: 'توضیحات',
-    longText: true
+    longText: true,
+    hideInTable: true,
   },
   {
     key: 'hasPaymentConfig',
@@ -29,20 +30,21 @@ maker.addProperties([
     vIf: { hasPaymentConfig: true },
     key: 'paymentStaticCost',
     type: 'number',
-    title: 'هزینه ثابت اولیه (ریال)'
+    title: 'هزینه ثابت اولیه (ریال)',
+    hideInTable: true,
   },
   {
     vIf: { hasPaymentConfig: true },
     key: 'paymentFreeSessionType',
     type: 'string',
     enum: ['none', 'oneTime', 'interval'],
-    required: true,
     title: 'نوع دوره رایگان',
     items: [
       { value: 'none', text: 'ندارد' },
       { value: 'oneTime', text: 'یک بار' },
       { value: 'interval', text: 'دوره‌ای' }
-    ]
+    ],
+    hideInTable: true,
   },
   {
     vIf: { hasPaymentConfig: true, paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
@@ -58,26 +60,29 @@ maker.addProperties([
       { value: 'week', text: 'هفته' },
       { value: 'month', text: 'ماه' },
       { value: 'year', text: 'سال' }
-    ]
+    ],
+    hideInTable: true,
   },
   {
     vIf: { hasPaymentConfig: true, paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'paymentFreeSessionIntervalCount',
     type: 'number',
-    title: 'عدد زمان‌بندی دوره رایگان'
+    title: 'عدد زمان‌بندی دوره رایگان',
+    hideInTable: true,
   },
   {
     vIf: { hasPaymentConfig: true, paymentFreeSessionType: { $in: ['oneTime', 'interval'] } },
     key: 'paymentFreeSessionRequests',
     type: 'number',
-    title: 'تعداد درخواست دوره رایگان'
+    title: 'تعداد درخواست دوره رایگان',
+    hideInTable: true,
   },
   {
     vIf: { hasPaymentConfig: true },
     key: 'paymentRequestCost',
     type: 'number',
-    required: true,
-    title: 'هزینه یک درخواست غیر رایگان (ریال)'
+    title: 'هزینه یک درخواست غیر رایگان (ریال)',
+    hideInTable: true,
   },
   {
     key: 'hasRateLimit',
@@ -89,7 +94,6 @@ maker.addProperties([
     key: 'rateLimitDuration',
     type: 'string',
     enum: ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'],
-    required: true,
     title: 'دوره',
     items: [
       { value: 'second', text: 'ثانیه' },
@@ -99,21 +103,22 @@ maker.addProperties([
       { value: 'week', text: 'هفته' },
       { value: 'month', text: 'ماه' },
       { value: 'year', text: 'سال' }
-    ]
+    ],
+    hideInTable: true,
   },
   {
     vIf: { hasRateLimit: true },
     key: 'rateLimitDurationMultiplier',
     type: 'number',
-    required: true,
-    title: 'تعداد دوره'
+    title: 'تعداد دوره',
+    hideInTable: true,
   },
   {
     vIf: { hasRateLimit: true },
     key: 'rateLimitPoints',
     type: 'number',
-    required: true,
-    title: 'تعداد'
+    title: 'تعداد',
+    hideInTable: true,
   }
 ]);
 
