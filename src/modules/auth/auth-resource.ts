@@ -109,7 +109,7 @@ maker.addAction({
 
       user = await UserController.create({
         payload: {
-          name: profile.type === 'personal' ? `${profile.firstName || ''} ${profile.lastName || ''}` : profile.companyName,
+          name: profile.type === 'person' ? `${profile.firstName || ''} ${profile.lastName || ''}` : profile.companyName,
           phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
           ssoId: profile.SSOId,
           permissions: ['user.*']
@@ -122,7 +122,7 @@ maker.addAction({
     await UserController.edit({
       resourceId: user._id,
       payload: {
-        name: profile.type === 'personal' ? `${profile.firstName || ''} ${profile.lastName || ''}` : profile.companyName,
+        name: profile.type === 'person' ? `${profile.firstName || ''} ${profile.lastName || ''}` : profile.companyName,
         email: profile.email,
         phoneNumber: profile.phoneNumber.startsWith('09') ? `+98${profile.phoneNumber.slice(1)}` : profile.phoneNumber,
         sarvInfo: profile,
