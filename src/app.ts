@@ -54,7 +54,7 @@ app.post('/test', (request, response) => {
 
 // general routes
 
-import './plugins/html-sanitizer/html-sanitizer-processor';
+// import './plugins/html-sanitizer/html-sanitizer-processor';
 import { setGlobalRateLimitOption } from './plugins/rate-limiter/rate-limiter';
 import './plugins/captcha/captcha-processor';
 import './plugins/log-requests/log-request-processor';
