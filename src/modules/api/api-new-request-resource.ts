@@ -46,6 +46,11 @@ maker.addProperties([
   {
     key: 'productType',
     type: 'string',
+    enum: [
+      'وب اپلیکیشن',
+      'موبایل اپلیکیشن',
+      'سایر',
+    ],
     required: true,
     title: 'نوع محصول',
     hideInTable: true,
@@ -128,7 +133,7 @@ maker.addProperties([
       { value: 'month', text: 'ماه' },
       { value: 'year', text: 'سال' }
     ],
-    title: ' مدت زمان دوره',
+    title: 'مدت زمان دوره',
     hideInTable: true,
     width: 6
   },
@@ -139,7 +144,45 @@ maker.addProperties([
     title: 'توضیحات',
     hideInTable: true,
     longText: true
-  }
+  },
+  {
+    key: 'accepted',
+    type: 'boolean',
+    title: 'تایید شده',
+  },
+  {
+    vIf: { accepted: true },
+    key: 'acceptedAt',
+    type: 'number',
+    title: 'زمان تایید',
+    labelFormat: 'jYYYY/jMM/jDD',
+  },
+  {
+    vIf: { accepted: true },
+    key: 'resultingApiEndpoint',
+    type: 'string',
+    ref: 'ApiEndpoint',
+    title: 'واحد Api منتج شده',
+  },
+  {
+    key: 'rejected',
+    type: 'boolean',
+    title: 'رد شده',
+  },
+  {
+    vIf: { rejected: true },
+    key: 'rejectedAt',
+    type: 'number',
+    title: 'زمان رد',
+    labelFormat: 'jYYYY/jMM/jDD',
+  },
+  {
+    vIf: { rejected: true },
+    key: 'rejectedFor',
+    type: 'string',
+    title: 'دلیل رد',
+    longText: true,
+  },
 ]);
 
 
