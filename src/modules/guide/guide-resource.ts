@@ -24,6 +24,7 @@ maker.addProperties([
     type: 'string',
     title: 'محتوا',
     richText: true,
+    hideInTable: true,
   },
 ]);
 
