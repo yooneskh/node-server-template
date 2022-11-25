@@ -269,7 +269,8 @@ maker.addActions([
           enabled: true,
           apiKey: makeUUID(3),
           identifier: makeUUID(3),
-          policy: apiEndpoint.testVersionPolicy
+          policy: apiEndpoint.testVersionPolicy,
+          isTestPermit: true,
         }
       });
 

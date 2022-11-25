@@ -153,7 +153,12 @@ maker.addProperties([
     type: 'string',
     title: 'معتبر تا زمان',
     dir: 'ltr'
-  }
+  },
+  { // isTestPermit
+    key: 'isTestPermit',
+    type: 'boolean',
+    title: 'مجوز آزمایشی',
+  },
 ]);
 
 
