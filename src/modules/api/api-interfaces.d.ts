@@ -200,4 +200,6 @@ export interface IApiRequestBase extends IResource {
   isRejected?: boolean;
   rejectedAt?: number;
   rejectedFor?: string;
+  testPermit?: string;
+  completePermit?: string;
 } export interface IApiRequest extends IApiRequestBase, Document {}

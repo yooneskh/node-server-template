@@ -184,7 +184,19 @@ maker.addProperties([
     key: 'canceledFor',
     type: 'string',
     title: 'دلیل لغو'
-  }
+  },
+  {
+    key: 'testPermit',
+    type: 'string',
+    ref: 'ApiPermit',
+    title: 'مجوز آزمایشی',
+  },
+  {
+    key: 'completePermit',
+    type: 'string',
+    ref: 'ApiPermit',
+    title: 'مجوز کامل',
+  },
 ]);
 
 
@@ -251,18 +263,7 @@ maker.addActions([
       }
 
 
-      await ApiRequestController.edit({
-        resourceId,
-        payload: {
-          isCompleted: true,
-          completedAt: Date.now(),
-          isTesting: true,
-          testingAt: Date.now()
-        }
-      });
-
-
-      await ApiPermitController.create({
+      const permit = await ApiPermitController.create({
         payload: {
           user: user!._id,
           apiEndpoint: apiRequest.apiEndpoint,
@@ -271,6 +272,17 @@ maker.addActions([
           identifier: makeUUID(3),
           policy: apiEndpoint.testVersionPolicy,
           isTestPermit: true,
+        }
+      });
+
+      await ApiRequestController.edit({
+        resourceId,
+        payload: {
+          isCompleted: true,
+          completedAt: Date.now(),
+          isTesting: true,
+          testingAt: Date.now(),
+          testPermit: permit._id,
         }
       });
 
@@ -286,18 +298,7 @@ maker.addActions([
       const apiEndpoint = await ApiEndpointController.retrieve({ resourceId: apiRequest.apiEndpoint });
 
 
-      await ApiRequestController.edit({
-        resourceId,
-        payload: {
-          isCompleted: true,
-          completedAt: Date.now(),
-          isAccepted: true,
-          acceptedAt: Date.now(),
-        }
-      });
-
-
-      await ApiPermitController.create({
+      const permit = await ApiPermitController.create({
         payload: {
           user: user!._id,
           apiEndpoint: apiRequest.apiEndpoint,
@@ -307,6 +308,17 @@ maker.addActions([
           policy: apiEndpoint.offers!.find(it =>
             String(it._id) === apiRequest.selectedOffer
           )!.policy
+        }
+      });
+
+      await ApiRequestController.edit({
+        resourceId,
+        payload: {
+          isCompleted: true,
+          completedAt: Date.now(),
+          isAccepted: true,
+          acceptedAt: Date.now(),
+          completePermit: permit._id,
         }
       });
 
