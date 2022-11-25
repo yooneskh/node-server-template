@@ -314,8 +314,6 @@ maker.addActions([
         payload: {
           isCompleted: true,
           completedAt: Date.now(),
-          isAccepted: true,
-          acceptedAt: Date.now(),
           completePermit: permit._id,
         }
       });
