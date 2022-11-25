@@ -278,8 +278,6 @@ maker.addActions([
       await ApiRequestController.edit({
         resourceId,
         payload: {
-          isCompleted: true,
-          completedAt: Date.now(),
           isTesting: true,
           testingAt: Date.now(),
           testPermit: permit._id,
