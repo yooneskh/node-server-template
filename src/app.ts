@@ -150,6 +150,10 @@ app.use('/api/ticketcategories', TicketCategoryRouter);
 app.use('/api/ticketmessages', TicketMessageRouter);
 
 
+import { GuideRouter } from './modules/guide/guide-resource';
+app.use('/api/guides', GuideRouter);
+
+
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
 
