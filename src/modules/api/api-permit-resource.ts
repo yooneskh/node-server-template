@@ -189,6 +189,7 @@ maker.addActions([
         resourceId,
         includes: {
           'apiEndpoint': '',
+          'policy': '',
         }
       });
 
