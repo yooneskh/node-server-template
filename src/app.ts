@@ -154,6 +154,10 @@ import { GuideRouter } from './modules/guide/guide-resource';
 app.use('/api/guides', GuideRouter);
 
 
+import { ApiHomeSettingRouter } from './modules/settings/api-home-settings';
+app.use('/api/settings/api/home', ApiHomeSettingRouter);
+
+
 import { errorHandler } from './global/errors';
 app.use(errorHandler);
 
