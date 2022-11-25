@@ -199,7 +199,7 @@ maker.addActions([
 
       return {
         permit,
-        logs: ApiLogController.list({
+        logs: await ApiLogController.list({
           filters: {
             permit: permit._id,
           }
