@@ -1,5 +1,7 @@
 import { IApiPermit, IApiPermitBase } from './api-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
+import { NotFoundError } from '../../global/errors';
+import { ApiLogController } from './api-log-resource';
 
 
 const maker = new ResourceMaker<IApiPermitBase, IApiPermit>('ApiPermit');
@@ -175,7 +177,37 @@ maker.addActions([
   { template: 'RETRIEVE', /* permissions: ['admin.api-permit.retrieve']  */},
   { template: 'CREATE', permissions: ['admin.api-permit.create'] },
   { template: 'UPDATE', permissions: ['admin.api-permit.update'] },
-  { template: 'DELETE', permissions: ['admin.api-permit.delete'] }
+  { template: 'DELETE', permissions: ['admin.api-permit.delete'] },
+  {
+    method: 'GET',
+    path: '/:resourceId/usage',
+    signal: ['Route', 'ApiPermit', 'GetUsage'],
+    permissionFunction: async ({ user }) => !!user,
+    dataProvider: async ({ resourceId, user }) => {
+
+      const permit = await ApiPermitController.retrieve({
+        resourceId,
+        includes: {
+          'apiEndpoint': '',
+        }
+      });
+
+      if (permit.user !== String(user!._id)) {
+        throw new NotFoundError('مورد خواسته شده یافت نشد.');
+      }
+
+
+      return {
+        permit,
+        logs: ApiLogController.list({
+          filters: {
+            permit: permit._id,
+          }
+        }),
+      };
+
+    }
+  }
 ]);
 
 
