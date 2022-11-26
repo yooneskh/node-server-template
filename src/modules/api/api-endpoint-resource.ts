@@ -70,7 +70,7 @@ maker.addProperties([
     ref: 'TimeTag',
     isArray: true,
     required: true,
-    title: 'تگ‌های زمانی',
+    title: 'تاریخ انتشار',
     hideInTable: true
   },
   {
