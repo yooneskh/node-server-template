@@ -197,6 +197,11 @@ maker.addProperties([
     ref: 'ApiPermit',
     title: 'مجوز کامل',
   },
+  {
+    key: 'step',
+    type: 'number',
+    hidden: true,
+  },
 ]);
 
 
