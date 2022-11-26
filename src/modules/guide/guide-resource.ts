@@ -39,7 +39,7 @@ maker.setValidations({ });
 maker.addActions([
   { template: 'LIST', permissions: ['admin.guide.list'] },
   { template: 'LIST_COUNT', permissions: ['admin.guide.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.guide.retrieve'] },
+  { template: 'RETRIEVE', permissions: ['user.guide.retrieve'] },
   { template: 'CREATE', permissions: ['admin.guide.create'] },
   { template: 'UPDATE', permissions: ['admin.guide.update'] },
   { template: 'DELETE', permissions: ['admin.guide.delete'] }
