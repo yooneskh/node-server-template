@@ -202,6 +202,54 @@ maker.addActions([
 
     }
   },
+  { // get filled categories
+    method: 'GET',
+    path: '/categories/filled/tree',
+    signal: ['Route', 'ApiEndpoint', 'CategoriesFilledTree'],
+    dataProvider: async () => {
+
+      const endpoints = await ApiEndpointController.list({});
+
+      const categoryIds = [... new Set( endpoints.map(it => it.category) )];
+
+      const categories = await DataCategoryController.list({
+        filters: {
+          _id: { $in: categoryIds }
+        },
+        includes: {
+          'thumbnail': 'path'
+        },
+        sorts: {
+          'order': 1
+        },
+        limit: 30,
+      });
+
+      for (let i = 0; i < categories.length; i++) {
+
+        if (!categories[i].parent) {
+          continue;
+        }
+
+        if (categories.some(it => categories[i].parent === String(it._id))) {
+          continue;
+        }
+
+        categories.push(
+          await DataCategoryController.retrieve({
+            resourceId: categories[i].parent,
+            includes: {
+              'thumbnail': 'path'
+            },
+          })
+        );
+
+      }
+
+      return uniqBy(categories, it => String(it._id));
+
+    }
+  },
   { // get categories tree
     method: 'GET',
     path: '/categories/tree/2',
