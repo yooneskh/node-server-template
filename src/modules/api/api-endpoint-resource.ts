@@ -4,6 +4,7 @@ import { isSlug } from '../../util/validators';
 import { DataCategoryController, getSuccessorIds } from '../data/data-category-resource';
 import { uniqBy } from 'lodash';
 import { TimeTagController } from '../data/time-tag-resource';
+import { PublisherController } from '../data/publisher-resource';
 
 
 const maker = new ResourceMaker<IApiEndpointBase, IApiEndpoint>('ApiEndpoint');
@@ -310,7 +311,40 @@ maker.addActions([
       }
 
       if (query) {
-        filters['title'] = { $regex: query, $options: 'i' };
+
+        const validTimeTags = await TimeTagController.list({
+          filters: {
+            title: { $regex: new RegExp(query, 'i') }
+          },
+        });
+
+        const validPublishers = await PublisherController.list({
+          filters: {
+            title: { $regex: new RegExp(query, 'i') }
+          },
+        });
+
+        filters['$or'] = [
+          {
+            title: { $regex: new RegExp(query, 'i') },
+          },
+          {
+            description: { $regex: new RegExp(query, 'i') },
+          },
+          {
+            region: Number(query) || 0,
+          },
+          {
+            specialties: { $regex: new RegExp(query, 'i') } as any,
+          },
+          {
+            timeTags: { $in: validTimeTags.map(it => it._id) },
+          },
+          {
+            publisher: { $in: validPublishers.map(it => it._id) },
+          },
+        ];
+
       }
 
 
@@ -320,7 +354,7 @@ maker.addActions([
           'category': '',
           'category.thumbnail': 'path',
           'publisher': '',
-        }
+        },
       });
 
     }
