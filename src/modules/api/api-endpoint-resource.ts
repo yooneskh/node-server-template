@@ -79,7 +79,13 @@ maker.addProperties([
     required: true,
     title: 'متن توصیف',
     richText: true,
-    hideInTable: true
+    hideInTable: true,
+    defaultMapLocation: {
+      defaultCenter: {
+        latitude: 29.6114188,
+        longitude: 52.5235707,
+      },
+    },
   },
   {
     key: 'offers',
