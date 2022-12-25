@@ -3,6 +3,7 @@ import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { PublisherController } from './publisher-resource';
 import { DataCategoryController, getSuccessorIds } from './data-category-resource';
 import { TimeTagController } from './time-tag-resource';
+import { DataTypeController } from './data-type-resource';
 
 
 const maker = new ResourceMaker<IDataBase, IData>('Data');
@@ -111,19 +112,51 @@ maker.addActions([
     path: '/search/:query',
     signal: ['Resource', 'Data', 'Search'],
     dataProvider: async ({ request: { params: { query } } }) => {
+
+      const validTimeTags = await TimeTagController.list({
+        filters: {
+          title: { $regex: new RegExp(query, 'i') }
+        },
+      });
+
+      const validDataTypes = await DataTypeController.list({
+        filters: {
+          title: { $regex: new RegExp(query, 'i') }
+        },
+      });
+
+      const validPublishers = await PublisherController.list({
+        filters: {
+          title: { $regex: new RegExp(query, 'i') }
+        },
+      });
+
+
       return DataController.list({
         filters: {
           $or: [
             {
-              title: { $regex: new RegExp(query, 'i') }
+              title: { $regex: new RegExp(query, 'i') },
             },
             {
-              description: { $regex: new RegExp(query, 'i') }
+              description: { $regex: new RegExp(query, 'i') },
             },
             {
-              tags: { $regex: new RegExp(query, 'i') } as any
-            }
-          ]
+              region: { $regex: new RegExp(query, 'i') } as any,
+            },
+            {
+              tags: { $regex: new RegExp(query, 'i') } as any,
+            },
+            {
+              timeTags: { $in: validTimeTags.map(it => it._id) },
+            },
+            {
+              type: { $in: validDataTypes.map(it => it._id) },
+            },
+            {
+              publisher: { $in: validPublishers.map(it => it._id) },
+            },
+          ],
         },
         includes: {
           'timeTags': '',
@@ -131,10 +164,11 @@ maker.addActions([
           'type.emptyIcon': 'path',
           'type.smallIcon': 'path',
           'file': '',
-          'publisher': ''
+          'publisher': '',
         },
-        skipKeyCheck: true
+        skipKeyCheck: true,
       });
+
     }
   },
   {
