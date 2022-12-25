@@ -44,6 +44,7 @@ export interface ResourceModelProperty {
   valueFormat?: string;
   items?: { value: string, text: string }[];
   handlerElement?: string;
+  defaultMapLocation?: any;
   // validation
   validator?: RegExp | Function | string;
   conditionalRequired?: boolean;
