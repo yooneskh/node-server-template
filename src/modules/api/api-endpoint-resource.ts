@@ -355,6 +355,7 @@ maker.addActions([
           'category.thumbnail': 'path',
           'publisher': '',
         },
+        skipKeyCheck: true,
       });
 
     }
