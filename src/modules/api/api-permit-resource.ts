@@ -46,26 +46,30 @@ maker.addProperties([
     type: 'number',
     title: 'زمان بلاک شدن',
     labelFormat: 'jYYYY/jMM/jDD',
-    dir: 'ltr'
+    dir: 'ltr',
+    hideInTable: true,
   },
   { // blockageReason
     vIf: { blocked: true },
     key: 'blockageReason',
     type: 'string',
     title: 'دلیل بلاک شدن',
-    longText: true
+    longText: true,
+    hideInTable: true,
   },
   { // apiKey
     key: 'apiKey',
     type: 'string',
     required: true,
-    title: 'کلید Api'
+    title: 'کلید Api',
+    hideInTable: true,
   },
   { // identifier
     key: 'identifier',
     type: 'string',
     required: true,
-    title: 'شناساگر'
+    title: 'شناساگر',
+    hideInTable: true,
   },
   { // policy
     key: 'policy',
@@ -83,7 +87,8 @@ maker.addProperties([
       { value: 'none', text: 'هیچ کدام' },
       { value: 'whitelist', text: 'لیست سفید' },
       { value: 'blacklist', text: 'لیست سیاه' }
-    ]
+    ],
+    hideInTable: true,
   },
   { // filterProperties
     vIf: { filterType: { $in: ['whitelist', 'blacklist'] } },
@@ -91,7 +96,8 @@ maker.addProperties([
     type: 'string',
     isArray: true,
     title: 'پراپرتی‌های فیلتر شده',
-    dir: 'ltr'
+    dir: 'ltr',
+    hideInTable: true,
   },
   { // transforms
     key: 'transforms',
@@ -114,7 +120,8 @@ maker.addProperties([
         longText: true,
         dir: 'ltr'
       }
-    ]
+    ],
+    hideInTable: true,
   },
   { // validFromEnable
     key: 'validFromEnabled',
@@ -127,14 +134,16 @@ maker.addProperties([
     type: 'string',
     title: 'معتبر از روز',
     labelFormat: 'jYYYY/jMM/jDD',
-    valueFormat : 'YYYY/MM/DD'
+    valueFormat : 'YYYY/MM/DD',
+    hideInTable: true,
   },
   { // validFromTime
     vIf : { validFromEnabled: true },
     key: 'validFromTime',
     type: 'string',
     title: 'معتبر از زمان',
-    dir: 'ltr'
+    dir: 'ltr',
+    hideInTable: true,
   },
   { // validToEnable
     key: 'validToEnabled',
@@ -147,14 +156,16 @@ maker.addProperties([
     type: 'string',
     title: 'معتبر تا روز',
     labelFormat: 'jYYYY/jMM/jDD',
-    valueFormat : 'YYYY/MM/DD'
+    valueFormat : 'YYYY/MM/DD',
+    hideInTable: true,
   },
   { // validToTime
     vIf : { validToEnabled: true },
     key: 'validToTime',
     type: 'string',
     title: 'معتبر تا زمان',
-    dir: 'ltr'
+    dir: 'ltr',
+    hideInTable: true,
   },
   { // isTestPermit
     key: 'isTestPermit',
