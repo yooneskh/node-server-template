@@ -7,6 +7,7 @@ import { ResourceRouter } from '../../plugins/resource-maker/resource-router';
 import { getUserProfile, logoutUser } from '../sarv/sarv-server';
 import { hasAllPermissions, hasAnyPermissions, hasSinglePermission, PERMISSIONS, PERMISSIONS_LOCALES } from './auth-util';
 import { AuthTokenController } from './auth-token-resource';
+import { RoleController } from '../user/role-resource';
 
 
 function createUUID(parts: number) {
@@ -196,7 +197,10 @@ export const AuthRouter = maker.getRouter();
 
 
 export async function getUserByToken(token?: string): Promise<IUser | undefined> {
-  if (!token) return undefined;
+
+  if (!token) {
+    return undefined;
+  }
 
 
   let user: IUser;
@@ -224,6 +228,19 @@ export async function getUserByToken(token?: string): Promise<IUser | undefined>
         ssoId: profile.SSOId
       },
     });
+
+  }
+
+
+  if (user.roles && user.roles.length > 0) {
+
+    const roles = await Promise.all(
+      user.roles.map(it =>
+        RoleController.retrieve({ resourceId: it })
+      )
+    );
+
+    user.permissions = [user.permissions, roles.flatMap(it => it.permissions)].flat(2);
 
   }
 

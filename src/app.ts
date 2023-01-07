@@ -72,7 +72,9 @@ app.use('/api/auth', AuthRouter);
 app.use('/api/captchas', CaptchaRouter);
 
 import { UserRouter } from './modules/user/user-resource';
+import { RoleRouter } from './modules/user/role-resource';
 app.use('/api/users', UserRouter);
+app.use('/api/roles', RoleRouter);
 
 import { MediaRouter } from './modules/media/media-resource';
 app.use('/api/media', MediaRouter);

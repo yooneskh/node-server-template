@@ -43,6 +43,14 @@ maker.addProperties([
     handlerElement: 'permissions'
   },
   {
+    key: 'roles',
+    type: 'string',
+    ref: 'Role',
+    isArray: true,
+    title: 'نقش‌ها',
+    hideInTable: true,
+  },
+  {
     key: 'adminUsername',
     type: 'string',
     title: 'نام کاربری مدیریتی',

@@ -8,6 +8,7 @@ export interface IUserBase extends IResource {
   email?: string;
   profile?: string;
   permissions: string[];
+  roles?: string[];
   adminUsername?: string;
   adminPassword?: string;
   sarvInfo: Record<string, any>;
@@ -24,3 +25,8 @@ export interface IUserBase extends IResource {
   economicalCode?: string;
   registrationCode?: string;
 } export interface IUser extends IUserBase, Document {}
+
+export interface IRoleBase extends IResource {
+  name: string;
+  permissions: string[];
+} export interface IRole extends IRoleBase, Document {}
