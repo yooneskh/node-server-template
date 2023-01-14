@@ -280,7 +280,7 @@ maker.addActions([
         }
       });
 
-      await ApiRequestController.edit({
+      const newApiRequest = await ApiRequestController.edit({
         resourceId,
         payload: {
           isTesting: true,
@@ -288,6 +288,13 @@ maker.addActions([
           testPermit: permit._id,
         }
       });
+
+
+      return {
+        permit,
+        newApiRequest,
+        policy: ApiPolicyController.retrieve({ resourceId: permit.policy }),
+      };
 
     }
   },
