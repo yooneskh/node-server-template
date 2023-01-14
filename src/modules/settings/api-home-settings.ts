@@ -10,7 +10,13 @@ maker.addProperties([
     isArray: true,
     ref: 'Guide',
     title: 'راهنماهای انتهایی',
-  }
+  },
+  {
+    key: 'loginGuide',
+    type: 'string',
+    ref: 'Guide',
+    title: 'راهنمایی صفحه ورود',
+  },
 ]);
 
 export const ApiHomeSettingController = maker.getController();
