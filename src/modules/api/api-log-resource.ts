@@ -165,7 +165,22 @@ maker.setValidations({ });
 maker.addActions([
   { template: 'LIST', permissions: ['admin.api-log.list'] },
   { template: 'LIST_COUNT', permissions: ['admin.api-log.list-count'] },
-  { template: 'RETRIEVE', permissions: ['admin.api-log.retrieve'] }
+  { template: 'RETRIEVE', permissions: ['admin.api-log.retrieve'] },
+  {
+    method: 'GET',
+    path: '/list/api-permit/:apiPermitId',
+    signal: ['Route', 'ApiLog', 'ListForApiPermit'],
+    permissionFunction: async ({ user }) => !!user,
+    dataProvider: async ({ params }) => {
+
+      return ApiLogController.list({
+        filters: {
+          permit: params.apiPermitId,
+        },
+      });
+
+    },
+  },
 ]);
 
 
