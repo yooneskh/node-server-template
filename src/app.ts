@@ -79,7 +79,7 @@ app.use('/api/roles', RoleRouter);
 import { MediaRouter } from './modules/media/media-resource';
 app.use('/api/media', MediaRouter);
 
-import './modules/media/media-validators;'
+import './modules/media/media-validators'
 import './modules/media/media-addons'
 
 import { LogRouter } from './plugins/log-requests/log-resource';
