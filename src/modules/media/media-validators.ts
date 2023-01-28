@@ -5,7 +5,7 @@ import pdfParser from 'pdf-parse';
 import fs from 'fs/promises';
 
 const ALLOWED_MIME_TYPES = ['image/bmp', 'image/jpeg', 'image/png', 'image/tiff', 'application/pdf'];
-const MAX_FILE_SIZE = 1024 * 1024 * 10;
+const MAX_FILE_SIZE = 1024 * 1024 * 0.1;
 
 const IMAGE_MIMETYPES = ['image/bmp', 'image/jpeg', 'image/png', 'image/tiff'];
 
