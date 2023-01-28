@@ -15,6 +15,7 @@ registerFileValidator(async file => {
     throw new InvalidRequestError(`file type is invalid ${file.type}`, 'نوع فایل غیر مجاز است');
   }
 
+  console.log(111, { file, MAX_FILE_SIZE});
   if (file.size > MAX_FILE_SIZE) {
     throw new InvalidRequestError(`maximum file size exceeded ${file.size}`, 'حجم فایل بیش از حد است. حداکثر ۱۰ MB قابل قبول است.');
   }
