@@ -9,6 +9,7 @@ import { DISMISS_DATA_PROVIDER } from '../../plugins/resource-maker/resource-rou
 import { joinUrls } from '../../global/util';
 import ReadChunk from 'read-chunk';
 import { YEventManager } from '../../plugins/event-manager/event-manager';
+import './media-validators';
 import './media-addons';
 
 
