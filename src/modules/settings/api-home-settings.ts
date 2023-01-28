@@ -17,6 +17,12 @@ maker.addProperties([
     ref: 'Guide',
     title: 'راهنمایی صفحه ورود',
   },
+  {
+    key: 'apiRequestGuide',
+    type: 'string',
+    ref: 'Guide',
+    title: 'راهنمایی درخواست Api',
+  },
 ]);
 
 export const ApiHomeSettingController = maker.getController();
