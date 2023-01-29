@@ -110,7 +110,25 @@ maker.addActions([
   { template: 'RETRIEVE',/*  permissions: ['admin.condition-document-entry.retrieve']  */},
   { template: 'CREATE',/*  permissions: ['admin.condition-document-entry.create']  */},
   { template: 'UPDATE', permissions: ['admin.condition-document-entry.update'] },
-  { template: 'DELETE', permissions: ['admin.condition-document-entry.delete'] }
+  { template: 'DELETE', permissions: ['admin.condition-document-entry.delete'] },
+  {
+    method: 'GET',
+    path: '/list/mine',
+    signal: ['Route', 'ConditionDocumentEntry', 'ListMine'],
+    permissionFunction: async ({ user }) => !!user,
+    dataProvider: async ({ user }) => {
+      return ConditionDocumentEntryController.list({
+        filters: {
+          user: String(user!._id)
+        },
+        includes: {
+          'conditionDocument': '',
+          'files': '',
+          'files.value': '',
+        },
+      });
+    },
+  },
 ]);
 
 
