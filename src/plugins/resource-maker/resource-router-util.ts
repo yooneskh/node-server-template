@@ -140,7 +140,7 @@ export function populateAction<T extends IResource, TF extends IResourceDocument
             sorts: extractSortQueryObject(query.sorts),
             includes: extractIncludeQueryObject(query.includes),
             selects: query.selects,
-            limit: Math.min(parseInt((query.limit) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+            limit: Math.min(parseInt((query.limit) || '0', 10) || 500, RESOURCE_ROUTER_LIST_LIMIT_MAX),
             skip: parseInt((query.skip) || '0', 10) || 0,
             lean: true
           });
@@ -228,7 +228,7 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
         sorts: extractSortQueryObject(query.sorts),
         includes: extractIncludeQueryObject(query.includes),
         selects: query.selects,
-        limit: Math.min(parseInt((query.limit) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        limit: Math.min(parseInt((query.limit) || '0', 10) || 500, RESOURCE_ROUTER_LIST_LIMIT_MAX),
         skip: parseInt((query.skip) || '0', 10) || 0,
         lean: true
       });
@@ -244,7 +244,7 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
     if (!action.dataProvider) {
       action.dataProvider = async ({ query }) => controller.countListAll({
         filters: extractFilterQueryObject(query.filters),
-        limit: Math.min(parseInt((query.limit) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        limit: Math.min(parseInt((query.limit) || '0', 10) || 500, RESOURCE_ROUTER_LIST_LIMIT_MAX),
         skip: parseInt((query.skip) || '0', 10) || 0
       });
     }
@@ -263,7 +263,7 @@ export function populateRelationAction(action: ResourceRouterAction, controller:
         sorts: extractSortQueryObject(query.sorts),
         includes: extractIncludeQueryObject(query.includes),
         selects: query.selects,
-        limit: Math.min(parseInt((query.limit) || '0', 10) || 10, RESOURCE_ROUTER_LIST_LIMIT_MAX),
+        limit: Math.min(parseInt((query.limit) || '0', 10) || 500, RESOURCE_ROUTER_LIST_LIMIT_MAX),
         skip: parseInt((query.skip) || '0', 10) || 0,
         lean: true
       });
