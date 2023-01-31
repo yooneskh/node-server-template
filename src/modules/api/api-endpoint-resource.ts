@@ -453,6 +453,14 @@ maker.addActions([
 
     }
   },
+  { // search
+    method: 'GET',
+    path: '/list/all',
+    signal: ['Route', 'ApiEndpoint', 'ListAll'],
+    dataProvider: async ({ }) => {
+      return ApiEndpointController.list({});
+    },
+  },
 ]);
 
 
