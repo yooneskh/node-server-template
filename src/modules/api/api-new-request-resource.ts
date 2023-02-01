@@ -187,7 +187,6 @@ maker.addProperties([
     key: 'extraState',
     type: 'string',
     enum: [
-      '',
       'در حال جمع آوری داده',
       'در حال ایجاد وب سرویس',
       'تکمیل شده و آماده درخواست',
