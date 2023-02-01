@@ -183,6 +183,18 @@ maker.addProperties([
     title: 'دلیل رد',
     longText: true,
   },
+  {
+    key: 'extraState',
+    type: 'string',
+    enum: [
+      '',
+      'در حال جمع آوری داده',
+      'در حال ایجاد وب سرویس',
+      'تکمیل شده و آماده درخواست',
+    ],
+    title: 'وضعیت توضیحی',
+    hideInTable: true,
+  }
 ]);
 
 

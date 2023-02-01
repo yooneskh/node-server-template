@@ -174,6 +174,7 @@ export interface IApiNewRequestBase extends IResource {
   ip: string;
   usageDuration: string;
   address: string;
+  extraState?: string;
 } export interface IApiNewRequest extends IApiNewRequestBase, Document {}
 
 export interface IApiRequestBase extends IResource {
