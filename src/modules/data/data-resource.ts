@@ -54,12 +54,14 @@ maker.addProperties([
     ref: 'Media',
     title: 'فایل',
     width: 6,
+    hidden: true,
   },
   {
     key: 'visualization',
     type: 'string',
     title: 'شناسه گزارش',
     width: 6,
+    hidden: true,
   },
   {
     key: 'versions',
