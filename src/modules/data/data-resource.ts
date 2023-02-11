@@ -52,13 +52,42 @@ maker.addProperties([
     key: 'file',
     type: 'string',
     ref: 'Media',
-    title: 'فایل'
+    title: 'فایل',
+    width: 6,
   },
   {
     key: 'visualization',
     type: 'string',
     title: 'شناسه گزارش',
-    hidden: true,
+    width: 6,
+  },
+  {
+    key: 'versions',
+    type: 'series',
+    title: 'نسخه‌ها',
+    serieBase: {},
+    serieSchema: [
+      {
+        key: 'versionName',
+        type: 'string',
+        required: true,
+        title: 'شماره نسخه',
+        width: 4,
+      },
+      {
+        key: 'file',
+        type: 'string',
+        ref: 'Media',
+        title: 'فایل',
+        width: 4,
+      },
+      {
+        key: 'visualization',
+        type: 'string',
+        title: 'شناسه گزارش',
+        width: 4,
+      },
+    ],
   },
   {
     key: 'publisher',

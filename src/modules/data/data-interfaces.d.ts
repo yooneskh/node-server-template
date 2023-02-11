@@ -17,7 +17,13 @@ export interface IDataBase extends IResource {
   timeTags: string[];
   description: string;
   type: string;
-  file: string;
+  file?: string;
+  visualization?: string;
+  versions?: {
+    versionName: string;
+    file?: string;
+    visualization?: string;
+  }[];
   publisher?: string;
   region?: number;
   tags?: string[];
