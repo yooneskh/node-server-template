@@ -30,7 +30,7 @@ maker.addProperties([
     type: 'string',
     ref: 'TimeTag',
     isArray: true,
-    required: true,
+    // required: true,
     title: 'تگ‌های زمانی',
     hideInTable: true
   },
