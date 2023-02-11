@@ -307,7 +307,8 @@ maker.addActions([
           'type': '',
           'type.emptyIcon': 'path',
           'type.smallIcon': 'path',
-          'file': '',
+          'versions': '',
+          'versions.file': '',
           'publisher': ''
         },
         limit: 30,
