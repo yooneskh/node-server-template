@@ -120,6 +120,61 @@ maker.addProperties([
     type: 'boolean',
     title: 'مخفی کردن اطلاعات',
     hideInTable: true
+  },
+  {
+    key: 'isPremium',
+    type: 'boolean',
+    title: 'خریدنی است',
+  },
+  {
+    key: 'offers',
+    type: 'series',
+    title: 'بسته‌های خرید',
+    serieBase: {},
+    serieSchema: [
+      {
+        key: 'title',
+        type: 'string',
+        required: true,
+        title: 'عنوان',
+        width: 4
+      },
+      {
+        key: 'price',
+        type: 'number',
+        required: true,
+        title: 'قیمت (ریال)',
+        width: 4
+      },
+      {
+        key: 'userTypes',
+        type: 'string',
+        enum: ['person', 'legal'],
+        isArray: true,
+        required: true,
+        title: 'انواع کاربر متناسب',
+        width: 4,
+        items: [
+          { value: 'person', text: 'حقیقی' },
+          { value: 'legal', text: 'حقوقی' }
+        ]
+      },
+      {
+        key: 'description',
+        type: 'string',
+        required: true,
+        title: 'توضیح',
+        longText: true
+      },
+      {
+        key: 'conditions',
+        type: 'string',
+        ref: 'Condition',
+        isArray: true,
+        title: 'شرایط دسترسی',
+        hideInTable: true
+      },
+    ]
   }
 ]);
 

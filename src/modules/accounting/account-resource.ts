@@ -189,6 +189,12 @@ export async function getApiRequestAccount() {
   });
 }
 
+export async function getDataRequestAccount() {
+  return AccountController.findOne({
+    filters: { 'meta.dataRequest': true }
+  });
+}
+
 export async function getAccountForUser(userId: string) {
   return AccountController.findOne({
     filters: { user: userId }
@@ -267,6 +273,24 @@ export async function getAccountForUser(userId: string) {
         acceptsOutput: true,
         meta: {
           apiRequest: true
+        }
+      }
+    });
+  }
+
+  try {
+    await getDataRequestAccount();
+  }
+  catch {
+    await AccountController.create({
+      payload: {
+        title: 'درخواست داده',
+        user: undefined,
+        balance: 0,
+        acceptsInput: true,
+        acceptsOutput: true,
+        meta: {
+          dataRequest: true
         }
       }
     });

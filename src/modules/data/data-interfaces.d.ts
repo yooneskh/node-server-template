@@ -29,6 +29,15 @@ export interface IDataBase extends IResource {
   tags?: string[];
   hidden: boolean;
   hideMetas: boolean;
+  isPremium?: boolean;
+  offers?: {
+    _id?: any;
+    title: string;
+    price: number;
+    userTypes: string[];
+    description: string;
+    conditions?: string[];
+  }[];
 } export interface IData extends IDataBase, Document {}
 
 export interface ITimeTagBase extends IResource {
@@ -58,3 +67,23 @@ export interface IGeoDataBase extends IResource {
   hidden: boolean;
   hideMetas: boolean;
 } export interface IGeoData extends IGeoDataBase, Document {}
+
+export interface IDataRequestBase extends IResource {
+  user: string;
+  data: string;
+  selectedOffer?: string;
+  isCompleted?: boolean;
+  completedAt?: number;
+  isAccepted?: boolean;
+  acceptedAt?: number;
+  isCanceled?: boolean;
+  canceledAt?: number;
+  canceledFor?: string;
+  step?: number;
+  permit?: string;
+} export interface IDataRequest extends IDataRequestBase, Document {}
+
+export interface IDataPermitBase extends IResource {
+  user: string;
+  data: string;
+} export interface IDataPermit extends IDataPermitBase, Document {}

@@ -93,12 +93,16 @@ app.use('/api/logs' , LogRouter);
 
 import { DataCategoryRouter } from './modules/data/data-category-resource';
 import { DataRouter } from './modules/data/data-resource';
+import { DataRequestRouter } from './modules/data/data-request-resource';
+import { DataPermitRouter } from './modules/data/data-permit-resource';
 import { TimeTagRouter } from './modules/data/time-tag-resource';
 import { DataTypeRouter } from './modules/data/data-type-resource';
 import { PublisherRouter } from './modules/data/publisher-resource';
 import { GeoDataRouter } from './modules/data/geo-data-resource';
 app.use('/api/datacategories', DataCategoryRouter);
 app.use('/api/data', DataRouter);
+app.use('/api/datarequests', DataRequestRouter);
+app.use('/api/datapermits', DataPermitRouter);
 app.use('/api/timetags', TimeTagRouter);
 app.use('/api/datatypes', DataTypeRouter);
 app.use('/api/publishers', PublisherRouter);
