@@ -38,9 +38,6 @@ maker.addAction({
       query['permit'] = { $in: userPermits.map(it => String(it._id)) };
 
     }
-    else {
-      throw new InvalidRequestError('مجوز یا کاربر باید ارسال شود.');
-    }
 
 
     const logs = await ApiLogController.list({
