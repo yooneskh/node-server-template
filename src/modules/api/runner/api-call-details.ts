@@ -12,9 +12,9 @@ maker.addAction({
   path: '/api/api-details',
   signal: ['Route', 'ApiCallDetails', 'Execute'],
   rateLimitOptions: {
-    pointsAmount: 3,
+    pointsAmount: 50,
     pointsInterval: 60 * 1,
-    blockDuration: 60 * 2,
+    blockDuration: 60 * 1,
     consecutiveFailDurationMultiplier: 1.5,
   },
   dataProvider: async ({ payload }) => {
