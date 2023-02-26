@@ -77,12 +77,11 @@ maker.addAction({
         headers: [
           { key: 'callerIP', text: 'ّIP فراخوانی کننده' },
           { key: 'createdAt', text: 'زمان فراخوانی' },
-          { key: 'success', text: 'موفق' },
           { key: 'totalTime', text: 'مدت درخواست (میلی ثانیه)' },
           { key: 'errorMessage', text: 'متن خطا' },
         ],
         items: logs.filter(it => !it.success).slice(0, 5),
-        width: 4,
+        width: 12,
       },
     ];
 
