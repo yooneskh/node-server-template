@@ -1,4 +1,3 @@
-import { InvalidRequestError } from '../../../global/errors';
 import { ResourceMaker } from '../../../plugins/resource-maker/resource-maker';
 import { ApiLogController } from '../api-log-resource';
 import { ApiPermitController } from '../api-permit-resource';
