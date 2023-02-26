@@ -76,11 +76,14 @@ maker.addAction({
         title: 'آخرین درخواست‌های ناموفق',
         headers: [
           { key: 'callerIP', text: 'ّIP فراخوانی کننده' },
-          { key: 'createdAt', text: 'زمان فراخوانی' },
+          // { key: 'createdAt', text: 'زمان فراخوانی' },
           { key: 'totalTime', text: 'مدت درخواست (میلی ثانیه)' },
           { key: 'errorMessage', text: 'متن خطا' },
         ],
-        items: logs.filter(it => !it.success).slice(0, 5),
+        items: logs.filter(it => !it.success).slice(0, 5).map(it => ({
+          ...it,
+          // createdAt:
+        })),
         width: 12,
       },
     ];
