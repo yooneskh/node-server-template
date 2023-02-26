@@ -41,6 +41,9 @@ maker.addAction({
 
     const logs = await ApiLogController.list({
       filters: query,
+      sorts: {
+        '_id': -1,
+      },
       skipKeyCheck: true,
     });
 
@@ -65,6 +68,20 @@ maker.addAction({
         icon: 'mdi-close-circle',
         title: 'تعداد فراخوانی‌های ناموفق Api',
         value: logs.filter(it => !it.success).length,
+        width: 4,
+      },
+      {
+        type: 'table',
+        icon: 'mdi-alert',
+        title: 'آخرین درخواست‌های ناموفق',
+        headers: [
+          { key: 'callerIP', text: 'ّIP فراخوانی کننده' },
+          { key: 'createdAt', text: 'زمان فراخوانی' },
+          { key: 'success', text: 'موفق' },
+          { key: 'totalTime', text: 'مدت درخواست (میلی ثانیه)' },
+          { key: 'errorMessage', text: 'متن خطا' },
+        ],
+        items: logs.filter(it => !it.success).slice(0, 5),
         width: 4,
       },
     ];
