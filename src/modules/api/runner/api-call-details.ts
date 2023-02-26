@@ -80,10 +80,7 @@ maker.addAction({
           { key: 'totalTime', text: 'مدت درخواست (میلی ثانیه)' },
           { key: 'errorMessage', text: 'متن خطا' },
         ],
-        items: logs.filter(it => !it.success).slice(0, 5).map(it => ({
-          ...it,
-          // createdAt:
-        })),
+        items: logs.filter(it => !it.success).slice(0, 5),
         width: 12,
       },
     ];
