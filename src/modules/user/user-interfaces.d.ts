@@ -6,11 +6,11 @@ export interface IUserBase extends IResource {
   phoneNumber: string;
   ssoId: string;
   email?: string;
-  profile?: string;
-  permissions: string[];
-  roles?: string[];
   adminUsername?: string;
   adminPassword?: string;
+  blocked?: boolean;
+  permissions: string[];
+  roles?: string[];
   sarvInfo: Record<string, any>;
   firstName?: string;
   lastName?: string;

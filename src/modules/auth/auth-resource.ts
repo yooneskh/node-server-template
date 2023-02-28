@@ -258,7 +258,7 @@ function transmuteRequest(request: Request) {
 function makeUserPermissionChecker(user: IUser | undefined) {
   return function(neededPermission: string): boolean {
     if (!user || !user.permissions || user.permissions.length === 0) return false;
-    // if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
     return hasSinglePermission(user.permissions, neededPermission);
   }
 }
@@ -266,7 +266,7 @@ function makeUserPermissionChecker(user: IUser | undefined) {
 function makeUserAllPermissionsChecker(user: IUser | undefined) {
   return function(neededPermissions: string[]): boolean {
     if (!user || !user.permissions || user.permissions.length === 0) return false;
-    // if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
     return hasAllPermissions(user.permissions, neededPermissions);
   }
 }
@@ -274,7 +274,7 @@ function makeUserAllPermissionsChecker(user: IUser | undefined) {
 function makeUserAnyPermissionsChecker(user: IUser | undefined) {
   return function(neededPermissions: string[]): boolean {
     if (!user || !user.permissions || user.permissions.length === 0) return false;
-    // if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
+    if (user.blocked) throw new ForbiddenAccessError('user is blocked', 'این کاربر مسدود شده است.');
     return hasAnyPermissions(user.permissions, neededPermissions);
   }
 }

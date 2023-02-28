@@ -46,6 +46,11 @@ maker.addProperties([
     hideInTable: true,
   },
   {
+    key: 'blocked',
+    type: 'boolean',
+    title: 'مسدود شده',
+  },
+  {
     vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
     key: 'permissions',
     type: 'string',
@@ -150,7 +155,7 @@ maker.addProperties([
     title: 'کد ثبت',
     disabled: true,
     hideInTable: true
-  }
+  },
 ]);
 
 
@@ -162,12 +167,12 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST', /* permissions: ['admin.user.list']  */},
-  { template: 'LIST_COUNT', /* permissions: ['admin.user.list-count']  */},
-  { template: 'RETRIEVE', /* permissions: ['admin.user.retrieve']  */},
-  { template: 'CREATE', /* permissions: ['admin.user.create']  */},
-  { template: 'UPDATE', /* permissions: ['admin.user.update']  */},
-  { template: 'DELETE', /* permissions: ['admin.user.delete']  */}
+  { template: 'LIST', permissions: ['admin.user.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.user.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.user.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.user.create'] },
+  { template: 'UPDATE', permissions: ['admin.user.update'] },
+  { template: 'DELETE', permissions: ['admin.user.delete'] }
 ]);
 
 
