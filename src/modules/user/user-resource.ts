@@ -46,7 +46,7 @@ maker.addProperties([
     hideInTable: true,
   },
   {
-    vIf: { $not: { $or: [ { adminUsername: '' }, { adminUsername: { $exists: false } } ] } },
+    vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
     key: 'permissions',
     type: 'string',
     isArray: true,
@@ -56,7 +56,7 @@ maker.addProperties([
     handlerElement: 'permissions'
   },
   {
-    vIf: { $not: { $or: [ { adminUsername: '' }, { adminUsername: { $exists: false } } ] } },
+    vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
     key: 'roles',
     type: 'string',
     ref: 'Role',
