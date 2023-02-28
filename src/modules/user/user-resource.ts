@@ -34,23 +34,6 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
-    key: 'permissions',
-    type: 'string',
-    isArray: true,
-    default: ['user.*'],
-    title: 'مجوزها',
-    hideInTable: true,
-    handlerElement: 'permissions'
-  },
-  {
-    key: 'roles',
-    type: 'string',
-    ref: 'Role',
-    isArray: true,
-    title: 'نقش‌ها',
-    hideInTable: true,
-  },
-  {
     key: 'adminUsername',
     type: 'string',
     title: 'نام کاربری مدیریتی',
@@ -60,6 +43,25 @@ maker.addProperties([
     key: 'adminPassword',
     type: 'string',
     title: 'رمز عبور مدیریتی',
+    hideInTable: true,
+  },
+  {
+    vIf: { $not: { $or: [ { adminUsername: '' }, { adminUsername: { $exists: false } } ] } },
+    key: 'permissions',
+    type: 'string',
+    isArray: true,
+    default: ['user.*'],
+    title: 'مجوزها',
+    hideInTable: true,
+    handlerElement: 'permissions'
+  },
+  {
+    vIf: { $not: { $or: [ { adminUsername: '' }, { adminUsername: { $exists: false } } ] } },
+    key: 'roles',
+    type: 'string',
+    ref: 'Role',
+    isArray: true,
+    title: 'نقش‌ها',
     hideInTable: true,
   },
   {
