@@ -151,6 +151,9 @@ maker.addAction({
   method: 'POST',
   path: '/login/admin',
   signal: ['Route', 'Auth', 'LoginAdmin'],
+  captchaOptions: {
+    enabled: true,
+  },
   async dataProvider({ payload }) {
 
     const { username, password } = payload;
