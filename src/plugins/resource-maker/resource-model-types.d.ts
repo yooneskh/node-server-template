@@ -29,6 +29,7 @@ export interface ResourceModelProperty {
   hidden?: boolean;
   hideInTable?: boolean;
   dir?: 'ltr' | 'rtl';
+  hint?: string;
   longText?: boolean;
   richText?: boolean;
   timeFormat?: string;

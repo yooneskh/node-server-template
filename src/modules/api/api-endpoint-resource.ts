@@ -30,7 +30,8 @@ maker.addProperties([
     type: 'string',
     required: true,
     title: 'شناسه',
-    dir: 'ltr'
+    dir: 'ltr',
+    hint: 'یک شناسه تماما انگلیسی که در URL های ایجاد شده برای این Api استفاده می‌شود.',
   },
   {
     key: 'publisher',
@@ -63,7 +64,8 @@ maker.addProperties([
     key: 'disabled',
     type: 'boolean',
     title: 'غیرفعال شده',
-    hideInTable: true
+    hideInTable: true,
+    hint: 'در صورت غیر فعال بودن، ثبت درخواست برای این Api ممکن نخواهد بود.',
   },
   {
     key: 'timeTags',
@@ -144,7 +146,7 @@ maker.addProperties([
     type: 'string',
     ref: 'ApiPolicy',
     title: 'سیاست دسترسی تستی',
-    hideInTable: true
+    hideInTable: true,
   }
 ]);
 
@@ -156,7 +158,7 @@ export const ApiEndpointController = maker.getController();
 maker.setValidations({
   'slug': [
     async ({ slug }, e) => isSlug(slug) || e('شناسه صحیح وارد نشده است.'),
-    async ({ _id, slug }, e) => (await ApiEndpointController.count({ filters: { _id: { $ne: _id }, slug } })) === 0 || e('این شناسه قبلا وارد شده است.')
+    async ({ _id, slug }, e) => (await ApiEndpointController.count({ filters: { _id: { $ne: _id }, slug } })) === 0 || e('این شناسه قبلا وارد شده است.'),
   ]
 });
 
