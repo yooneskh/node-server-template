@@ -41,6 +41,12 @@ maker.addProperties([
     title: 'انتشار دهنده'
   },
   {
+    key: 'platform',
+    type: 'string',
+    enum: ['GSB', 'PGSB'],
+    title: 'بستر'
+  },
+  {
     key: 'description',
     type: 'string',
     required: true,

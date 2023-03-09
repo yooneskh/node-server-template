@@ -34,23 +34,6 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
-    key: 'permissions',
-    type: 'string',
-    isArray: true,
-    default: ['user.*'],
-    title: 'مجوزها',
-    hideInTable: true,
-    handlerElement: 'permissions'
-  },
-  {
-    key: 'roles',
-    type: 'string',
-    ref: 'Role',
-    isArray: true,
-    title: 'نقش‌ها',
-    hideInTable: true,
-  },
-  {
     key: 'adminUsername',
     type: 'string',
     title: 'نام کاربری مدیریتی',
@@ -63,44 +46,33 @@ maker.addProperties([
     hideInTable: true,
   },
   {
+    key: 'blocked',
+    type: 'boolean',
+    title: 'مسدود شده',
+  },
+  {
+    vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
+    key: 'permissions',
+    type: 'string',
+    isArray: true,
+    default: ['user.*'],
+    title: 'مجوزها',
+    hideInTable: true,
+    handlerElement: 'permissions'
+  },
+  {
+    vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
+    key: 'roles',
+    type: 'string',
+    ref: 'Role',
+    isArray: true,
+    title: 'نقش‌ها',
+    hideInTable: true,
+  },
+  {
     key: 'sarvInfo',
     type: 'object',
     hidden: true
-  },
-  {
-    key: 'firstName',
-    type: 'string',
-    title: 'نام',
-    disabled: true,
-    hideInTable: true
-  },
-  {
-    key: 'lastName',
-    type: 'string',
-    title: 'نام خانوادگی',
-    disabled: true,
-    hideInTable: true
-  },
-  {
-    key: 'fatherName',
-    type: 'string',
-    title: 'نام پدر',
-    disabled: true,
-    hideInTable: true
-  },
-  {
-    key: 'dateOfBirth',
-    type: 'string',
-    title: 'تاریخ تولد',
-    disabled: true,
-    hideInTable: true
-  },
-  {
-    key: 'address',
-    type: 'string',
-    title: 'آدرس',
-    disabled: true,
-    hideInTable: true
   },
   {
     key: 'type',
@@ -109,6 +81,47 @@ maker.addProperties([
     disabled: true
   },
   {
+    vIf: { type: 'person' },
+    key: 'firstName',
+    type: 'string',
+    title: 'نام',
+    disabled: true,
+    hideInTable: true
+  },
+  {
+    vIf: { type: 'person' },
+    key: 'lastName',
+    type: 'string',
+    title: 'نام خانوادگی',
+    disabled: true,
+    hideInTable: true
+  },
+  {
+    vIf: { type: 'person' },
+    key: 'fatherName',
+    type: 'string',
+    title: 'نام پدر',
+    disabled: true,
+    hideInTable: true
+  },
+  {
+    vIf: { type: 'person' },
+    key: 'dateOfBirth',
+    type: 'string',
+    title: 'تاریخ تولد',
+    disabled: true,
+    hideInTable: true
+  },
+  {
+    vIf: { type: 'person' },
+    key: 'address',
+    type: 'string',
+    title: 'آدرس',
+    disabled: true,
+    hideInTable: true
+  },
+  {
+    vIf: { type: 'person' },
     key: 'nationalCode',
     type: 'string',
     title: 'کد ملی',
@@ -116,12 +129,14 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    vIf: { type: 'legal' },
     key: 'companyName',
     type: 'string',
     title: 'نام شرکت',
     disabled: true
   },
   {
+    vIf: { type: 'legal' },
     key: 'companyRegistrationDate',
     type: 'string',
     title: 'تاریخ ثبت شرکت',
@@ -129,6 +144,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    vIf: { type: 'legal' },
     key: 'companyType',
     type: 'string',
     title: 'نوع شرکت',
@@ -136,6 +152,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    vIf: { type: 'legal' },
     key: 'economicalCode',
     type: 'string',
     title: 'کد اقتصادی',
@@ -143,12 +160,13 @@ maker.addProperties([
     hideInTable: true
   },
   {
+    vIf: { type: 'legal' },
     key: 'registrationCode',
     type: 'string',
     title: 'کد ثبت',
     disabled: true,
     hideInTable: true
-  }
+  },
 ]);
 
 
@@ -160,12 +178,12 @@ maker.setValidations({ });
 
 
 maker.addActions([
-  { template: 'LIST', /* permissions: ['admin.user.list']  */},
-  { template: 'LIST_COUNT', /* permissions: ['admin.user.list-count']  */},
-  { template: 'RETRIEVE', /* permissions: ['admin.user.retrieve']  */},
-  { template: 'CREATE', /* permissions: ['admin.user.create']  */},
-  { template: 'UPDATE', /* permissions: ['admin.user.update']  */},
-  { template: 'DELETE', /* permissions: ['admin.user.delete']  */}
+  { template: 'LIST', permissions: ['admin.user.list'] },
+  { template: 'LIST_COUNT', permissions: ['admin.user.list-count'] },
+  { template: 'RETRIEVE', permissions: ['admin.user.retrieve'] },
+  { template: 'CREATE', permissions: ['admin.user.create'] },
+  { template: 'UPDATE', permissions: ['admin.user.update'] },
+  { template: 'DELETE', permissions: ['admin.user.delete'] }
 ]);
 
 
