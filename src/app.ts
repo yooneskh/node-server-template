@@ -153,10 +153,12 @@ import { ApiTicketRouter } from './modules/ticket/api-ticket-resource';
 import { TicketCategoryRouter } from './modules/ticket/ticket-category-resource';
 import { ApiTicketCategoryRouter } from './modules/ticket/api-ticket-category-resource';
 import { TicketMessageRouter } from './modules/ticket/ticket-message-resource';
+import { ApiTicketMessageRouter } from './modules/ticket/api-ticket-message-resource';
 app.use('/api/apitickets', ApiTicketRouter);
 app.use('/api/ticketcategories', TicketCategoryRouter);
 app.use('/api/apiticketcategories', ApiTicketCategoryRouter);
 app.use('/api/ticketmessages', TicketMessageRouter);
+app.use('/api/apiticketmessages', ApiTicketMessageRouter);
 
 
 import { GuideRouter } from './modules/guide/guide-resource';

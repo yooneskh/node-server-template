@@ -1,11 +1,10 @@
-import { ITicket, ITicketMessage, ITicketMessageBase } from './ticket-interfaces';
+import { ITicket, IApiTicketMessage, IApiTicketMessageBase } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidStateError } from '../../global/errors';
-import { TicketCategoryUserRelationController } from './ticket-category-resource';
-import { TicketController } from './ticket-resource';
+import { ApiTicketController } from './api-ticket-resource';
 
 
-const maker = new ResourceMaker<ITicketMessageBase, ITicketMessage>('TicketMessage');
+const maker = new ResourceMaker<IApiTicketMessageBase, IApiTicketMessage>('ApiTicketMessage');
 
 
 maker.addProperties([
@@ -20,7 +19,7 @@ maker.addProperties([
   {
     key: 'ticket',
     type: 'string',
-    ref: 'Ticket',
+    ref: 'ApiTicket',
     required: true,
     title: 'تیکت',
     titleable: true
@@ -44,8 +43,8 @@ maker.addProperties([
 ]);
 
 
-export const TicketMessageModel      = maker.getModel();
-export const TicketMessageController = maker.getController();
+export const ApiTicketMessageModel      = maker.getModel();
+export const ApiTicketMessageController = maker.getController();
 
 
 maker.setValidations({
@@ -64,26 +63,17 @@ maker.addActions([
     permissionFunction: async ({ user, hasPermission, payload }) => {
       if (!user) return false;
 
-      const ticket = await TicketController.retrieve({ resourceId: payload.ticket });
+      const ticket = await ApiTicketController.retrieve({ resourceId: payload.ticket });
       if (ticket.user === String(user._id) && payload.user === String(user._id)) return true;
 
-      if (hasPermission('admin.ticket-message.create')) return true;
-
-      if (hasPermission('admin.ticket.manage')) {
-
-        const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
-        const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
-
-        return permittedTicketIds.includes(payload.ticket) && payload.user === String(user._id);
-
-      }
+      if (hasPermission('admin.api-ticket-message.create')) return true;
 
       return false;
 
     },
     stateValidator: async ({ payload, bag }) => {
 
-      bag.ticket = await TicketController.retrieve({ resourceId: payload.ticket });
+      bag.ticket = await ApiTicketController.retrieve({ resourceId: payload.ticket });
       if (['archived', 'deleted'].includes(bag.ticket.status)) {
         throw new InvalidStateError('invalid ticket state.', 'تیکت در وضعیت مناسب برای پیام گذاشتن نیست.');
       }
@@ -94,7 +84,7 @@ maker.addActions([
       const ticket = bag.ticket as ITicket;
       const isOwn = String(user!!._id) === ticket.user;
 
-      await TicketController.edit({
+      await ApiTicketController.edit({
         resourceId: ticket._id,
         payload: {
           status: isOwn ? 'pending' : 'answered'
@@ -108,11 +98,11 @@ maker.addActions([
   {
     method: 'GET',
     path: '/ticket/:ticketId',
-    signal: ['Route', 'TicketMessage', 'ListForTicket'],
+    signal: ['Route', 'ApiTicketMessage', 'ListForTicket'],
     permissionFunction: async ({ user, hasPermission, params: { ticketId }, bag }) => {
       if (!user) return false;
 
-      bag.ticket = await TicketController.retrieve({
+      bag.ticket = await ApiTicketController.retrieve({
         resourceId: ticketId,
         includes: {
           'category': ''
@@ -123,27 +113,18 @@ maker.addActions([
 
       if (hasPermission('admin.ticket-message.list')) return true;
 
-      if (hasPermission('admin.ticket.manage')) {
-
-        const permittedTicketCategoryIds = (await TicketCategoryUserRelationController.listForTarget({ targetId: user._id })).map(it => it.ticketcategory);
-        const permittedTicketIds = (await TicketController.list({ filters: { category: { $in: permittedTicketCategoryIds } } })).map(it => it._id);
-
-        return permittedTicketIds.includes(ticketId);
-
-      }
-
       return false;
 
     },
     dataProvider: async ({ params: { ticketId }, bag }) => {
       return {
-        ticket: bag.ticket || await TicketController.retrieve({
+        ticket: bag.ticket || await ApiTicketController.retrieve({
           resourceId: ticketId,
           includes: {
             'category': ''
           }
         }),
-        messages: await TicketMessageController.list({
+        messages: await ApiTicketMessageController.list({
           filters: {
             ticket: ticketId
           },
@@ -158,4 +139,4 @@ maker.addActions([
 ]);
 
 
-export const TicketMessageRouter = maker.getRouter();
+export const ApiTicketMessageRouter = maker.getRouter();

@@ -41,3 +41,10 @@ export interface IApiTicketBase extends IResource {
   title: string;
   status: 'pending' | 'answered' | 'closed' | 'archived' | 'deleted';
 } export interface IApiTicket extends IApiTicketBase, Document {}
+
+export interface IApiTicketMessageBase extends IResource {
+  user: string;
+  ticket: string;
+  body: string;
+  files?: string[];
+} export interface IApiTicketMessage extends IApiTicketMessageBase, Document {}
