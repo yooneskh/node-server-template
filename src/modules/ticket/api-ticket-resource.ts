@@ -22,7 +22,7 @@ maker.addProperties([
   {
     key: 'category',
     type: 'string',
-    ref: 'TicketCategory',
+    ref: 'ApiTicketCategory',
     required: true,
     title: 'دسته‌بندی'
   },
