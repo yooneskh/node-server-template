@@ -11,6 +11,11 @@ export interface ITicketCategoryUserBase extends IResource {
   user: string;
 } export interface ITicketCategoryUser extends ITicketCategoryUserBase, Document {}
 
+export interface IApiTicketCategoryBase extends IResource {
+  title: string;
+  fields: string[];
+} export interface IApiTicketCategory extends IApiTicketCategoryBase, Document {}
+
 export interface ITicketBase extends IResource {
   user: string;
   category: string;
