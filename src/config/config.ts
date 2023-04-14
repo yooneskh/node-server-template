@@ -31,13 +31,13 @@ export const Config = {
     defaultLocalization: 'fa'
   },
   payment: {
-    callbackUrlBase: 'https://api.aaa.opendata.khoshghadam.com/api/paytickets',
-    informUrlBase: 'https://panel.aaa.opendata.khoshghadam.com/payment',
+    callbackUrlBase: getConfig('payment.callbackUrlBase', 'https://api.aaa.opendata.khoshghadam.com/api/paytickets'),
+    informUrlBase: getConfig('payment.informUrlBase', 'https://panel.aaa.opendata.khoshghadam.com/payment'),
     response: {
       title: 'پورتال | نتیجه پرداخت',
-      callback: 'https://panel.aaa.opendata.khoshghadam.com',
-      callbackSupport: 'https://panel.aaa.opendata.khoshghadam.com',
-      favicon: 'https://panel.aaa.opendata.khoshghadam.com/favicon.ico',
+      callback: getConfig('payment.response.callback', 'https://panel.aaa.opendata.khoshghadam.com'),
+      callbackSupport: getConfig('payment.response.callbackSupport', 'https://panel.aaa.opendata.khoshghadam.com'),
+      favicon: getConfig('payment.response.favicon', 'https://panel.aaa.opendata.khoshghadam.com/favicon.ico'),
       font: {
         fa: 'https://cdn.khoshghadam.com/font/iryekan/iryekan.css',
         en: 'https://cdn.khoshghadam.com/font/roboto/roboto.css'

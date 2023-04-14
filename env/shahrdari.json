@@ -15,6 +15,15 @@
     "profileUrl": "https://api-sarv.shiraz.ir/api/v1/citizen/profile",
     "logoutUrl": "https://api-sarv.shiraz.ir/api/v1/logout"
   },
+  "payment": {
+    "callbackUrlBase": "https://data.shiraz.ir/aapi/api/paytickets",
+    "informUrlBase": "https://data.shiraz.ir",
+    "response": {
+      "callback": "https://data.shiraz.ir",
+      "callbackSupport": "https://data.shiraz.ir",
+      "favicon": "https://data.shiraz.ir/favicon.ico"
+    }
+  },
   "parsian": {
     "paymentRequestUrl": "http://172.17.201.213/NewIPGServices/Sale/SaleService.asmx",
     "paymentVerificationUrl": "http://172.17.201.213/NewIPGServices/Confirm/ConfirmService.asmx"
