@@ -148,8 +148,6 @@ app.use('/api/transfers', TransferRouter);
 import { PayTicketRouter } from './modules/payment/pay-ticket-resource';
 app.use('/api/paytickets', PayTicketRouter);
 
-import './modules/accounting/account-listeners';
-
 
 import { ApiTicketRouter } from './modules/ticket/api-ticket-resource';
 import { TicketCategoryRouter } from './modules/ticket/ticket-category-resource';
