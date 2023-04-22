@@ -1,4 +1,4 @@
-import { InvalidRequestError , InvalidRequestTimeRange } from '../../../global/errors';
+import { ForbiddenAccessError, InvalidRequestError , InvalidRequestTimeRange, InvalidStateError } from '../../../global/errors';
 import { IApiLogBase, IApiPermit, IApiRunAdditionalInfo, IApiVersion } from '../api-interfaces';
 import { ApiLogController } from '../api-log-resource';
 import { IApiHttpRunError, IApiHttpRunPayload, IApiHttpRunSuccess, runHttpApi , runSoapApi } from './api-http-runner';
@@ -14,17 +14,119 @@ function calculateDataSize(data: unknown | undefined): number | undefined {
 }
 
 
-export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IApiHttpRunPayload , info?: IApiRunAdditionalInfo, policyId?: string) {
+export interface IRunApi {
+  permit: IApiPermit;
+  api: IApiVersion;
+  payload?: IApiHttpRunPayload;
+  info?: IApiRunAdditionalInfo;
+  policyId?: string;
+  providedKey?: string;
+}
+
+export async function runApi({ permit, api, payload, info, policyId, providedKey }: IRunApi) {
 
   const policyLogs: Partial<IApiLogBase> = {};
   const policyHeaders: Record<string, unknown> = {};
+
+  const usualLog = {
+    permit: permit._id,
+    api: api._id,
+    apiType: api.type,
+    success: false,
+    startAt: Date.now(),
+    endAt: Date.now(),
+    totalTime: 0,
+    callerIP: info?.ip,
+    requestMethod: api.method,
+    requestUrl: api.url,
+    requestHeaders: payload?.headers,
+    requestQueryParams: payload?.queryParams,
+    requestPathParams: payload?.pathParams,
+    requestBody: payload?.body,
+    requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
+  };
+
+
+  if (!providedKey) {
+
+    await ApiLogController.create({
+      payload: {
+        ...usualLog,
+        errorMessage: 'مقداری برای Api Key ارسال نشده است',
+      }
+    });
+
+    throw new ForbiddenAccessError('api key not provided', 'مقداری برای Api Key ارسال نشده است.');
+
+  }
+
+  if (providedKey !== permit.apiKey) {
+
+    await ApiLogController.create({
+      payload: {
+        ...usualLog,
+        errorMessage: 'مقدار Api Key صحیح نیست.',
+      }
+    });
+
+    throw new ForbiddenAccessError('invalid api key', 'مقدار Api Key صحیح نیست..');
+
+  }
+
+  if (!permit.enabled) {
+
+    await ApiLogController.create({
+      payload: {
+        ...usualLog,
+        errorMessage: 'مجوز فعال نیست',
+      }
+    });
+
+    throw new InvalidStateError('api permit not enabled.', 'مجوز فعال نیست.');
+
+  }
+
+  if (api.disabled) {
+
+    await ApiLogController.create({
+      payload: {
+        ...usualLog,
+        errorMessage: api.disabledMessage || 'این Api عیر فعال شده است.',
+      }
+    });
+
+    throw new InvalidStateError('api version is disabled.', api.disabledMessage || 'این Api عیر فعال شده است.');
+
+  }
+
+  if (permit.blocked) {
+
+    await ApiLogController.create({
+      payload: {
+        ...usualLog,
+        errorMessage: `مجوز مسدود شده: ${permit.blockageReason}`,
+      }
+    });
+
+    throw new InvalidStateError(`api permit blocked at ${permit.blockedAt} because: ${permit.blockageReason}`, `مجوز مسدود شده: ${permit.blockageReason}`);
+
+  }
 
   if (permit.validFromEnabled) {
 
     const epoch = new Date(`${permit!.validFromDay} ${permit!.validFromTime}`).getTime();
 
     if (epoch > Date.now()) {
+
+      await ApiLogController.create({
+        payload: {
+          ...usualLog,
+          errorMessage: 'زمان شروع استفاده از این مجوز هنوز نرسیده است',
+        }
+      });
+
       throw new InvalidRequestTimeRange('time range is not valid');
+
     }
 
   }
@@ -34,7 +136,16 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
     const epoch = new Date(`${permit!.validToDay} ${permit!.validToTime}`).getTime();
 
     if (epoch < Date.now()) {
-      throw new InvalidRequestTimeRange('Timerange is not valid.');
+
+      await ApiLogController.create({
+        payload: {
+          ...usualLog,
+          errorMessage: 'زمان استفاده از این مجوز به پایان رسیده است',
+        }
+      });
+
+      throw new InvalidRequestTimeRange('time range is not valid.');
+
     }
 
   }
@@ -47,24 +158,10 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
 
       await ApiLogController.create({
         payload: {
-          permit: permit._id,
-          api: api._id,
-          apiType: api.type,
-          success: false,
-          startAt: Date.now(),
-          endAt: Date.now(),
-          totalTime: 0,
-          callerIP: info?.ip,
-          requestMethod: api.method,
-          requestUrl: api.url,
-          requestHeaders: payload?.headers,
-          requestQueryParams: payload?.queryParams,
-          requestPathParams: payload?.pathParams,
-          requestBody: payload?.body,
-          requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
+          ...usualLog,
           errorMessage: policyResult.error?.responseMessage ?? policyResult.error?.message,
           ...policyResult.logs
-        }
+        },
       });
 
       policyResult.error!.responseHeaders = policyResult.headers;
@@ -86,21 +183,11 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
 
     await ApiLogController.create({
       payload: {
-        permit: permit._id,
-        api: api._id,
-        apiType: api.type,
+        ...usualLog,
         success: result.type === 'success',
         startAt: timeBegin,
         endAt: timeEnd,
         totalTime: timeEnd - timeBegin,
-        callerIP: info?.ip,
-        requestMethod: api.method,
-        requestUrl: api.url,
-        requestHeaders: payload?.headers,
-        requestQueryParams: payload?.queryParams,
-        requestPathParams: payload?.pathParams,
-        requestBody: payload?.body,
-        requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
         responseHeaders: (result as IApiHttpRunSuccess).headers,
         responseStatus: (result as IApiHttpRunSuccess).status,
         responseSize: calculateDataSize((result as IApiHttpRunSuccess).data),
@@ -130,17 +217,11 @@ export async function runApi(permit: IApiPermit, api: IApiVersion, payload?: IAp
 
     await ApiLogController.create({
       payload: {
-        permit: permit._id,
-        api: api._id,
-        apiType: api.type,
+        ...usualLog,
         success: result.type === 'success',
         startAt: timeBegin,
         endAt: timeEnd,
         totalTime: timeEnd - timeBegin,
-        callerIP: info?.ip,
-        requestUrl: api.url,
-        requestBody: payload?.body,
-        requestBodySize: payload?.body ? JSON.stringify(payload.body).length : undefined,
         responseHeaders: (result as IApiHttpRunSuccess).headers,
         responseStatus: (result as IApiHttpRunSuccess).status,
         responseSize: calculateDataSize((result as IApiHttpRunSuccess).data),
