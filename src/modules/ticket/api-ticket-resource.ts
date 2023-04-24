@@ -224,7 +224,7 @@ maker.addActions([
 export const ApiTicketRouter = maker.getRouter();
 
 
-YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_ticketMessageId: string, ticketMessage: ITicketMessage) => {
+YEventManager.on(['Resource', 'ApiTicketMessage', 'Created'], async (_ticketMessageId: string, ticketMessage: ITicketMessage) => {
 
   const ticket = await ApiTicketController.retrieve({ resourceId: ticketMessage.ticket });
 

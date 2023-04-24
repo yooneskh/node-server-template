@@ -14,7 +14,7 @@ export interface IMagfaSmsSend {
 
 export async function sendMagfaSms({ domain, username, password, sendNumber, receivers, text }: IMagfaSmsSend) {
 
-  const url = `https://sms.magfa.com/magfaHttpService?service=Enqueue&domain=${domain}&username=${username}&passowrd=${password}&from=${sendNumber}&to=${receivers.join(',')}&message=${encodeURI(text)}`;
+  const url = `https://sms.magfa.com/magfaHttpService?service=Enqueue&domain=${domain}&username=${username}&password=${password}&from=${sendNumber}&to=${receivers.join(',')}&message=${encodeURI(text)}`;
 
   const { status, data } = await YNetwork.post(`${Config.media.baseUrl}/433344/proxy`, {
     method: 'get',
