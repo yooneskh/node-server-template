@@ -72,7 +72,13 @@ export const Config = {
       method: 'post',
       url: 'https://api.test.ir'
     }
-  }
+  },
+  magfa: {
+    domain: 'shirazfava',
+    username: 'sharvandi',
+    password: 'IIXDQbSUMBZxdIRF',
+    fromNumber: '3000137729',
+  },
 };
 
 export interface LocalizedString {

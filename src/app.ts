@@ -85,7 +85,7 @@ import './modules/media/media-addons'
 import { LogRouter } from './plugins/log-requests/log-resource';
 app.use('/api/logs' , LogRouter);
 
-// import './modules/sms-notification/sms-manager';
+import './modules/sms-notification/sms-manager';
 // import './modules/telegram-notification/telegram-manager';
 
 
