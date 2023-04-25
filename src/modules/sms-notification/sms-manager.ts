@@ -31,9 +31,9 @@ YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_id: string, t
   const ticket = await TicketController.retrieve({ resourceId: ticketMessage.ticket });
   const user = await UserController.retrieve({ resourceId: ticket.user });
 
-  if (String(ticketMessage.user) === String(ticket.user)) {
-    return;
-  }
+  // if (String(ticketMessage.user) === String(ticket.user)) {
+  //   return;
+  // }
 
 
   await sendMagfaSms({
@@ -76,9 +76,9 @@ YEventManager.on(['Resource', 'ApiTicketMessage', 'Created'], async (_id: string
   const apiTicket = await ApiTicketController.retrieve({ resourceId: apiTicketMessage.ticket });
   const user = await UserController.retrieve({ resourceId: apiTicket.user });
 
-  if (String(apiTicketMessage.user) === String(apiTicket.user)) {
-    return;
-  }
+  // if (String(apiTicketMessage.user) === String(apiTicket.user)) {
+  //   return;
+  // }
 
 
   await sendMagfaSms({
