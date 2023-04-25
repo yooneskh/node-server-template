@@ -1,5 +1,6 @@
 import { YNetwork } from 'ynetwork';
 import { InvalidRequestError } from '../../global/errors';
+import { Config } from '../../config/config';
 
 
 export interface IMagfaSmsSend {
@@ -13,9 +14,12 @@ export interface IMagfaSmsSend {
 
 export async function sendMagfaSms({ domain, username, password, sendNumber, receivers, text }: IMagfaSmsSend) {
 
-  const { status, data } = await YNetwork.get(
-    `https://sms.magfa.com/magfaHttpService?service=Enqueue&domain=${domain}&username=${username}&passowrd=${password}&from=${sendNumber}&to=${receivers.join(',')}&message=${encodeURI(text)}`
-  );
+  const url = `https://sms.magfa.com/magfaHttpService?service=Enqueue&domain=${domain}&username=${username}&passowrd=${password}&from=${sendNumber}&to=${receivers.join(',')}&message=${encodeURI(text)}`;
+
+  const { status, data } = await YNetwork.post(`${Config.media.baseUrl}/433344/proxy`, {
+    method: 'get',
+    url,
+  });
 
   if (status !== 200) {
     throw new InvalidRequestError('could not send sms: ' + JSON.stringify(data), 'مشکلی در ارسال رخ داده است.');
