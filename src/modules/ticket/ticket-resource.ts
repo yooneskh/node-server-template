@@ -221,17 +221,19 @@ maker.addActions([
     signal: ['Route', 'Ticket', 'UpdateMine'],
     permissionFunction: async ({ user, resourceId, bag }) => {
       if (!user) return false;
-
+      console.log('permission', { user, resourceId, bag });
       bag.ticket = await TicketController.retrieve({ resourceId });
       return String(user?._id) === bag.ticket.user;
 
     },
     stateValidator: async ({ bag }) => {
+      console.log('stating', { bag });
       if (['archived', 'deleted'].includes(bag.ticket.status)) {
         throw new InvalidStateError('invalid status for update', 'وضعیت برای تغییر مناسب نیست.');
       }
     },
     payloadValidator: async ({ payload }) => {
+      console.log('payload', { payload });
 
       if (Object.keys(payload).some(key => key !== 'status')) {
         throw new InvalidRequestError('other than status supplied.', 'فقط وضعیت قابل تغییر است.');

@@ -1,4 +1,4 @@
-import { ITicket, IApiTicketMessage, IApiTicketMessageBase } from './ticket-interfaces';
+import { IApiTicketMessage, IApiTicketMessageBase, IApiTicket } from './ticket-interfaces';
 import { ResourceMaker } from '../../plugins/resource-maker/resource-maker';
 import { InvalidStateError } from '../../global/errors';
 import { ApiTicketController } from './api-ticket-resource';
@@ -62,7 +62,7 @@ maker.addActions([
     template: 'CREATE',
     permissionFunction: async ({ user, hasPermission, payload }) => {
       if (!user) return false;
-
+      console.log('api ticket', { user, payload });
       const ticket = await ApiTicketController.retrieve({ resourceId: payload.ticket });
       if (ticket.user === String(user._id) && payload.user === String(user._id)) return true;
 
@@ -72,7 +72,7 @@ maker.addActions([
 
     },
     stateValidator: async ({ payload, bag }) => {
-
+      console.log('api stating', { payload, bag });
       bag.ticket = await ApiTicketController.retrieve({ resourceId: payload.ticket });
       if (['archived', 'deleted'].includes(bag.ticket.status)) {
         throw new InvalidStateError('invalid ticket state.', 'تیکت در وضعیت مناسب برای پیام گذاشتن نیست.');
@@ -80,8 +80,8 @@ maker.addActions([
 
     },
     postprocessor: async ({ user, bag }) => {
-
-      const ticket = bag.ticket as ITicket;
+      console.log('api ticket message create post process', { user, bag });
+      const ticket = bag.ticket as IApiTicket;
       const isOwn = String(user!!._id) === ticket.user;
 
       await ApiTicketController.edit({
