@@ -221,19 +221,17 @@ maker.addActions([
     signal: ['Route', 'Ticket', 'UpdateMine'],
     permissionFunction: async ({ user, resourceId, bag }) => {
       if (!user) return false;
-      console.log('permission', { user, resourceId, bag });
+
       bag.ticket = await TicketController.retrieve({ resourceId });
       return String(user?._id) === bag.ticket.user;
 
     },
     stateValidator: async ({ bag }) => {
-      console.log('stating', { bag });
       if (['archived', 'deleted'].includes(bag.ticket.status)) {
         throw new InvalidStateError('invalid status for update', 'وضعیت برای تغییر مناسب نیست.');
       }
     },
     payloadValidator: async ({ payload }) => {
-      console.log('payload', { payload });
 
       if (Object.keys(payload).some(key => key !== 'status')) {
         throw new InvalidRequestError('other than status supplied.', 'فقط وضعیت قابل تغییر است.');
@@ -245,15 +243,12 @@ maker.addActions([
 
     },
     dataProvider: async ({ resourceId, payload }) => {
-      console.log('going to update', { resourceId, payload });
-      const t = await TicketController.edit({
+      return TicketController.edit({
         resourceId,
         payload: {
           status: payload.status
         }
       });
-      console.log('updated', { resourceId, payload, t });
-      return t;
     }
   }
 ]);
@@ -263,9 +258,8 @@ export const TicketRouter = maker.getRouter();
 
 
 YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_ticketMessageId: string, ticketMessage: ITicketMessage) => {
-  console.log('getting ticket');
+
   const ticket = await TicketController.retrieve({ resourceId: ticketMessage.ticket });
-  console.log('got ticket');
 
   await TicketController.edit({
     resourceId: ticket._id,
@@ -273,6 +267,5 @@ YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_ticketMessage
       status: (ticketMessage.user === ticket.user) ? ('pending') : ('answered'),
     },
   });
-  console.log('updated ticket');
 
 });

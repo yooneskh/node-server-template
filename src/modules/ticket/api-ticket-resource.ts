@@ -185,7 +185,7 @@ maker.addActions([
   {
     method: 'PATCH',
     path: '/mine/:resourceId',
-    signal: ['Route', 'Ticket', 'UpdateMine'],
+    signal: ['Route', 'ApiTicket', 'UpdateMine'],
     permissionFunction: async ({ user, resourceId, bag }) => {
       if (!user) return false;
 
