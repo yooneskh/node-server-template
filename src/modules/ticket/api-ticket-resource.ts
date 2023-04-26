@@ -228,7 +228,7 @@ YEventManager.on(['Resource', 'ApiTicketMessage', 'Created'], async (_ticketMess
 
   const ticket = await ApiTicketController.retrieve({ resourceId: ticketMessage.ticket });
 
-  ApiTicketController.edit({
+  await ApiTicketController.edit({
     resourceId: ticket._id,
     payload: {
       status: (ticketMessage.user === ticket.user) ? ('pending') : ('answered'),
