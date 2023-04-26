@@ -243,12 +243,15 @@ maker.addActions([
 
     },
     dataProvider: async ({ resourceId, payload }) => {
-      return TicketController.edit({
+      console.log('going to update', { resourceId, payload });
+      const t = await TicketController.edit({
         resourceId,
         payload: {
           status: payload.status
         }
       });
+      console.log('updated', { resourceId, payload, t });
+      return t;
     }
   }
 ]);
