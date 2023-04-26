@@ -258,8 +258,9 @@ export const TicketRouter = maker.getRouter();
 
 
 YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_ticketMessageId: string, ticketMessage: ITicketMessage) => {
-
+  console.log('getting ticket');
   const ticket = await TicketController.retrieve({ resourceId: ticketMessage.ticket });
+  console.log('got ticket');
 
   await TicketController.edit({
     resourceId: ticket._id,
@@ -267,5 +268,6 @@ YEventManager.on(['Resource', 'TicketMessage', 'Created'], async (_ticketMessage
       status: (ticketMessage.user === ticket.user) ? ('pending') : ('answered'),
     },
   });
+  console.log('updated ticket');
 
 });
