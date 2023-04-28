@@ -72,6 +72,19 @@ maker.addAction({
       },
       {
         type: 'table',
+        icon: 'mdi-checkbox-marked',
+        title: 'آخرین درخواست‌های موفق',
+        headers: [
+          { key: 'callerIP', text: 'ّIP فراخوانی کننده' },
+          // { key: 'createdAt', text: 'زمان فراخوانی' },
+          { key: 'totalTime', text: 'مدت درخواست (میلی ثانیه)' },
+          { key: 'errorMessage', text: 'متن خطا' },
+        ],
+        items: logs.filter(it => it.success).slice(0, 10),
+        width: 12,
+      },
+      {
+        type: 'table',
         icon: 'mdi-alert',
         title: 'آخرین درخواست‌های ناموفق',
         headers: [
@@ -80,7 +93,7 @@ maker.addAction({
           { key: 'totalTime', text: 'مدت درخواست (میلی ثانیه)' },
           { key: 'errorMessage', text: 'متن خطا' },
         ],
-        items: logs.filter(it => !it.success).slice(0, 5),
+        items: logs.filter(it => !it.success).slice(0, 10),
         width: 12,
       },
     ];
