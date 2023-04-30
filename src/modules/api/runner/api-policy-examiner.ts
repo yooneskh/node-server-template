@@ -67,43 +67,47 @@ async function examinePayment(permit: IApiPermit, policy: IApiPolicy): Promise<I
 
   if (policy.paymentFreeSessionType !== 'none') {
 
-    let windowStart = 0;
-    let windowEnd = 0;
-
     const intervalDuration = mapDurationLabelToMillis(policy.paymentFreeSessionInterval!) * policy.paymentFreeSessionIntervalCount!;
 
-    if (policy.paymentFreeSessionType === 'oneTime') {
-      windowStart = permit.createdAt;
-      windowEnd = permit.createdAt + intervalDuration;
-    }
-    else if (policy.paymentFreeSessionType === 'interval') {
-      windowStart = Date.now() - intervalDuration;
-      windowEnd = Date.now();
-    }
+    if (!( policy.paymentFreeSessionType === 'oneTime' && Date.now() > (permit.createdAt + intervalDuration) )) {
 
-    const callCount = await ApiLogController.count({
-      filters: { // todo: count only successful calls?
-        permit: permit._id,
-        createdAt: {
-          $gte: windowStart,
-          $lte: windowEnd
-        }
+      let windowStart = 0;
+      let windowEnd = 0;
+
+      if (policy.paymentFreeSessionType === 'oneTime') {
+        windowStart = permit.createdAt;
+        windowEnd = permit.createdAt + intervalDuration;
       }
-    });
+      else if (policy.paymentFreeSessionType === 'interval') {
+        windowStart = Date.now() - intervalDuration;
+        windowEnd = Date.now();
+      }
 
-    if (callCount <= policy.paymentFreeSessionRequests!) {
-      return {
-        passed: true,
-        logs: {
-          cost: 0
-        },
-        headers: {
-          'x-opendata-cost': 0,
-          'x-opendata-free-remaining': callCount - policy.paymentFreeSessionRequests!,
-          'x-opendata-free-reset': policy.paymentFreeSessionType === 'interval' ? String(new Date( Date.now() + intervalDuration )) : undefined,
-          'x-opendata-free-until': policy.paymentFreeSessionType === 'oneTime' ? String(new Date( windowEnd )) : undefined
+      const callCount = await ApiLogController.count({
+        filters: { // todo: count only successful calls?
+          permit: permit._id,
+          createdAt: {
+            $gte: windowStart,
+            $lte: windowEnd
+          }
         }
-      };
+      });
+
+      if (callCount <= policy.paymentFreeSessionRequests!) {
+        return {
+          passed: true,
+          logs: {
+            cost: 0
+          },
+          headers: {
+            'x-opendata-cost': 0,
+            'x-opendata-free-remaining': callCount - policy.paymentFreeSessionRequests!,
+            'x-opendata-free-reset': policy.paymentFreeSessionType === 'interval' ? String(new Date( Date.now() + intervalDuration )) : undefined,
+            'x-opendata-free-until': policy.paymentFreeSessionType === 'oneTime' ? String(new Date( windowEnd )) : undefined
+          }
+        };
+      }
+
     }
 
   }
