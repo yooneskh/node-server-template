@@ -10,7 +10,6 @@ maker.addProperties([
     key: 'name',
     type: 'string',
     title: 'نام کامل',
-    disabled: true,
     titleable: true
   },
   {
