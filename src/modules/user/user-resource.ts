@@ -90,7 +90,7 @@ maker.addProperties([
     disabled: true
   },
   {
-    vIf: { type: 'person' },
+    vIf: { userActor: 'user', type: 'person' },
     key: 'firstName',
     type: 'string',
     title: 'نام',
@@ -98,7 +98,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'person' },
+    vIf: { userActor: 'user', type: 'person' },
     key: 'lastName',
     type: 'string',
     title: 'نام خانوادگی',
@@ -106,7 +106,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'person' },
+    vIf: { userActor: 'user', type: 'person' },
     key: 'fatherName',
     type: 'string',
     title: 'نام پدر',
@@ -114,7 +114,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'person' },
+    vIf: { userActor: 'user', type: 'person' },
     key: 'dateOfBirth',
     type: 'string',
     title: 'تاریخ تولد',
@@ -122,7 +122,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'person' },
+    vIf: { userActor: 'user', type: 'person' },
     key: 'address',
     type: 'string',
     title: 'آدرس',
@@ -130,7 +130,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'person' },
+    vIf: { userActor: 'user', type: 'person' },
     key: 'nationalCode',
     type: 'string',
     title: 'کد ملی',
@@ -138,14 +138,14 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'legal' },
+    vIf: { userActor: 'user', type: 'legal' },
     key: 'companyName',
     type: 'string',
     title: 'نام شرکت',
     disabled: true
   },
   {
-    vIf: { type: 'legal' },
+    vIf: { userActor: 'user', type: 'legal' },
     key: 'companyRegistrationDate',
     type: 'string',
     title: 'تاریخ ثبت شرکت',
@@ -153,7 +153,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'legal' },
+    vIf: { userActor: 'user', type: 'legal' },
     key: 'companyType',
     type: 'string',
     title: 'نوع شرکت',
@@ -161,7 +161,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'legal' },
+    vIf: { userActor: 'user', type: 'legal' },
     key: 'economicalCode',
     type: 'string',
     title: 'کد اقتصادی',
@@ -169,7 +169,7 @@ maker.addProperties([
     hideInTable: true
   },
   {
-    vIf: { type: 'legal' },
+    vIf: { userActor: 'user', type: 'legal' },
     key: 'registrationCode',
     type: 'string',
     title: 'کد ثبت',
