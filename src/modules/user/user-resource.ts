@@ -42,7 +42,7 @@ maker.addProperties([
     key: 'userActor',
     type: 'string',
     default: 'user',
-    // hidden: true,
+    hidden: true,
   },
   {
     vIf: { userActor: 'admin' },
