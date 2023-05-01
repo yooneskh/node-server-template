@@ -23,27 +23,10 @@ maker.addProperties([
     dir: 'ltr'
   },
   {
-    key: 'ssoId',
-    type: 'string',
-    hideInTable: true,
-  },
-  {
     key: 'email',
     type: 'string',
     title: 'ایمیل',
     dir: 'ltr'
-  },
-  {
-    key: 'adminUsername',
-    type: 'string',
-    title: 'نام کاربری مدیریتی',
-    hideInTable: true,
-  },
-  {
-    key: 'adminPassword',
-    type: 'string',
-    title: 'رمز عبور مدیریتی',
-    hideInTable: true,
   },
   {
     key: 'blocked',
@@ -51,7 +34,32 @@ maker.addProperties([
     title: 'مسدود شده',
   },
   {
-    vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
+    key: 'ssoId',
+    type: 'string',
+    hidden: true,
+  },
+  {
+    key: 'userActor',
+    type: 'string',
+    default: 'user',
+    hidden: true,
+  },
+  {
+    vIf: { userActor: 'admin' },
+    key: 'adminUsername',
+    type: 'string',
+    title: 'نام کاربری مدیریتی',
+    hideInTable: true,
+  },
+  {
+    vIf: { userActor: 'admin' },
+    key: 'adminPassword',
+    type: 'string',
+    title: 'رمز عبور مدیریتی',
+    hideInTable: true,
+  },
+  {
+    vIf: { userActor: 'admin' },
     key: 'permissions',
     type: 'string',
     isArray: true,
@@ -61,7 +69,7 @@ maker.addProperties([
     handlerElement: 'permissions'
   },
   {
-    vIf: { $and: [ { adminUsername: { $ne: '' } }, { adminUsername: { $exists: true } } ] },
+    vIf: { userActor: 'admin' },
     key: 'roles',
     type: 'string',
     ref: 'Role',
@@ -75,6 +83,7 @@ maker.addProperties([
     hidden: true
   },
   {
+    vIf: { userActor: 'user' },
     key: 'type',
     type: 'string',
     title: 'نوع',
