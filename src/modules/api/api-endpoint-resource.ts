@@ -180,7 +180,7 @@ maker.addActions([
     method: 'GET',
     path: '/categories/filled',
     signal: ['Route', 'ApiEndpoint', 'CategoriesFilled'],
-    dataProvider: async () => {
+    dataProvider: async ({ query }) => {
 
       const endpoints = await ApiEndpointController.list({});
 
@@ -211,6 +211,17 @@ maker.addActions([
 
         i--;
 
+      }
+
+      if (query['extraCategoriesSlugs']) {
+        categories.push(await DataCategoryController.findOne({
+          filters: {
+            slug: query['extraCategoriesSlugs'],
+          },
+          includes: {
+            'thumbnail': 'path'
+          },
+        }));
       }
 
       return uniqBy(categories, it => String(it._id));
