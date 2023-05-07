@@ -59,39 +59,6 @@ maker.addProperties([
     width: 6
   },
   {
-    key: 'formCallType',
-    type: 'string',
-    enum: ['automatic-transfer', 'repetitive-tranfer', 'daily-transfer' , 'weekly-transfer' , 'monthly-transfer' , 'specific-period-transfer'],
-    items: [
-      { value: 'automatic-transfer', text: 'انتقال اتوماتیک' },
-      { value: 'repetitive-tranfer', text: 'انتقال تکرار شونده' },
-      { value: 'daily-transfer', text: ' انتقال اطلاعات به صورت روزانه' },
-      { value: 'weekly-transfer', text: ' انتقال اطلاعات به صورت هفتگی' },
-      { value: 'monthly-transfer', text: ' انتقال اطلاعات به صورت ماهانه' },
-      { value: 'specific-period-transfer', text: 'انتقال اطلاعات از تاریخ تا تاریخ ' }
-    ],
-    title: 'نوع فراخوانی',
-    hideInTable: true
-  },
-  {
-    vIf: { formCallType: 'specific-period-transfer' },
-    key: 'formCallTypeFromDate',
-    type: 'number',
-    title: 'از تاریخ',
-    labelFormat: 'jYYYY/jMM/jDD',
-    hideInTable: true,
-    width: 6
-  },
-  {
-    vIf: { formCallType: 'specific-period-transfer' },
-    key: 'formCallTypeUntilDate',
-    type: 'number',
-    title: 'تا تاریخ',
-    labelFormat: 'jYYYY/jMM/jDD',
-    hideInTable: true,
-    width: 6
-  },
-  {
     key: 'formDescription',
     type: 'string',
     title: 'توضیحات',

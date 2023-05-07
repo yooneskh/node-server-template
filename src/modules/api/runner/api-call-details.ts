@@ -18,7 +18,7 @@ maker.addAction({
   },
   dataProvider: async ({ payload }) => {
 
-    const { user, permit } = payload;
+    const { user, permit, apiEndpoint } = payload;
 
 
     const query: any = {};
@@ -31,10 +31,21 @@ maker.addAction({
       const userPermits = await ApiPermitController.list({
         filters: {
           user,
-        }
+        },
       });
 
       query['permit'] = { $in: userPermits.map(it => String(it._id)) };
+
+    }
+    else if (apiEndpoint) {
+
+      const apiEndpointPermits = await ApiPermitController.list({
+        filters: {
+          apiEndpoint,
+        },
+      });
+
+      query['permit'] = { $in: apiEndpointPermits.map(it => String(it._id)) };
 
     }
 

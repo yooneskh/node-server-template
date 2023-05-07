@@ -189,7 +189,7 @@ maker.setValidations({ });
 maker.addActions([
   { template: 'LIST' },
   { template: 'LIST_COUNT' },
-  { template: 'RETRIEVE', permissions: ['admin.data.retrieve'] },
+  { template: 'RETRIEVE' },
   { template: 'CREATE', permissions: ['admin.data.create'] },
   { template: 'UPDATE', permissions: ['admin.data.update'] },
   { template: 'DELETE', permissions: ['admin.data.delete'] },

@@ -65,39 +65,6 @@ maker.addProperties([
     width: 6
   },
   {
-    key: 'callType',
-    type: 'string',
-    enum: ['automatic-transfer', 'repetitive-tranfer', 'daily-transfer' , 'weekly-transfer' , 'monthly-transfer' , 'specific-period-transfer'],
-    items: [
-      { value: 'automatic-transfer', text: 'انتقال اتوماتیک' },
-      { value: 'repetitive-tranfer', text: 'انتقال تکرار شونده' },
-      { value: 'daily-transfer', text: ' انتقال اطلاعات به صورت روزانه' },
-      { value: 'weekly-transfer', text: ' انتقال اطلاعات به صورت هفتگی' },
-      { value: 'monthly-transfer', text: ' انتقال اطلاعات به صورت ماهانه' },
-      { value: 'specific-period-transfer', text: 'انتقال اطلاعات از تاریخ تا تاریخ ' }
-    ],
-    title: 'نوع فراخوانی',
-    hideInTable: true
-  },
-  {
-    vIf: { callType: 'specific-period-transfer' },
-    key: 'callTypeFromDate',
-    type: 'number',
-    title: 'از تاریخ',
-    hideInTable: true,
-    labelFormat: 'jYYYY/jMM/jDD',
-    width: 6
-  },
-  {
-    vIf: { callType: 'specific-period-transfer' },
-    key: 'callTypeUntilDate',
-    type: 'number',
-    title: 'تا تاریخ',
-    hideInTable: true,
-    labelFormat: 'jYYYY/jMM/jDD',
-    width: 6
-  },
-  {
     key: 'validityDurationCount',
     type: 'number',
     title: 'تعداد دوره مدت زمان اعتبار',
