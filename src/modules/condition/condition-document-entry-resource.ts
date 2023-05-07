@@ -109,7 +109,7 @@ maker.addActions([
   { template: 'LIST_COUNT',/*  permissions: ['admin.condition-document-entry.list-count']  */},
   { template: 'RETRIEVE',/*  permissions: ['admin.condition-document-entry.retrieve']  */},
   { template: 'CREATE',/*  permissions: ['admin.condition-document-entry.create']  */},
-  { template: 'UPDATE', permissions: ['admin.condition-document-entry.update'] },
+  { template: 'UPDATE', /* permissions: ['admin.condition-document-entry.update'] */ },
   { template: 'DELETE', permissions: ['admin.condition-document-entry.delete'] },
   {
     method: 'GET',
