@@ -195,7 +195,7 @@ maker.addActions([
     },
     stateValidator: async ({ bag }) => {
       if (['archived', 'deleted'].includes(bag.ticket.status)) {
-        throw new InvalidStateError('invalid status for update', 'وضعیت برای تغییر مناسب نیست.');
+        throw new InvalidStateError('invalid status for update', 'تیکت حذف شده یا بایگانی شده قابل تغییر نیست.');
       }
     },
     payloadValidator: async ({ payload }) => {
@@ -204,8 +204,8 @@ maker.addActions([
         throw new InvalidRequestError('other than status supplied.', 'فقط وضعیت قابل تغییر است.');
       }
 
-      if (!['archived', 'deleted'].includes(payload.status)) {
-        throw new InvalidRequestError('only archived and deleted is accepted as status.', 'وضعیت ارسال شده غیر مجاز است.');
+      if (!['archived', 'deleted', 'closed'].includes(payload.status)) {
+        throw new InvalidRequestError('only archived and deleted is accepted as status.', 'فقط وضعیت های بسته شده، بایگانی شده و حذف شده مجاز هستند.');
       }
 
     },
