@@ -7,5 +7,5 @@ options.fontSize = 20;
 loadFont(`${process.cwd()}/assets/iranyekan.ttf`);
 
 export async function createCaptcha(captchaOption?: Partial<ConfigObject>) {
-  return create({ size: 6, ...captchaOption });
+  return create({ size: 6, color: true, ...captchaOption });
 }
