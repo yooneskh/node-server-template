@@ -101,6 +101,9 @@ maker.addActions([
             },
           ]
         },
+        sorts: {
+          _id: -1,
+        },
         skipKeyCheck: true,
       });
 
@@ -114,6 +117,7 @@ maker.addActions([
 
 
         return {
+          _id: it._id,
           amount,
           description: it.description,
           createdAt: it.createdAt,
