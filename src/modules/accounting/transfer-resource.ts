@@ -116,6 +116,7 @@ maker.addActions([
         return {
           amount,
           description: it.description,
+          createdAt: it.createdAt,
         };
 
       });
