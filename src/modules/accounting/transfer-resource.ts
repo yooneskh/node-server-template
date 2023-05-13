@@ -80,7 +80,48 @@ maker.addActions([
     )
   },
   { template: 'UPDATE', permissions: ['admin.transfer.update'] },
-  { template: 'DELETE', permissions: ['admin.transfer.delete'] }
+  { template: 'DELETE', permissions: ['admin.transfer.delete'] },
+  {
+    method: 'GET',
+    path: '/list/mine',
+    signal: ['Router', 'Transfer', 'ListMine'],
+    permissions: ['user.transfer.list-mine'],
+    dataProvider: async ({ user }) => {
+
+      const account = await getAccountForUser(user!._id);
+
+      const transfers = await TransferController.list({
+        filters: {
+          $or: [
+            {
+              fromAccount: account._id,
+            },
+            {
+              toAccount: account._id,
+            },
+          ]
+        },
+        skipKeyCheck: true,
+      });
+
+      return transfers.map(it => {
+
+        let amount = it.amount;
+
+        if (String(it.fromAccount) === String(account._id)) {
+          amount = -it.amount;
+        }
+
+
+        return {
+          amount,
+          description: it.description,
+        };
+
+      });
+
+    },
+  },
 ]);
 
 
